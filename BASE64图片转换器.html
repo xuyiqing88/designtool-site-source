@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>BASE64图片转换器</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0px auto;
+    padding: 20px;
+    }
+#toBase64 .button-group {
+    display: none; /* 初始隐藏按钮 */
+    }
+.container{
+    margin: auto;
+    min-height: 90vh;         /* 占满整个视口高度 */
+    align-items: center;       /* 垂直居中 */
+    align-content: center;}
+/* 新增开关样式 */
+.prefix-switch {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    }
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin-left: 8px;
+    }
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+    }
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    }
+input:checked + .slider {
+    background-color: #5963ff;
+    }
+input:checked + .slider:before {
+    transform: translateX(20px);
+    }
+.ads{
+	display: flex;
+    padding: 20px;
+    background: linear-gradient(115deg, #f0edff, #dcedff);
+    border-radius: 10px;
+    margin-top: 12px;
+    color: #403e4a;
+    cursor: pointer;
+    text-decoration: none;
+    justify-content: space-between;
+    align-items: center;}
+.ads:hover{
+	color:#5963ff;}
+.zhushi{
+	margin: 6px 0;
+    font-size: 14px;
+    color: #a3a2ac;
+    font-weight: 400;
+	}
+.title{
+	font-size: 18px;
+    color: #000;
+    font-weight: 600;
+    /*line-height: 44px;*/
+    display: flex;
+    justify-content: space-between;
+    }
+.tab {
+	overflow: hidden;
+	border-radius: 4px;
+    display: flex;
+	background: linear-gradient(115deg, #f0edff, #dcedff);;
+    width: fit-content;
+    border-radius: 30px;
+    /*border: 1px solid #e9e9ec;*/
+    padding: 4px;
+    justify-content: center;
+    margin: 0 auto;
+    }
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 20px;
+    transition: 0.3s;
+    font-size: 16px;
+	color: #585b7d;
+	border-radius: 30px;
+	height: 38px;
+	display: flex;
+	align-items: center;
+    }
+.tab button:hover {
+	color: #5963ff;
+    }
+.tab button.active {
+	color: #5963ff;
+	background: #fff;
+    }
+.beijing{
+    padding: 20px 20px 10px 20px;
+    background-color: #F4F6F9;
+    border-radius: 10px;
+	margin-top: 10px;
+}
+
+.tabcontent {
+    display: none;
+	margin-top: 20px;
+    }
+.tabcontent.active {
+    display: block;
+    }
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 8px;
+    resize: vertical;
+    border: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background: #fff;
+	color: #403e4a;
+	overflow-x: hidden;
+	margin-bottom: 10px;
+    }
+button.action-bt2{
+	color: #5963ff;
+	background: #fff;
+	border: 1px solid #5963ff;
+	border-radius: 6px;
+	padding: 10px 20px;
+	cursor: pointer;
+    margin: 5px;
+    font-size: 14px;
+	transition: background-color 0.3s;}
+button.action-bt2:hover{
+	color: #fff;
+	background: #5963ff;}
+button.action-btn {
+    background: linear-gradient(113deg, #4c73ff, #6a52ff);
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid #4c73ff;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 14px;
+	transition: background-color 0.3s;	
+    }
+button.action-btn:hover {
+    background: linear-gradient(113deg, #4c73ffd9, #6a52ffd4);
+    box-shadow: 0px 14px 10px -7px #5353dc5c;
+    }
+button.clear-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid #f44336;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    }
+button.clear-btn:hover {
+    background-color: #ff4a3cdb;
+    box-shadow: 0px 14px 10px -7px #f443365c;
+    }
+.preview {
+    /* text-align: center;*/
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 6px;
+    padding: 0px;
+    transition: all 0.3s ease;
+    justify-content: center;
+    }
+.preview.has-image {
+    padding: 0px;/* 有图片时显示 */
+	margin-bottom: 10px;
+}
+.preview img {
+    /*max-width: 80%;*/
+    max-height: calc(50vh - 200px); /* 自动适应浏览器高度 */
+    cursor: pointer; /* 指针变为手型以提示可点击放大 */
+    border-radius: 4px;
+    margin: 10px;
+    /* display: block; */
+	border: 1px solid #f2f2f2;
+    }
+.button-group {
+	margin: 10px 0;
+	display: flex;
+	justify-content: center;
+    }
+input[type="file"] {
+    /*margin: 10px 0;*/
+    /*border: 1px solid #ccc;*/
+    /*border-radius: 4px;*/
+    /*padding: 8px;*/
+    font-size: 16px;
+    color: #6b6d75;
+    }
+/* 新增自定义文件上传按钮样式 */
+.custom-file-input input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    }
+
+.custom-file-input {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    }
+.custom-file-input input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    }
+.custom-file-input label {
+    display: inline-block;
+    padding: 8px 18px;
+    background: #fff;
+    border: 1px solid #5963ff;
+    border-radius: 6px;
+    color: #5963ff;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 10px 10px 10px 0;
+    font-size: 14px;
+    }
+.custom-file-input label:hover {
+    background: #5963ff;
+    color: #fff;
+    border: 1px solid #5963ff;
+    }
+#fileNameDisplay {
+    margin-left: 10px;
+    color: #403e4a;
+    font-size: 14px;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+    }
+
+ /* 新增自动消失提示框样式 */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    display: none;
+    animation: fadeOut 2s ease-in-out forwards;
+    }
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; top: -50px; }
+    }
+/* 放大图片的模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    /*padding-top: 100px;*/
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    }
+.modal-content {
+    margin: 20px auto; /* 添加边缘间距 */
+    width: calc(100% - 40px); /* 左右各留20px */
+    height: calc(100% - 40px); /* 上下各留20px */
+    max-width: none; /* 移除最大宽度限制 */
+    object-fit: contain;
+    cursor: pointer; 
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 style="display: flex; justify-content: center; color: #171E24;">BASE64图片转换器-BY徐艺青</h2>
+    <!-- 选项卡 -->
+    <div class="tab">
+        <button class="tablink active" onclick="openTab(event, 'toImage')">Base64转图片</button>
+        <button class="tablink" onclick="openTab(event, 'toBase64')">图片转Base64</button>
+    </div>
+
+    <!-- Base64转图片 -->
+    <div id="toImage" class="tabcontent active">
+<div class="beijing">
+	<div class="title">Base64输入
+	<!-- 新增开关 -->
+        <span class="prefix-switch">
+            <span class="zhushi">编码前缀</span>
+            <label class="switch">
+                <input type="checkbox" id="inputPrefixSwitch" checked>
+                <span class="slider"></span>
+            </label>
+        </span>
+    </div>
+        <textarea id="base64Input" placeholder="请输入Base64编码"></textarea>
+<div class="preview">
+            <div id="imagePreview"></div>
+        </div>
+</div>
+
+<div class="button-group">
+            <button class="clear-btn" onclick="clearUserInput()">清空</button>
+            <button class="action-bt2" onclick="convertToImage()">转换为图片</button>
+            <button class="action-btn" id="downloadBtn" style="display: none;" onclick="downloadImage()">下载图片</button>
+        </div>
+</div>
+    <!-- 图片转Base64 -->
+    <div id="toBase64" class="tabcontent">
+<div class="beijing">
+	<div class="title">图片上传</div>
+        <div class="custom-file-input">
+            <input type="file" id="fileInput" accept="image/*">
+            <label for="fileInput">+ 选择图片</label>
+            <span class="zhushi">* 支持png、jpeg、bmp、webp、svg、gif等主流图片格式，单张选择</span>
+        </div>
+        <div class="preview">
+            <img id="uploadPreview" src="#" alt="预览" style="display: none;">
+            <span id="fileNameDisplay"></span>
+        </div>
+</div>
+<div class="beijing">
+    <div class="title">Base64显示
+        <!-- 新增开关 -->
+        <span class="prefix-switch">
+        <span class="zhushi">编码前缀</span>
+        <label class="switch">
+            <input type="checkbox" id="outputPrefixSwitch" checked> <!-- 此处增加checked -->
+            <span class="slider"></span>
+        </label>
+    </span>
+    </div>
+        <textarea id="base64Output" readonly placeholder="Base64编码将显示在这里"></textarea>
+</div>
+        <div class="button-group">
+            <button class="action-bt2" onclick="downloadBase64()">下载Base64</button>
+            <button class="action-btn" onclick="copyBase64()">复制Base64</button>
+        </div>
+    </div>
+</div>
+    <!-- 放大图片的模态框 -->
+    <div id="myModal" class="modal">
+        <img class="modal-content" id="img01">
+    </div>
+
+<script>
+// 初始化输入框前缀状态
+        const base64Input = document.getElementById('base64Input');
+        const inputPrefixSwitch = document.getElementById('inputPrefixSwitch');
+        const defaultInputPrefix = 'data:image/png;base64,';
+        base64Input.value = defaultInputPrefix;
+
+// 输入前缀开关逻辑
+        inputPrefixSwitch.addEventListener('change', function() {
+            const currentValue = base64Input.value.replace(defaultInputPrefix, '');
+            base64Input.value = this.checked ? defaultInputPrefix + currentValue : currentValue;
+        });
+
+// 输出前缀开关逻辑
+        const outputPrefixSwitch = document.getElementById('outputPrefixSwitch');
+        let currentMimeType = '';
+        
+        
+
+        outputPrefixSwitch.addEventListener('change', function() {
+            const output = document.getElementById('base64Output');
+            const base64Data = output.value.split(',')[1] || output.value;
+            
+            if (this.checked) {
+                output.value = `data:${currentMimeType};base64,${base64Data}`;
+            } else {
+                output.value = base64Data;
+            }
+        });
+
+// 增强版输入监听（处理手动删除前缀的情况）
+base64Input.addEventListener('input', function() {
+    inputPrefixSwitch.checked = this.value.startsWith(defaultInputPrefix);
+    
+// 当开关关闭时自动清理前缀
+    if (!inputPrefixSwitch.checked && this.value.startsWith(defaultInputPrefix)) {
+        this.value = this.value.replace(defaultInputPrefix, '');
+    }
+});
+
+// 优化toast提示功能
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            toast.style.display = 'block';
+            setTimeout(() => toast.remove(), 2000);
+        }
+// 修改第一个标签页自动转换功能
+        document.getElementById('base64Input').addEventListener('input', function() {
+            if (this.value.length > 30) { // 简单长度判断避免频繁触发
+                convertToImage();
+            }
+        });
+
+ // 修改后的复制功能
+        function copyBase64() {
+            const output = document.getElementById('base64Output');
+            output.select();
+            try {
+                navigator.clipboard.writeText(output.value);
+                showToast('✅ 复制成功');
+            } catch (err) {
+                showToast('⚠️ 复制失败，请手动选择');
+            }
+        }
+// 初始化时设置Base64输入框内容
+        document.getElementById('base64Input').value = 'data:image/png;base64,';
+
+// 选项卡切换功能
+        function openTab(evt, tabName) {
+            const tabcontents = document.getElementsByClassName("tabcontent");
+            const tablinks = document.getElementsByClassName("tablink");
+            
+            // 隐藏所有标签内容
+            for (let tab of tabcontents) {
+                tab.classList.remove("active");
+            }
+            // 取消所有按钮激活状态
+            for (let link of tablinks) {
+                link.classList.remove("active");
+            }
+            
+            // 显示当前标签
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+// 清空用户输入部分，保留默认前缀
+    function clearUserInput() {
+    	const base64Input = document.getElementById('base64Input');
+    	const inputPrefixSwitch = document.getElementById('inputPrefixSwitch');
+    	const imagePreview = document.getElementById('imagePreview');
+    	const downloadBtn = document.getElementById('downloadBtn');
+    	const previewContainer = document.querySelector('#toImage .preview');
+    // 清空输入内容
+    if (inputPrefixSwitch.checked) {
+        base64Input.value = 'data:image/png;base64,';
+    } else {
+        base64Input.value = '';
+    }
+    // 清空图片预览
+    imagePreview.innerHTML = ''; // 移除所有子元素
+    // 隐藏下载按钮
+    downloadBtn.style.display = 'none';    
+    // 移除背景色
+    previewContainer.classList.remove('has-image');
+}
+    // Base64转图片
+    function convertToImage() {
+    	const previewContainer = document.querySelector('#toImage .preview'); 
+    	const base64Input = document.getElementById('base64Input').value;
+    	const inputPrefixSwitch = document.getElementById('inputPrefixSwitch');
+    	let finalBase64 = base64Input;
+    	const imagePreview = document.getElementById('imagePreview');
+    	const downloadBtn = document.getElementById('downloadBtn');
+
+    // 当开关关闭时自动补全前缀
+    if (!inputPrefixSwitch.checked && !finalBase64.startsWith('data:image')) {
+        finalBase64 = `data:image/png;base64,${finalBase64}`;
+    }
+
+    // 清空预览和下载按钮
+    imagePreview.innerHTML = '';
+    downloadBtn.style.display = 'none';
+
+    if (!finalBase64.startsWith('data:image')) {
+        showToast('⚠️ 无效的Base64图片编码');
+        return;
+    }
+
+    const img = new Image();
+    img.src = finalBase64;
+    
+    img.onload = () => {
+        previewContainer.classList.add('has-image');
+        imagePreview.appendChild(img);
+        downloadBtn.style.display = 'inline-block';
+        img.onclick = () => showModal(finalBase64);
+        showToast('✅ 转换成功'); // 成功提示
+    };
+    
+    img.onerror = () => {
+    previewContainer.classList.remove('has-image');
+    imagePreview.innerHTML = ''; // 新增清空操作
+    downloadBtn.style.display = 'none'; // 新增隐藏按钮
+    showToast('⚠️️ 转换失败，请检查编码格式');
+};
+}
+// 新增下载Base64编码功能
+function downloadBase64() {
+    const output = document.getElementById('base64Output');
+    const base64Data = output.value;
+    const link = document.createElement('a');
+    link.download = 'base64-encoded.txt';
+    link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(base64Data);
+    link.click();
+}
+// 下载图片
+function downloadImage() {
+    const base64Input = document.getElementById('base64Input').value;
+    const inputPrefixSwitch = document.getElementById('inputPrefixSwitch');
+    
+    // 根据开关状态补全前缀
+    let finalBase64 = base64Input;
+    if (!inputPrefixSwitch.checked && !finalBase64.startsWith('data:image')) {
+        finalBase64 = `data:image/png;base64,${finalBase64}`;
+    }
+
+    const link = document.createElement('a');
+    link.download = 'converted-image.png';
+    link.href = finalBase64;
+    link.click();
+}
+
+        // 图片转Base64
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+    const previewContainer = document.querySelector('#toBase64 .preview'); 
+    const file = e.target.files[0];
+    if (file) currentMimeType = file.type;
+    const reader = new FileReader();
+    const preview = document.getElementById('uploadPreview');
+    const output = document.getElementById('base64Output');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    fileNameDisplay.textContent = file ? file.name : ''; 
+
+    reader.onload = function(event) {
+        preview.style.display = 'block';
+        previewContainer.classList.add('has-image'); 
+        preview.src = event.target.result;
+        output.value = event.target.result;
+        preview.onclick = () => showModal(event.target.result);
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+        document.querySelector('#toBase64 .button-group').style.display = 'flex'; // 新增
+    } else {
+        previewContainer.classList.remove('has-image');
+        document.querySelector('#toBase64 .button-group').style.display = 'none';
+    }
+});
+
+        // 显示模态框并设置图片源
+function showModal(src) {
+    const modal = document.getElementById("myModal");
+    const modalImg = document.getElementById("img01");
+    modal.style.display = "flex";
+    modalImg.src = src;
+
+    // 修改关闭逻辑：点击任意区域关闭
+    modal.onclick = function() {
+        modal.style.display = "none";
+    }
+}
+</script>
+</bo
