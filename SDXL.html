@@ -37,7 +37,32 @@
             padding: 20px;
             line-height: 1.6;
         }
-        
+.topgroup {
+	gap: 10px;
+    display: flex;
+    position: fixed;
+ left: 20px;
+    background: #fff;
+    border-radius: 30px;
+    padding: 4px;
+	z-index: 999;
+	backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+	box-shadow: 0 0 10px #0000000f;}
+
+.topgroup:hover {
+	background:#f2f2f2;
+}
+.home-icon {
+	font-size: 40px;
+	cursor: pointer;
+    transition: all 0.3s;
+    padding: 8px; 
+	border-radius: 50%;
+	width: 1em; 
+	height: 1em;
+	vertical-align: -0.15em;
+	overflow: hidden;}
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -412,6 +437,9 @@
     </style>
 </head>
 <body>
+    <div class="topgroup">
+	<a href="tools.html"><img class="home-icon" src="img/home.svg"></a>
+</div>
     <div class="container">
         <header>
             <h1>SDXL 提示词风格库</h1>
