@@ -101,13 +101,17 @@
         
         .controls-container {
             position: sticky;
-            top: 0;
+            top: -110px;
             z-index: 100;
             background: var(--light);
             padding-top: 20px;
             border-radius: 10px 10px 0 0;
+		transition: all ease 0.3s;
         }
-        
+        .controls-container:hover {
+		top: 0px;
+		transition: all ease 0.3s;
+	}
         .controls {
             max-width: 1400px;
             margin: 0 auto;
