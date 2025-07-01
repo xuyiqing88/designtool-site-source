@@ -7,13 +7,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4a6cf7;
-            --dark: #121826;
-            --darker: #0d1117;
-            --light: #f0f4ff;
-            --gray: #9ca3af;
-            --card-bg: #2e2e33d9;
-            --card-hover: #414147;
+            --primary: #5963ff;
+            --primary-light: #eef0ff;
+            --dark: #2d3748;
+            --darker: #1a202c;
+            --light: #ffffff;
+            --gray: #718096;
+            --light-gray: #edf2f7;
+            --card-bg: #ffffff;
+            --card-hover: #f7fafc;
+            --border: #e2e8f0;
         }
         
         * {
@@ -24,8 +27,8 @@
         }
         
         body {
-            background: #1a1b1c;
-            color: var(--light);
+            background: #f8f9fa;
+            color: var(--dark);
             min-height: 100vh;
             padding: 20px;
             line-height: 1.6;
@@ -45,7 +48,7 @@
         h1 {
             font-size: 2.1rem;
             margin-bottom: 15px;
-            background: linear-gradient(to right, #6ee7b7, #3b82f6);
+            background: linear-gradient(to right, #5963ff, #6a11cb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             position: relative;
@@ -76,19 +79,18 @@
             width: 100%;
             padding: 14px 20px 14px 45px;
             border-radius: 50px;
-            border: none;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: white;
+            border: 1px solid var(--border);
+            background: var(--light);
+            color: var(--dark);
             font-size: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
         
         .search-box input:focus {
             outline: none;
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 25px rgba(59, 130, 246, 0.4);
+            border-color: var(--primary);
+            box-shadow: 0 2px 15px rgba(89, 99, 255, 0.2);
         }
         
         .search-box i {
@@ -97,7 +99,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray);
-		z-index: 999;
+            z-index: 999;
         }
         
         .category-filter {
@@ -110,101 +112,122 @@
         .category-btn {
             padding: 10px 20px;
             border-radius: 50px;
-            background: var(--card-bg);
-            color: var(--light);
-            border: none;
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
         }
         
         .category-btn:hover, .category-btn.active {
-            background: #4a6cf64a;
-    color: white;
-    border: 1px solid var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
         }
         
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
             margin-top: 20px;
         }
         
         .tool-card {
             background: var(--card-bg);
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             position: relative;
             height: 100%;
             display: flex;
+            border: 1px solid var(--border);
+	height: 180px;
         }
         
         .tool-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             background: var(--card-hover);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
         
-        .tool-icon {
-            height: 150px;
+        .tool-cover {
+            width: 120px;
+            height: auto;
+            background-color: var(--primary-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
-            background: linear-gradient(45deg, var(--primary), #7c3aed);
+            flex-shrink: 0;
+		overflow: hidden;
+        }
+        
+        .tool-cover img {
+            width: auto;
+            height: 100%;
+            object-fit: contain;
         }
         
         .tool-content {
-            padding: 25px;
+            padding: 20px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
         }
         
         .tool-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
+            font-size: 1.0rem;
+            margin-bottom: 8px;
+            color: var(--darker);
         }
         
         .tool-card p {
             color: var(--gray);
-            margin-bottom: 20px;
-            flex-grow: 1;
-		font-size:14px;
+            margin-bottom: 12px;
+            font-size: 13px;
+	display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+	line-height: 18px;
         }
         
         .tool-link {
             display: inline-block;
-    	padding: 6px;
-    	background: var(--primary);
-    	color: white;
-    	text-decoration: none;
-    	border-radius: 28px;
-	transition: all 0.3s ease;
-    	text-align: center;
-    	margin-top: auto;
-    	width: 120px;
-    	font-size: 14px;
+            padding: 5px 16px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: auto;
+            width: fit-content;
+            font-size: 14px;
+            font-weight: 500;
         }
         
         .tool-link:hover {
-            background: #3b82f6;
+            background: #4a52d4;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 5px 15px rgba(89, 99, 255, 0.3);
         }
         
         .tool-tag {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(52, 211, 153, 0.2);
-            color: #34d399;
-            padding: 5px 12px;
-            border-radius: 20px;
+            top: 0;
+            right: 0;
+            background: rgba(89, 99, 255, 0.1);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 0 10px 0 10px;
             font-size: 0.8rem;
             font-weight: 600;
+            border: 1px solid rgba(89, 99, 255, 0.2);
+	border-top: none;
+    border-right: none;
         }
         
         footer {
@@ -212,12 +235,12 @@
             padding: 40px 0 20px;
             color: var(--gray);
             margin-top: 50px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--border);
         }
         
         @media (max-width: 768px) {
             .tools-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             }
             
             h1 {
@@ -228,11 +251,26 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            .tool-cover {
+                width: 100px;
+            }
         }
         
         @media (max-width: 480px) {
             .tools-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .tool-card {
+                flex-direction: column;
+            }
+            
+            .tool-cover {
+                width: 100%;
+                height: 100px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
             }
         }
     </style>
@@ -240,8 +278,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>本地工具集合</h1>
-            <p class="subtitle">快速访问您常用的本地工具，提高设计效率</p>
+            <h1>特色效率工具合集</h1>
+            <p class="subtitle">集成各种特色效率工具，提高办公效率</p>
         </header>
         
         <div class="controls">
@@ -252,138 +290,163 @@
             
             <div class="category-filter">
                 <button class="category-btn active" data-category="all">全部工具</button>
-		<button class="category-btn" data-category="3D">3D工具</button>
+                <button class="category-btn" data-category="3D">3D工具</button>
                 <button class="category-btn" data-category="dev">AI工具</button>
                 <button class="category-btn" data-category="design">设计工具</button>
                 <button class="category-btn" data-category="utility">实用工具</button>
             </div>
         </div>
         
-        <div class="tools-grid">
-            <!-- 模型数据集编辑器 -->
-            <div class="tool-card" data-category="dev">
-
-                <span class="tool-tag">AI</span>
-                <div class="tool-content">
-                    <h3>模型数据集编辑器</h3>
-                    <p>编辑和管理机器学习模型的数据集，支持多种数据格式导入导出，提供数据清洗和预处理功能。</p>
-                    <a href="模型数据集编辑器.html" class="tool-link" target="_blank">打开工具</a>
-                </div>
-            </div>
-            
-            <!-- 无缝贴图预览工具 -->
-            <div class="tool-card" data-category="3D">
-                <span class="tool-tag">3D</span>
-                <div class="tool-content">
-                    <h3>无缝贴图预览工具</h3>
-                    <p>预览和测试无缝贴图效果，支持实时调整贴图参数，可视化展示贴图在3D模型上的效果。</p>
-                    <a href="无缝贴图预览工具.html" class="tool-link" target="_blank">打开工具</a>
-                </div>
-            </div>
-
-            
-            <div class="tool-card" data-category="3D">
-                <span class="tool-tag">3D</span>
-                <div class="tool-content">
-                    <h3>法线图转换工具</h3>
-                    <p>上传灰度高度图（包括TIFF格式）或使用示例图像，实时生成高质量的法线贴图。</p>
-                    <a href="高级法线图转换器.html" class="tool-link" target="_blank">打开工具</a>
-                </div>
-            </div>
-
-            <div class="tool-card" data-category="3D">
-                <span class="tool-tag">3D</span>
-                <div class="tool-content">
-                    <h3>ORM贴图生成工具</h3>
-                    <p>上传AO、粗糙度和金属度贴图自动合成ORM纹理贴图，或上传ORM贴图拆解为独立通道。</p>
-                    <a href="ORM贴图生成工具.html" class="tool-link" target="_blank">打开工具</a>
-                </div>
-            </div>
-            
-            <!-- BASE64图片转换器 -->
-            <div class="tool-card" data-category="utility">
-                <span class="tool-tag">实用</span>
-                <div class="tool-content">
-                    <h3>BASE64图片转换器</h3>
-                    <p>将图片转换为Base64编码或从Base64编码还原为图片，支持多种图片格式，方便前端开发使用。</p>
-                    <a href="BASE64图片转换器.html" class="tool-link" target="_blank">打开工具</a>
-                </div>
-            </div>
-            
-            <!-- 颜色转换工具 -->
-            <div class="tool-card" data-category="design">
-                <span class="tool-tag">设计</span>
-                <div class="tool-content">
-                    <h3>颜色转换工具</h3>
-                    <p>在不同颜色格式之间转换（HEX, RGB, HSL, HSV），创建和保存调色板，提取图片颜色。</p>
-                    <a href="颜色转换工具.html" class="tool-link" target="_blank">打开工具</a>
-                </div>
-            </div>
-            
-            <!-- 本地翻译工具 -->
-            <div class="tool-card" data-category="utility">
-                <span class="tool-tag">实用</span>
-                <div class="tool-content">
-                    <h3>本地翻译工具</h3>
-                    <p>本地翻译工具，支持30多种语言互译，根据文本匹配度提供其他建议。</p>
-                    <a href="本地翻译工具.html" class="tool-link" target="_blank">打开工具</a>
-                </div>
-            </div>
-
+        <div class="tools-grid" id="toolsContainer">
+            <!-- Tools will be inserted here by JavaScript -->
         </div>
-
+        
+        <footer>
+            <p>© 2025 特色效率工具合集 | 高效工作，创意无限</p>
+        </footer>
+    </div>
     
     <script>
-        // 搜索功能
+        // Tool data
+        const tools = [
+            {
+                title: "模型数据集编辑器",
+                description: "编辑和管理机器学习模型的数据集，支持AI反推提示词、一键翻译、批量修改尺寸、批量修改背景、打包下载等功能。",
+                category: "dev",
+                tag: "AI",
+                link: "模型数据集编辑器.html",
+                icon: "img/AI.png" // Replace with actual icon path
+            },
+            {
+                title: "BASE64图片转换器",
+                description: "将图片转换为Base64编码或从Base64编码还原为图片，支持多种图片格式。",
+                category: "utility",
+                tag: "实用",
+                link: "BASE64图片转换器.html",
+                icon: "img/base64.png" // Replace with actual icon path
+            },
+            {
+                title: "本地翻译工具",
+                description: "本地翻译工具，支持30多种语言互译，根据文本匹配度提供其他建议。",
+                category: "utility",
+                tag: "实用",
+                link: "本地翻译工具.html",
+                icon: "img/翻译.png" // Replace with actual icon path
+            },
+            {
+                title: "无缝贴图预览工具",
+                description: "预览和测试无缝贴图效果，支持实时调整贴图参数，可视化展示贴图在3D模型上的效果。",
+                category: "3D",
+                tag: "3D",
+                link: "无缝贴图预览工具.html",
+                icon: "img/贴图.png" // Replace with actual icon path
+            },
+            {
+                title: "法线图转换工具",
+                description: "上传灰度高度图（包括TIFF格式）或使用示例图像，实时生成高质量的法线贴图。",
+                category: "3D",
+                tag: "3D",
+                link: "高级法线图转换器.html",
+                icon: "img/法线.png" // Replace with actual icon path
+            },
+            {
+                title: "ORM贴图生成工具",
+                description: "上传AO、粗糙度和金属度贴图自动合成ORM纹理贴图，或上传ORM贴图拆解为独立通道。",
+                category: "3D",
+                tag: "3D",
+                link: "ORM贴图生成工具.html",
+                icon: "img/body4orm.png" // Replace with actual icon path
+            },
+
+            {
+                title: "颜色转换工具",
+                description: "在不同颜色格式之间转换（HEX, RGB, HSL, HSV），非线性颜色转线性颜色。",
+                category: "design",
+                tag: "设计",
+                link: "颜色转换工具.html",
+                icon: "img/颜色.png" // Replace with actual icon path
+            },
+
+        ];
+
+        // Function to render tools
+        function renderTools(toolsToRender) {
+            const container = document.getElementById('toolsContainer');
+            container.innerHTML = '';
+            
+            toolsToRender.forEach(tool => {
+                const toolCard = document.createElement('div');
+                toolCard.className = 'tool-card';
+                toolCard.setAttribute('data-category', tool.category);
+                
+                toolCard.innerHTML = `
+                    <span class="tool-tag">${tool.tag}</span>
+                    <div class="tool-cover">
+                        <img src="${tool.icon}" alt="${tool.title}">
+                    </div>
+                    <div class="tool-content">
+                        <h3>${tool.title}</h3>
+                        <p>${tool.description}</p>
+                        <a href="${tool.link}" class="tool-link" target="_blank">打开工具</a>
+                    </div>
+                `;
+                
+                container.appendChild(toolCard);
+            });
+            
+            // Reattach event listeners for hover effects
+            attachHoverEffects();
+        }
+
+        // Initial render
+        renderTools(tools);
+
+        // Search functionality
         const searchInput = document.getElementById('searchInput');
-        const toolCards = document.querySelectorAll('.tool-card');
         
         searchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
-            
-            toolCards.forEach(card => {
-                const title = card.querySelector('h3').textContent.toLowerCase();
-                const desc = card.querySelector('p').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || desc.includes(searchTerm)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            const filteredTools = tools.filter(tool => 
+                tool.title.toLowerCase().includes(searchTerm) || 
+                tool.description.toLowerCase().includes(searchTerm)
+            );
+            renderTools(filteredTools);
         });
         
-        // 分类筛选功能
+        // Category filter functionality
         const categoryBtns = document.querySelectorAll('.category-btn');
         
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', function() {
-                // 更新按钮状态
+                // Update button states
                 categoryBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 
                 const category = this.getAttribute('data-category');
                 
-                toolCards.forEach(card => {
-                    if (category === 'all' || card.getAttribute('data-category') === category) {
-                        card.style.display = 'flex';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+                if (category === 'all') {
+                    renderTools(tools);
+                } else {
+                    const filteredTools = tools.filter(tool => tool.category === category);
+                    renderTools(filteredTools);
+                }
             });
         });
         
-        // 添加悬停动画效果
-        toolCards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px)';
-            });
+        // Hover effects
+        function attachHoverEffects() {
+            const toolCards = document.querySelectorAll('.tool-card');
             
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
+            toolCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
             });
-        });
+        }
     </script>
 </body>
 </html>
