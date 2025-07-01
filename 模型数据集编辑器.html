@@ -1,0 +1,3150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>数据集编辑器2.0</title>
+<script type="text/javascript" src="http://at.alicdn.com/t/c/font_4814134_gfwa6jjc3jq.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+    --main-color: #5963ff;
+	--bg-background: radial-gradient(185% 15% at 100% 0%, #e6008100, #ffffff), linear-gradient(90deg, #D0EFFF, #d4dcff, #ffd9f2);
+	--btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
+	--text1: #292d47;
+    	--text2: #63697d;
+    	--text3: #a2a0b1;
+	--line: #e2e2f0;
+	--mainbg: #F4F6F9;
+	--btactive: #e5e8ed;
+	--lightbg: #F9FAFB;
+	--shadow: #55537512;
+	--fff: #fff;
+	--blur: #ffffff80;
+	--button: #5963FF24;}
+.dark-mode {
+	 --main-color: #7988ff;
+    --bg-background: radial-gradient(185% 15% at 100% 0%, #e6008100, #2c2c30), linear-gradient(90deg, #122539, #24243e, #2c0c36);
+    --btcolor: linear-gradient(113deg, #5d6dfd, #7a5efc);
+    --text1: #e6e6e6;
+    --text2: #aeafbc;
+    --text3: #969dbb;
+    --line: #171717;
+    --mainbg: #1a1b1c;
+    --btactive: #3c3c40;
+    --lightbg: #000;
+    --shadow: #00000030;
+    --fff: #000;
+	--blur: #403f4880;
+	--button: #5963FF3D;
+  }
+.dark-mode .bg-1 {
+    background: #2c2c30;}
+
+.dark-mode .alert {
+    background: #42424280;}
+
+body {
+    font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+	background: var(--lightbg);}
+.custom-color-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;}  
+.custom-color-input input {
+    flex: 1;
+    margin-top: 0;}    
+.color-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid var(--line);}
+/* 添加遮罩层样式 */
+.image-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);}
+.progress-bar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--main-color);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    z-index: 9999;}
+select {
+	width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    font-size: 14px;
+    color: var(--text1);
+    outline: none;
+    transition: all 0.3s;}
+.selectbg {
+	width: 70%;
+    display: flex;
+    justify-content: flex-end;
+    background: var(--mainbg);
+    padding-right: 10px;
+    border-radius: 4px;
+    margin-top: 4px;}
+.custom-size-btn {
+    background: #e1e8ff;
+    color: var(--main-color);
+    border: 1px solid var(--main-color);}
+/* 新增单选按钮样式 */
+.radio-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: var(--text2);
+	margin-top: 10px;}
+.radio-option:hover {
+	color: var(--main-color);}
+.radio-option input[type="radio"] {
+    display: none;}
+.radio-custom {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--text3);
+    border-radius: 50%;
+    margin-right: 10px;
+    position: relative;
+    transition: all 0.2s;}
+.radio-option input[type="radio"]:checked + .radio-custom {
+    border-color: var(--main-color);
+    background: var(--fff);}
+.radio-option input[type="radio"]:checked + .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 8px;
+    height: 8px;
+    background: var(--main-color);
+    border-radius: 50%;}
+.method-options {
+    display: flex;
+    gap: 50px;
+    margin-top: 8px;
+	flex-wrap: wrap;}
+.method-option {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;	}
+.method-option.active {
+    border-color: var(--main-color);
+    background: var(--main-color);
+    color: white;	}
+.size-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 12px;	}
+.size-option {
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;	}
+.size-option:hover {
+    border-color: var(--main-color);	}
+.size-option.active {
+    border-color: var(----main-color);
+    background: var(--button);
+    color: var(--main-color);	}
+.unify-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);	}
+.find-replace-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+	margin-top: 20px;}
+.gear-icon, .btico, .bt-icon {
+	width: 1em; height: 1em;
+	vertical-align: -0.15em;
+	fill: currentColor;
+	overflow: hidden;}
+.settitle{
+	color: var(--text1); 
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: 500;}
+.setscrib{
+	color: var(--text2); 
+	margin-top: 6px; 
+	font-size: 14px;
+	line-height: 20px;
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+	font-weight: 400;}
+/* 新增开关样式 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-left: 10px;}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--btactive);
+    transition: .4s;
+    border-radius: 24px;}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background: var(--fff);
+    transition: .4s;
+    border-radius: 50%;}
+input {
+	border-radius: 6px;}
+
+input:checked + .slider {
+    background-color: var(--main-color);}
+input:checked + .slider:before {
+    transform: translateX(26px);} 
+#wordStatsContainer {
+    color: var(--text2); 
+    font-size: 14px;
+    display: block;
+    padding: 10px;
+    border-radius: 6px;
+    min-height: 20px;
+	margin: 10px 0;
+	border: 1px solid var(--mainbg);
+	    background: var(--blur);}
+.word-stat-item {
+    display: inline-block;
+    margin: 4px;
+    background: var(--shadow);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+	cursor: pointer;}
+.word-stat-item:hover {
+    	background: var(--btactive);}
+.word-stat-count {
+        color: var(--main-color);}
+/* 设置弹窗样式 */
+.settings-modal, .unify-size-dialog, .fill-bg-dialog, .find-replace-dialog {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
+    padding: 24px 14px 24px 24px;
+    width: 410px;
+    z-index: 999;
+    display: block !important; 
+    opacity: 1; /* 确保可见性 */
+	background: var(--bg-background);
+    animation: modalOn 0.2s ease-out;
+	border: 1px solid var(--btactive);}
+/* 配置项容器 */
+.settings-item {
+  margin-top: 20px;
+	margin-left: 2px;}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+	margin-bottom: -10px;}
+.settings-title {
+    font-weight: 600;
+    color: var(--text1); }
+.settings-input {
+    width: -webkit-fill-available;
+    padding: 8px;
+    border: 2px solid var(--mainbg);
+    margin-top: 10px;
+	background: var(--mainbg);
+	font-size: 14px;
+	color: var(--text1);}
+.btico{
+	font-size: 14px;
+    	margin-right: 4px;}
+.gear-icon, .bt-icon {
+    font-size: 24px;
+	cursor: pointer;
+    transition: all 0.3s;
+    padding: 8px; 
+	border-radius: 50%;}
+.home-icon {
+	font-size: 24px;
+	cursor: pointer;
+    transition: all 0.3s;
+    padding: 8px; 
+	border-radius: 50%;
+	width: 1em; 
+	height: 1em;
+	vertical-align: -0.15em;
+	fill: currentColor;
+	overflow: hidden;}
+.home-icon:hover {
+    color: var(--main-color);
+	background:var(--shadow);
+	margin-bottom: -2px;}
+.gear-icon:hover, .bt-icon:hover {
+    transform: rotate(90deg);
+    color: var(--main-color);
+	background:var(--shadow);}
+.topgroup {
+	gap: 10px;
+    display: flex;
+    position: fixed;
+    margin-top: 20px;
+    background: var(--blur);
+    border-radius: 30px;
+    box-shadow: 0 0 10px var(--shadow);
+    padding: 4px;
+	z-index: 999;
+	backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);}
+.translate-btn, .ai-btn {
+    position: absolute;
+    bottom: 3px;
+    right: -7px;
+    padding: 2px 6px;
+    font-size: 12px;
+    background: var(--blur);
+    color: var(--text2); 
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 2; /* 提升层级 */
+    transition: opacity 0.2s;
+	min-width: 26px;
+    min-height: 22px;}
+.translate-btn:hover, .ai-btn:hover {
+    opacity: 0.9;
+	border: 1px solid var(--main-color);}
+.ai-btn {
+    bottom: 30px;
+    right: -7px; }
+.input-container {
+    position: relative;
+    flex: 1;
+    height: 120px;
+    min-height: 120px;}
+.download-progress {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--main-color);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+    transition: opacity 0.3s;}
+.crop-guides {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;  /* 新增 */
+    pointer-events: none;
+    z-index: 1; }
+.crop-guide-line {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);}
+
+.crop-guide-line.horizontal {
+    width: 100%;
+    height: 1px;
+    left: 0;}
+.crop-guide-line.vertical {
+    height: 100%;
+    width: 1px;
+    top: 0;}
+/* 裁剪相关样式 */
+.crop-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    overflow: hidden;
+    margin-bottom: 80px;
+    user-select: none; /* 禁用选中 */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+	animation: modalIn 0.3s ease;
+	will-change: transform, opacity;
+    transform-origin: center center;}
+.crop-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: move;}
+.crop-box {
+    position: absolute;
+    cursor: move;
+    box-shadow: inset 0 0 0 2px #fff;
+	mix-blend-mode: difference;}
+.crop-handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    bottom: -5px;
+    right: -5px;
+    cursor: nwse-resize;
+    z-index: 3;  
+    box-shadow: 0 0 4px rgba(0,0,0,0.3); }
+.crop-controls {
+    position: absolute;
+    bottom: 4px; 
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--blur);
+    padding: 10px 0 10px 10px;
+    border-radius: 14px;
+    display: flex;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1; /* 确保在裁剪层下方 */
+    width: max-content;}
+.crop-size-btn {
+    padding: 6px 12px;
+    background:var(--btactive);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all 0.2s;
+	color: var(--text2); }
+.crop-size-btn:hover, .crop-size-btn.active {
+        background: var(--button);
+    color: var(--main-color);	
+    border-color: var(--main-color);}
+.sizepx {
+    position: absolute;
+    z-index: 1;
+    background: linear-gradient(360deg, #00000070, transparent);
+    color: #fff;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    bottom: 0;
+    font-size: 14px;
+	pointer-events: none;}
+.line{
+	width: 100%;
+	height:1px;
+	background: var(--line);
+	margin-top: 14px;}
+.linetxt{
+	color: var(--text2); 
+	text-decoration: underline; }
+.linetxt:hover{
+	color: var(--main-color); 
+	text-decoration: underline; }
+.modal-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(20px);
+	font-size: 15px;    }
+.modal-box {
+    background: var(--bg-background);
+    border-radius: 12px;
+    padding: 24px 14px 24px 24px;
+    width: 600px;
+    max-width: 90%;
+    position: relative;
+    animation: modalOn 0.2s ease-out;    }
+@keyframes modalIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+    }
+@keyframes modalOn {
+    0% { transform: translate(0, -20px); opacity: 0; }
+    100% { transform: translate(0, 0px); opacity: 1; }
+    }
+@keyframes scaleOut {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.1); opacity: 0; }
+}
+
+.crop-container.closing {
+    animation: scaleOut 0.3s ease-out forwards;}
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 22px;
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 24px;
+    }
+.modal-close:hover {
+	color:var(--main-color)}
+.modal-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: var(--text1); 
+	font-weight: 600;    }
+.modal-content {
+    color: var(--text2); 
+    line-height: 1.6;
+    max-height: 70vh;
+    overflow-y: auto;
+	scrollbar-width: thin;
+    scrollbar-color: #a9a9b152 #ffffff00;
+	padding: 0px 10px 10px 0;    }
+.modal-content::-webkit-scrollbar {
+    width: 8px; /* 垂直滚动条宽度 */
+    height: 8px; /* 水平滚动条高度 */}
+.modal-content::-webkit-scrollbar-track {
+    background: #ffffff00;
+    border-radius: 4px;}
+.modal-content::-webkit-scrollbar-thumb {
+    background: #dddde5;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;}
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #dddde5;}
+.modal-content::-webkit-scrollbar-corner {
+    background: #ffffff00;}
+.alert {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+	text-align: left;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 8px;
+    background: #00000075;
+    color: #fff;
+    z-index: 1001;
+    animation: fadeOut 3s forwards;
+	-webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);    }
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+    }
+.bg-1{
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 30px;
+    margin-bottom: 10px;
+    min-width: 640px;
+    max-width: 1490px;
+	box-shadow: 0 0 14px var(--shadow);	}
+.title{
+    color: var(--text1); 
+    margin-bottom: 0;
+	display: flex;
+    justify-content: center;
+    align-items: center;}
+.s-tit{
+    margin: 10px 10px 10px 0;
+    color: var(--text2); 
+    font-weight: bold;
+    font-size: 14px;
+    width: 60px;}
+.miaoshu{
+    color: var(--text3);
+    font-size: 14px;
+    margin: 20px;
+    display: flex;
+    justify-content: center;}
+.container {
+    margin: auto;
+    padding-bottom: 100px;
+    display: grid;
+    justify-content: center;
+    min-height: 80vh;         
+    align-items: center;       
+    padding-top: 20px;         
+    align-content: center;    }
+.image-container {
+    display: flex;
+    flex-wrap: wrap;}
+.image-item:hover {
+	transform: scale(1.03);
+    transition: all ease 0.3s;}
+.image-item {
+    position: relative;
+    cursor: pointer;
+    width: calc(32% - 10px);
+    min-width: 260px;
+    display: flex;
+    padding: 4px;
+    border-radius: 8px;
+    margin: 6px;
+    background: var(--mainbg);
+	transition: all ease 0.3s;
+	border: 1px solid var(--line);    }
+.image-wrapper {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 6px;
+    background-image: linear-gradient(45deg, var(--btactive) 25%, transparent 25%, transparent 75%, var(--btactive) 75%), linear-gradient(45deg, var(--btactive) 25%, transparent 25%, transparent 75%, var(--btactive) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    position: relative;
+    cursor: zoom-in;
+	position: relative;
+	margin-right: 2px;    }
+.image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+	transition: all 0.3s ease;    }
+.image-item img:hover {
+	transform: scale(1.1);
+	transition: all 0.3s ease;}
+.input-box {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    resize: none; /* 修改此处 */
+    height: 102px;
+    min-height: 102px;
+    overflow-y: auto;
+    font-size: 14px;
+    width: 100%; /* 填满容器 */
+    height: 100%; /* 填满容器高度 */
+    padding: 8px 16px 8px 8px; /* 右侧留出按钮空间 */
+    box-sizing: border-box;
+	transition: border-color 0.3s ease;
+	user-select: text;
+	-webkit-user-select: text;
+	scrollbar-width: thin;
+	scrollbar-color: #a9a9b152 #ffffff00;
+	background: var(--mainbg);
+	color: var(--text1);
+	border: 2px solid #ffffff00;}
+.input-box::placeholder {
+	color: var(--text3);}
+.input-box:focus {
+    color: var(--text1);
+    font-weight: 500;    }
+.input-box::-webkit-scrollbar {
+    width: 8px; 
+    height: 8px; }
+/* 滚动条轨道 */
+.input-box::-webkit-scrollbar-track {
+    background: #fff;
+    border-radius: 4px;}
+/* 滚动条滑块 */
+.input-box::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;}
+/* 鼠标悬停时的滑块 */
+.input-box::-webkit-scrollbar-thumb:hover {
+    background: #dddde5;}
+/* 滚动条角落 */
+.input-box::-webkit-scrollbar-corner {
+    background: #ffffff00;}
+.trigger-word{
+    display: flex;
+    align-items: center;
+    height: 54px;    }
+.trigger-word input {
+    border: 1px solid var(--line);
+    background: var(--mainbg);
+    width: 94%;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+	color: var(--text1); }
+.trigger-word input::placeholder {
+	color: var(--text3);}
+
+.trigger-word input:focus {;
+	color: var(--text1);
+	font-weight: 500;
+	box-shadow: none !important;
+}
+#triggerWord:-webkit-autofill,
+#triggerWord:-webkit-autofill:hover,
+#triggerWord:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--mainbg) inset !important;
+    -webkit-text-fill-color: var(--text1) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+input:focus, 
+.input-box:focus,
+.prompt-textarea:focus {
+    outline: 2px solid var(--main-color) !important; 
+    outline-offset: 0; 
+    box-shadow: none; 
+}
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--blur);
+	padding: 15px;
+    box-shadow: 0 0 20px var(--shadow);
+    z-index: 1000;
+    width: 100%;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+	transition: opacity 0.3s ease;    }
+.bt{
+    background: var(--btcolor);
+    color: white;
+	display: flex;
+    align-items: center;}
+.bt:hover{ 
+    opacity: 86%;
+    box-shadow: 0px 14px 10px -7px #5353dc5c;}  
+button {
+    padding: 8px 24px;
+    background: var(--button);
+    color: var(--main-color);
+    border: 1px solid #ffffff00;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+	margin-right: 10px;
+	justify-content: center;    }
+.btdel:hover{
+	background: #ff4444d9;
+	border: 1px solid #ff4444;}
+button:hover {
+    background: var(--main-color);
+    color: white;}
+.delete-btn {
+    background-color: #ff4444;
+    color: #fff;
+    border: 1px solid #ff4444;
+	margin-right: 80px;    }
+.btcancer{
+    background: var(--shadow);
+    color: var(--text2); 
+    border: 1px solid var(--line);}
+.btcancer:hover {
+    background: var(--btactive);
+    color: var(--text2); }
+.checkbox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2; /* 确保在最上层 */
+    transform: scale(1.3);
+    display: none;
+    pointer-events: none;    }
+#count {
+    margin: 10px 0;
+    color: var(--text2); 
+    font-weight: bold;
+    font-size: 14px;
+	display: flex;
+    align-items: center;
+	flex-wrap: wrap;      
+    gap: 10px;      }
+.column-select {
+	display: flex;        }
+.column-btn {
+    padding: 4px 12px;
+    border-radius: 0;
+    border: 1px solid var(--line);
+    background: var(--blur);
+    color: var(--text2); 
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+	margin-right: 0;
+    border-left: none;}
+.checkbtn, .checkbtn2, .checkbtn3 {
+	padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: var(--blur);
+    color: var(--text2); 
+    cursor: pointer;
+    font-size: 13px;
+	margin-right: 10px;}
+.checkbtn:hover, .checkbtn2:hover, .checkbtn3:hover{
+	color: var(--text2); 
+    background: var(--mainbg);}
+.column-btn.active {
+    background: var(--mainbg);}
+.column-btn:hover{
+	background: var(--mainbg);
+	color: var(--text2);}
+.prompt-header {
+	display: block;
+	align-items: center;}
+.reset-btn {
+  background: var(--shadow);
+    color: var(--text2); 
+    border: 1px solid var(--line);
+    padding: 4px 8px !important;
+    font-size: 14px !important;
+    margin-right: 0px;}
+.reset-btn:hover {
+    background: var(--btactive);
+    color: var(--text2); 
+    box-shadow: none;}
+.prompt-textarea {
+	height: 100px !important;
+	resize: vertical;
+	font-family: monospace;
+	line-height: 1.5;
+	padding: 10px !important;
+	font-size: 14px;
+	scrollbar-width: thin;
+    	scrollbar-color: #a9a9b152 #ffffff00;
+	margin-bottom: -10px;
+	color: var(--text1);
+	    border-radius: 6px;
+	border: 2px solid #ffffff00;}
+
+.prompt-textarea::-webkit-scrollbar {
+    width: 8px; 
+    height: 8px; }
+.prompt-textarea::-webkit-scrollbar-track {
+    background: #ffffff00;
+    border-radius: 4px;}
+.mprompt-textarea::-webkit-scrollbar-thumb {
+    background: #dddde5;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;}
+.prompt-textarea::-webkit-scrollbar-thumb:hover {
+    background: #a9a9b152;}
+.prompt-textarea::-webkit-scrollbar-corner {
+    background: #00ffd242;}
+/* 操作按钮容器 */
+.settings-actions {
+	display: flex;
+	justify-content: flex-start;
+	gap: 10px;
+	flex-direction: row-reverse;
+	margin-top: 20px;}
+.remind{
+	/*background: #00d9ff42;*/
+	text-decoration: 2px #5963ffc2 underline;}
+@media (max-width: 1200px) {
+  .image-item {
+    width: calc(48% - 10px) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .bg-1 {
+    min-width: unset !important;
+    margin: 0 0 15px;
+  }
+  
+  .image-item {
+    width: 100% !important; 
+    margin: 8px 0;
+  }
+  
+  .topgroup {
+    transform: scale(0.9);
+    margin-top: 10px;
+  }
+  
+  .buttons {
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+  
+  button {
+    margin: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+	width: 100%;
+  }
+  
+  .modal-box, 
+  .settings-modal, 
+  .unify-size-dialog, 
+  .fill-bg-dialog, 
+  .find-replace-dialog {
+    width: 90vw !important;
+    max-width: 90% !important;
+    padding: 15px;
+    top: 10px;
+    right: 10px;
+    left: 0;
+  }
+  
+  .method-options {
+    gap: 15px;
+  }
+  
+  .size-options {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .trigger-word {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+  }
+  
+  .trigger-word input {
+    margin-top: 8px;
+	min-width: 240px;
+        margin-bottom: 15px;
+  }
+  .buttons button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+  .column-select {
+    display: none; 
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 20px;
+    flex-direction: column;
+  }
+  
+  .buttons button {
+    flex: 1;
+    min-width: 45%;
+  }
+  
+  .find-replace-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .input-container {
+    height: 100px;
+  }
+  
+  .image-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .modal-title {
+    font-size: 18px;
+  }
+  
+  .size-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .settings-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .settings-actions .bt,
+  .settings-actions .btcancer {
+    width: 100%;
+  }
+}
+
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .container {
+    padding-top: 5px;
+    padding-bottom: 70px;
+  }
+  
+  .buttons {
+    padding: 8px;
+  }
+  
+  .image-item {
+    min-width: 200px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="topgroup" style="right: 20px;">
+	<img class="bt-icon" src="img/yejian.svg">
+	<img class="gear-icon" src="img/shezhi.svg">
+</div>
+<div class="topgroup" style="left: 20px;">
+	<a href="tools.html" style="height: 40px;"><img class="home-icon" src="img/home.svg"></a>
+</div>
+<div class="container">
+    <h2 class="title">
+	<img class="btico" style="font-size: 32px; margin-right: 8px;" src="img/shujufenxi.svg">
+	<span style="background: var(--btcolor); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+	模型数据集编辑器</span>
+    </h2>
+    <div class="miaoshu" style="color: var(--text2);">V2.0 2025-06-24 徐艺青
+<a href="#" id="featureLink" class="linetxt" style="margin-left: 8px;">功能介绍</a>
+</div>
+<div class="bg-1">
+    <div class="trigger-word">
+        <div class="s-tit">素材上传</div> 
+        <button id="uploadTxtBtn">上传txt文件</button>
+        <button id="uploadBtn" class="bt">+ 上传图片</button> 
+        <span class="miaoshu" style="margin-left: 6px;">支持png、jpg格式批量上传</span>
+    </div>
+    <input type="file" id="txtFileInput" style="display:none;" multiple accept=".txt">
+    <div class="trigger-word">
+        <div class="s-tit">触发词</div> 
+        <input type="text" id="triggerWord" placeholder="请输入触发词，没有可不填">
+    </div>
+</div>
+<div class="bg-1" id="imagesSection">
+<div style="display: flex;align-items: center;justify-content: space-between;"><div id="count">已上传0张图片
+</div>
+<div style="display: flex;">
+	<button class="checkbtn2"><img class="btico" src="img/chicun.svg">统一尺寸</button>
+	<button class="checkbtn3"><img class="btico" src="img/paint.svg">填充背景</button>
+	<button class="checkbtn"><img class="btico" src="img/sousuo.svg">查找/替换</button>
+<div class="column-select">
+        <button class="column-btn" data-cols="1" style="border-radius: 4px 0 0 4px; border-left: 1px solid var(--line);">1列</button>
+        <button class="column-btn" data-cols="2">2列</button>
+        <button class="column-btn active" data-cols="3">3列</button>
+        <button class="column-btn" data-cols="4">4列</button>
+        <button class="column-btn" data-cols="5" style="border-radius: 0px 4px 4px 0;">5列</button>
+    </div>
+	</div>
+</div>
+    <div class="image-container" id="imageContainer"></div>
+</div>
+</div>
+<div class="buttons">
+	<button id="cancelDeleteBtn" style="display: none;" class="btcancer">取消删除</button> 
+    <button id="batchDeleteBtn" class="btdel">批量删除</button>
+    <button id="downloadBtn" class="bt"><svg class="btico" aria-hidden="true"><use xlink:href="#icon-xiazai"></use></svg>打包下载</button>
+</div>
+<input type="file" id="fileInput" style="display:none;" multiple accept="image/png, image/jpeg">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+let isDeleteMode = false;
+let timeoutId;
+let currentTriggerWord = "";
+let currentImageItem = null; // 用于存储当前操作的图片项
+
+// 全局API_KEY存储
+let API_KEY = localStorage.getItem('GEMINI_API_KEY') || 'AIXXxxxxxxxxxxxxxxxxxxxxx-xxxxxXXXXxxx';
+// 初始化深色模式状态
+let darkMode = localStorage.getItem('darkMode') === 'true';
+
+// 应用深色模式
+function applyDarkMode() {
+  if (darkMode) {
+    document.body.classList.add('dark-mode');
+    document.querySelector('.bt-icon').setAttribute('src', 'img/qingtian.svg');
+  } else {
+    document.body.classList.remove('dark-mode');
+    document.querySelector('.bt-icon').setAttribute('src', 'img/yejian.svg');
+  }
+}
+
+// 切换深色模式
+function toggleDarkMode() {
+  darkMode = !darkMode;
+  localStorage.setItem('darkMode', darkMode);
+  applyDarkMode();
+}
+
+// 页面加载时应用深色模式
+window.addEventListener('load', () => {
+  applyDarkMode();
+  
+  // 添加深色模式切换事件
+  document.querySelector('.bt-icon').addEventListener('click', toggleDarkMode);
+});
+// 默认提示语
+const DEFAULT_PROMPT = "You are creating a prompt for Stable Diffusion. First: describe this image. Second: generate a text prompt based on description. Only respond with the prompt, keep it under 120 tokens.";
+// 词汇统计功能
+let wordStatsEnabled = localStorage.getItem('WORD_STATS_ENABLED') !== 'false';
+let selectedWord = null; // 当前选中的词汇
+
+// 创建词汇统计容器
+const statsContainer = document.createElement('div');
+statsContainer.id = 'wordStatsContainer';
+document.getElementById('imagesSection').insertBefore(statsContainer, document.getElementById('imageContainer'));
+
+// 提取两个标点符号之间的词汇
+function extractWords(text) {
+    // 匹配两个标点符号之间的内容（标点包括：,.!?;:，。！？；："'()【】）
+    const wordPattern = /[^,.!?;:，。！？；："'()【】\s]+/g;
+    const words = text.match(wordPattern) || [];
+    
+    return words
+        .filter(word => word.length > 2) // 过滤掉短词
+        .map(word => word.toLowerCase()); // 转换为小写
+}
+
+// 更新词汇统计
+function updateWordStats() {
+    if (!wordStatsEnabled) {
+        statsContainer.style.display = 'none';
+        return;
+    }
+    
+    const allText = Array.from(document.querySelectorAll('.input-box'))
+        .map(input => input.value)
+        .join(' ');
+    
+    const words = extractWords(allText);
+    const wordCount = {};
+    
+    // 统计词频
+    words.forEach(word => {
+        wordCount[word] = (wordCount[word] || 0) + 1;
+    });
+    
+    // 过滤低频词（只显示出现2次以上的词）
+    const filteredWords = Object.entries(wordCount)
+        .filter(([_, count]) => count > 1);
+    
+    // 按词频排序
+    const sortedWords = filteredWords.sort((a, b) => b[1] - a[1]);
+    
+    // 显示所有符合条件的词汇
+    statsContainer.innerHTML = sortedWords.length 
+        ? sortedWords.map(([word, count]) => {
+            const isSelected = selectedWord === word ? 'selected' : '';
+            return `<span class="word-stat-item ${isSelected}" data-word="${word}">${word} <span class="word-stat-count">(${count})</span></span>`;
+          }).join('')
+        : '<div style="color:var(--text3);">没有重复词汇</div>';
+    
+    statsContainer.style.display = 'block';
+}
+// 高亮输入框中的词汇
+function highlightWordsInInputs(word) {    
+    if (!word) return;    
+    // 使用新的正则表达式匹配中英文词汇
+    const regex = new RegExp(`(${escapeRegExp(word)})`, 'g');
+}
+// 转义正则特殊字符
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// 新增全局变量
+let selectedBgColor = '#FFFFFF'; // 默认白色背景
+
+// 填充背景按钮点击事件
+document.querySelector('.checkbtn3').addEventListener('click', function() {
+    showFillBackgroundDialog();
+});
+
+// 显示填充背景弹窗
+function showFillBackgroundDialog() {
+    // 如果已存在弹窗则先移除
+    const existingDialog = document.querySelector('.fill-bg-dialog');
+    if (existingDialog) existingDialog.remove();
+    
+    // 从模板创建弹窗
+    const template = document.getElementById('fillBackgroundTemplate');
+    const dialog = template.content.cloneNode(true);
+    const dialogElement = dialog.querySelector('.fill-bg-dialog');
+    
+    // 颜色预览元素
+    const colorPreview = dialogElement.querySelector('#colorPreview');
+    colorPreview.style.backgroundColor = selectedBgColor;
+    
+    // 自定义颜色输入框
+    const customColorInput = dialogElement.querySelector('#customColorInput');
+    customColorInput.value = selectedBgColor;
+    
+    // 自定义颜色输入事件
+    customColorInput.addEventListener('input', function() {
+        const color = this.value;
+        if (isValidColor(color)) {
+            colorPreview.style.backgroundColor = color;
+            selectedBgColor = color;
+        }
+    });
+    
+    // 颜色选项事件
+    const colorOptions = dialogElement.querySelectorAll('input[name="bgColor"]');
+  colorOptions.forEach(option => {
+    option.addEventListener('change', function() {
+      if (this.value === 'custom') {
+        customColorInput.disabled = false;
+        customColorInput.focus();
+        // 当切换到自定义时，如果有颜色值则显示
+        if (selectedBgColor) {
+          customColorInput.value = selectedBgColor;
+        }
+      } else {
+        // 预设颜色：更新选中颜色并清空输入框
+        selectedBgColor = this.value;
+        colorPreview.style.backgroundColor = selectedBgColor;
+        customColorInput.disabled = true;
+        customColorInput.value = ''; // 修复2：清空输入框
+      }
+    });
+  });
+    // 初始化：默认选择纯白色并触发更新
+  const whiteOption = dialogElement.querySelector('input[value="#FFFFFF"]');
+  if (whiteOption) {
+    whiteOption.checked = true;
+    // 手动触发change事件以更新状态
+    whiteOption.dispatchEvent(new Event('change'));
+  }  
+    // 事件绑定
+    const closeBtn = dialogElement.querySelector('.modal-close');
+    const cancelBtn = dialogElement.querySelector('.btcancer');
+    const applyBtn = dialogElement.querySelector('#applyFillBtn');
+    
+    closeBtn.addEventListener('click', () => dialogElement.remove());
+    cancelBtn.addEventListener('click', () => dialogElement.remove());
+    applyBtn.addEventListener('click', () => applyFillBackground(dialogElement));
+    
+    document.body.appendChild(dialogElement);
+}
+
+// 检查颜色是否有效
+function isValidColor(color) {
+    // 检查十六进制颜色格式
+    return /^#([0-9A-F]{3}){1,2}$/i.test(color);
+}
+
+// 应用填充背景
+function applyFillBackground(dialogElement) {
+    // 获取所有图片项
+    const imageItems = document.querySelectorAll('.image-item');
+    
+    if (imageItems.length === 0) {
+        showAlert('没有可修改的图片', '#ff4444');
+        return;
+    }
+    
+    // 创建进度条
+    const progress = document.createElement('div');
+    progress.classList.add('progress-bar');
+    document.body.appendChild(progress);
+    
+    // 处理所有图片
+    let processed = 0;
+    const total = imageItems.length;
+    
+    imageItems.forEach(item => {
+        const img = item.querySelector('img');
+        const imgWrapper = img.parentElement;
+        
+        // 创建canvas处理图片
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 创建临时图片用于处理
+        const tempImg = new Image();
+        tempImg.crossOrigin = "Anonymous";
+        tempImg.src = img.src;
+        
+        tempImg.onload = function() {
+            canvas.width = this.naturalWidth;
+            canvas.height = this.naturalHeight;
+            
+            // 在canvas填充背景时使用selectedBgColor
+			ctx.fillStyle = selectedBgColor; // 修复1：确保使用选择的颜色
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制原图
+            ctx.drawImage(tempImg, 0, 0);
+            
+            // 更新图片
+            canvas.toBlob(blob => {
+                img.src = URL.createObjectURL(blob);
+                
+                // 更新进度
+                processed++;
+                progress.textContent = `处理中: ${processed}/${total}`;
+                
+                // 完成处理
+                if (processed === total) {
+                    setTimeout(() => {
+                        progress.remove();
+                        dialogElement.remove();
+                        showAlert(`已成功填充 ${total} 张图片背景`, '#00c853');
+                    }, 500);
+                }
+            }, 'image/png');
+        };
+        
+        tempImg.onerror = () => {
+            processed++;
+            if (processed === total) {
+                progress.remove();
+                dialogElement.remove();
+            }
+        };
+    });
+}
+
+// 全局变量存储当前选择的尺寸和方式
+let selectedMethod = 'crop';
+let selectedSize = null;
+
+// 为统一尺寸按钮添加事件监听
+document.querySelector('.checkbtn2').addEventListener('click', function() {
+    showUnifySizeDialog();
+});
+
+// 显示统一尺寸弹窗
+function showUnifySizeDialog() {
+    // 如果已存在弹窗则先移除
+    const existingDialog = document.querySelector('.unify-size-dialog');
+    if (existingDialog) existingDialog.remove();
+    
+    // 从模板创建弹窗
+    const template = document.getElementById('unify-size-template');
+    const dialog = template.content.cloneNode(true);
+    const dialogElement = dialog.querySelector('.unify-size-dialog');
+    
+    // 填充尺寸选项
+    const sizeOptionsContainer = dialogElement.querySelector('#sizeOptionsContainer');
+    populateSizeOptions(sizeOptionsContainer);
+    
+    // 添加事件监听
+    const closeBtn = dialogElement.querySelector('.modal-close');
+    const cancelBtn = dialogElement.querySelector('.btcancer');
+    const applyBtn = dialogElement.querySelector('#applyUnifyBtn');
+    
+    closeBtn.addEventListener('click', () => dialogElement.remove());
+    cancelBtn.addEventListener('click', () => dialogElement.remove());
+    applyBtn.addEventListener('click', () => applyUnifySize(dialogElement));
+    
+    // 方法选择事件
+    const radioOptions = dialogElement.querySelectorAll('input[name="sizeMethod"]');
+    radioOptions.forEach(radio => {
+        radio.addEventListener('change', function() {
+            selectedMethod = this.value;
+            
+            // 更新视觉状态
+            const labels = dialogElement.querySelectorAll('.radio-option');
+            labels.forEach(label => label.classList.remove('active'));
+            this.closest('.radio-option').classList.add('active');
+        });
+    });
+    
+    // 默认选中居中裁剪并激活样式
+    const cropOption = dialogElement.querySelector('input[value="crop"]');
+    if (cropOption) {
+        cropOption.checked = true;
+        cropOption.closest('.radio-option').classList.add('active');
+    }
+    
+    document.body.appendChild(dialogElement);
+}
+
+// populateSizeOptions函数保持不变
+function populateSizeOptions(container) {
+    // 预置尺寸
+    const presetSizes = [
+    	{ text: '1024×1024', width: 1024, height: 1024 },
+        { text: '512×512', width: 512, height: 512 },
+        { text: '768×768', width: 768, height: 768 },
+        { text: '512×768', width: 512, height: 768 },
+        { text: '768×512', width: 768, height: 512 }
+    ];
+    
+    // 从localStorage获取自定义尺寸
+    let customSizes = [];
+    const customSizesStr = localStorage.getItem('CUSTOM_CROP_SIZES');
+    if (customSizesStr) {
+        try {
+            customSizes = JSON.parse(customSizesStr);
+        } catch (e) {
+            console.error('解析自定义尺寸失败', e);
+        }
+    }
+    
+    // 合并所有尺寸
+    const allSizes = [...presetSizes, ...customSizes];
+    
+    // 清空容器
+    container.innerHTML = '';
+    
+    // 添加尺寸选项
+    allSizes.forEach(size => {
+        const option = document.createElement('div');
+        option.className = 'size-option';
+        option.textContent = size.text;
+        option.dataset.width = size.width;
+        option.dataset.height = size.height;
+        
+        option.addEventListener('click', function() {
+            container.querySelectorAll('.size-option').forEach(opt => 
+                opt.classList.remove('active'));
+            this.classList.add('active');
+            selectedSize = {
+                width: parseInt(this.dataset.width),
+                height: parseInt(this.dataset.height)
+            };
+        });
+        
+        container.appendChild(option);
+    });
+    
+    // 默认选中第一个尺寸
+    if (allSizes.length > 0) {
+        container.querySelector('.size-option').classList.add('active');
+        selectedSize = {
+            width: parseInt(allSizes[0].width),
+            height: parseInt(allSizes[0].height)
+        };
+    }
+}
+
+// 应用统一尺寸修改
+function applyUnifySize(dialogElement) {
+    if (!selectedSize) {
+        showAlert('请选择尺寸', '#ff4444');
+        return;
+    }
+    
+    // 获取所有图片项
+    const imageItems = document.querySelectorAll('.image-item');
+    
+    if (imageItems.length === 0) {
+        showAlert('没有可修改的图片', '#ff4444');
+        return;
+    }
+    
+    // 创建进度条
+    const progress = document.createElement('div');
+    progress.classList.add('progress-bar');
+    document.body.appendChild(progress);
+    
+    // 处理所有图片
+    let processed = 0;
+    const total = imageItems.length;
+    
+    imageItems.forEach(item => {
+        const img = item.querySelector('img');
+        const imgWrapper = img.parentElement;
+        
+        // 创建canvas处理图片
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = selectedSize.width;
+        canvas.height = selectedSize.height;
+        
+        // 创建临时图片用于处理
+        const tempImg = new Image();
+        tempImg.src = img.src;
+        
+        tempImg.onload = function() {
+            // 根据选择的方法处理图片
+            if (selectedMethod === 'crop') {
+                // 居中裁剪
+                const sourceRatio = tempImg.width / tempImg.height;
+                const targetRatio = selectedSize.width / selectedSize.height;
+                
+                let sourceX = 0;
+                let sourceY = 0;
+                let sourceWidth = tempImg.width;
+                let sourceHeight = tempImg.height;
+                
+                if (sourceRatio > targetRatio) {
+                    // 源图更宽，裁剪宽度
+                    sourceWidth = tempImg.height * targetRatio;
+                    sourceX = (tempImg.width - sourceWidth) / 2;
+                } else {
+                    // 源图更高，裁剪高度
+                    sourceHeight = tempImg.width / targetRatio;
+                    sourceY = (tempImg.height - sourceHeight) / 2;
+                }
+                
+                ctx.drawImage(
+                    tempImg,
+                    sourceX, sourceY,
+                    sourceWidth, sourceHeight,
+                    0, 0,
+                    selectedSize.width, selectedSize.height
+                );
+            } else {
+                // 拉伸变形
+                ctx.drawImage(
+                    tempImg,
+                    0, 0,
+                    selectedSize.width, selectedSize.height
+                );
+            }
+            
+            // 更新图片
+            canvas.toBlob(blob => {
+                img.src = URL.createObjectURL(blob);
+                img.dataset.cropped = true;
+                
+                // 更新尺寸显示
+                const sizeDiv = imgWrapper.querySelector('.sizepx');
+                if (sizeDiv) {
+                    sizeDiv.textContent = `${selectedSize.width}×${selectedSize.height}`;
+                } else {
+                    const newSizeDiv = document.createElement('div');
+                    newSizeDiv.className = 'sizepx';
+                    newSizeDiv.textContent = `${selectedSize.width}×${selectedSize.height}`;
+                    imgWrapper.appendChild(newSizeDiv);
+                }
+                
+                // 更新进度
+                processed++;
+                progress.textContent = `处理中: ${processed}/${total}`;
+                
+                // 完成处理
+                if (processed === total) {
+                    setTimeout(() => {
+                        progress.remove();
+                        dialogElement.remove();
+                        showAlert(`已成功修改 ${total} 张图片尺寸`, '#00c853');
+                    }, 500);
+                }
+            }, 'image/jpeg', 0.9);
+        };
+    });
+}
+// 显示查找替换弹窗
+function showFindReplaceDialog(selectedWord) {
+  // 如果已存在弹窗则先移除
+  const existingDialog = document.getElementById('findReplaceDialog');
+  if (existingDialog) existingDialog.remove();
+  
+  // 使用模板创建弹窗
+  const template = document.getElementById('findReplaceTemplate');
+  const dialog = template.content.cloneNode(true);
+  const dialogElement = dialog.querySelector('.find-replace-dialog');
+  dialogElement.id = 'findReplaceDialog';
+  
+  // 设置查找输入框的值
+  const findInput = dialogElement.querySelector('#findInput');
+  findInput.value = selectedWord;
+  
+  document.body.appendChild(dialogElement);
+  
+  // 事件绑定
+  const replaceInput = dialogElement.querySelector('#replaceInput');
+  const replaceNextBtn = dialogElement.querySelector('#replaceNextBtn');
+  const replaceAllBtn = dialogElement.querySelector('#replaceAllBtn');
+  const cancelReplaceBtn = dialogElement.querySelector('#cancelReplaceBtn');
+  const closeBtn = dialogElement.querySelector('#findReplaceClose'); // 新增关闭按钮
+  
+  // 当前查找位置
+  let currentInputIndex = 0;
+  let currentMatchIndex = -1;
+  
+  // 替换下一个
+  replaceNextBtn.addEventListener('click', function() {
+        const findText = findInput.value;
+        if (!findText) {
+            showAlert('查找内容不能为空', '#ff4444');
+            return;
+        }
+        
+        const inputs = Array.from(document.querySelectorAll('.input-box'));
+        if (inputs.length === 0) return;
+        
+        // 查找下一个匹配项
+        let found = false;
+        for (let i = currentInputIndex; i < inputs.length; i++) {
+            const input = inputs[i];
+            const content = input.value;
+            const regex = new RegExp(escapeRegExp(findText), 'g');
+            
+            let match;
+            let startIndex = 0;
+            
+            // 如果在同一个输入框，从上个匹配位置开始
+            if (i === currentInputIndex) {
+                startIndex = currentMatchIndex + 1;
+            }
+            
+            while ((match = regex.exec(content)) !== null) {
+                if (match.index >= startIndex) {
+                    // 选中匹配文本
+                    input.focus();
+                    input.setSelectionRange(match.index, match.index + findText.length);
+                    
+                    // 替换当前匹配
+                    if (replaceInput.value) {
+                        const newContent = content.substring(0, match.index) + 
+                                         replaceInput.value + 
+                                         content.substring(match.index + findText.length);
+                        input.value = newContent;
+                        
+                        // 更新位置
+                        currentMatchIndex = match.index + replaceInput.value.length - 1;
+                    } else {
+                        currentMatchIndex = match.index;
+                    }
+                    
+                    currentInputIndex = i;
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (found) break;
+            
+            // 重置当前输入框的匹配位置
+            currentMatchIndex = -1;
+        }
+        
+        if (!found) {
+            // 循环结束未找到，重置位置
+            currentInputIndex = 0;
+            currentMatchIndex = -1;
+            showAlert('没有更多匹配项', '#ff4444');
+        }
+        updateWordStats();
+    });
+    
+    // 替换全部
+    replaceAllBtn.addEventListener('click', function() {
+        const findText = findInput.value;
+        if (!findText) {
+            showAlert('查找内容不能为空', '#ff4444');
+            return;
+        }
+        
+        const inputs = document.querySelectorAll('.input-box');
+        let replaceCount = 0;
+        
+        inputs.forEach(input => {
+            const content = input.value;
+            const regex = new RegExp(escapeRegExp(findText), 'g');
+            
+            if (regex.test(content)) {
+                input.value = content.replace(regex, replaceInput.value || '');
+                replaceCount++;
+            }
+        });
+        
+        showAlert(`已替换 ${replaceCount} 个输入框中的内容`, '#00c853');
+        updateWordStats();
+    });
+    
+    // 取消和关闭按钮事件
+  const closeDialog = function() {
+    dialogElement.remove();
+  };
+  
+  cancelReplaceBtn.addEventListener('click', closeDialog);
+  closeBtn.addEventListener('click', closeDialog); // 绑定关闭按钮事件
+}
+// 修改词汇统计项的点击事件处理
+statsContainer.addEventListener('click', function(e) {
+    const wordItem = e.target.closest('.word-stat-item');
+    if (wordItem) {
+        const word = wordItem.dataset.word;
+        showFindReplaceDialog(word); // 显示查找替换弹窗
+    }
+});
+
+// 修复设置弹窗打开问题 - 保留模板标签
+document.querySelector('.gear-icon').addEventListener('click', function() {
+  const template = document.getElementById('settingsTemplate');
+  const modal = template.content.cloneNode(true);
+  const settingsModal = modal.querySelector('.settings-modal');
+  
+  // 初始化值
+	settingsModal.querySelector('#apiKeyInput').value = localStorage.getItem('GEMINI_API_KEY') || '';
+	settingsModal.querySelector('#promptTextarea').value = localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT;
+  // 初始化值 - 新增打包形式
+  const packageFormat = localStorage.getItem('PACKAGE_FORMAT') || 'both';
+  settingsModal.querySelector(`input[name="packageFormat"][value="${packageFormat}"]`).checked = true;
+  
+  // 初始化词汇统计开关状态
+  const statsToggle = settingsModal.querySelector('#showWordStatsToggle');
+  statsToggle.checked = wordStatsEnabled;
+  // 初始化自定义尺寸输入框
+  const customSizesInput = settingsModal.querySelector('#customSizesInput');
+  const customSizesStr = localStorage.getItem('CUSTOM_CROP_SIZES');
+  if (customSizesStr) {
+    try {
+      const customSizes = JSON.parse(customSizesStr);
+      // 将尺寸数组转换为用户友好的字符串格式
+      const sizeStrings = customSizes.map(size => size.text);
+      customSizesInput.value = sizeStrings.join(', ');
+    } catch (e) {
+      console.error('解析自定义尺寸失败', e);
+    }
+  }
+  // 事件绑定
+  settingsModal.querySelector('#settingsClose').addEventListener('click', () => settingsModal.remove());
+  
+  settingsModal.querySelector('#cancelBtn').addEventListener('click', () => settingsModal.remove());
+  
+  settingsModal.querySelector('#saveBtn').addEventListener('click', () => {
+    const apiKey = settingsModal.querySelector('#apiKeyInput').value.trim();
+    const prompt = settingsModal.querySelector('#promptTextarea').value.trim();
+    const showStats = settingsModal.querySelector('#showWordStatsToggle').checked;
+    // 获取打包形式
+    const packageFormat = settingsModal.querySelector('input[name="packageFormat"]:checked').value;
+    localStorage.setItem('PACKAGE_FORMAT', packageFormat);
+    
+    // 新增：保存自定义尺寸
+        const customSizesInput = settingsModal.querySelector('#customSizesInput').value.trim();
+        if (customSizesInput) {
+            const customSizes = parseCustomSizes(customSizesInput);
+            localStorage.setItem('CUSTOM_CROP_SIZES', JSON.stringify(customSizes));
+        } else {
+            localStorage.removeItem('CUSTOM_CROP_SIZES');
+        }
+    
+    localStorage.setItem('GEMINI_API_KEY', apiKey);
+    localStorage.setItem('CUSTOM_PROMPT', prompt);
+    localStorage.setItem('WORD_STATS_ENABLED', showStats);
+    
+    wordStatsEnabled = showStats;
+    updateWordStats(); // 更新词汇统计
+    
+    settingsModal.remove();
+    showAlert('配置已保存', '#00c853');
+  });
+
+  settingsModal.querySelector('.reset-btn').addEventListener('click', () => {
+    settingsModal.querySelector('#promptTextarea').value = DEFAULT_PROMPT;
+    localStorage.removeItem('CUSTOM_PROMPT');
+    showAlert('提问语已重置', '#00c853');
+  });
+
+  document.body.appendChild(modal);
+});
+// 解析自定义尺寸字符串
+function parseCustomSizes(input) {
+    const sizes = input.split(',');
+    const result = [];
+    
+    sizes.forEach(size => {
+        const trimmed = size.trim();
+        if (!trimmed) return;
+        
+        // 支持多种分隔符：x, X, ×, *
+        const match = trimmed.match(/^(\d+)\s*[xX×*]\s*(\d+)$/);
+        if (match) {
+            const width = parseInt(match[1]);
+            const height = parseInt(match[2]);
+            
+            if (width > 0 && height > 0) {
+                result.push({
+                    text: `${width}×${height}`,
+                    width: width,
+                    height: height
+                });
+            }
+        }
+    });
+    
+    return result;
+}
+// 翻译功能实现
+async function translateText(text) {
+    try {
+        const response = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-CN|en`
+        );
+
+        if (!response.ok) throw new Error("网络请求失败");
+        const data = await response.json();
+        
+        if (data.responseStatus !== 200 || !data.responseData) {
+            throw new Error(data.responseDetails || "翻译服务暂不可用");
+        }
+
+        return data.responseData.translatedText;
+    } catch (error) {
+        showAlert(`翻译失败：${error.message}`);
+        throw error;
+    }
+}
+
+// 初始化默认3列（仅在存在图片时设置）
+function initColumns() {
+    const defaultCols = 3;
+    const defaultBtn = document.querySelector(`.column-btn[data-cols="${defaultCols}"]`);
+    if (defaultBtn) defaultBtn.classList.add('active');
+}
+
+// 在页面加载时调用初始化
+window.addEventListener('load', () => {
+    initColumns(); // 初始化列数按钮
+    updateCounter();
+    // 强制重绘避免过渡动画在初始化时生效
+    document.querySelector('.buttons').style.transition = 'none';
+    setTimeout(() => {
+        document.querySelector('.buttons').style.transition = '';
+    }, 10);
+    // 启用关闭确认
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    updateWordStats(); 
+});
+
+// 关闭确认处理函数
+function handleBeforeUnload(event) {
+    event.preventDefault();
+    event.returnValue = '您可能有未保存的更改，确定要离开吗？';
+    return event.returnValue;
+}
+// 防抖函数
+function debounce(func, delay) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(func, delay);
+}
+// 功能介绍弹窗
+document.getElementById('featureLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    const modal = document.getElementById('featureModal');
+    modal.style.display = 'flex';
+});
+
+// 关闭处理
+document.addEventListener('DOMContentLoaded', function() {
+    // 关闭按钮
+    document.querySelector('#featureModal .modal-close').addEventListener('click', function() {
+        document.getElementById('featureModal').style.display = 'none';
+    });
+    
+    // 遮罩层关闭
+    document.getElementById('featureModal').addEventListener('click', function(e) {
+        if(e.target === this) { // 确保点击的是遮罩层本身
+            this.style.display = 'none';
+        }
+    });
+// 添加对"查找/替换"按钮的绑定
+    document.querySelector('.checkbtn').addEventListener('click', function() {
+        showFindReplaceDialog(''); // 传递空字符串打开空白弹窗
+    });
+});
+
+// 提示系统
+function showAlert(messages, color = '#ff4444') {
+    // 移除所有已存在的提示框
+    const existingAlerts = document.querySelectorAll('.alert');
+    existingAlerts.forEach(alert => alert.remove());
+    // 创建新提示框
+    const alertEl = document.createElement('div');
+    alertEl.className = 'alert';
+    alertEl.style.cssText = `
+        white-space: pre-wrap;
+    `;
+    alertEl.textContent = Array.isArray(messages) ? messages.join('\n') : messages;
+    document.body.appendChild(alertEl);
+    setTimeout(() => alertEl.remove(), 2800);
+}
+
+// 更新计数器
+function updateCounter() {
+    const count = document.querySelectorAll('.image-item').length;
+    const imagesSection = document.getElementById('imagesSection');
+    const buttons = document.querySelector('.buttons');
+
+    // 控制图片区域
+    imagesSection.style.display = count ? 'block' : 'none';
+    
+    // 控制按钮显示（保留原有flex布局）
+    buttons.style.display = count ? 'flex' : 'none';
+    
+    // 添加过渡效果控制
+    count ? buttons.style.opacity = 1 : buttons.style.opacity = 0;
+    
+    document.getElementById('count').textContent = `已上传 ${count} 张图片`;
+}
+// 列数选择功能（使用事件委托）
+document.body.addEventListener('click', function(e) {
+    if (e.target.classList.contains('column-btn')) {
+        // 移除所有激活状态
+        document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('active'));
+        // 设置当前激活
+        e.target.classList.add('active');
+        // 获取列数
+        const cols = parseInt(e.target.dataset.cols);
+        // 计算宽度值
+        const widths = {
+            1: 'calc(100% - 0px)',
+            2: 'calc(49% - 10px)',
+            3: 'calc(32% - 10px)',
+            4: 'calc(24% - 10px)',
+            5: 'calc(19% - 10px)'
+        };
+        // 应用新宽度
+        document.querySelectorAll('.image-item').forEach(item => {
+            item.style.width = widths[cols];
+        });
+    }
+});
+// 新增裁剪相关全局变量
+let cropData = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    scale: 1,
+    naturalWidth: 0,
+    naturalHeight: 0
+};
+
+let currentCropImage = null;
+let currentAspectRatio = null;
+
+// 创建裁剪框
+function createCropBox() {
+    const cropBox = document.createElement('div');
+    cropBox.className = 'crop-box';
+    
+    // 添加九宫格辅助线容器
+    const guides = document.createElement('div');
+    guides.className = 'crop-guides';
+    
+    // 创建辅助线
+    for(let i = 1; i <= 2; i++) {
+        const hLine = document.createElement('div');
+        hLine.className = 'crop-guide-line horizontal';
+        hLine.style.top = `${(i/3)*100}%`;  // 精确计算百分比
+        
+        const vLine = document.createElement('div');
+        vLine.className = 'crop-guide-line vertical';
+        vLine.style.left = `${(i/3)*100}%`;
+        
+        guides.appendChild(hLine);
+        guides.appendChild(vLine);
+    }
+    
+    // 创建拖动手柄
+    const handle = document.createElement('div');
+    handle.className = 'crop-handle';
+    
+    // 事件处理改进
+    handle.addEventListener('mousedown', (e) => {
+        e.stopPropagation(); // 阻止事件冒泡
+        startResize(e);
+    });
+    
+    // 拖动事件（整个框体）
+    cropBox.addEventListener('mousedown', (e) => {
+        if (e.target === handle) return;
+        e.stopPropagation();
+        startDrag(e);
+    });
+
+    cropBox.appendChild(guides);
+    cropBox.appendChild(handle);
+    return cropBox;
+}
+// 新增边界检查辅助函数
+function checkBoundary(newWidth, newHeight) {
+    return (
+        newWidth >= 50 &&
+        newHeight >= 50 &&
+        (cropData.x + newWidth) <= cropData.naturalWidth &&
+        (cropData.y + newHeight) <= cropData.naturalHeight
+    );
+}
+// 添加调整大小函数
+function startResize(e) {
+    isResizing = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initialWidth = cropData.width; // 新增初始尺寸记录
+    initialHeight = cropData.height;
+    document.addEventListener('mousemove', doResize);
+    document.addEventListener('mouseup', stopResize);
+}
+
+function stopResize() {
+    isResizing = false;
+    document.removeEventListener('mousemove', doResize);
+    document.removeEventListener('mouseup', stopResize);
+}
+// 创建裁剪控制栏时添加自定义尺寸
+function createCropControls() {
+    const controls = document.createElement('div');
+    controls.className = 'crop-controls';
+    
+    // 尺寸预设按钮
+    const sizes = ['1024×1024', '512×512', '768×768', '512×768', '768×512'];
+    sizes.forEach(size => {
+    const btn = document.createElement('button');
+    btn.className = 'crop-size-btn';
+    btn.textContent = size;
+    
+    // 添加点击事件处理 - 修复点
+    btn.onclick = function() {
+        // 移除所有按钮的active状态
+        controls.querySelectorAll('.crop-size-btn').forEach(b => 
+            b.classList.remove('active'));
+        // 为当前按钮添加active状态
+        this.classList.add('active');
+        setCropSize(size);
+    };
+    
+    controls.appendChild(btn);
+});
+
+    // 正确的自定义尺寸加载方式
+    const customSizesStr = localStorage.getItem('CUSTOM_CROP_SIZES');
+    if (customSizesStr) {
+        try {
+            const customSizes = JSON.parse(customSizesStr);
+            customSizes.forEach(customSize => {
+                const btn = document.createElement('button');
+                btn.className = 'crop-size-btn custom-size-btn';
+                btn.textContent = customSize.text;
+                
+                // 添加点击事件处理 - 修复点
+                btn.onclick = function() {
+                    // 移除所有按钮的active状态
+                    controls.querySelectorAll('.crop-size-btn').forEach(b => 
+                        b.classList.remove('active'));
+                    // 为当前按钮添加active状态
+                    this.classList.add('active');
+                    setCropSize(customSize.text);
+                };
+                
+                controls.appendChild(btn);
+            });
+        } catch (e) {
+            console.error('解析自定义尺寸失败', e);
+        }
+    }  
+    // 确认按钮
+    const confirmBtn = document.createElement('button');
+    confirmBtn.textContent = '确认裁剪';
+    confirmBtn.className = 'bt';
+    confirmBtn.onclick = applyCrop;
+    controls.appendChild(confirmBtn);
+    
+    return controls;
+}
+// 新增变量存储目标尺寸
+let targetSize = { width: 0, height: 0 };
+// 设置裁剪尺寸
+function setCropSize(size) {
+    // 尝试解析尺寸字符串
+    const match = size.match(/(\d+)\s*[xX×*]\s*(\d+)/);
+    if (!match) return;
+    
+    const width = parseInt(match[1]);
+    const height = parseInt(match[2]);
+    
+    if (!width || !height) return;
+    
+    targetSize = { width, height };
+    currentAspectRatio = width / height;
+    
+    // 添加缺失的变量定义
+    const maxWidth = cropData.naturalWidth;
+    const maxHeight = cropData.naturalHeight;
+    
+    let newWidth = maxWidth;
+    let newHeight = maxHeight;
+    
+    if (maxWidth/maxHeight > currentAspectRatio) {
+        newWidth = maxHeight * currentAspectRatio;
+    } else {
+        newHeight = maxWidth / currentAspectRatio;
+    }
+    
+    cropData.width = newWidth;
+    cropData.height = newHeight;
+    cropData.x = 0;
+    cropData.y = 0;
+    
+    updateCropBoxPosition();
+}
+
+// 更新裁剪框位置
+function updateCropBoxPosition() {
+    const cropBox = document.querySelector('.crop-box');
+    if (!cropBox) return;
+    
+    // 更新裁剪框位置
+    cropBox.style.left = `${cropData.x * cropData.scale}px`;
+    cropBox.style.top = `${cropData.y * cropData.scale}px`;
+    cropBox.style.width = `${cropData.width * cropData.scale}px`;
+    cropBox.style.height = `${cropData.height * cropData.scale}px`;
+    
+    // 更新辅助线位置
+    const guides = cropBox.querySelector('.crop-guides');
+    if (guides) {
+        guides.style.width = '100%';
+        guides.style.height = '100%';
+    }
+}
+
+// 拖动处理函数
+let isDragging = false;
+let startX, startY;
+
+function startDrag(e) {
+    isDragging = true;
+    startX = e.clientX - cropData.x * cropData.scale;
+    startY = e.clientY - cropData.y * cropData.scale;
+    document.addEventListener('mousemove', doDrag);
+    document.addEventListener('mouseup', stopDrag);
+}
+
+function doDrag(e) {
+    if (!isDragging) return;
+    const rect = currentCropImage.getBoundingClientRect();
+    
+    // 计算相对图片容器的坐标
+    const x = (e.clientX - startX) / cropData.scale;
+    const y = (e.clientY - startY) / cropData.scale;
+    
+    // 应用新位置（保持边界限制）
+    cropData.x = Math.max(0, Math.min(x, cropData.naturalWidth - cropData.width));
+    cropData.y = Math.max(0, Math.min(y, cropData.naturalHeight - cropData.height));
+    
+    updateCropBoxPosition();
+}
+
+function stopDrag() {
+    isDragging = false;
+    document.removeEventListener('mousemove', doDrag);
+    document.removeEventListener('mouseup', stopDrag);
+}
+
+// 调整大小处理
+let isResizing = false;
+
+function doResize(e) {
+    if (!isResizing) return;
+    
+    const deltaX = (e.clientX - startX) / cropData.scale;
+    const deltaY = (e.clientY - startY) / cropData.scale;
+    
+    if(currentAspectRatio) {
+        // 按比例计算新尺寸
+        const newWidth = Math.max(50, cropData.width + deltaX);
+        const newHeight = newWidth / currentAspectRatio;
+        
+        // 检查是否超出边界
+        if (cropData.x + newWidth > cropData.naturalWidth) return;
+        if (cropData.y + newHeight > cropData.naturalHeight) return;
+        
+        cropData.width = newWidth;
+        cropData.height = newHeight;
+    } else {
+        // 自由模式（保留原有逻辑）
+        cropData.width = Math.max(50, cropData.width + deltaX);
+        cropData.height = Math.max(50, cropData.height + deltaY);
+    }
+    
+    // 更新手柄位置
+    startX = e.clientX;
+    startY = e.clientY;
+    
+    updateCropBoxPosition();
+}
+   
+
+// 应用裁剪
+function applyCrop() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // 使用目标尺寸或实际裁剪尺寸
+    const outputWidth = targetSize.width || Math.round(cropData.width);
+    const outputHeight = targetSize.height || Math.round(cropData.height);
+    
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
+    
+    ctx.drawImage(
+        currentCropImage,
+        Math.round(cropData.x), Math.round(cropData.y),
+        Math.round(cropData.width), Math.round(cropData.height),
+        0, 0,
+        outputWidth, outputHeight  // 拉伸到目标尺寸
+    );
+    
+    // 重置目标尺寸
+    targetSize = { width: 0, height: 0 };
+    currentAspectRatio = null;
+    
+    canvas.toBlob(blob => {
+        // 更新原图
+        const img = currentImageItem.querySelector('img');
+        const imgWrapper = img.parentElement;
+        
+        // 移除所有旧的尺寸显示元素
+        const oldSizes = imgWrapper.querySelectorAll('.sizepx');
+        oldSizes.forEach(size => size.remove());
+        
+        // 创建新的尺寸显示
+        const sizeDiv = document.createElement('div');
+        sizeDiv.className = 'sizepx';
+        sizeDiv.textContent = `${outputWidth}×${outputHeight}`;
+        imgWrapper.appendChild(sizeDiv);
+
+        // 先添加缩小动画
+        const cropContainer = document.querySelector('.crop-container');
+        if (cropContainer) {
+            cropContainer.style.animation = 'scaleOut 0.3s ease-out forwards';
+            
+            // 动画结束后更新图片并关闭弹窗
+            setTimeout(() => {
+                // 更新图片源
+                img.src = URL.createObjectURL(blob);
+                img.dataset.cropped = true; // 标记已裁剪
+                
+                // 移除遮罩层
+                const overlay = document.querySelector('.image-overlay');
+                if (overlay) {
+                    overlay.remove();
+                }
+            }, 300); // 动画持续时间
+        } else {
+            // 如果没有裁剪容器，直接更新图片
+            img.src = URL.createObjectURL(blob);
+            img.dataset.cropped = true;
+            
+            const overlay = document.querySelector('.image-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+    }, 'image/jpeg', 0.9);
+}
+
+// 修改后的图片点击处理函数
+function handleImageClick(e) {
+    if (isDeleteMode) return;
+    
+    const img = this.querySelector('img');
+    currentImageItem = this.closest('.image-item');
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'image-overlay';
+
+    // 覆盖层点击关闭逻辑
+    overlay.addEventListener("click", (e) => {
+        // 只在点击遮罩层本体时触发
+    if (e.target === overlay) {
+        const cropContainer = overlay.querySelector('.crop-container');
+        if (!cropContainer) return;
+
+        // 获取容器位置
+        const rect = cropContainer.getBoundingClientRect();
+        const margin = 30; // 保护区域边距
+        
+        // 计算保护区域边界
+        const protectedArea = {
+            left: rect.left - margin,
+            top: rect.top - margin,
+            right: rect.right + margin,
+            bottom: rect.bottom + margin,
+            width: rect.width + margin*2,
+            height: rect.height + margin*2
+        };
+
+        // 创建可视化调试区域（正式版可移除）
+        const debugArea = document.createElement('div');
+        debugArea.className = 'crop-protected-area';
+        debugArea.style.cssText = `
+            left: ${protectedArea.left}px;
+            top: ${protectedArea.top}px;
+            width: ${protectedArea.width}px;
+            height: ${protectedArea.height}px;
+        `;
+        overlay.appendChild(debugArea);
+
+        // 检测点击是否在保护区内
+        const isProtected = (
+            e.clientX >= protectedArea.left &&
+            e.clientX <= protectedArea.right &&
+            e.clientY >= protectedArea.top &&
+            e.clientY <= protectedArea.bottom
+        );
+
+        // 仅在非保护区关闭
+        if (!isProtected) {
+            document.removeEventListener("mousemove", doDrag);
+            document.removeEventListener("mouseup", stopDrag);
+            document.removeEventListener("mousemove", doResize);
+            overlay.remove();
+        }
+        
+        // 移除调试元素
+        debugArea.remove();
+    }
+});
+
+    const container = document.createElement('div');
+    container.className = 'crop-container';
+    
+    const imgClone = new Image();
+    imgClone.src = img.src;
+    
+    // 初始化裁剪框
+    imgClone.onload = function() {
+        // 自动调整图片显示尺寸
+        const viewportWidth = window.innerWidth * 0.9;
+        const viewportHeight = window.innerHeight * 0.9;
+        const scale = Math.min(
+            viewportWidth / this.naturalWidth,
+            viewportHeight / this.naturalHeight,
+            1
+        );
+        
+        imgClone.style.width = `${this.naturalWidth * scale}px`;
+        imgClone.style.height = `${this.naturalHeight * scale}px`;
+
+        cropData = {
+    x: 0,
+    y: 0,
+    width: imgClone.naturalWidth,
+    height: imgClone.naturalHeight,
+    scale: scale,
+    naturalWidth: imgClone.naturalWidth,
+    naturalHeight: imgClone.naturalHeight
+};
+        
+        // 创建裁剪框
+        const cropBox = createCropBox();
+        container.appendChild(cropBox);
+        updateCropBoxPosition();
+        
+        // 创建控制栏
+        const controls = createCropControls();
+        overlay.appendChild(controls);
+    };
+
+    container.appendChild(imgClone);
+    overlay.appendChild(container);
+    
+    // 创建关闭按钮
+    const closeBtn = document.createElement('div');
+    closeBtn.textContent = '×';
+    closeBtn.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        color: white;
+        font-size: 32px;
+        cursor: pointer;
+        z-index: 2001;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    `;
+    closeBtn.onclick = () => {
+    document.removeEventListener("mousemove", doDrag);
+    document.removeEventListener("mouseup", stopDrag);
+    document.removeEventListener("mousemove", doResize);
+    overlay.remove();
+};
+
+    overlay.appendChild(closeBtn);
+    document.body.appendChild(overlay);
+    currentCropImage = imgClone;
+} 
+// 独立定义的addImage函数
+function addImage(src, baseName) {
+    const container = document.createElement('div');
+    container.className = 'image-item';
+    container.dataset.filename = baseName;
+
+    const imgWrapper = document.createElement('div');
+    imgWrapper.className = 'image-wrapper';
+    
+    const img = document.createElement('img');
+    img.src = src;
+
+    img.onload = function() {
+        // 确保只创建一个尺寸元素
+    const oldSizes = imgWrapper.querySelectorAll('.sizepx');
+    oldSizes.forEach(size => size.remove());
+    
+    const sizeDiv = document.createElement('div');
+    sizeDiv.className = 'sizepx';
+    sizeDiv.textContent = `${this.naturalWidth}×${this.naturalHeight}`;
+    imgWrapper.appendChild(sizeDiv);
+        
+input.addEventListener('input', () => debounce(updateWordStats, 300));
+
+// 新增AI按钮代码
+    const aiBtn = document.createElement('button');
+    aiBtn.className = 'ai-btn';
+	aiBtn.textContent = 'AI';
+	aiBtn.title = 'Alt/⌥+Enter'; // 新增提示
+    aiBtn.onclick = async () => {
+        aiBtn.disabled = true;
+        aiBtn.textContent = '分析中...';
+        
+        try {
+            const imgBlob = await fetch(img.src).then(r => r.blob());
+            const prompt = await analyzeImage(imgBlob);
+            input.value = prompt;
+        } catch (error) {
+            showAlert(`AI分析失败: ${error.message}`, '#ff4444');
+        } finally {
+            aiBtn.disabled = false;
+            aiBtn.textContent = 'AI';
+        }
+    };
+
+    inputContainer.appendChild(aiBtn); // 在翻译按钮前添加
+    inputContainer.appendChild(translateBtn);
+
+    };
+    
+    imgWrapper.appendChild(img);
+    imgWrapper.addEventListener('click', handleImageClick);
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'checkbox';
+
+    // 输入容器部分（修正点）
+    const inputContainer = document.createElement('div');
+    inputContainer.className = 'input-container';
+
+    const input = document.createElement('textarea'); // 唯一的input定义
+    input.className = 'input-box';
+    input.placeholder = '请输入描述…';
+    input.value = currentTriggerWord ? `${currentTriggerWord}, ` : '';
+
+input.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault(); // 阻止默认的换行行为
+    }
+});
+// 新增键盘事件监听（在文件末尾的script标签内添加）
+document.addEventListener('keydown', function(e) {
+    // 检查组合键：Windows/Linux用Ctrl，Mac用Command
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        // 检查焦点是否在输入框内
+        const activeInput = document.activeElement.closest('.input-box');
+        if (activeInput) {
+            // 找到最近的翻译按钮并触发点击
+            const translateBtn = activeInput.parentElement.querySelector('.translate-btn');
+            if (translateBtn) {
+                translateBtn.click();
+                e.preventDefault(); // 阻止默认回车换行行为
+            }
+        }
+    }
+});
+// AI反推快捷键：Alt+回车 (Windows) 或 Option+回车 (Mac)
+document.addEventListener('keydown', function(e) {
+    if (e.altKey && e.key === 'Enter') { 
+        const activeInput = document.activeElement.closest('.input-box');
+        if (activeInput) {
+            const aiBtn = activeInput.parentElement.querySelector('.ai-btn');
+            if (aiBtn && !aiBtn.disabled) {
+                aiBtn.click();
+                e.preventDefault();
+            }
+        }
+    }
+});
+    // 翻译按钮
+    const translateBtn = document.createElement('button');
+    translateBtn.className = 'translate-btn';
+	translateBtn.title = 'Ctrl/⌘+Enter';
+    translateBtn.textContent = '译';
+    translateBtn.onclick = async () => {
+	event.preventDefault();
+        const originalText = input.value.trim();
+        if (!originalText) {
+            showAlert('请输入要翻译的内容', '#ff9500');
+            return;
+        }
+        
+        translateBtn.disabled = true;
+        translateBtn.textContent = '翻译中...';
+        
+        try {
+            const translated = await translateText(originalText);
+            input.value = translated;
+        } finally {
+            translateBtn.disabled = false;
+            translateBtn.textContent = '译';
+        }
+    };
+
+    inputContainer.appendChild(input);
+    inputContainer.appendChild(translateBtn);
+    
+    container.append(checkbox, imgWrapper, inputContainer);
+    document.getElementById('imageContainer').appendChild(container);
+    updateCounter();
+}
+
+// 触发词处理
+document.getElementById('triggerWord').addEventListener('input', function() {
+    debounce(() => {
+        const newTriggerWord = this.value.trim();
+        const previousTrigger = currentTriggerWord;
+        currentTriggerWord = newTriggerWord;
+
+        document.querySelectorAll('.input-box').forEach(input => {
+            let content = input.value;
+            if (previousTrigger && content.startsWith(`${previousTrigger}, `)) {
+                content = content.replace(`${previousTrigger}, `, '');
+            }
+            if (newTriggerWord && !content.startsWith(`${newTriggerWord}, `)) {
+                content = `${newTriggerWord}, ${content}`;
+            }
+            input.value = content;
+        });
+        updateWordStats();
+    }, 500);
+});
+
+// 图片上传处理
+function handleFiles(event) {
+    const files = event.target.files;
+    if (!files.length) return;
+
+    const existingFiles = new Set(
+        Array.from(document.querySelectorAll('.image-item')).map(item => item.dataset.filename)
+    );
+
+    const dupList = [];
+    const validFiles = [];
+
+    Array.from(files).forEach(file => {
+        const baseName = file.name.replace(/(.*?)\.[^.]+$/, "$1");
+        const isDuplicate = existingFiles.has(baseName) || 
+                          validFiles.some(f => f.baseName === baseName);
+
+        isDuplicate ? dupList.push(baseName) : validFiles.push({ file, baseName });
+    });
+
+    validFiles.forEach(({ file, baseName }) => {
+        const reader = new FileReader();
+        reader.onload = (e) => addImage(e.target.result, baseName);
+        reader.readAsDataURL(file);
+    });
+
+    if (dupList.length > 0) {
+        showAlert([
+            '⚠️ 跳过重复文件：',
+            ...[...new Set(dupList)].slice(0, 3),
+            dupList.length > 3 ? `等共 ${dupList.length} 个` : '',
+            `✅ 成功上传 ${validFiles.length} 个新文件`
+        ], '#ff9500');
+    }
+
+    event.target.value = '';
+}
+
+// TXT文件处理
+document.getElementById('txtFileInput').addEventListener('change', async function(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    const unmatched = [];
+    const matched = [];
+
+    await Promise.all(files.map(async file => {
+        const baseName = file.name.replace(/(.*?)\.[^.]+$/, "$1");
+        const content = await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result.trim());
+            reader.readAsText(file);
+        });
+
+        const items = Array.from(document.querySelectorAll('.image-item'))
+            .filter(item => item.dataset.filename === baseName);
+
+        items.length ? items.forEach(item => {
+            item.querySelector('.input-box').value = content;
+            matched.push(baseName);
+        }) : unmatched.push(file.name);
+    }));
+
+    const report = [];
+    if (unmatched.length) {
+        report.push('❌ 未匹配文件：', ...unmatched.slice(0, 3));
+        unmatched.length > 3 && report.push(`等共 ${unmatched.length} 个`);
+    }
+    if (matched.length) {
+    	updateWordStats(); 
+        report.push('✅ 成功匹配：', ...matched.slice(0, 3));
+        matched.length > 3 && report.push(`等共 ${matched.length} 个`);
+    }
+
+    report.length && showAlert(report, unmatched.length ? '#ff9500' : '#00c853');
+    this.value = '';
+});
+
+// 修改下载函数以支持不同的打包形式
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+    // 获取打包形式设置
+    const packageFormat = localStorage.getItem('PACKAGE_FORMAT') || 'both';
+    
+    // 根据打包形式决定是否检查文本内容
+    if (packageFormat !== 'images') {
+        let hasEmpty = false;
+        const emptyInputs = [];
+
+        document.querySelectorAll('.input-box').forEach(input => {
+            input.style.borderColor = '';
+            if (!input.value.trim()) {
+                input.style.borderColor = '#ff4444';
+                emptyInputs.push(input);
+                hasEmpty = true;
+            }
+        });
+
+        emptyInputs.forEach(input => {
+            const handler = () => input.value.trim() && (input.style.borderColor = '');
+            input.addEventListener('input', handler);
+        });
+
+        if (hasEmpty) {
+            showAlert('⚠️ 存在未填写的描述内容！\n已标记红色边框的项需要填写', '#ff4444');
+            return;
+        }
+    }
+
+    const zip = new JSZip();
+    
+    // 添加进度跟踪
+    let processed = 0;
+    const total = document.querySelectorAll('.image-item').length;
+    
+    // 创建进度条
+    const progress = document.createElement('div');
+    progress.classList.add('progress-bar');
+    document.body.appendChild(progress);
+    progress.textContent = `准备打包: 0/${total}`;
+
+    // 处理所有项目
+    const items = Array.from(document.querySelectorAll('.image-item'));
+    for (const item of items) {
+        const baseName = item.dataset.filename;
+        
+        // 添加文本文件
+        if (packageFormat !== 'images') {
+            const text = item.querySelector('.input-box').value.trim();
+            zip.file(`${baseName}.txt`, text);
+        }
+        
+        // 添加图片文件
+        if (packageFormat !== 'texts') {
+            const img = item.querySelector('img');
+            try {
+                const blob = await fetch(img.src).then(r => r.blob());
+                const ext = blob.type.split('/')[1];
+                zip.file(`${baseName}.${ext}`, blob);
+            } catch (error) {
+                console.error(`下载图片失败: ${baseName}`, error);
+            }
+        }
+        
+        // 更新进度
+        processed++;
+        progress.textContent = `打包中: ${processed}/${total}`;
+    }
+
+    // 生成并下载ZIP文件
+    zip.generateAsync({ type: "blob" }).then(content => {
+        saveAs(content, "AI-模型数据集.zip");
+        setTimeout(() => {
+            progress.remove();
+            showAlert(`打包完成！包含 ${total} 个文件`, '#00c853');
+        }, 500);
+    }).catch(error => {
+        progress.remove();
+        showAlert(`打包失败: ${error.message}`, '#ff4444');
+    });
+});
+
+// 事件绑定
+document.getElementById('uploadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+document.getElementById('uploadTxtBtn').addEventListener('click', () => document.getElementById('txtFileInput').click());
+document.getElementById('fileInput').addEventListener('change', handleFiles);
+
+// 修改后的批量删除功能
+document.getElementById('batchDeleteBtn').addEventListener('click', function() {
+    const cancelBtn = document.getElementById('cancelDeleteBtn');
+    
+    if (!isDeleteMode) {
+        // 进入删除模式
+        isDeleteMode = true;
+        this.textContent = '确认删除';
+        this.classList.add('delete-btn');
+        cancelBtn.style.display = 'inline-block'; // 显示取消按钮
+
+        // 显示复选框
+        document.querySelectorAll('.checkbox').forEach(checkbox => {
+            checkbox.style.display = 'block';
+            const container = checkbox.closest('.image-item');
+            container.addEventListener('click', handleDeleteClick);
+        });
+
+        // 禁用图片点击
+        document.querySelectorAll('.image-wrapper').forEach(wrapper => {
+            wrapper.style.pointerEvents = 'none';
+        });
+    } else {
+        // 执行删除
+        const itemsToDelete = document.querySelectorAll('.checkbox:checked');
+        itemsToDelete.forEach(checkbox => checkbox.closest('.image-item').remove());
+        exitDeleteMode();
+        updateCounter();
+        updateWordStats();
+    }
+});
+// 新增取消按钮事件
+document.getElementById('cancelDeleteBtn').addEventListener('click', function() {
+    exitDeleteMode();
+    updateCounter();
+});
+
+// 新增退出删除模式函数
+function exitDeleteMode() {
+    isDeleteMode = false;
+    
+    // 重置按钮状态
+    const batchBtn = document.getElementById('batchDeleteBtn');
+    batchBtn.textContent = '批量删除';
+    batchBtn.classList.remove('delete-btn');
+    
+    // 隐藏取消按钮
+    document.getElementById('cancelDeleteBtn').style.display = 'none';
+    
+    // 隐藏所有复选框并移除事件
+    document.querySelectorAll('.checkbox').forEach(checkbox => {
+        checkbox.style.display = 'none';
+        checkbox.checked = false; // 清除选中状态
+        const container = checkbox.closest('.image-item');
+        container.removeEventListener('click', handleDeleteClick);
+    });
+
+    // 恢复图片点击
+    document.querySelectorAll('.image-wrapper').forEach(wrapper => {
+        wrapper.style.pointerEvents = 'auto';
+    });
+    updateWordStats();
+}
+
+// 删除模式点击处理
+function handleDeleteClick(e) {
+    if (e.target.closest('.input-box')) return;
+    const checkbox = this.querySelector('.checkbox');
+    checkbox.checked = !checkbox.checked;
+updateCounter(); // 新增调用
+    updateCounter();
+}
+
+// 图片分析函数
+async function analyzeImage(file) {
+    const base64Image = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(file);
+    });
+
+    const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+    const API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
+
+
+    const requestBody = {
+        contents: [{
+            parts: [
+                { 
+                    text: localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT
+                },
+                {
+                    inline_data: {
+                        mime_type: file.type,
+                        data: base64Image
+                    }
+                }
+            ]
+        }],
+        generationConfig: {
+            temperature: 0.4,
+            topP: 1,
+            topK: 32,
+            maxOutputTokens: 200
+        }
+    };
+
+    const response = await fetch(API_URL, {  // 移除URL参数
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'x-goog-api-key': API_KEY  // 添加认证头
+        },
+        body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error.message || 'API请求失败');
+    }
+
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text.trim();
+}
+</script>
+<template id="findReplaceTemplate">
+  <div class="find-replace-dialog">
+    <div>
+      <div class="modal-title">查找/替换</div>
+      <div class="modal-close" id="findReplaceClose" style="cursor:pointer;font-size:20px;">×</div>
+    </div>
+<div class="modal-content">
+    <div class="settings-item">
+      <div class="settitle">查找</div>
+      <input type="text" id="findInput" class="settings-input" placeholder="输入查找内容">
+    </div>
+    <div class="settings-item">
+      <div class="settitle">替换为</div>
+      <input type="text" id="replaceInput" class="settings-input" placeholder="输入替换内容">
+    </div>
+</div>
+    <div class="find-replace-buttons">
+      <button id="cancelReplaceBtn" class="btcancer">取消</button>
+      <div style="display: flex;">
+        <button id="replaceNextBtn" class="button">替换下一个</button>
+        <button id="replaceAllBtn" class="bt">替换全部</button>
+      </div>
+    </div>
+  </div>
+</template>
+<!-- 新增填充背景弹窗模板 -->
+<template id="fillBackgroundTemplate">
+  <div class="fill-bg-dialog">
+    <div class="modal-header">
+      <div class="modal-title">填充透明背景</div>
+      <div class="modal-close">×</div>
+    </div>
+   <div class="modal-content">
+    <div class="settings-item">
+      <div class="setscrib">此功能仅对已有透明背景的图片有效</div>
+      <div class="method-options">
+          <label class="radio-option">
+          <input type="radio" name="bgColor" value="#FFFFFF" checked>
+          <span class="radio-custom"></span>
+          白色
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="bgColor" value="#000000">
+          <span class="radio-custom"></span>
+          黑色
+	</label>
+        <label class="radio-option">
+          <input type="radio" name="bgColor" value="#00ff00">
+          <span class="radio-custom"></span>
+          绿色
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="bgColor" value="custom">
+          <span class="radio-custom"></span>
+          自定义
+        </label>
+      </div>
+      
+      <div class="custom-color-input">
+        <input type="text" id="customColorInput" placeholder="#RRGGBB" maxlength="7" class="settings-input">
+        <div class="color-preview" id="colorPreview"></div>
+      </div>
+    </div>
+  </div>  
+    <div class="settings-actions">
+      <button class="bt" id="applyFillBtn">修改全部</button>
+      <button class="btcancer">取消</button>
+    </div>
+  </div>
+</template>
+<!-- 新增统一尺寸弹窗模板 -->
+<template id="unify-size-template">
+    <div class="unify-size-dialog">
+        <div class="modal-header">
+            <div class="modal-title">统一修改尺寸</div>
+            <div class="modal-close">×</div>
+        </div>
+        <div class="modal-content">
+        <div class="settings-item">
+            <div class="settitle">尺寸修改方式</div>
+            <div class="method-options">
+                <label class="radio-option">
+                    <input type="radio" name="sizeMethod" value="crop" checked>
+                    <span class="radio-custom"></span>
+                    居中裁剪
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="sizeMethod" value="stretch">
+                    <span class="radio-custom"></span>
+                    拉伸变形
+                </label>
+		</div>
+
+		<div class="line"></div>
+            
+        </div>
+        
+        <div class="settings-item">
+            <div class="settitle">选择尺寸<span class="setscrib">可在设置里自定义更多尺寸</span></div>
+            
+            <div class="size-options" id="sizeOptionsContainer">
+                <!-- 尺寸选项将通过JS动态添加 -->
+            </div>
+        </div>
+     </div>
+        <div class="settings-actions">            
+            <button class="bt" id="applyUnifyBtn">修改全部</button>
+            <button class="btcancer">取消</button>
+        </div>
+    </div>
+</template>
+
+<template id="settingsTemplate">
+  <div class="settings-modal">
+    <div class="settings-header">
+      <div class="modal-title">设置</div>
+	<div class="modal-close" id="settingsClose">×</div>
+    </div>
+  <div class="modal-content">         
+    <div class="settings-item">
+    <div class="prompt-header">
+        <span class="settitle">提示词反推API设置</span>
+            <div class="setscrib" style="display: block;">需申请Gemini API并填入此处，科学上网代理模式设置为“全局连接”，勾选支持的国家。查看<a href="https://developer.android.google.cn/studio/preview/gemini/availability?hl=zh-cn" class="linetxt" target=“_blank” style="color:var(--main-color);">支持国家列表</a></div>
+      <input type="password" 
+             class="settings-input" 
+             placeholder="输入Gemini API密钥"
+             id="apiKeyInput">
+    	</div>
+	</div>
+    
+    <div class="settings-item">
+      <div class="prompt-header">
+        <span class="settitle">默认提问语
+        <button type="button" class="bt reset-btn"><img class="btico" src="img/zhongzhi.svg">恢复默认</button></span>
+      </div>
+      <textarea class="settings-input prompt-textarea"
+                id="promptTextarea"></textarea>
+	<div class="line"></div>
+    </div>
+
+	<!--
+	<div class="settings-item">
+      <div class="settitle">自定义翻译源</div>
+	<div class="lang-box">
+	<div class="setscrib">源语言
+		<span class="selectbg">
+		<select id="sourceLang">
+					<option value="zh-CN">中文（简体）</option>
+                    <option value="en">英语 English</option>
+                    <option value="ja">日语 日本語</option>
+                    <option value="ko">韩语 한국어</option>
+                    <option value="fr">法语 Français</option>
+                    <option value="de">德语 Deutsch</option>
+        </select></span>
+    </div>
+    <div class="setscrib">目标语言
+    	<span class="selectbg">
+    	<select id="sourceLang">
+                    <option value="en">英语 English</option>
+                    <option value="zh-CN">中文（简体）</option>
+                    <option value="ja">日语 日本語</option>
+                    <option value="ko">韩语 한국어</option>
+                    <option value="fr">法语 Français</option>
+                    <option value="de">德语 Deutsch</option>
+        </select></span>
+    </div>
+	<div class="line"></div>
+    </div>
+     -->
+	<div class="settings-item">
+      <div class="settitle">高频词汇统计
+        <label class="switch">
+          <input type="checkbox" id="showWordStatsToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+	<div class="setscrib">统计出现过两次及以上的重复词汇，支持中英文</div>
+	<div class="line"></div>
+    </div>
+    
+    <div class="settings-item">
+      <div class="settitle">
+        自定义裁剪尺寸
+      </div>
+      <div class="setscrib">格式：宽×高（如512×768），多个尺寸用逗号分隔</div>
+      <input type="text" 
+             class="settings-input" 
+             placeholder="例如: 512×512, 768×1024"
+             id="customSizesInput">
+      <div class="line"></div>
+    </div>
+    
+      <div class="settings-item">
+        <div class="settitle">文件打包形式</div>
+        <div class="method-options">
+          <label class="radio-option">
+            <input type="radio" name="packageFormat" value="both" checked>
+            <span class="radio-custom"></span>
+            图片+文本
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="packageFormat" value="images">
+            <span class="radio-custom"></span>
+            仅图片
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="packageFormat" value="texts">
+            <span class="radio-custom"></span>
+            仅文本
+          </label>
+        </div>
+      </div>
+      
+  </div>  
+      
+    <div class="settings-actions">
+      <button type="button" class="bt" id="saveBtn" style="margin-right: 6px;">保存</button>
+      <button type="button" class="btcancer" id="cancelBtn">取消</button>
+    </div>
+  </div>
+</template>
+
+<div class="modal-mask" id="featureModal">
+    <div class="modal-box">
+        <div class="modal-close">×</div>
+        <div class="modal-title">功能更新说明
+	</div>
+        <div class="modal-content">
+        <p><strong>版本 V2.0 2025-06-24 更新内容：</strong></p>
+        	<ul>
+        	<li>新增<span class="remind">文件打包形式</span>选项，可选择“图片+文本”、“仅图片”、“仅文本”多种形式进行打包下载</li>
+        	</ul>
+        <p><strong>版本 V1.9 2025-06-17 更新内容：</strong></p>
+        	<ul>
+        	<li>新增<span class="remind">填充透明背景</span>功能，可一键移除png图片的透明背景。功能面板新增“填充背景”按钮，点击触发填充透明背景弹窗</li>
+        	<li>增加<span class="remind">深色模式</span>，点击图标一键切换</li>
+        	</ul>
+    	<p><strong>版本 V1.8 2025-06-13 更新内容：</strong></p>
+        	<ul>
+        	<li>新增<span class="remind">统一修改尺寸</span>功能，功能面板新增“统一尺寸”按钮，点击触发修改尺寸弹窗</li>
+            <li>设置面板新增自定义裁剪尺寸功能，保存后可在图片裁剪面板看到</li>
+		    <li>优化界面&交互操作</li>
+        	</ul>
+		<p><strong>版本 V1.7 2025-06-10 更新内容：</strong></p>
+        	<ul>      
+            <li>新增<span class="remind">查找/替换</span>功能，功能面板新增“查找/替换”按钮</li>
+		    <li>优化统计词汇交互，点击高亮显示改成点击触发“查找/替换”弹窗</li>
+        	</ul>
+		<p><strong>版本 V1.6 2025-05-31 更新内容：</strong></p>
+        	<ul>      
+            <li>新增<span class="remind">高频词汇统计</span>功能，点击相应词汇，输入框中的词汇会同步高亮显示</li>
+		    <li>设置菜单新增高频词汇统计开关</li>
+        	</ul>
+		<p><strong>版本 V1.5 2025-05-28 更新内容：</strong></p>
+        	<ul>      
+            <li>新增<span class="remind">AI提示词反推</span>功能，采用谷歌Gemini AI一键反推提示词</li>
+		    <li>新增设置菜单，一键配置Gemini API和默认提问语</li>
+		    <li>新增AI反推、中译英快捷键支持，分别为Alt/Option+Enter、Ctrl/Cmd+Enter</li>
+        	</ul>
+        <p><strong>版本 V1.4 2025-05-26 更新内容：</strong></p>
+        	<ul>      
+            <li>支持<span class="remind">中译英翻译</span>功能，输入框新增翻译按钮，联网点击即可翻译</li>
+		    <li>支持<span class="remind">列数选择</span>，提供1-5列预设值</li>
+		    <li>新增取消删除按钮</li>
+        	</ul>
+		<p><strong>版本 V1.3 2025-05-23 更新内容：</strong></p>
+            <ul>
+            <li>新增<span class="remind">图片裁剪</span>功能，支持多种预设比例裁剪，支持裁剪框自由拖动，裁剪后的图片自动保存替换</li>
+            <li>新增图片预览关闭按钮</li>
+            <li>打包下载支持图片+txt文件一起打包</li>
+            </ul>
+		<p><strong>版本 V1.2 2025-05-21 更新内容：</strong></p>
+            <ul>
+            <li>新增鼠标移入交互</li>
+            <li>新增<span class="remind">图片尺寸显示</span></li>
+            </ul>
+        <p><strong>版本 V1.1 2025-05-21 更新内容：</strong></p>
+            <ul>
+            <li>新增图片点击放大查看</li>
+            <li>优化页面布局与样式</li>
+            <li>新增关闭页面确认提示，避免文件丢失</li>
+		    <li>新增“功能介绍”</li>
+            </ul>
+        <p><strong>版本 V1.0 2025-05-20 基础功能：</strong></p>
+            <ul>
+            <li>支持素材批量上传</li>
+            <li>支持素材续传</li>
+		    <li>支持素材批量删除</li>
+            <li>支持文本描述编辑</li>
+            <li>支持<span class="remind">数据集打包</span>下载</li>
+            <li>支持txt文件关联图片</li>
+		    <li>支持必填项检测</li>
+		    <li><span class="remind">自动添加触发词</span>前缀，并支持动态更新</li>
+		    <li>自动跳过重复素材，并按照文件名提醒</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
