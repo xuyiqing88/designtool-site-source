@@ -20,32 +20,36 @@
             padding: 20px;
             line-height: 1.5;
         }
-.topgroup {
-	gap: 10px;
-    display: flex;
-    position: fixed;
- left: 20px;
-    background: #fff;
-    border-radius: 30px;
-    padding: 4px;
-	z-index: 999;
-	backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-	box-shadow: 0 0 10px #0000000f;}
-
-.topgroup:hover {
-	background:#f2f2f2;
-}
-.home-icon {
-	font-size: 40px;
-	cursor: pointer;
-    transition: all 0.3s;
-    padding: 8px; 
-	border-radius: 50%;
-	width: 1em; 
-	height: 1em;
-	vertical-align: -0.15em;
-	overflow: hidden;}
+        
+        .topgroup {
+            gap: 10px;
+            display: flex;
+            position: fixed;
+            left: 20px;
+            background: #fff;
+            border-radius: 30px;
+            padding: 4px;
+            z-index: 999;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0 10px #0000000f;
+        }
+        
+        .topgroup:hover {
+            background: #f2f2f2;
+        }
+        
+        .home-icon {
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px; 
+            border-radius: 50%;
+            width: 1em; 
+            height: 1em;
+            vertical-align: -0.15em;
+            overflow: hidden;
+        }
         
         .container {
             max-width: 1300px;
@@ -158,8 +162,8 @@
             border-radius: 8px;
             border: 1px solid #f1f3ff;
             overflow: hidden;
-	border-top: 4px solid #ffb73a;
-	 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid #ffb73a;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
         
         .section-title {
@@ -265,15 +269,17 @@
             border-radius: 6px;
             overflow: hidden;
             border: 1px solid #e0e5ee;
+            position: relative;
         }
         
         .image-item img {
             width: 100%;
-            height: 180px;
+            height: 100%;
             object-fit: cover;
             display: block;
             background: #f8f9ff;
             cursor: pointer;
+            transition: opacity 0.3s;
         }
         
         .image-controls {
@@ -342,7 +348,7 @@
         
         .switch-btn.active {
             background: #f1f3ff;
-	color: #5963ff;
+            color: #5963ff;
         }
         
         /* 头像容器优化 */
@@ -362,6 +368,52 @@
             color: #c1c9ff;
         }
         
+        /* 加载状态 */
+        .loading-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(89, 99, 255, 0.2);
+            border-top-color: #5963ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .retry-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(89, 99, 255, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            z-index: 11;
+            display: none;
+        }
+        
+        .image-item:hover .retry-button {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .content {
                 grid-template-columns: 1fr;
@@ -432,7 +484,7 @@
 </head>
 <body>
 <div class="topgroup">
-	<a href="tools.html"><img class="home-icon" src="img/home.svg"></a>
+    <a href="tools.html"><img class="home-icon" src="img/home.svg"></a>
 </div>
     <div class="container">
         <header>
@@ -617,27 +669,33 @@
             <div class="image-container">
                 <div class="image-item">
                     <div class="avatar-container">
-                        <img src="https://images.unsplash.com/photo-1545912452-8aea7e25a3d3?auto=format&fit=crop&w=300&h=180&q=80" alt="头像" id="chinese-avatar">
+                        <img src="" alt="头像" id="chinese-avatar" onerror="handleImageError(this)">
+                        <div class="loading-indicator">
+                            <div class="spinner"></div>
+                        </div>
+                        <button class="retry-button" onclick="retryLoadImage('chinese-avatar')">重试</button>
                     </div>
                     <div class="image-controls">
                         <span>头像</span>
                         <button class="btn" onclick="generateChineseAvatar()"><i class="fas fa-sync-alt"></i></button>
                     </div>
                 </div>
-
                 
                 <div class="image-item">
                     <div class="avatar-container">
-                        <img src="https://images.unsplash.com/photo-1506260408121-e353d10b87c7?auto=format&fit=crop&w=300&h=180&q=80" alt="自然风景" id="nature-scenery">
+                        <img src="" alt="自然风景" id="nature-scenery" onerror="handleImageError(this)">
+                        <div class="loading-indicator">
+                            <div class="spinner"></div>
+                        </div>
+                        <button class="retry-button" onclick="retryLoadImage('nature-scenery')">重试</button>
                     </div>
                     <div class="image-controls">
                         <span>自然风景</span>
                         <button class="btn" onclick="generateNatureScenery()"><i class="fas fa-sync-alt"></i></button>
                     </div>
                 </div>
-		</div>
+            </div>
             <div class="image-caption">点击图片可复制URL到剪贴板</div>
-            
         </div>
     </div>
 </div>
@@ -679,31 +737,30 @@
     
     const domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', '163.com', 'qq.com', 'foxmail.com', 'icloud.com'];
     
-    // 头像API配置
-    const chineseAvatarAPI = "https://images.unsplash.com/photo-";
-    const natureAPI = "https://images.unsplash.com/photo-";
-    
-    // 头像ID库
-    const chineseAvatarIDs = [
-        '1545912452-8aea7e25a3d3', 
-        '156456432183-cab8bffa4d7a',
-        '1573808241587-0a6b0a81a6e7',
-        '1599566150163-9e8b2a81d3e3',
-        '1544005313-94ddf0286df2',
-        '1575931947672-c23c6b0f4b0b',
-        '1580489944761-15a19d654956',
-        '1590086782950-6b7d4c1efc0b'
+    // 国内图片API（更稳定快速）
+    const chineseAvatarAPIs = [
+        "https://api.btstu.cn/sjbz/api.php?lx=dongman&format=image",
+        "https://api.uomg.com/api/rand.avatar?format=image",
+        "https://img.paulzzh.com/touhou/random"
     ];
-
-    const natureIDs = [
-        '1506260408121-e353d10b87c7',
-        '1447752875215-b2761acb3c5d',
-        '1470071459604-3b5b3f515972',
-        '1426604966840-d1bcf1d8d1c0',
-        '1469474968028-566bd7c3e6f2',
-        '1441974231531-c6227db76b6e',
-        '1433086966358-548d2a4f7d7a',
-        '1422493757035-1a5b2b9b5d71'
+    
+    const natureAPIs = [
+        "https://api.btstu.cn/sjbz/api.php?lx=fengjing&format=image",
+        "https://api.ixiaowai.cn/gqapi/gqapi.php",
+        "https://api.ixiaowai.cn/api/api.php"
+    ];
+    
+    // 本地缓存图片URL（作为备用）
+    const cachedAvatars = [
+        "https://images.unsplash.com/photo-1545912452-8aea7e25a3d3",
+        "https://images.unsplash.com/photo-156456432183-cab8bffa4d7a",
+        "https://images.unsplash.com/photo-1573808241587-0a6b0a81a6e7"
+    ];
+    
+    const cachedNature = [
+        "https://images.unsplash.com/photo-1506260408121-e353d10b87c7",
+        "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d",
+        "https://images.unsplash.com/photo-1470071459604-3b5b3f515972"
     ];
     
     // 全局设置
@@ -911,17 +968,104 @@
         document.getElementById('id-card').textContent = `${provinceCode}${cityCode}${year}${month}${day}${sequence}${genderCode}`;
     }
     
-    // 图片生成函数 - 使用更可靠的头像API
+    // 图片生成函数 - 使用国内更可靠的API
     function generateChineseAvatar() {
         const img = document.getElementById('chinese-avatar');
-        const randomIndex = Math.floor(Math.random() * chineseAvatarIDs.length);
-        img.src = `https://images.unsplash.com/photo-${chineseAvatarIDs[randomIndex]}?auto=format&fit=crop&w=300&h=180&q=80&t=${new Date().getTime()}`;
+        const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
+        const retryButton = img.parentElement.querySelector('.retry-button');
+        
+        // 显示加载状态
+        loadingIndicator.style.display = 'flex';
+        img.style.opacity = '0.5';
+        retryButton.style.display = 'none';
+        
+        // 随机选择API源
+        const apiSource = Math.random() > 0.3 ? chineseAvatarAPIs : cachedAvatars;
+        const apiIndex = Math.floor(Math.random() * apiSource.length);
+        
+        // 使用缓存作为后备方案
+        const backupSrc = cachedAvatars[Math.floor(Math.random() * cachedAvatars.length)];
+        
+        // 添加时间戳避免缓存问题
+        const timestamp = new Date().getTime();
+        img.src = `${apiSource[apiIndex]}?t=${timestamp}`;
+        
+        // 设置超时检查
+        const timeout = setTimeout(() => {
+            if (!img.complete || img.naturalWidth === 0) {
+                img.src = backupSrc;
+            }
+        }, 3000);
+        
+        img.onload = function() {
+            clearTimeout(timeout);
+            loadingIndicator.style.display = 'none';
+            img.style.opacity = '1';
+        };
+        
+        img.onerror = function() {
+            clearTimeout(timeout);
+            img.src = backupSrc;
+        };
     }
     
     function generateNatureScenery() {
         const img = document.getElementById('nature-scenery');
-        const randomIndex = Math.floor(Math.random() * natureIDs.length);
-        img.src = `https://images.unsplash.com/photo-${natureIDs[randomIndex]}?auto=format&fit=crop&w=300&h=180&q=80&t=${new Date().getTime()}`;
+        const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
+        const retryButton = img.parentElement.querySelector('.retry-button');
+        
+        // 显示加载状态
+        loadingIndicator.style.display = 'flex';
+        img.style.opacity = '0.5';
+        retryButton.style.display = 'none';
+        
+        // 随机选择API源
+        const apiSource = Math.random() > 0.3 ? natureAPIs : cachedNature;
+        const apiIndex = Math.floor(Math.random() * apiSource.length);
+        
+        // 使用缓存作为后备方案
+        const backupSrc = cachedNature[Math.floor(Math.random() * cachedNature.length)];
+        
+        // 添加时间戳避免缓存问题
+        const timestamp = new Date().getTime();
+        img.src = `${apiSource[apiIndex]}?t=${timestamp}`;
+        
+        // 设置超时检查
+        const timeout = setTimeout(() => {
+            if (!img.complete || img.naturalWidth === 0) {
+                img.src = backupSrc;
+            }
+        }, 3000);
+        
+        img.onload = function() {
+            clearTimeout(timeout);
+            loadingIndicator.style.display = 'none';
+            img.style.opacity = '1';
+        };
+        
+        img.onerror = function() {
+            clearTimeout(timeout);
+            img.src = backupSrc;
+        };
+    }
+    
+    // 图片加载错误处理
+    function handleImageError(img) {
+        const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
+        const retryButton = img.parentElement.querySelector('.retry-button');
+        
+        loadingIndicator.style.display = 'none';
+        retryButton.style.display = 'block';
+        img.style.opacity = '0.3';
+    }
+    
+    // 重试加载图片
+    function retryLoadImage(imgId) {
+        if (imgId === 'chinese-avatar') {
+            generateChineseAvatar();
+        } else {
+            generateNatureScenery();
+        }
     }
     
     // 复制到剪贴板功能
