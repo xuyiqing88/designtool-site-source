@@ -1080,11 +1080,11 @@
         if (numberRange === 'small') {
             price = Math.floor(Math.random() * 10);
         } else if (numberRange === 'medium') {
-            price = Math.floor(Math.random() * 90);
+            price = Math.floor(Math.random() * 90) + 10;
         } else if (numberRange === 'large') {
-            price = Math.floor(Math.random() * 900);
+            price = Math.floor(Math.random() * 900) + 100;
         } else {
-            price = Math.floor(Math.random() * 9000);
+            price = Math.floor(Math.random() * 9000) + 1000;
         }
         
         let formattedPrice;
