@@ -1503,7 +1503,6 @@ function generateNatureScenery() {
         }
         
         navigator.clipboard.writeText(text).then(() => {
-            copyCounter++;
             showNotification('已复制到剪贴板！');
         }).catch(err => {
             console.error('复制失败:', err);
@@ -1521,13 +1520,6 @@ function generateNatureScenery() {
             notification.classList.remove('show');
         }, 2000);
     }
-    
-    // 为iframe添加点击复制功能
-    document.querySelectorAll('.avatar-iframe').forEach(iframe => {
-        iframe.addEventListener('click', function() {
-            copyToClipboard(this.id);
-        });
-    });
     
     // 为文本数据添加点击复制功能
     document.querySelectorAll('.data-value').forEach(element => {
