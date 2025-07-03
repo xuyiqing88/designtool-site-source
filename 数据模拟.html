@@ -738,10 +738,10 @@
                 <div class="control-item">
                     <label for="number-range">数字范围</label>
                     <select id="number-range" onchange="updateNumberRange()">
-                        <option value="small">0-99</option>
-                        <option value="medium" selected>100-999</option>
-                        <option value="large">1000-9999</option>
-			<option value="larger">10000+</option>
+                        <option value="small">0-9</option>
+                        <option value="medium" selected>10-99</option>
+                        <option value="large">100-999</option>
+			<option value="larger">1000-9999</option>
                     </select>
                 </div>
             </div>
@@ -1078,13 +1078,13 @@
         let price;
         
         if (numberRange === 'small') {
-            price = Math.floor(Math.random() * 100);
+            price = Math.floor(Math.random() * 10);
         } else if (numberRange === 'medium') {
-            price = Math.floor(Math.random() * 900) + 100;
+            price = Math.floor(Math.random() * 90) + 10;
         } else if (numberRange === 'large') {
-            price = Math.floor(Math.random() * 9000) + 1000;
+            price = Math.floor(Math.random() * 900) + 100;
         } else {
-            price = Math.floor(Math.random() * 9000) + 10000;
+            price = Math.floor(Math.random() * 900) + 1000;
         }
         
         let formattedPrice;
