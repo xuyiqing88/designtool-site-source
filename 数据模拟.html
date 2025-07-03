@@ -20,31 +20,33 @@
             padding: 20px;
             line-height: 1.5;
         }
-.avatar-img {
-    width: 100%;
-    object-fit: cover;
-    display: none; /* 初始隐藏 */
-    background-color: #f8f9ff; /* 添加背景色 */
-}
+        .avatar-img {
+            width: 100%;
+            object-fit: cover;
+            display: none; /* 初始隐藏 */
+            background-color: #f8f9ff; /* 添加背景色 */
+        }
 
-.avatar-img.loaded {
-    display: block; /* 加载完成后显示 */
-}
+        .avatar-img.loaded {
+            display: block; /* 加载完成后显示 */
+        }
 
-/* 确保比例容器正确 */
-.image-ratio-keeper {
-    position: relative;
-    width: 100%;
-    padding-top: 100%; /* 1:1 比例 */
-    overflow: hidden;
-}
+        /* 确保比例容器正确 */
+        .image-ratio-keeper {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* 1:1 比例 */
+            overflow: hidden;
+        }
 
-.image-ratio-keeper img {
-    position: absolute;
-    top: 38px;
-    left: 0;
-    object-fit: cover;
-}
+        .image-ratio-keeper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         /* 新增下载按钮样式 */
         .download-btn {
             padding: 8px 12px;
@@ -263,7 +265,7 @@
         
         .data-item {
             display: flex;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             align-items: center;
             transition: background 0.2s;
             padding: 5px;
@@ -565,6 +567,35 @@
             color: #718096;
         }
         
+        .product-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+	padding: 10px;
+    background: #f1f3ff;
+    border-radius: 4px;
+        }
+        
+        .product-setting {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .product-setting label {
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .product-setting select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #c1c9ff;
+            background: white;
+            font-size: 0.9rem;
+        }
 
     </style>
 </head>
@@ -686,11 +717,7 @@
             </div>
         </div>
     </div>
-</div>
-</div>
 
-<div class="section">
-    <div class="section-content">
         <div class="data-group">
             <div class="group-title">
                 <i class="fas fa-clock"></i> 时间信息
@@ -711,11 +738,43 @@
                 </div>
             </div>
         </div>
-        
+
+</div>
+</div>
+
+
+
+<div class="section">
+    <div class="section-content">
+
         <div class="data-group">
             <div class="group-title">
-                <i class="fas fa-tag"></i> 其他数据
+                <i class="fas fa-shopping-cart"></i> 商品信息
             </div>
+            <div class="data-item">
+                <div class="data-label">商品名称</div>
+                <div class="data-value" id="product-name">iPhone 15 Pro 512G 白色钛金属</div>
+                <div class="data-controls">
+                    <button class="btn" onclick="generateProductName()"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+            
+            <div class="data-item">
+                <div class="data-label">银行名称</div>
+                <div class="data-value" id="bank-name">中国农业银行</div>
+                <div class="data-controls">
+                    <button class="btn" onclick="generateBankName()"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+
+            <div class="data-item">
+                <div class="data-label">商品编号</div>
+                <div class="data-value" id="product-id">DD0002302420201001082300f40927</div>
+                <div class="data-controls">
+                    <button class="btn" onclick="generateProductId()"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>          
+            
             <div class="data-item">
                 <div class="data-label">价格</div>
                 <div class="data-value" id="price">￥1,299.00</div>
@@ -724,8 +783,26 @@
                 </div>
             </div>
             
-            <div class="control-group">
-                <div class="control-item">
+            <div class="product-controls">
+                <div class="product-setting">
+                    <label for="id-length">编号长度</label>
+                    <select id="id-length" onchange="updateIdSettings()">
+                        <option value="12">12位</option>
+                        <option value="16">16位</option>
+                        <option value="20" selected>20位</option>
+                        <option value="24">24位</option>
+                    </select>
+                </div>
+                
+                <div class="product-setting">
+                    <label for="id-type">编号类型</label>
+                    <select id="id-type" onchange="updateIdSettings()">
+                        <option value="numbers">纯数字</option>
+                        <option value="mixed" selected>字母+数字</option>
+                    </select>
+                </div>
+                
+                <div class="product-setting">
                     <label for="decimal-select">小数位</label>
                     <select id="decimal-select" onchange="updateDecimalSetting()">
                         <option value="0">0位</option>
@@ -734,74 +811,88 @@
                     </select>
                 </div>
                 
-                <div class="control-item">
+                <div class="product-setting">
                     <label for="number-range">数字范围</label>
                     <select id="number-range" onchange="updateNumberRange()">
                         <option value="small">0-9</option>
                         <option value="medium" selected>10-99</option>
                         <option value="large">100-999</option>
-			<option value="larger">1000-9999</option>
+                        <option value="larger">1000-9999</option>
                     </select>
+                </div>
+            </div>
+        </div>
+
+
+        
+        <div class="data-group">
+            <div class="group-title">
+                <i class="fas fa-newspaper"></i> 文本资讯
+            </div>
+            <div class="data-item">
+                <div class="data-label">资讯标题</div>
+                <div class="data-value" id="news-title">用户体验设计在产品开发中的重要性</div>
+                <div class="data-controls">
+                    <button class="btn" onclick="fetchNews()"><i class="fas fa-sync-alt"></i></button>
                 </div>
             </div>
             
             <div class="data-item" style="align-items: flex-start;">
-                <div class="data-label">长文本</div>
-                <div class="data-value" id="long-text">用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。</div>
+                <div class="data-label">资讯内容</div>
+                <div class="data-value" id="news-content"  style="height: 145px; overflow: auto;">用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。设计过程中需要充分考虑用户需求、使用场景和操作习惯。</div>
                 <div class="data-controls">
-                    <button class="btn" onclick="generateLongText()"><i class="fas fa-sync-alt"></i></button>
+                    <button class="btn" onclick="fetchNews()"><i class="fas fa-sync-alt"></i></button>
                 </div>
             </div>
         </div>
         
-                <div class="data-group">
-                    <div class="group-title">
-                        <i class="fas fa-image"></i> 图片数据
-			    <div class="image-caption">点击右键可复制图片</div>
+        <div class="data-group">
+            <div class="group-title">
+                <i class="fas fa-image"></i> 图片数据
+                <div class="image-caption">点击右键可复制图片</div>
+            </div>
+            <div class="image-container">
+                <div class="image-item">
+                    <div class="avatar-container">
+                        <div class="image-ratio-keeper">
+                            <img id="person-avatar-img" class="avatar-img" alt="随机头像">
+                            <div class="loading-indicator">
+                                <div class="spinner"></div>
+                            </div>
+                            <button class="retry-button" onclick="retryLoadImage('person-avatar-img')"></button>
+                        </div>
                     </div>
-                    <div class="image-container">
-                        <div class="image-item">
-  <div class="avatar-container">
-    <div class="image-ratio-keeper">
-      <img id="person-avatar-img" class="avatar-img" alt="随机头像" style="top: 0px;">
-      <div class="loading-indicator">
-        <div class="spinner"></div>
-      </div>
-      <button class="retry-button" onclick="retryLoadImage('person-avatar-img')"></button>
-    </div>
-  </div>
-  <div class="image-controls">
-    <span>AI头像</span>
-    <button class="btn" onclick="generatePersonAvatar()">
-      <i class="fas fa-sync-alt"></i>
-    </button>
-  </div>
-</div>
+                    <div class="image-controls">
+                        <span>AI头像</span>
+                        <button class="btn" onclick="generatePersonAvatar()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
 
-<!-- 自然风景部分 -->
-<div class="image-item">
-  <div class="avatar-container">
-    <div class="image-ratio-keeper landscape">
-      <img id="nature-scenery-img" class="avatar-img" alt="自然风景">
-      <div class="loading-indicator">
-        <div class="spinner"></div>
-      </div>
-      <button class="retry-button" onclick="retryLoadImage('nature-scenery-img')"></button>
-    </div>
-  </div>
-  <div class="image-controls">
-    <span>无版权风景</span>
-    <button class="btn" onclick="generateNatureScenery()">
-      <i class="fas fa-sync-alt"></i>
-    </button>
-  </div>
-</div>
-</div>
-                    
+                <!-- 自然风景部分 -->
+                <div class="image-item">
+                    <div class="avatar-container">
+                        <div class="image-ratio-keeper landscape">
+                            <img id="nature-scenery-img" class="avatar-img" alt="自然风景">
+                            <div class="loading-indicator">
+                                <div class="spinner"></div>
+                            </div>
+                            <button class="retry-button" onclick="retryLoadImage('nature-scenery-img')"></button>
+                        </div>
+                    </div>
+                    <div class="image-controls">
+                        <span>无版权风景</span>
+                        <button class="btn" onclick="generateNatureScenery()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
 
 <footer>
     <p>随机数据生成器 &copy; 2025 - 用于UI设计和表单测试</p>
@@ -938,6 +1029,24 @@
         }
     };
 
+    // 新增商品信息数据
+    const productBrands = ['iPhone', '华为', '小米', '三星', 'OPPO', 'Vivo', '荣耀', '联想'];
+    const productModels = ['15 Pro', 'Mate 60', '13 Ultra', 'Galaxy S23', 'Reno 10', 'X100', 'Magic 5', 'Yoga Pro'];
+    const productSpecs = ['128G', '256G', '512G', '1TB'];
+    const productColors = ['黑色', '白色', '蓝色', '绿色', '紫色', '金色', '钛金属', '红色'];
+    const productTypes = ['标准版', '合约机', '套餐版', '豪华版', '限量版', '定制版'];
+    const productPackages = ['39套餐', '79套餐', '129套餐', '199套餐', '全家享套餐'];
+    const productCategories = ['手机', '平板', '笔记本', '耳机', '手表', '相机', '游戏机', '智能家居'];
+    const productSets = ['洗护沐套盒', '护肤套装', '彩妆套装', '电子产品套装', '家居套装'];
+    const productSizes = ['500ml', '250ml', '1L', '200g', '100片'];
+    
+    const banks = ['中国工商银行', '中国农业银行', '中国银行', '中国建设银行', '交通银行', 
+                 '招商银行', '中信银行', '浦发银行', '民生银行', '光大银行', '华夏银行', '平安银行'];
+
+    // 新增商品信息设置
+    let idLength = 20;
+    let idType = 'mixed';
+
 // 添加生成区域的函数
     function generateDistrict(province = null, city = null) {
         if (!province) {
@@ -997,6 +1106,15 @@
     let currentTelephone = '0755-87654321';
     let nameDisplayType = 'chinese';
     let phoneDisplayType = 'mobile';
+    
+    // 更新编号设置
+    function updateIdSettings() {
+        const lengthSelect = document.getElementById('id-length');
+        const typeSelect = document.getElementById('id-type');
+        idLength = parseInt(lengthSelect.value);
+        idType = typeSelect.value;
+        generateProductId();
+    }
     
     // 更新小数位数设置
     function updateDecimalSetting() {
@@ -1100,21 +1218,54 @@
         document.getElementById('price').textContent = formattedPrice;
     }
     
-    function generateLongText() {
-        const paragraphs = [
-            "用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。设计过程中需要充分考虑用户需求、使用场景和操作习惯。响应式网页设计已成为现代前端开发的标准要求。它使得网站能够自适应不同尺寸的设备屏幕，提供一致的用户体验。实现响应式设计需要使用媒体查询、弹性布局和相对单位等技术，确保在各种设备上都能完美展示。",
-	"在东汉末年，天下大乱，群雄并起。曹操，这位一代枭雄，携官渡之战大胜之余威，挥师南下，意图一统中原。而此刻，长江之南，孙权与刘备联军正严阵以待，一场决定天下归属的大战——赤壁之战，即将拉开序幕。",
-	"行至白虎岭前，白骨精化作一美貌村姑，企图用美食诱惑唐僧师徒，以达到吃唐僧肉长生不老的目的。孙悟空凭借火眼金睛识破妖精真身，挥棒便打，却被唐僧误会为滥杀无辜，念起紧箍咒。白骨精趁机逃脱，又两次变换身形，先后化作老妇和孩童，均被孙悟空识破并打死。",
-	"夜幕降临，江面之上，东南风骤起，正是实施计划的最佳时机。黄盖诈降，率领装满易燃物的船只靠近曹军舰队，火光瞬间冲天而起，江面变成了一片火海。曹军战船相连，火势迅速蔓延，士兵们哭喊声、惨叫声交织在一起，哀鸿遍野。曹操在乱军中仓皇逃窜，最终只得放弃南下统一中原的梦想，退回北方。",
-	 "叶文洁站在红岸基地的雷达峰上，凝视着夜空。在她的眼中，星空不再是宁静而深邃的，而是充满了未知与危险。她回想起了那个神秘的信号，那是来自三体世界的呼唤，一个与人类截然不同的文明。她的心中涌动着复杂的情感，有对未知的渴望，也有对人类未来的担忧。她知道，一旦这个秘密被揭开，将彻底改变人类的命运。但她也明白，这是无法回避的命运，人类必须面对宇宙的广阔与深邃，以及其中潜藏的无数可能。",
- 	"在人生的旅途中，我们时常会遇到各种各样的风景。有时，那是一片繁花似锦的春日景象，万物复苏，生机勃勃，仿佛每一片叶子都在诉说着生命的奇迹；有时，那是一幅萧瑟凄凉的秋日图景，落叶纷飞，寒风瑟瑟，让人不禁感叹岁月的无情与沧桑。然而，无论是哪一种风景，都是生命旅程中不可或缺的一部分，它们共同构成了我们丰富多彩的人生画卷。",
-	"当我们置身于大自然的怀抱中时，心灵往往会得到一种难以言喻的宁静与洗涤。山川湖海、日月星辰，这些自然界的壮丽景观，不仅让我们领略到了大自然的神奇魅力，更让我们深刻体会到了生命的渺小与伟大。在这样的时刻，我们会不由自主地放慢脚步，去聆听内心的声音，去感受那份来自心底的平和与喜悦。",
-	"生活虽然充满了挑战与艰辛，但只要我们拥有一颗感恩的心，一双善于发现美的眼睛，就能从平凡的日子里找到属于自己的幸福与满足。让我们珍惜每一个当下，用心去感受生命中的每一份美好，让心灵在岁月的长河中绽放出最绚烂的光彩。",
-	"友谊，是我们人生路上最宝贵的财富。它如珍珠，串联成璀璨的项链；如彩绸，剪裁成绚丽的衣衫；如花种，播撒出五彩的花坛。友谊之火，温暖了受伤的心，照亮了前进的方向，驱散了孤独，点燃了新的希望。让我们用真诚去播种友谊，用理解去护理，用热情去浇灌。",
-            "前端框架如React、Vue和Angular大大提高了开发效率和代码质量。这些框架提供了组件化开发模式，使得代码更易于维护和复用。同时，它们还提供了状态管理、路由等解决方案，帮助开发者构建复杂的单页面应用。性能优化是前端开发中不可忽视的方面。通过代码分割、懒加载、资源压缩和缓存策略等技术，可以显著提高网页加载速度和运行效率。良好的性能不仅提升用户体验，也对SEO有积极影响。",
-            "无障碍访问（Accessibility）是创建包容性网站的重要原则。通过遵循WCAG标准，使用语义化HTML，提供足够的对比度，确保键盘可操作性，可以让网站对所有用户友好，包括残障人士。用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。设计过程中需要充分考虑用户需求、使用场景和操作习惯。"
-        ];
-        document.getElementById('long-text').textContent = paragraphs[Math.floor(Math.random() * paragraphs.length)];
+    // 生成商品名称
+    function generateProductName() {
+        const productType = Math.random() > 0.5 ? 'electronics' : 'beauty';
+        
+        if (productType === 'electronics') {
+            const brand = productBrands[Math.floor(Math.random() * productBrands.length)];
+            const model = productModels[Math.floor(Math.random() * productModels.length)];
+            const spec = productSpecs[Math.floor(Math.random() * productSpecs.length)];
+            const color = productColors[Math.floor(Math.random() * productColors.length)];
+            const type = productTypes[Math.floor(Math.random() * productTypes.length)];
+            const pack = productPackages[Math.floor(Math.random() * productPackages.length)];
+            
+            document.getElementById('product-name').textContent = `${brand} ${model} ${spec} ${color} ${type} ${pack}`;
+        } else {
+            const brand = ['英莱芬', '欧莱雅', '兰蔻', '雅诗兰黛', '资生堂', 'SK-II', '海蓝之谜'][Math.floor(Math.random() * 7)];
+            const color = ['树莓红', '樱花粉', '海洋蓝', '薄荷绿', '香槟金', '珍珠白'][Math.floor(Math.random() * 6)];
+            const category = productSets[Math.floor(Math.random() * productSets.length)];
+            const size1 = productSizes[Math.floor(Math.random() * productSizes.length)];
+            const size2 = productSizes[Math.floor(Math.random() * productSizes.length)];
+            const size3 = productSizes[Math.floor(Math.random() * productSizes.length)];
+            
+            document.getElementById('product-name').textContent = `${brand} ${color} ${category}（${size1}+${size2}+${size3}）`;
+        }
+    }
+    
+    // 生成商品编号
+    function generateProductId() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const digits = '0123456789';
+        
+        let id = '';
+        const length = idLength;
+        
+        for (let i = 0; i < length; i++) {
+            if (idType === 'mixed') {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            } else {
+                id += digits.charAt(Math.floor(Math.random() * digits.length));
+            }
+        }
+        
+        document.getElementById('product-id').textContent = id;
+    }
+    
+    // 生成银行名称
+    function generateBankName() {
+        const bank = banks[Math.floor(Math.random() * banks.length)];
+        document.getElementById('bank-name').textContent = bank;
     }
     
     function generateCountry() {
@@ -1224,6 +1375,42 @@
         const genderCode = Math.floor(Math.random() * 10);
         document.getElementById('id-card').textContent = `${provinceCode}${cityCode}${year}${month}${day}${sequence}${genderCode}`;
     }
+    
+    // 获取网络资讯（更新为多段落格式）
+    function fetchNews() {
+        const newsTitles = [
+            "用户体验设计在产品开发中的重要性",
+            "前端开发的最新趋势与技术",
+            "响应式设计的实践与应用",
+            "人工智能在UI设计中的应用",
+            "移动端用户体验优化策略",
+            "2025年网页设计趋势预测",
+            "无障碍设计的最佳实践",
+            "色彩心理学在UI设计中的应用"
+        ];
+        
+        // 更新为多段落内容
+        const newsContents = [
+            `<p>用户体验设计是产品开发过程中的核心环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够显著提升用户满意度，增加用户黏性，最终转化为商业价值的提升。</p>
+            <p>设计过程中需要充分考虑用户需求、使用场景和操作习惯。通过用户研究、可用性测试和行为分析，设计师可以创建出真正符合用户期望的界面。研究表明，优秀的用户体验设计可以将用户转化率提高30%以上。</p>
+            <p>在当今竞争激烈的数字环境中，用户体验已成为产品差异化的关键因素。它不仅影响用户留存率，还直接影响品牌形象和市场定位。忽视用户体验的企业最终会在市场竞争中失去优势。</p>`,
+            
+            `<p>前端框架如React、Vue和Angular持续推动着开发效率的提升。2025年，我们观察到几个显著趋势：组件库的标准化、微前端架构的普及，以及WebAssembly的更广泛应用。</p>
+            <p>TypeScript已成为大型项目的首选语言，其静态类型检查大大减少了运行时错误。同时，JAMStack架构因其出色的性能和安全性，正在被越来越多的企业采用。</p>
+            <p>新兴技术如Qwik和Astro通过创新的资源加载策略，实现了近乎即时的页面加载体验。这些框架采用部分水合(partial hydration)技术，只加载必要的JavaScript，大幅提升了首屏性能。</p>`,
+            
+            `<p>响应式设计已从"最好有"转变为"必须拥有"的标准要求。随着设备多样性增加，设计师必须创建能够适应从智能手表到4K显示器的各种屏幕尺寸的界面。</p>
+            <p>实现真正的响应式体验需要超越简单的媒体查询。现代方法包括：容器查询、CSS网格布局、灵活排版系统和条件资源加载。这些技术共同确保在各种设备上提供一致的用户体验。</p>
+            <p>移动优先策略仍是响应式设计的黄金准则。设计师应优先考虑小屏幕设备的体验，然后逐步增强大屏幕设备的展示效果。这种方法确保核心功能在任何设备上都可访问。</p>`
+        ];
+        
+        const randomIndex = Math.floor(Math.random() * newsTitles.length);
+        document.getElementById('news-title').textContent = newsTitles[randomIndex];
+        
+        // 使用innerHTML支持多段落格式
+        document.getElementById('news-content').innerHTML = newsContents[randomIndex % newsContents.length];
+    }
+    
 // 更新后的图片加载函数    
 function generatePersonAvatar() {
   const img = document.getElementById('person-avatar-img');
@@ -1346,7 +1533,10 @@ function generateNatureScenery() {
         generateNames();
         generatePhones();
         generatePrice();
-        generateLongText();
+        generateProductName();
+        generateProductId();
+        generateBankName();
+        fetchNews();
         generateCountry();
         generateProvince();  // 这会生成省份、城市和区域
         generateAddress();
