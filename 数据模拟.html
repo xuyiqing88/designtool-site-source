@@ -20,7 +20,54 @@
             padding: 20px;
             line-height: 1.5;
         }
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none; /* 初始隐藏 */
+    background-color: #f8f9ff; /* 添加背景色 */
+}
+
+.avatar-img.loaded {
+    display: block; /* 加载完成后显示 */
+}
+
+/* 确保比例容器正确 */
+.image-ratio-keeper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* 1:1 比例 */
+    overflow: hidden;
+}
+
+.image-ratio-keeper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+        /* 新增下载按钮样式 */
+        .download-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f3ff;
+            color: #5963ff;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            margin-left: 5px;
+        }
         
+        .download-btn:hover {
+            background: #e4e8ff;
+        }
         .topgroup {
             gap: 10px;
             display: flex;
@@ -57,6 +104,7 @@
             background: white;
             border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
         
         header {
@@ -108,6 +156,8 @@
             display: flex;
             align-items: center;
             margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(89, 99, 255, 0.2);
         }
         
         .btn-generate-all i {
@@ -116,6 +166,8 @@
         
         .btn-generate-all:hover {
             background: #4a54e6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(89, 99, 255, 0.3);
         }
         
         .control-group {
@@ -148,6 +200,12 @@
             font-size: 0.9rem;
             min-width: 120px;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .control-item select:focus {
+            border-color: #5963ff;
+            box-shadow: 0 0 0 2px rgba(89, 99, 255, 0.2);
         }
         
         .content {
@@ -163,7 +221,8 @@
             border: 1px solid #f1f3ff;
             overflow: hidden;
             border-top: 4px solid #ffb73a;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         
         .section-title {
@@ -210,6 +269,13 @@
             display: flex;
             margin-bottom: 15px;
             align-items: center;
+            transition: background 0.2s;
+            padding: 5px;
+            border-radius: 6px;
+        }
+        
+        .data-item:hover {
+            background: #fafbff;
         }
         
         .data-label {
@@ -230,6 +296,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .data-value:hover {
+            border-color: #5963ff;
+            background: #f8f9ff;
         }
         
         #long-text {
@@ -251,6 +323,7 @@
             background: #f0f3ff;
             color: #5963ff;
             font-size: 0.9rem;
+            transition: all 0.2s;
         }
         
         .btn:hover {
@@ -270,16 +343,32 @@
             overflow: hidden;
             border: 1px solid #e0e5ee;
             position: relative;
+            transition: transform 0.3s;
         }
         
-        .image-item img {
+        .avatar-container {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            background: linear-gradient(135deg, #f5f7ff, #e6e9ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .avatar-iframe {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            display: block;
+            border: none;
             background: #f8f9ff;
-            cursor: pointer;
-            transition: opacity 0.3s;
+            /* 关键修改：确保图片自适应 */
+            object-fit: cover;
+        }
+        
+        .avatar-placeholder {
+            font-size: 3rem;
+            color: #c1c9ff;
         }
         
         .image-controls {
@@ -316,13 +405,13 @@
             transition: transform 0.3s ease;
             z-index: 1000;
             font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .notification.show {
             transform: translateX(0);
         }
         
-        /* 优化切换按钮样式 */
         .switch-container {
             display: flex;
             gap: 0;
@@ -351,24 +440,6 @@
             color: #5963ff;
         }
         
-        /* 头像容器优化 */
-        .avatar-container {
-            position: relative;
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #f5f7ff, #e6e9ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .avatar-placeholder {
-            font-size: 3rem;
-            color: #c1c9ff;
-        }
-        
-        /* 加载状态 */
         .loading-indicator {
             position: absolute;
             top: 0;
@@ -408,6 +479,7 @@
             cursor: pointer;
             z-index: 11;
             display: none;
+            transition: all 0.2s;
         }
         
         .image-item:hover .retry-button {
@@ -469,7 +541,6 @@
                 font-size: 1.6rem;
             }
             
-            /* 移动端适配切换按钮 */
             .switch-container {
                 margin-left: 0;
                 margin-top: 5px;
@@ -480,6 +551,25 @@
                 flex-wrap: wrap;
             }
         }
+
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #5963ff;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+        
+
     </style>
 </head>
 <body>
@@ -488,14 +578,13 @@
 </div>
     <div class="container">
         <header>
-            <h1> UI设计随机数据生成器</h1>
+            <h1>UI设计随机数据生成器</h1>
             <p>快速生成各类测试数据，用于表单填充和UI设计验证</p>
             <button class="btn-generate-all" onclick="generateAllData()">
                 一键生成所有数据
             </button>  
         </header>
 
-        
         <div class="content">
             <div class="section" style="border-top: 4px solid #977cff;">
                 <div class="section-content">
@@ -503,7 +592,6 @@
                         <div class="group-title">
                             <i class="fas fa-signature"></i> 姓名信息
                         </div>
-                        <!-- 合并姓名字段 -->
                         <div class="data-item">
                             <div class="data-label">姓名</div>
                             <div class="data-value" id="name-display">张伟</div>
@@ -529,7 +617,6 @@
                             </div>
                         </div>
                         
-                        <!-- 合并电话号码字段 -->
                         <div class="data-item">
                             <div class="data-label">电话号码</div>
                             <div class="data-value" id="phone-display">13800138000</div>
@@ -648,7 +735,8 @@
                     <select id="number-range" onchange="updateNumberRange()">
                         <option value="small">0-99</option>
                         <option value="medium" selected>100-999</option>
-                        <option value="large">1000+</option>
+                        <option value="large">1000-9999</option>
+			<option value="larger">10000+</option>
                     </select>
                 </div>
             </div>
@@ -662,47 +750,56 @@
             </div>
         </div>
         
-        <div class="data-group">
-            <div class="group-title">
-                <i class="fas fa-image"></i> 图片数据
-            </div>
-            <div class="image-container">
-                <div class="image-item">
-                    <div class="avatar-container">
-                        <img src="" alt="头像" id="chinese-avatar" onerror="handleImageError(this)">
-                        <div class="loading-indicator">
-                            <div class="spinner"></div>
-                        </div>
-                        <button class="retry-button" onclick="retryLoadImage('chinese-avatar')">重试</button>
+                <div class="data-group">
+                    <div class="group-title">
+                        <i class="fas fa-image"></i> 图片数据
                     </div>
-                    <div class="image-controls">
-                        <span>头像</span>
-                        <button class="btn" onclick="generateChineseAvatar()"><i class="fas fa-sync-alt"></i></button>
-                    </div>
-                </div>
-                
-                <div class="image-item">
-                    <div class="avatar-container">
-                        <img src="" alt="自然风景" id="nature-scenery" onerror="handleImageError(this)">
-                        <div class="loading-indicator">
-                            <div class="spinner"></div>
-                        </div>
-                        <button class="retry-button" onclick="retryLoadImage('nature-scenery')">重试</button>
-                    </div>
-                    <div class="image-controls">
-                        <span>自然风景</span>
-                        <button class="btn" onclick="generateNatureScenery()"><i class="fas fa-sync-alt"></i></button>
-                    </div>
-                </div>
-            </div>
-            <div class="image-caption">点击图片可复制URL到剪贴板</div>
-        </div>
+                    <div class="image-container">
+                        <div class="image-item">
+  <div class="avatar-container">
+    <div class="image-ratio-keeper">
+      <img id="person-avatar-img" class="avatar-img" alt="随机头像">
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+      </div>
+      <button class="retry-button" onclick="retryLoadImage('person-avatar-img')">重试</button>
     </div>
-</div>
+  </div>
+  <div class="image-controls">
+    <span>AI头像</span>
+    <button class="btn" onclick="generatePersonAvatar()">
+      <i class="fas fa-sync-alt"></i>
+    </button>
+  </div>
 </div>
 
+<!-- 自然风景部分 -->
+<div class="image-item">
+  <div class="avatar-container">
+    <div class="image-ratio-keeper landscape">
+      <img id="nature-scenery-img" class="avatar-img" alt="自然风景">
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+      </div>
+      <button class="retry-button" onclick="retryLoadImage('nature-scenery-img')">重试</button>
+    </div>
+  </div>
+  <div class="image-controls">
+    <span>无版权风景</span>
+    <button class="btn" onclick="generateNatureScenery()">
+      <i class="fas fa-sync-alt"></i>
+    </button>
+  </div>
+</div>
+</div>
+                    <div class="image-caption">点击右键可复制图片</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <footer>
-    <p>随机数据生成器 &copy; 2025 - 用于UI设计和表单测试 | 数据生成次数: <span id="counter">0</span></p>
+    <p>随机数据生成器 &copy; 2025 - 用于UI设计和表单测试</p>
 </footer>
 </div>
 
@@ -737,44 +834,26 @@
     
     const domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', '163.com', 'qq.com', 'foxmail.com', 'icloud.com'];
     
-    // 国内图片API（更稳定快速）
-    const chineseAvatarAPIs = [
-        "https://api.btstu.cn/sjbz/api.php?lx=dongman&format=image",
-        "https://api.uomg.com/api/rand.avatar?format=image",
-        "https://img.paulzzh.com/touhou/random"
+    // 图片API配置
+    const personAvatarAPIs = [
+        "https://thispersondoesnotexist.com",
     ];
     
     const natureAPIs = [
-        "https://api.btstu.cn/sjbz/api.php?lx=fengjing&format=image",
-        "https://api.ixiaowai.cn/gqapi/gqapi.php",
-        "https://api.ixiaowai.cn/api/api.php"
-    ];
-    
-    // 本地缓存图片URL（作为备用）
-    const cachedAvatars = [
-        "https://images.unsplash.com/photo-1545912452-8aea7e25a3d3",
-        "https://images.unsplash.com/photo-156456432183-cab8bffa4d7a",
-        "https://images.unsplash.com/photo-1573808241587-0a6b0a81a6e7"
-    ];
-    
-    const cachedNature = [
-        "https://images.unsplash.com/photo-1506260408121-e353d10b87c7",
-        "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d",
-        "https://images.unsplash.com/photo-1470071459604-3b5b3f515972"
+    "https://picsum.photos/300/300?random",
     ];
     
     // 全局设置
     let decimalPlaces = 2;
     let numberRange = 'medium';
-    let generationCounter = 0;
     
     // 存储当前生成的数据
     let currentChineseName = '张伟';
     let currentEnglishName = 'John Smith';
     let currentMobile = '13800138000';
     let currentTelephone = '0755-87654321';
-    let nameDisplayType = 'chinese'; // 'chinese' 或 'english'
-    let phoneDisplayType = 'mobile'; // 'mobile' 或 'telephone'
+    let nameDisplayType = 'chinese';
+    let phoneDisplayType = 'mobile';
     
     // 更新小数位数设置
     function updateDecimalSetting() {
@@ -816,19 +895,16 @@
         }
     }
     
-    // 生成姓名（同时生成中英文）
+    // 生成姓名
     function generateNames() {
-        // 生成中文名
         const chineseFirstName = chineseFirstNames[Math.floor(Math.random() * chineseFirstNames.length)];
         const chineseLastName = chineseLastNames[Math.floor(Math.random() * chineseLastNames.length)];
         currentChineseName = chineseFirstName + chineseLastName;
         
-        // 生成英文名
         const englishFirstName = englishFirstNames[Math.floor(Math.random() * englishFirstNames.length)];
         const englishLastName = englishLastNames[Math.floor(Math.random() * englishLastNames.length)];
         currentEnglishName = englishFirstName + ' ' + englishLastName;
         
-        // 更新显示
         if (nameDisplayType === 'chinese') {
             document.getElementById('name-display').textContent = currentChineseName;
         } else {
@@ -836,21 +912,18 @@
         }
     }
     
-    // 生成电话号码（同时生成手机和座机）
+    // 生成电话号码
     function generatePhones() {
-        // 生成手机号
         const mobilePrefix = ['130', '131', '132', '133', '134', '135', '136', '137', '138', '139', 
                              '150', '151', '152', '153', '155', '156', '157', '158', '159', 
                              '180', '181', '182', '183', '184', '185', '186', '187', '188', '189'];
         const mobileNumber = Math.floor(10000000 + Math.random() * 90000000);
         currentMobile = mobilePrefix[Math.floor(Math.random() * mobilePrefix.length)] + mobileNumber.toString().substring(1);
         
-        // 生成座机号
         const areaCode = Math.floor(100 + Math.random() * 900).toString().substring(0, 4);
         const telNumber = Math.floor(1000000 + Math.random() * 9000000).toString().substring(0, 8);
         currentTelephone = `${areaCode}-${telNumber.substring(0,4)}${telNumber.substring(4)}`;
         
-        // 更新显示
         if (phoneDisplayType === 'mobile') {
             document.getElementById('phone-display').textContent = currentMobile;
         } else {
@@ -865,8 +938,10 @@
             price = Math.floor(Math.random() * 100);
         } else if (numberRange === 'medium') {
             price = Math.floor(Math.random() * 900) + 100;
-        } else {
+        } else if (numberRange === 'large') {
             price = Math.floor(Math.random() * 9000) + 1000;
+        } else {
+            price = Math.floor(Math.random() * 9000) + 10000;
         }
         
         let formattedPrice;
@@ -967,103 +1042,74 @@
         const genderCode = Math.floor(Math.random() * 10);
         document.getElementById('id-card').textContent = `${provinceCode}${cityCode}${year}${month}${day}${sequence}${genderCode}`;
     }
+// 更新后的图片加载函数    
+function generatePersonAvatar() {
+  const img = document.getElementById('person-avatar-img');
+  const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
+  const retryButton = img.parentElement.querySelector('.retry-button');
+  
+  loadingIndicator.style.display = 'flex';
+  retryButton.style.display = 'none';
+  img.classList.remove('loaded');
+  
+  const randomAPI = personAvatarAPIs[0];
+  const randomParams = `t=${new Date().getTime()}`;
+  img.src = `${randomAPI}?${randomParams}`;
+  
+  img.onload = function() {
+    loadingIndicator.style.display = 'none';
+    img.classList.add('loaded');
+  };
+  
+img.onerror = function() {
+    loadingIndicator.style.display = 'none';
+    retryButton.style.display = 'block';
+    console.error('图片加载失败:', this.src); // 添加错误日志
+};
+}
+// 更新重试函数
+function retryLoadImage(imgId) {
+  if (imgId === 'person-avatar-img') {
+    generatePersonAvatar();
+  } else if (imgId === 'nature-scenery-img') {
+    generateNatureScenery();
+  }
+}    
+function generateNatureScenery() {
+    const img = document.getElementById('nature-scenery-img');
+    const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
+    const retryButton = img.parentElement.querySelector('.retry-button');
     
-    // 图片生成函数 - 使用国内更可靠的API
-    function generateChineseAvatar() {
-        const img = document.getElementById('chinese-avatar');
-        const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
-        const retryButton = img.parentElement.querySelector('.retry-button');
-        
-        // 显示加载状态
-        loadingIndicator.style.display = 'flex';
-        img.style.opacity = '0.5';
-        retryButton.style.display = 'none';
-        
-        // 随机选择API源
-        const apiSource = Math.random() > 0.3 ? chineseAvatarAPIs : cachedAvatars;
-        const apiIndex = Math.floor(Math.random() * apiSource.length);
-        
-        // 使用缓存作为后备方案
-        const backupSrc = cachedAvatars[Math.floor(Math.random() * cachedAvatars.length)];
-        
-        // 添加时间戳避免缓存问题
-        const timestamp = new Date().getTime();
-        img.src = `${apiSource[apiIndex]}?t=${timestamp}`;
-        
-        // 设置超时检查
-        const timeout = setTimeout(() => {
-            if (!img.complete || img.naturalWidth === 0) {
-                img.src = backupSrc;
-            }
-        }, 3000);
-        
-        img.onload = function() {
-            clearTimeout(timeout);
-            loadingIndicator.style.display = 'none';
-            img.style.opacity = '1';
-        };
-        
-        img.onerror = function() {
-            clearTimeout(timeout);
-            img.src = backupSrc;
-        };
-    }
+    loadingIndicator.style.display = 'flex';
+    retryButton.style.display = 'none';
+    img.classList.remove('loaded');
     
-    function generateNatureScenery() {
-        const img = document.getElementById('nature-scenery');
-        const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
-        const retryButton = img.parentElement.querySelector('.retry-button');
-        
-        // 显示加载状态
-        loadingIndicator.style.display = 'flex';
-        img.style.opacity = '0.5';
-        retryButton.style.display = 'none';
-        
-        // 随机选择API源
-        const apiSource = Math.random() > 0.3 ? natureAPIs : cachedNature;
-        const apiIndex = Math.floor(Math.random() * apiSource.length);
-        
-        // 使用缓存作为后备方案
-        const backupSrc = cachedNature[Math.floor(Math.random() * cachedNature.length)];
-        
-        // 添加时间戳避免缓存问题
-        const timestamp = new Date().getTime();
-        img.src = `${apiSource[apiIndex]}?t=${timestamp}`;
-        
-        // 设置超时检查
-        const timeout = setTimeout(() => {
-            if (!img.complete || img.naturalWidth === 0) {
-                img.src = backupSrc;
-            }
-        }, 3000);
-        
-        img.onload = function() {
-            clearTimeout(timeout);
-            loadingIndicator.style.display = 'none';
-            img.style.opacity = '1';
-        };
-        
-        img.onerror = function() {
-            clearTimeout(timeout);
-            img.src = backupSrc;
-        };
-    }
+    // 随机选择API源
+    const apiIndex = Math.floor(Math.random() * natureAPIs.length);
     
-    // 图片加载错误处理
-    function handleImageError(img) {
-        const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
-        const retryButton = img.parentElement.querySelector('.retry-button');
-        
+    // 正确构造URL - 使用 ? 代替 &
+    const randomParams = `?t=${new Date().getTime()}&r=${Math.random()}`;
+    const src = `${natureAPIs[apiIndex]}${randomParams}`;
+    
+    img.src = src;
+    
+    img.onload = function() {
+        loadingIndicator.style.display = 'none';
+        img.classList.add('loaded');
+    };
+    
+    img.onerror = function() {
         loadingIndicator.style.display = 'none';
         retryButton.style.display = 'block';
-        img.style.opacity = '0.3';
-    }
+        console.error('图片加载失败:', src); // 添加错误日志
+    };
+}
     
     // 重试加载图片
-    function retryLoadImage(imgId) {
-        if (imgId === 'chinese-avatar') {
-            generateChineseAvatar();
-        } else {
+    function retryLoadImage(iframeId) {
+        if (iframeId === 'person-avatar-iframe') {
+            generatePersonAvatar();
+        } else if (iframeId === 'nature-scenery-iframe') {
             generateNatureScenery();
         }
     }
@@ -1071,9 +1117,16 @@
     // 复制到剪贴板功能
     function copyToClipboard(elementId) {
         const element = document.getElementById(elementId);
-        let text = element.textContent || element.src;
+        let text = '';
+        
+        if (element.tagName === 'IFRAME') {
+            text = element.src;
+        } else {
+            text = element.textContent || element.innerText;
+        }
         
         navigator.clipboard.writeText(text).then(() => {
+            copyCounter++;
             showNotification('已复制到剪贴板！');
         }).catch(err => {
             console.error('复制失败:', err);
@@ -1092,9 +1145,9 @@
         }, 2000);
     }
     
-    // 为图片添加点击复制功能
-    document.querySelectorAll('.image-item img').forEach(img => {
-        img.addEventListener('click', function() {
+    // 为iframe添加点击复制功能
+    document.querySelectorAll('.avatar-iframe').forEach(iframe => {
+        iframe.addEventListener('click', function() {
             copyToClipboard(this.id);
         });
     });
@@ -1120,13 +1173,10 @@
         generateTime();
         generateEmail();
         generateIdCard();
-        generateChineseAvatar();
+        generatePersonAvatar();
         generateNatureScenery();
         
-        // 更新计数器
-        generationCounter++;
-        document.getElementById('counter').textContent = generationCounter;
-        
+        // 更新计数器     
         showNotification('所有数据已重新生成！');
     }
     
