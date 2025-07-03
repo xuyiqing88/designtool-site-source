@@ -101,6 +101,7 @@
             background: white;
             border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
         
         header {
@@ -662,6 +663,14 @@
             </div>
         </div>
         
+<div class="data-item">
+    <div class="data-label">区域</div>
+    <div class="data-value" id="district">南山区</div>
+    <div class="data-controls">
+        <button class="btn" onclick="generateDistrict()"><i class="fas fa-sync-alt"></i></button>
+    </div>
+</div>
+
         <div class="data-item">
             <div class="data-label">详细地址</div>
             <div class="data-value" id="address">广东省深圳市南山区科技园南区12栋502室</div>
@@ -806,7 +815,7 @@
 <script>
     // 数据源
     const chineseFirstNames = ['张', '王', '李', '赵', '陈', '刘', '杨', '黄', '周', '吴', '徐', '孙', '马', '朱', '胡', '林', '郭', '何', '高', '罗'];
-    const chineseLastNames = ['伟', '芳', '娜', '秀英', '敏', '静', '丽', '强', '磊', '洋', '艳', '勇', '军', '杰', '娟', '涛', '明', '超', '秀兰', '霞'];
+    const chineseLastNames = ['义伟', '丽芳', '娜', '秀英', '敏', '静', '丽', '强', '石磊', '艺洋', '艳', '勇', '军', '俊杰', '娟', '涛', '晓明', '超', '秀兰', '霞'];
     
     const englishFirstNames = ['James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles', 
                               'Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth', 'Barbara', 'Susan', 'Jessica', 'Sarah', 'Karen'];
@@ -814,14 +823,152 @@
                              'Anderson', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin', 'Thompson', 'Garcia', 'Martinez', 'Robinson'];
     
     const countries = ['中国', '美国', '日本', '德国', '英国', '法国', '加拿大', '澳大利亚', '韩国', '新加坡', '俄罗斯', '巴西', '印度'];
-    const provinces = ['广东省', '江苏省', '山东省', '浙江省', '河南省', '四川省', '湖北省', '河北省', '湖南省', '福建省', '安徽省', '辽宁省'];
+    const provinces = ['北京市', '上海市', '天津市', '重庆市', '广东省', '江苏省', '山东省', '浙江省', '河南省', '四川省', '湖北省', '河北省', '湖南省', '福建省', '安徽省', '辽宁省'];
     const cities = {
+        '北京市': ['北京市'],
+        '上海市': ['上海市'],
+        '天津市': ['天津市'],
+        '重庆市': ['重庆市'],
         '广东省': ['广州市', '深圳市', '佛山市', '东莞市', '珠海市', '中山市', '惠州市', '汕头市'],
         '江苏省': ['南京市', '苏州市', '无锡市', '常州市', '徐州市', '南通市', '扬州市', '镇江市'],
         '山东省': ['济南市', '青岛市', '烟台市', '潍坊市', '淄博市', '临沂市', '济宁市', '泰安市'],
-        '浙江省': ['杭州市', '宁波市', '温州市', '嘉兴市', '绍兴市', '金华市', '台州市', '湖州市']
+        '浙江省': ['杭州市', '宁波市', '温州市', '嘉兴市', '绍兴市', '金华市', '台州市', '湖州市'],
+        '河南省': ['郑州市', '开封市', '洛阳市'],
+        '四川省': ['成都市', '绵阳市', '乐山市'],
+        '湖北省': ['武汉市', '黄石市', '宜昌市'],
+        '河北省': ['石家庄市', '唐山市', '秦皇岛市'],
+        '湖南省': ['长沙市', '株洲市', '湘潭市'],
+        '福建省': ['福州市', '厦门市', '泉州市'],  // 添加福建省的城市
+        '安徽省': ['合肥市', '芜湖市', '蚌埠市'],  // 添加安徽省的城市
+        '辽宁省': ['沈阳市', '大连市', '鞍山市']   // 添加辽宁省的城市
     };
-    
+    // 添加区域数据源（放在countries数组附近）
+    const districts = {
+        '北京市': {
+            '北京市': ['东城区', '西城区', '朝阳区', '丰台区', '石景山区', '海淀区', '门头沟区', '房山区', '通州区', '顺义区', '昌平区', '大兴区', '怀柔区', '平谷区', '密云区', '延庆区']
+        },
+        '上海市': {
+            '上海市': ['黄浦区', '徐汇区', '长宁区', '静安区', '普陀区', '虹口区', '杨浦区', '闵行区', '宝山区', '嘉定区', '浦东新区', '金山区', '松江区', '青浦区', '奉贤区', '崇明区']
+        },
+        '天津市': {
+            '天津市': ['和平区', '河东区', '河西区', '南开区', '河北区', '红桥区', '东丽区', '西青区', '津南区', '北辰区', '武清区', '宝坻区', '滨海新区', '宁河区', '静海区', '蓟州区']
+        },
+        '重庆市': {
+            '重庆市': ['万州区', '涪陵区', '渝中区', '大渡口区', '江北区', '沙坪坝区', '九龙坡区', '南岸区', '北碚区', '綦江区', '大足区', '渝北区', '巴南区', '黔江区', '长寿区', '江津区']
+        },
+        '广东省': {
+            '广州市': ['天河区', '越秀区', '海珠区', '荔湾区', '白云区', '黄埔区', '番禺区', '花都区'],
+            '深圳市': ['南山区', '福田区', '罗湖区', '宝安区', '龙岗区', '盐田区', '龙华区', '坪山区'],
+            '佛山市': ['禅城区', '南海区', '顺德区', '三水区', '高明区'],
+            '东莞市': ['莞城区', '南城区', '东城区', '万江区', '虎门镇', '长安镇'],
+            '珠海市': ['香洲区', '斗门区', '金湾区'],
+            '中山市': ['石岐区', '东区', '西区', '南区', '五桂山区'],
+            '惠州市': ['惠城区', '惠阳区', '博罗县', '惠东县', '龙门县'],
+            '汕头市': ['金平区', '龙湖区', '濠江区', '潮阳区', '潮南区', '澄海区', '南澳县']
+        },
+        '江苏省': {
+            '南京市': ['玄武区', '秦淮区', '建邺区', '鼓楼区', '浦口区', '栖霞区', '雨花台区', '江宁区'],
+            '苏州市': ['姑苏区', '虎丘区', '吴中区', '相城区', '吴江区', '常熟市', '张家港市', '昆山市'],
+            '无锡市': ['梁溪区', '锡山区', '惠山区', '滨湖区', '新吴区'],
+            '常州市': ['天宁区', '钟楼区', '新北区', '武进区', '金坛区'],
+            '徐州市': ['云龙区', '鼓楼区', '贾汪区', '泉山区', '铜山区'],
+            '南通市': ['崇川区', '港闸区', '通州区', '海门市'],
+            '扬州市': ['广陵区', '邗江区', '江都区'],
+            '镇江市': ['京口区', '润州区', '丹徒区', '丹阳市']
+        },
+        '山东省': {
+            '济南市': ['历下区', '市中区', '槐荫区', '天桥区', '历城区', '长清区'],
+            '青岛市': ['市南区', '市北区', '黄岛区', '崂山区', '李沧区', '城阳区'],
+            '烟台市': ['芝罘区', '福山区', '牟平区', '莱山区'],
+            '潍坊市': ['潍城区', '寒亭区', '坊子区', '奎文区'],
+            '淄博市': ['淄川区', '张店区', '博山区', '临淄区', '周村区'],
+            '临沂市': ['兰山区', '罗庄区', '河东区'],
+            '济宁市': ['任城区', '兖州区', '曲阜市'],
+            '泰安市': ['泰山区', '岱岳区']
+        },
+        '浙江省': {
+            '杭州市': ['上城区', '下城区', '江干区', '拱墅区', '西湖区', '滨江区', '萧山区', '余杭区'],
+            '宁波市': ['海曙区', '江北区', '北仑区', '镇海区', '鄞州区'],
+            '温州市': ['鹿城区', '龙湾区', '瓯海区'],
+            '嘉兴市': ['南湖区', '秀洲区'],
+            '绍兴市': ['越城区', '柯桥区', '上虞区'],
+            '金华市': ['婺城区', '金东区'],
+            '台州市': ['椒江区', '黄岩区', '路桥区'],
+            '湖州市': ['吴兴区', '南浔区']
+        },
+        '河南省': {
+            '郑州市': ['中原区', '二七区', '管城回族区', '金水区', '上街区', '惠济区'],
+            '开封市': ['龙亭区', '顺河回族区', '鼓楼区', '禹王台区', '祥符区'],
+            '洛阳市': ['老城区', '西工区', '瀍河回族区', '涧西区', '吉利区', '洛龙区']
+        },
+        '四川省': {
+            '成都市': ['锦江区', '青羊区', '金牛区', '武侯区', '成华区', '龙泉驿区', '青白江区', '新都区', '温江区', '双流区'],
+            '绵阳市': ['涪城区', '游仙区', '安州区'],
+            '乐山市': ['市中区', '沙湾区', '五通桥区', '金口河区']
+        },
+        '湖北省': {
+            '武汉市': ['江岸区', '江汉区', '硚口区', '汉阳区', '武昌区', '青山区', '洪山区', '东西湖区', '汉南区', '蔡甸区', '江夏区', '黄陂区', '新洲区'],
+            '黄石市': ['黄石港区', '西塞山区', '下陆区', '铁山区'],
+            '宜昌市': ['西陵区', '伍家岗区', '点军区', '猇亭区', '夷陵区']
+        },
+        '河北省': {
+            '石家庄市': ['长安区', '桥西区', '新华区', '井陉矿区', '裕华区', '藁城区', '鹿泉区', '栾城区'],
+            '唐山市': ['路南区', '路北区', '古冶区', '开平区', '丰南区', '丰润区', '曹妃甸区'],
+            '秦皇岛市': ['海港区', '山海关区', '北戴河区', '抚宁区']
+        },
+        '湖南省': {
+            '长沙市': ['芙蓉区', '天心区', '岳麓区', '开福区', '雨花区', '望城区'],
+            '株洲市': ['荷塘区', '芦淞区', '石峰区', '天元区'],
+            '湘潭市': ['雨湖区', '岳塘区']
+        },
+        '福建省': {
+            '福州市': ['鼓楼区', '台江区', '仓山区', '马尾区', '晋安区', '长乐区'],
+            '厦门市': ['思明区', '海沧区', '湖里区', '集美区', '同安区', '翔安区'],
+            '泉州市': ['鲤城区', '丰泽区', '洛江区', '泉港区']
+        },
+        '安徽省': {
+            '合肥市': ['瑶海区', '庐阳区', '蜀山区', '包河区'],
+            '芜湖市': ['镜湖区', '弋江区', '鸠江区', '三山区'],
+            '蚌埠市': ['龙子湖区', '蚌山区', '禹会区', '淮上区']
+        },
+        '辽宁省': {
+            '沈阳市': ['和平区', '沈河区', '大东区', '皇姑区', '铁西区', '苏家屯区', '浑南区', '沈北新区', '于洪区'],
+            '大连市': ['中山区', '西岗区', '沙河口区', '甘井子区', '旅顺口区', '金州区'],
+            '鞍山市': ['铁东区', '铁西区', '立山区', '千山区']
+        }
+    };
+
+// 添加生成区域的函数
+    function generateDistrict(province = null, city = null) {
+        if (!province) {
+            province = document.getElementById('province').textContent;
+        }
+        if (!city) {
+            city = document.getElementById('city').textContent;
+        }
+        
+        // 直辖市特殊处理：城市名与省份名相同
+        const isMunicipality = ['北京市', '上海市', '天津市', '重庆市'].includes(province);
+        if (isMunicipality) {
+            city = province; // 确保城市名与省份名一致
+        }
+        
+        // 获取当前省份的区域数据
+        const provinceDistricts = districts[province] || {};
+        
+        // 获取当前城市的区域列表
+        let cityDistricts = provinceDistricts[city];
+        
+        // 如果找不到该城市的区域数据，尝试使用该省份的第一个城市
+        if (!cityDistricts) {
+            const firstCity = Object.keys(provinceDistricts)[0];
+            cityDistricts = provinceDistricts[firstCity] || ['朝阳区', '海淀区', '南山区', '福田区'];
+        }
+        
+        // 随机选择一个区域
+        const district = cityDistricts[Math.floor(Math.random() * cityDistricts.length)];
+        document.getElementById('district').textContent = district;
+    }
     const storeBrands = ['雅迪电动车', '中国移动', '中国联通', '华为授权店', '小米之家', '苹果专卖店', 
                        '肯德基', '麦当劳', '星巴克', '海底捞', '必胜客', '永辉超市', '家乐福', '苏宁易购'];
     const storeSuffixes = ['中关村店', '王府井店', '西单店', '国贸店', '望京店', '五道口店', 
@@ -956,6 +1103,14 @@
     function generateLongText() {
         const paragraphs = [
             "用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。设计过程中需要充分考虑用户需求、使用场景和操作习惯。响应式网页设计已成为现代前端开发的标准要求。它使得网站能够自适应不同尺寸的设备屏幕，提供一致的用户体验。实现响应式设计需要使用媒体查询、弹性布局和相对单位等技术，确保在各种设备上都能完美展示。",
+	"在东汉末年，天下大乱，群雄并起。曹操，这位一代枭雄，携官渡之战大胜之余威，挥师南下，意图一统中原。而此刻，长江之南，孙权与刘备联军正严阵以待，一场决定天下归属的大战——赤壁之战，即将拉开序幕。",
+	"行至白虎岭前，白骨精化作一美貌村姑，企图用美食诱惑唐僧师徒，以达到吃唐僧肉长生不老的目的。孙悟空凭借火眼金睛识破妖精真身，挥棒便打，却被唐僧误会为滥杀无辜，念起紧箍咒。白骨精趁机逃脱，又两次变换身形，先后化作老妇和孩童，均被孙悟空识破并打死。",
+	"夜幕降临，江面之上，东南风骤起，正是实施计划的最佳时机。黄盖诈降，率领装满易燃物的船只靠近曹军舰队，火光瞬间冲天而起，江面变成了一片火海。曹军战船相连，火势迅速蔓延，士兵们哭喊声、惨叫声交织在一起，哀鸿遍野。曹操在乱军中仓皇逃窜，最终只得放弃南下统一中原的梦想，退回北方。",
+	 "叶文洁站在红岸基地的雷达峰上，凝视着夜空。在她的眼中，星空不再是宁静而深邃的，而是充满了未知与危险。她回想起了那个神秘的信号，那是来自三体世界的呼唤，一个与人类截然不同的文明。她的心中涌动着复杂的情感，有对未知的渴望，也有对人类未来的担忧。她知道，一旦这个秘密被揭开，将彻底改变人类的命运。但她也明白，这是无法回避的命运，人类必须面对宇宙的广阔与深邃，以及其中潜藏的无数可能。",
+ 	"在人生的旅途中，我们时常会遇到各种各样的风景。有时，那是一片繁花似锦的春日景象，万物复苏，生机勃勃，仿佛每一片叶子都在诉说着生命的奇迹；有时，那是一幅萧瑟凄凉的秋日图景，落叶纷飞，寒风瑟瑟，让人不禁感叹岁月的无情与沧桑。然而，无论是哪一种风景，都是生命旅程中不可或缺的一部分，它们共同构成了我们丰富多彩的人生画卷。",
+	"当我们置身于大自然的怀抱中时，心灵往往会得到一种难以言喻的宁静与洗涤。山川湖海、日月星辰，这些自然界的壮丽景观，不仅让我们领略到了大自然的神奇魅力，更让我们深刻体会到了生命的渺小与伟大。在这样的时刻，我们会不由自主地放慢脚步，去聆听内心的声音，去感受那份来自心底的平和与喜悦。",
+	"生活虽然充满了挑战与艰辛，但只要我们拥有一颗感恩的心，一双善于发现美的眼睛，就能从平凡的日子里找到属于自己的幸福与满足。让我们珍惜每一个当下，用心去感受生命中的每一份美好，让心灵在岁月的长河中绽放出最绚烂的光彩。",
+	"友谊，是我们人生路上最宝贵的财富。它如珍珠，串联成璀璨的项链；如彩绸，剪裁成绚丽的衣衫；如花种，播撒出五彩的花坛。友谊之火，温暖了受伤的心，照亮了前进的方向，驱散了孤独，点燃了新的希望。让我们用真诚去播种友谊，用理解去护理，用热情去浇灌。",
             "前端框架如React、Vue和Angular大大提高了开发效率和代码质量。这些框架提供了组件化开发模式，使得代码更易于维护和复用。同时，它们还提供了状态管理、路由等解决方案，帮助开发者构建复杂的单页面应用。性能优化是前端开发中不可忽视的方面。通过代码分割、懒加载、资源压缩和缓存策略等技术，可以显著提高网页加载速度和运行效率。良好的性能不仅提升用户体验，也对SEO有积极影响。",
             "无障碍访问（Accessibility）是创建包容性网站的重要原则。通过遵循WCAG标准，使用语义化HTML，提供足够的对比度，确保键盘可操作性，可以让网站对所有用户友好，包括残障人士。用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。设计过程中需要充分考虑用户需求、使用场景和操作习惯。"
         ];
@@ -970,35 +1125,66 @@
     function generateProvince() {
         const province = provinces[Math.floor(Math.random() * provinces.length)];
         document.getElementById('province').textContent = province;
+        
+        // 生成对应的城市和区域
         generateCity(province);
     }
     
+// 修改generateCity函数，在生成城市后自动生成区域
     function generateCity(province = null) {
         if (!province) {
             province = document.getElementById('province').textContent;
         }
+        // 获取省份对应的城市列表，如果没有则使用默认城市列表
+        let cityList = cities[province];
+        if (!cityList) {
+            // 默认城市列表（包含所有省份的主要城市）
+            cityList = [
+                '北京市', '上海市', '天津市', '重庆市',
+                '广州市', '深圳市', '南京市', '苏州市',
+                '济南市', '青岛市', '杭州市', '宁波市',
+                '郑州市', '成都市', '武汉市', '石家庄市',
+                '长沙市', '福州市', '合肥市', '沈阳市'
+            ];
+        }
         
-        const cityList = cities[province] || ['北京市', '上海市', '广州市', '深圳市'];
-        const city = cityList[Math.floor(Math.random() * cityList.length)];
-        document.getElementById('city').textContent = city;
+        const city = cityList[Math.floor(Math.random() * cityList.length)];     
+   
+        // 直辖市特殊处理
+        const isMunicipality = ['北京市', '上海市', '天津市', '重庆市'].includes(province);
+        if (isMunicipality) {
+            document.getElementById('city').textContent = province; // 显示省份名作为城市名
+        } else {
+            document.getElementById('city').textContent = city;
+        }
+        
+        // 生成对应的区域（传递省份和城市参数）
+        generateDistrict(province, isMunicipality ? province : city);
     }
     
     function generateAddress() {
         const province = document.getElementById('province').textContent;
         const city = document.getElementById('city').textContent;
-        const districts = ['朝阳区', '海淀区', '南山区', '福田区', '浦东新区', '黄浦区', '天河区', '越秀区'];
+        const district = document.getElementById('district').textContent;
+        
         const streets = ['人民路', '中山路', '解放路', '建设路', '文化路', '科技大道', '创新路', '创业路'];
         const numbers = ['1号', '15号', '28号', '56号', '102号', '205号', '308号', '500号'];
         const buildings = ['A座', 'B座', 'C座', 'D座', 'E座', 'F座', 'G座'];
         const rooms = ['101室', '202室', '303室', '505室', '606室', '808室', '909室'];
         
-        const district = districts[Math.floor(Math.random() * districts.length)];
-        const street = streets[Math.floor(Math.random() * streets.length)];
-        const number = numbers[Math.floor(Math.random() * numbers.length)];
-        const building = buildings[Math.floor(Math.random() * buildings.length)];
-        const room = rooms[Math.floor(Math.random() * rooms.length)];
+        // 使用不同的变量名（避免与 district 冲突）
+        const randomStreet = streets[Math.floor(Math.random() * streets.length)];
+        const randomNumber = numbers[Math.floor(Math.random() * numbers.length)];
+        const randomBuilding = buildings[Math.floor(Math.random() * buildings.length)];
+        const randomRoom = rooms[Math.floor(Math.random() * rooms.length)];
         
-        document.getElementById('address').textContent = `${province}${city}${district}${street}${number}${building}${room}`;
+        // 直辖市地址格式处理（不重复显示省份名称）
+        const isMunicipality = ['北京市', '上海市', '天津市', '重庆市'].includes(province);
+        const address = isMunicipality 
+            ? `${city}${district}${randomStreet}${randomNumber}${randomBuilding}${randomRoom}`
+            : `${province}${city}${district}${randomStreet}${randomNumber}${randomBuilding}${randomRoom}`;
+        
+        document.getElementById('address').textContent = address;
     }
     
     function generateStoreAddress() {
@@ -1162,7 +1348,7 @@ function generateNatureScenery() {
         generatePrice();
         generateLongText();
         generateCountry();
-        generateProvince();
+        generateProvince();  // 这会生成省份、城市和区域
         generateAddress();
         generateStoreAddress();
         generateDate();
@@ -1172,7 +1358,6 @@ function generateNatureScenery() {
         generatePersonAvatar();
         generateNatureScenery();
         
-        // 更新计数器     
         showNotification('所有数据已重新生成！');
     }
     
