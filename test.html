@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>特色设计工具合集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <style>
+        :root {
+            --primary: #5963ff;
+            --primary-light: #eef0ff;
+            --primary-dark: #4a52d4;
+            --dark: #2d3748;
+            --darker: #1a202c;
+            --light: #ffffff;
+            --gray: #718096;
+            --light-gray: #edf2f7;
+            --card-bg: #ffffff;
+            --card-hover: #f7fafc;
+            --border: #e2e8f0;
+            --badge: #ff6b6b; /* 统一为红色标签 */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f8f9fa;
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        /* 二维码弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+            max-height: 90vh;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: popup 0.3s ease-out;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .modal img {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 15px 0;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        
+        .modal h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .donate-link {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .donate-link:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+        
+        .donate-link::before {
+            content: "🦴";
+            color: #ff6b6b;
+            margin-right: 5px;
+            font-size: 0.9em;
+        }
+        
+        @keyframes popup {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0 20px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.1rem;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #5963ff, #6a11cb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            font-size: 1rem;
+            margin: 0 auto 20px;
+            max-width: 600px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 5px 9px rgb(0 0 0 / 2%);
+            backdrop-filter: blur(5px);
+        }
+        
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--light);
+            color: var(--dark);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 2px 15px rgba(89, 99, 255, 0.2);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            z-index: 999;
+        }
+        
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .category-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .category-btn i {
+            margin-right: 8px;
+            font-size: 0.9em;
+        }
+        
+        /* 分类区域 */
+        .category-section {
+            margin-bottom: 10px;
+            padding-top: 16px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            padding-bottom: 15px;
+            /*border-bottom: 1px solid var(--border);*/
+        }
+        
+        .category-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 16px;
+        }
+        
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            height: 100%;
+            display: flex;
+            border: 1px solid var(--border);
+            height: 180px;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-cover {
+            width: 120px;
+            height: auto;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .tool-cover img {
+            width: auto;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .tool-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tool-card h3 {
+            font-size: 1.0rem;
+            margin-bottom: 8px;
+            color: var(--darker);
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .tool-card p {
+            color: var(--gray);
+            margin-bottom: 12px;
+            font-size: 13px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 18px;
+        }
+        
+        .tool-link {
+            display: inline-block;
+            padding: 5px 16px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: auto;
+            width: fit-content;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .tool-link:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(89, 99, 255, 0.3);
+        }
+        
+        /* 状态标签样式 - 统一为红色 */
+        .tool-badge {
+            padding: 4px 0;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--badge);
+            text-transform: uppercase;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: var(--gray);
+            margin-top: 50px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* 评论区域样式 */
+        .comments-section {
+            max-width: 1500px;
+            margin: 50px auto 0;
+            padding: 0 20px;
+        }
+        
+        .comments-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comments-header i {
+            margin-right: 10px;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .comments-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--darker);
+        }
+        
+        #disqus_thread {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .disqus-note {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            padding: 0 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tool-cover {
+                width: 100px;
+            }
+            
+            #disqus_thread {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-card {
+                flex-direction: row;
+            }
+            
+            .tool-cover {
+                width: 120px;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+    </style>
+</head>
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
+<body>
+    <div class="container">
+        <header>
+            <h1>特色设计工具合集</h1>
+            <p class="subtitle">集成各种特色设计工具，提高办公效率</p>
+        </header>
+        
+        <div class="controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索工具...">
+            </div>
+            
+            <div class="category-filter">
+                <button class="category-btn" data-category="3D">
+                    <i class="fas fa-cube"></i>
+                    <span>3D工具</span>
+                </button>
+                <button class="category-btn" data-category="dev">
+                    <i class="fas fa-robot"></i>
+                    <span>AI工具</span>
+                </button>
+                <button class="category-btn" data-category="design">
+                    <i class="fas fa-paint-brush"></i>
+                    <span>设计工具</span>
+                </button>
+                <button class="category-btn" data-category="utility">
+                    <i class="fas fa-wrench"></i>
+                    <span>实用工具</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="toolsContainer" style="padding: 0 20px;">
+            <!-- 分类区域将由JS动态生成 -->
+        </div>
+        
+        <!-- 评论区域 -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <i class="fas fa-comments"></i>
+                <h2 class="comments-title">用户评论与反馈</h2>
+            </div>
+            <div id="disqus_thread"></div>
+            <p class="disqus-note">评论功能由Disqus提供，加载可能需要几秒钟时间</p>
+        </div>
+        
+        <footer>
+            <p>© 2025 特色效率工具合集 | BY徐艺青<a class="donate-link" id="donateBtn">向我投喂（自愿）</a></p>
+        </footer>
+    </div>
+    
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h3>微信扫一扫！</h3>
+            <img src="img/qrcode.webp" alt="捐赠二维码">
+            <p>您的支持是我持续更新的动力</p>
+        </div>
+    </div>
+    
+    <script>
+        // Tool data - 确保每个工具都有badge属性
+        const tools = [
+            {
+                title: "模型数据集编辑器",
+                description: "编辑和管理机器学习模型的数据集，支持AI反推提示词、一键翻译、批量修改尺寸、批量修改背景、打包下载等功能。",
+                category: "dev",
+                link: "模型数据集编辑器.html",
+                icon: "img/AI.png",
+                badge: ""
+            },  
+            {
+                title: "UI设计数据生成器",
+                description: "快速生成各类测试数据，用于表单填充和UI设计验证。",
+                category: "design",
+                link: "数据模拟.html",
+                icon: "img/数据模拟.png",
+                badge: "NEW"
+            }, 
+            {
+                title: "在线版Photoshop",
+                description: "免费的在线版Photoshop，无惧版权风险问题。",
+                category: "design",
+                link: "PS.html",
+                icon: "img/PS.png",
+                badge: "NEW"
+            },  
+            {
+                title: "城市天际线生成器",
+                description: "创建独特的扁平化的城市天际线，具有逼真的建筑层次感和现代化设计。",
+                category: "design",
+                link: "city_building.html",
+                icon: "img/city.png",
+                badge: ""
+            },  
+            {
+                title: "SDXL提示词风格大全",
+                description: "包含来自 SAI 官方、TWRI 和其他贡献者的 587 种提示词风格，支持一键复制提示词，快速应用到您的 AI 图像生成中。",
+                category: "dev",
+                link: "SDXL.html",
+                icon: "img/SDXL.png",
+                badge: ""
+            },    
+            {
+                title: "无缝贴图预览工具",
+                description: "预览和测试无缝贴图效果，支持实时调整贴图参数，可视化展示贴图在3D模型上的效果。",
+                category: "3D",
+                link: "无缝贴图预览工具.html",
+                icon: "img/贴图.png",
+                badge: ""
+            },
+            {
+                title: "法线图转换工具",
+                description: "上传灰度高度图（包括TIFF格式）或使用示例图像，实时生成高质量的法线贴图。",
+                category: "3D",
+                link: "高级法线图转换器.html",
+                icon: "img/法线.png",
+                badge: ""
+            },
+            {
+                title: "ORM贴图生成工具",
+                description: "上传AO、粗糙度和金属度贴图自动合成ORM纹理贴图，或上传ORM贴图拆解为独立通道。",
+                category: "3D",
+                link: "ORM贴图生成工具.html",
+                icon: "img/body4orm.png",
+                badge: "" 
+            },
+            {
+                title: "颜色转换工具",
+                description: "非线性颜色转线性颜色，用于C4D、blender，颜色格式互转（HEX, RGB, HSL, HSV）。",
+                category: "design",
+                link: "颜色转换工具.html",
+                icon: "img/颜色.png",
+                badge: ""
+            },
+            {
+                title: "BASE64图片转换器",
+                description: "将图片转换为Base64编码或从Base64编码还原为图片，支持多种图片格式。",
+                category: "utility",
+                link: "BASE64图片转换器.html",
+                icon: "img/base64.png",
+                badge: ""
+            },
+            {
+                title: "本地翻译工具",
+                description: "本地翻译工具，支持30多种语言互译，根据文本匹配度提供其他建议。",
+                category: "utility",
+                link: "本地翻译工具.html",
+                icon: "img/翻译.png",
+                badge: "HOT"
+            },
+        ];
+
+        // 分类映射
+        const categoryMap = {
+            'design': { name: '设计工具', icon: 'fas fa-paint-brush' },
+            '3D': { name: '3D工具', icon: 'fas fa-cube' },
+            'dev': { name: 'AI工具', icon: 'fas fa-robot' },
+            'utility': { name: '实用工具', icon: 'fas fa-wrench' }
+        };
+
+        // 按类别分组工具
+        function groupToolsByCategory() {
+            const grouped = {};
+            tools.forEach(tool => {
+                if (!grouped[tool.category]) {
+                    grouped[tool.category] = [];
+                }
+                grouped[tool.category].push(tool);
+            });
+            return grouped;
+        }
+
+        // 渲染分类区域
+        function renderCategorySections() {
+            const container = document.getElementById('toolsContainer');
+            container.innerHTML = '';
+            
+            const groupedTools = groupToolsByCategory();
+            
+            // 按分类顺序渲染
+            Object.keys(categoryMap).forEach(categoryKey => {
+                if (groupedTools[categoryKey]) {
+                    const category = categoryMap[categoryKey];
+                    const toolsList = groupedTools[categoryKey];
+                    
+                    const section = document.createElement('section');
+                    section.className = 'category-section';
+                    section.id = `category-${categoryKey}`;
+                    
+                    section.innerHTML = `
+                        <div class="category-header">
+                            <div class="category-icon">
+                                <i class="${category.icon}"></i>
+                            </div>
+                            <h2 class="category-title">${category.name}</h2>
+                        </div>
+                        <div class="tools-grid" id="tools-${categoryKey}"></div>
+                    `;
+                    
+                    container.appendChild(section);
+                    
+                    // 渲染该分类下的工具
+                    const gridContainer = section.querySelector(`.tools-grid`);
+                    toolsList.forEach(tool => {
+                        const toolCard = document.createElement('div');
+                        toolCard.className = 'tool-card';
+                        toolCard.setAttribute('data-category', tool.category);
+                        
+                        // 添加状态标签（放在标题前面）
+                        let badgeHtml = '';
+                        if (tool.badge) {
+                            badgeHtml = `<span class="tool-badge">${tool.badge}</span>`;
+                        }
+                        
+                        toolCard.innerHTML = `
+                            <div class="tool-cover">
+                                <img src="${tool.icon}" alt="${tool.title}">
+                            </div>
+                            <div class="tool-content">
+                                <h3>${badgeHtml}${tool.title}</h3>
+                                <p>${tool.description}</p>
+                                <a href="${tool.link}" class="tool-link">打开工具</a>
+                            </div>
+                        `;
+                        
+                        gridContainer.appendChild(toolCard);
+                    });
+                }
+            });
+            
+            // 重新附加悬停效果
+            attachHoverEffects();
+        }
+
+        // 初始渲染
+        renderCategorySections();
+
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            if (!searchTerm) {
+                // 清空搜索，显示所有分类
+                renderCategorySections();
+                return;
+            }
+            
+            const filteredTools = tools.filter(tool => 
+                tool.title.toLowerCase().includes(searchTerm) || 
+                tool.description.toLowerCase().includes(searchTerm)
+            );
+            
+            // 按搜索结果显示
+            const container = document.getElementById('toolsContainer');
+            container.innerHTML = '';
+            
+            if (filteredTools.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results" style="text-align: center; padding: 50px;">
+                        <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                        <h3>未找到匹配的工具</h3>
+                        <p>请尝试不同的搜索关键词</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 为搜索结果创建临时分类
+            const section = document.createElement('section');
+            section.className = 'category-section';
+            section.id = 'search-results';
+            
+            section.innerHTML = `
+                <div class="category-header">
+                    <div class="category-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h2 class="category-title">搜索结果 (${filteredTools.length})</h2>
+                </div>
+                <div class="tools-grid" id="tools-search"></div>
+            `;
+            
+            container.appendChild(section);
+            
+            // 渲染搜索结果
+            const gridContainer = section.querySelector(`.tools-grid`);
+            filteredTools.forEach(tool => {
+                const toolCard = document.createElement('div');
+                toolCard.className = 'tool-card';
+                toolCard.setAttribute('data-category', tool.category);
+                
+                // 添加状态标签（放在标题前面）
+                let badgeHtml = '';
+                if (tool.badge) {
+                    badgeHtml = `<span class="tool-badge">${tool.badge}</span>`;
+                }
+                
+                toolCard.innerHTML = `
+                    <div class="tool-cover">
+                        <img src="${tool.icon}" alt="${tool.title}">
+                    </div>
+                    <div class="tool-content">
+                        <h3>${badgeHtml}${tool.title}</h3>
+                        <p>${tool.description}</p>
+                        <a href="${tool.link}" class="tool-link">打开工具</a>
+                    </div>
+                `;
+                
+                gridContainer.appendChild(toolCard);
+            });
+            
+            // 重新附加悬停效果
+            attachHoverEffects();
+        });
+        
+        // 分类筛选功能
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 更新按钮状态
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                
+                // 滚动到对应分类
+                const targetSection = document.getElementById(`category-${category}`);
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 悬停效果
+        function attachHoverEffects() {
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            toolCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        }
+
+        // 二维码弹窗控制
+        const donateBtn = document.getElementById('donateBtn');
+        const qrModal = document.getElementById('qrModal');
+        const closeModal = document.getElementById('closeModal');
+        
+        // 打开弹窗
+        donateBtn.addEventListener('click', function() {
+            qrModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // 关闭弹窗
+        closeModal.addEventListener('click', function() {
+            qrModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', function(event) {
+            if (event.target === qrModal) {
+                qrModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // 按ESC键关闭
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && qrModal.style.display === 'flex') {
+                qrModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+    
+    <!-- Disqus评论系统 -->
+    <script>
+        // 配置Disqus
+        var disqus_config = function () {
+            // 替换为你的Disqus shortname
+            this.page.url = window.location.href;  // 当前页面URL
+            this.page.identifier = 'design-tools-index'; // 页面唯一标识符
+            this.page.title = '特色设计工具合集';
+        };
+        
+        (function() { // 创建并插入脚本
+            var d = document, s = d.createElement('script');
+            s.src = 'https://xuyiqing.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>请启用JavaScript以查看<a href="https://disqus.com/?ref_noscript">Disqus评论</a></noscript>
+</body>
+</html>
