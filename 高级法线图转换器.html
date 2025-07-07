@@ -117,7 +117,7 @@
             margin: 0 auto
         }
         
-        .content {
+        .content-n {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
@@ -126,7 +126,7 @@
         }
         
         @media (max-width: 900px) {
-            .content {
+            .content-n {
                 grid-template-columns: 1fr;
                 padding: 0;
             }
@@ -142,6 +142,7 @@
             flex-direction: column;
             height: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	min-width: 640px;
         }
         
         .panel h2 {
@@ -555,6 +556,7 @@
             
             .panel {
                 padding: 20px 15px;
+		min-width: auto;
             }
             
             .file-upload-area {
@@ -768,7 +770,7 @@
             <p class="header-subtitle">利用GPU加速处理，实现超快法线贴图生成（支持TIFF格式），新增3D模型预览功能</p>
         </header>
         
-        <div class="content">
+        <div class="content-n">
             <div class="progress-container" id="progressContainer">
                 <div class="quality-indicator">
                     <span><i class="fas fa-sync fa-spin"></i> 处理中...</span>
