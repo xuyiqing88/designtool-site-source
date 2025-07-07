@@ -361,7 +361,7 @@
             border-top: 1px solid var(--border);
         }
         
-        /* 评论区域样式 */
+        /* 评论区域样式 - 重点优化区域 */
         .comments-section {
             margin-top: 60px;
             padding: 0 20px;
@@ -396,8 +396,28 @@
             border: 1px solid var(--border);
             overflow: hidden;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            padding: 30px;
             margin-bottom: 40px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 优化评论区容器 */
+        #giscus {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+            width: 100%;
+        }
+        
+        /* 确保Giscus组件填满容器 */
+        .giscus-frame {
+            width: 100%;
+            flex: 1;
+            border: none;
+            border-radius: 0 0 15px 15px;
+            overflow: hidden;
         }
         
         .giscus-loading {
@@ -407,6 +427,7 @@
             justify-content: center;
             padding: 40px 0;
             color: var(--gray);
+            flex: 1;
         }
         
         .giscus-loading .spinner {
@@ -422,20 +443,33 @@
         .giscus-error {
             background: #ffebee;
             color: #c62828;
-            padding: 20px;
+            padding: 40px 20px;
             border-radius: 8px;
             text-align: center;
-            margin-top: 20px;
+            margin: auto;
+            max-width: 600px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         .giscus-error a {
             color: var(--primary);
             text-decoration: none;
             font-weight: 500;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: var(--primary-light);
+            border-radius: 4px;
+            transition: all 0.3s;
         }
         
         .giscus-error a:hover {
             text-decoration: underline;
+            background: var(--primary);
+            color: white;
         }
         
         @keyframes spin {
@@ -461,8 +495,21 @@
                 width: 100px;
             }
             
+            /* 移动端评论区优化 */
+            .comments-section {
+                padding: 0 10px;
+            }
+            
             .comments-container {
-                padding: 20px 15px;
+                border-radius: 12px;
+            }
+            
+            .giscus-loading {
+                padding: 30px 0;
+            }
+            
+            .giscus-error {
+                padding: 30px 15px;
             }
         }
         
@@ -480,6 +527,15 @@
                 height: auto;
                 border-right: none;
                 border-bottom: 1px solid var(--border);
+            }
+            
+            /* 移动端评论区优化 */
+            .comments-title {
+                font-size: 1.2rem;
+            }
+            
+            .comments-icon {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -909,6 +965,32 @@
                 const giscusContainer = document.getElementById('giscus');
                 giscusContainer.classList.remove('giscus-loading');
                 giscusContainer.innerHTML = ''; // 清除加载状态
+                
+                // 创建Giscus iframe
+                const iframe = document.createElement('iframe');
+                iframe.className = 'giscus-frame';
+                iframe.setAttribute('id', 'giscus-frame');
+                iframe.setAttribute('title', 'Comments');
+                iframe.setAttribute('scrolling', 'no');
+                giscusContainer.appendChild(iframe);
+                
+                // 重新初始化Giscus
+                window.giscus = {
+                    repo: repo,
+                    repoId: repoId,
+                    category: category,
+                    categoryId: categoryId,
+                    mapping: 'pathname',
+                    strict: '0',
+                    reactionsEnabled: '1',
+                    emitMetadata: '0',
+                    inputPosition: 'bottom',
+                    theme: 'light',
+                    lang: 'zh-CN',
+                    loading: 'lazy'
+                };
+                
+                window.giscusRender();
             };
             
             script.onerror = function() {
@@ -919,7 +1001,7 @@
                     <div class="giscus-error">
                         <p>评论系统加载失败</p>
                         <p>请刷新页面或<a href="#" onclick="location.reload()">点击这里</a>重试</p>
-                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                        <p style="margin-top: 15px;">
                             如果问题持续存在，请通过<a href="mailto:support@example.com">support@example.com</a>联系我们
                         </p>
                     </div>
