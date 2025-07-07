@@ -324,6 +324,30 @@ document.body.appendChild(menuToggle);
 function initMenu() {
     const sidebar = document.getElementById('global-sidebar');
     const currentPage = window.location.pathname.split('/').pop();
+    // 创建遮罩层
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+    
+    // 遮罩层样式（添加到 menuStyles 中）
+    menuStyles.textContent += `
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        #global-sidebar.expanded ~ .sidebar-overlay {
+            display: block;
+        }
+    }
+    `;
     
     // 创建菜单结构
     let menuHTML = `
