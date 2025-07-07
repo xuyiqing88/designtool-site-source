@@ -402,16 +402,14 @@
             flex-direction: column;
         }
         
-        /* 优化评论区容器 */
+        /* 确保Giscus组件填满容器 */
         #giscus {
             flex: 1;
             display: flex;
-            flex-direction: column;
             min-height: 400px;
             width: 100%;
         }
         
-        /* 确保Giscus组件填满容器 */
         .giscus-frame {
             width: 100%;
             flex: 1;
@@ -972,25 +970,8 @@
                 iframe.setAttribute('id', 'giscus-frame');
                 iframe.setAttribute('title', 'Comments');
                 iframe.setAttribute('scrolling', 'no');
+                iframe.src = `https://giscus.app/client.html?repo=${encodeURIComponent(repo)}&repo-id=${repoId}&category=${encodeURIComponent(category)}&category-id=${categoryId}&mapping=pathname&strict=0&reactions-enabled=1&emit-metadata=0&input-position=bottom&theme=light&lang=zh-CN`;
                 giscusContainer.appendChild(iframe);
-                
-                // 重新初始化Giscus
-                window.giscus = {
-                    repo: repo,
-                    repoId: repoId,
-                    category: category,
-                    categoryId: categoryId,
-                    mapping: 'pathname',
-                    strict: '0',
-                    reactionsEnabled: '1',
-                    emitMetadata: '0',
-                    inputPosition: 'bottom',
-                    theme: 'light',
-                    lang: 'zh-CN',
-                    loading: 'lazy'
-                };
-                
-                window.giscusRender();
             };
             
             script.onerror = function() {
