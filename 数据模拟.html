@@ -376,11 +376,12 @@
         }
         
         .image-controls {
-            padding: 12px;
+            padding: 6px 12px;
             display: flex;
             justify-content: space-between;
             background: #fafbff;
             border-top: 1px solid #e0e5ee;
+	align-items: center;
         }
         
         .image-caption {
@@ -728,6 +729,35 @@
 
         <div class="data-group">
             <div class="group-title">
+                <i class="fas fa-newspaper"></i> 文本资讯
+            </div>
+            <div class="data-item">
+                <div class="data-label">资讯标题</div>
+                <div class="data-value" id="news-title">用户体验设计在产品开发中的重要性</div>
+                <div class="data-controls">
+                    <button class="btn" onclick="fetchNews()"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+            
+            <div class="data-item" style="align-items: flex-start;">
+                <div class="data-label">资讯内容</div>
+                <div class="data-value" id="news-content"  style="height: 314px; overflow: auto;">用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。设计过程中需要充分考虑用户需求、使用场景和操作习惯。</div>
+                <div class="data-controls">
+                    <button class="btn" onclick="fetchNews()"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+
+</div>
+</div>
+
+
+
+<div class="section">
+    <div class="section-content">
+
+        <div class="data-group">
+            <div class="group-title">
                 <i class="fas fa-clock"></i> 时间信息
             </div>
             <div class="data-item">
@@ -746,14 +776,6 @@
                 </div>
             </div>
         </div>
-
-</div>
-</div>
-
-
-
-<div class="section">
-    <div class="section-content">
 
         <div class="data-group">
             <div class="group-title">
@@ -830,29 +852,6 @@
                 </div>
             </div>
         </div>
-
-
-        
-        <div class="data-group">
-            <div class="group-title">
-                <i class="fas fa-newspaper"></i> 文本资讯
-            </div>
-            <div class="data-item">
-                <div class="data-label">资讯标题</div>
-                <div class="data-value" id="news-title">用户体验设计在产品开发中的重要性</div>
-                <div class="data-controls">
-                    <button class="btn" onclick="fetchNews()"><i class="fas fa-sync-alt"></i></button>
-                </div>
-            </div>
-            
-            <div class="data-item" style="align-items: flex-start;">
-                <div class="data-label">资讯内容</div>
-                <div class="data-value" id="news-content"  style="height: 145px; overflow: auto;">用户体验设计是产品开发过程中的重要环节，它关注用户在使用产品或服务时的整体感受。良好的用户体验设计能够提升用户满意度，增加用户黏性，最终带来商业价值的提升。设计过程中需要充分考虑用户需求、使用场景和操作习惯。</div>
-                <div class="data-controls">
-                    <button class="btn" onclick="fetchNews()"><i class="fas fa-sync-alt"></i></button>
-                </div>
-            </div>
-        </div>
         
         <div class="data-group">
             <div class="group-title">
@@ -896,6 +895,25 @@
                         </button>
                     </div>
                 </div>
+
+		<div class="image-item">
+                    <div class="avatar-container">
+                        <div class="image-ratio-keeper">
+                            <img id="vector-avatar-img" class="avatar-img" alt="矢量头像">
+                            <div class="loading-indicator">
+                                <div class="spinner"></div>
+                            </div>
+                            <button class="retry-button" onclick="retryLoadImage('vector-avatar-img')"></button>
+                        </div>
+                    </div>
+                    <div class="image-controls">
+                        <span>矢量头像</span>
+                        <button class="btn" onclick="generateVectorAvatar()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -1102,7 +1120,11 @@
     const natureAPIs = [
     "https://picsum.photos/1024/768.webp?random",
     ];
-    
+    // 新增矢量头像风格选项
+    const vectorStyles = [
+        'initials', 'lorelei', 'bottts', 'micah', 'pixel-art', 'adventurer', 
+        'big-ears', 'big-smile', 'croodles', 'miniavs', 'open-peeps'
+    ];
     // 全局设置
     let decimalPlaces = 2;
     let numberRange = 'medium';
@@ -1481,7 +1503,39 @@ function generateNatureScenery() {
         console.error('图片加载失败:', src); // 添加错误日志
     };
 }
-    
+    // 新增生成矢量头像的函数
+    function generateVectorAvatar() {
+        const img = document.getElementById('vector-avatar-img');
+        const loadingIndicator = img.parentElement.querySelector('.loading-indicator');
+        const retryButton = img.parentElement.querySelector('.retry-button');
+        
+        loadingIndicator.style.display = 'flex';
+        retryButton.style.display = 'none';
+        img.classList.remove('loaded');
+        
+        // 随机选择一种风格
+        const style = vectorStyles[Math.floor(Math.random() * vectorStyles.length)];
+        
+        // 使用英文名作为种子生成矢量头像
+        const englishName = currentEnglishName.replace(/\s+/g, '');
+        const seed = englishName || 'Anonymous';
+        
+        // 构建Dicebear API URL
+        const apiUrl = `https://api.dicebear.com/8.x/${style}/svg?seed=${seed}&size=256&backgroundType=gradientLinear`;
+        
+        img.src = apiUrl;
+        
+        img.onload = function() {
+            loadingIndicator.style.display = 'none';
+            img.classList.add('loaded');
+        };
+        
+        img.onerror = function() {
+            loadingIndicator.style.display = 'none';
+            retryButton.style.display = 'block';
+            console.error('矢量头像加载失败:', this.src);
+        };
+    }    
     // 重试加载图片
     function retryLoadImage(iframeId) {
         if (iframeId === 'person-avatar-iframe') {
@@ -1547,6 +1601,7 @@ function generateNatureScenery() {
         generateIdCard();
         generatePersonAvatar();
         generateNatureScenery();
+	generateVectorAvatar(); 
         
         showNotification('所有数据已重新生成！');
     }
