@@ -6,6 +6,7 @@
     <title>特色设计工具合集</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+	<meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://giscus.app;">
     <style>
         :root {
             --primary: #5963ff;
@@ -583,13 +584,7 @@
                 </div>
                 <h2 class="comments-title">用户评论与反馈</h2>
             </div>
-            
-            <div class="comments-container">
-                <div id="giscus" class="giscus-loading">
-                    <div class="spinner"></div>
-                    <p>正在加载评论系统...</p>
-                </div>
-            </div>
+            <div class="giscus"></div>
         </section>
         
         <footer>
@@ -605,8 +600,30 @@
             <p>您的支持是我持续更新的动力</p>
         </div>
     </div>
-    
+   <script>
+  window.giscusConfig = {
+    repo: 'xuyiqing88/design-tools-comments',         // 替换为你的仓库
+    repo-id: 'R_kgDOPIJQug',   // 替换为你的仓库ID
+    category: 'General',      // 替换为你的分类名
+    category-id: 'DIC_kwDOPIJQus4CslI9',// 替换为分类ID
+    mapping: 'pathname',
+    reactions-enabled: '1',
+    emit-metadata: '0',
+    theme: 'preferred_color_scheme',
+    lang: 'zh-CN',
+    crossorigin: 'anonymous'
+  };
+  
+  // 动态加载giscus
+  const giscusScript = document.createElement('script');
+  giscusScript.src = 'https://giscus.app/client.js';
+  Object.entries(window.giscusConfig).forEach(([key, value]) => {
+    giscusScript.setAttribute(`data-${key}`, value);
+  });
+  document.querySelector('.giscus').appendChild(giscusScript);
+</script> 
     <script>
+
         // Tool data - 确保每个工具都有badge属性
         const tools = [
             {
@@ -934,60 +951,7 @@
             }
         });
         
-        // 初始化Giscus评论系统
-        function initGiscus() {
-            // 替换为你的Giscus配置
-            const repo = "xuyiqing88/design-tools-comments"; // GitHub仓库
-            const repoId = "R_kgDOPIJQug"; // 仓库ID
-            const category = "General"; // 讨论分类
-            const categoryId = "DIC_kwDOPIJQus4CslI9"; // 分类ID
-            
-            const script = document.createElement('script');
-            script.src = "https://giscus.app/client.js";
-            script.setAttribute('data-repo', repo);
-            script.setAttribute('data-repo-id', repoId);
-            script.setAttribute('data-category', category);
-            script.setAttribute('data-category-id', categoryId);
-            script.setAttribute('data-mapping', 'pathname');
-            script.setAttribute('data-strict', '0');
-            script.setAttribute('data-reactions-enabled', '1');
-            script.setAttribute('data-emit-metadata', '0');
-            script.setAttribute('data-input-position', 'bottom');
-            script.setAttribute('data-theme', 'light');
-            script.setAttribute('data-lang', 'zh-CN');
-            script.setAttribute('crossorigin', 'anonymous');
-            script.async = true;
-            
-            script.onload = function() {
-                // 成功加载后移除加载状态
-                const giscusContainer = document.getElementById('giscus');
-                giscusContainer.classList.remove('giscus-loading');
-                giscusContainer.innerHTML = ''; // 清除加载状态
-                
-                // 创建Giscus iframe
-                const iframe = document.createElement('iframe');
-                iframe.className = 'giscus-frame';
-                iframe.setAttribute('id', 'giscus-frame');
-                iframe.setAttribute('title', 'Comments');
-                iframe.setAttribute('scrolling', 'no');
-                iframe.src = `https://giscus.app/client.html?repo=${encodeURIComponent(repo)}&repo-id=${repoId}&category=${encodeURIComponent(category)}&category-id=${categoryId}&mapping=pathname&strict=0&reactions-enabled=1&emit-metadata=0&input-position=bottom&theme=light&lang=zh-CN`;
-                giscusContainer.appendChild(iframe);
-            };
-            
-            script.onerror = function() {
-                // 加载失败显示错误信息
-                const giscusContainer = document.getElementById('giscus');
-                giscusContainer.classList.remove('giscus-loading');
-                giscusContainer.innerHTML = `
-                    <div class="giscus-error">
-                        <p>评论系统加载失败</p>
-                        <p>请刷新页面或<a href="#" onclick="location.reload()">点击这里</a>重试</p>
-                        <p style="margin-top: 15px;">
-                            如果问题持续存在，请通过<a href="mailto:support@example.com">support@example.com</a>联系我们
-                        </p>
-                    </div>
-                `;
-            };
+
             
             document.body.appendChild(script);
         }
