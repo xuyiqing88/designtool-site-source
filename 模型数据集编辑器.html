@@ -618,7 +618,8 @@ input:checked + .slider:before {
 .image-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-	width: 100%; /* 确保容器填满父元素 */}
+	width: 100%; /* 确保容器填满父元素 */
+    gap: 10px;}
 .image-item:hover {
 	transform: scale(1.03);
     transition: all ease 0.3s;}
@@ -629,7 +630,6 @@ input:checked + .slider:before {
     display: flex;
     padding: 4px;
     border-radius: 8px;
-    margin: 6px;
     background: var(--mainbg);
 	transition: all ease 0.3s;
 	border: 1px solid var(--line);    }
