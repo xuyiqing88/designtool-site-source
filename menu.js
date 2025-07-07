@@ -24,7 +24,6 @@ menuStyles.textContent = `
 }
 
 body {
-    background: #f5f7fa;
     min-height: 100vh;
     display: flex;
     transition: margin-left var(--transition-speed);
