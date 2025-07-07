@@ -6,6 +6,7 @@
     <title>特色设计工具合集</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+	<meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://giscus.app;">
     <style>
         :root {
             --primary: #5963ff;
@@ -361,6 +362,120 @@
             border-top: 1px solid var(--border);
         }
         
+        /* 评论区域样式 - 重点优化区域 */
+        .comments-section {
+            margin-top: 60px;
+            padding: 0 20px;
+        }
+        
+        .comments-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comments-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        .comments-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .comments-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 确保Giscus组件填满容器 */
+        #giscus {
+            flex: 1;
+            display: flex;
+            min-height: 400px;
+            width: 100%;
+        }
+        
+        .giscus-frame {
+            width: 100%;
+            flex: 1;
+            border: none;
+            border-radius: 0 0 15px 15px;
+            overflow: hidden;
+        }
+        
+        .giscus-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+            color: var(--gray);
+            flex: 1;
+        }
+        
+        .giscus-loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .giscus-error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 40px 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: auto;
+            max-width: 600px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .giscus-error a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: var(--primary-light);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .giscus-error a:hover {
+            text-decoration: underline;
+            background: var(--primary);
+            color: white;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 768px) {
             .tools-grid {
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -377,6 +492,23 @@
             
             .tool-cover {
                 width: 100px;
+            }
+            
+            /* 移动端评论区优化 */
+            .comments-section {
+                padding: 0 10px;
+            }
+            
+            .comments-container {
+                border-radius: 12px;
+            }
+            
+            .giscus-loading {
+                padding: 30px 0;
+            }
+            
+            .giscus-error {
+                padding: 30px 15px;
             }
         }
         
@@ -395,10 +527,19 @@
                 border-right: none;
                 border-bottom: 1px solid var(--border);
             }
+            
+            /* 移动端评论区优化 */
+            .comments-title {
+                font-size: 1.2rem;
+            }
+            
+            .comments-icon {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
-	<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
+   <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
 <body>
     <div class="container">
         <header>
@@ -436,6 +577,17 @@
             <!-- 分类区域将由JS动态生成 -->
         </div>
         
+        <!-- 评论区域 -->
+        <section class="comments-section">
+            <div class="comments-header">
+                <div class="comments-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h2 class="comments-title">用户评论与反馈</h2>
+            </div>
+            <div class="giscus"></div>
+        </section>
+        
         <footer>
             <p>© 2025 特色效率工具合集 | BY徐艺青<a class="donate-link" id="donateBtn">向我投喂（自愿）</a></p>
         </footer>
@@ -449,7 +601,22 @@
             <p>您的支持是我持续更新的动力</p>
         </div>
     </div>
-    
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="xuyiqing88/design-tools-comments"
+        data-repo-id="R_kgDOPIJQug"
+        data-category="General"
+        data-category-id="DIC_kwDOPIJQus4CslI9"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>    
     <script>
         // Tool data - 确保每个工具都有badge属性
         const tools = [
@@ -777,6 +944,7 @@
                 document.body.style.overflow = 'auto';
             }
         });
+
     </script>
 </body>
 </html>
