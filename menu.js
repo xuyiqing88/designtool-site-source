@@ -39,7 +39,7 @@ body {
     background: var(--sidebar-bg);
     overflow-x: hidden;
     transition: width var(--transition-speed);
-    z-index: 1000;
+    z-index: 1001;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
