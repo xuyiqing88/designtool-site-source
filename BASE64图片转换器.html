@@ -45,7 +45,9 @@ body {
     margin: auto;
     min-height: 90vh;         /* 占满整个视口高度 */
     align-items: center;       /* 垂直居中 */
-    align-content: center;}
+    align-content: center;
+	min-width: 80vh;
+}
 /* 新增开关样式 */
 .prefix-switch {
     display: flex;
@@ -130,6 +132,7 @@ input:checked + .slider:before {
     padding: 4px;
     justify-content: center;
     margin: 0 auto;
+	margin-top: 20px;
     }
 .tab button {
     background-color: inherit;
@@ -494,7 +497,7 @@ input[type="file"] {
 <body>
 <div id="global-sidebar"></div>
 <div class="container">
-    <h2 style="display: flex; justify-content: center; color: #171E24;">BASE64图片转换器-BY徐艺青</h2>
+    <h2 style="display: flex; justify-content: center; color: #171E24;">BASE64图片转换器</h2>
     <!-- 选项卡 -->
     <div class="tab">
         <button class="tablink active" onclick="openTab(event, 'toImage')">Base64转图片</button>
