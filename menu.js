@@ -348,7 +348,28 @@ function initMenu() {
         }
     }
     `;
-    
+        // 菜单开关事件
+    menuToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        sidebar.classList.toggle('expanded');
+    });
+
+    // 点击遮罩层关闭菜单
+    overlay.addEventListener('click', function() {
+        sidebar.classList.remove('expanded');
+    });
+
+    // 点击菜单内部阻止关闭
+    sidebar.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // 窗口大小变化时重置菜单
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('expanded');
+        }
+    });
     // 创建菜单结构
     let menuHTML = `
         <div class="sidebar-header">
