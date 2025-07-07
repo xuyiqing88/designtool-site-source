@@ -348,7 +348,8 @@ function initMenu() {
         }
     }
     `;
-        // 菜单开关事件
+
+    // 菜单开关事件
     menuToggle.addEventListener('click', function(e) {
         e.stopPropagation();
         sidebar.classList.toggle('expanded');
