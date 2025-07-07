@@ -616,15 +616,16 @@ input:checked + .slider:before {
     padding-top: 20px;         
     align-content: center;    }
 .image-container {
-    display: flex;
-    flex-wrap: wrap;}
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+	width: 100%; /* 确保容器填满父元素 */
+    gap: 10px;}
 .image-item:hover {
 	transform: scale(1.03);
     transition: all ease 0.3s;}
 .image-item {
     position: relative;
     cursor: pointer;
-    width: calc(32% - 10px);
     min-width: 260px;
     display: flex;
     padding: 4px;
@@ -886,11 +887,6 @@ button:hover {
 .remind{
 	/*background: #00d9ff42;*/
 	text-decoration: 2px #5963ffc2 underline;}
-@media (max-width: 1200px) {
-  .image-item {
-    width: calc(48% - 10px) !important;
-  }
-}
 
 @media (max-width: 768px) {
   .container {
@@ -912,7 +908,9 @@ button:hover {
     transform: scale(0.9);
     margin-top: 10px;
   }
-  
+  .image-container {
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
   .buttons {
     padding: 10px;
     flex-wrap: wrap;
@@ -965,70 +963,10 @@ button:hover {
     display: none; 
   }
 .translate-btn, .ai-btn{
-	width: 20px;}
+	width: 20px;
+	}
 }
 
-
-
-@media (max-width: 480px) {
-  .title {
-    font-size: 20px;
-    flex-direction: column;
-  }
-  
-  .buttons button {
-    flex: 1;
-    min-width: 45%;
-  }
-  
-  .find-replace-buttons {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .input-container {
-    height: 100px;
-  }
-  
-  .image-wrapper {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .modal-title {
-    font-size: 18px;
-  }
-  
-  .size-options {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .settings-actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .settings-actions .bt,
-  .settings-actions .btcancer {
-    width: 100%;
-  }
-}
-
-
-@media (max-height: 500px) and (orientation: landscape) {
-  .container {
-    padding-top: 5px;
-    padding-bottom: 70px;
-  }
-  
-  .buttons {
-    padding: 8px;
-  }
-  
-  .image-item {
-    min-width: 200px;
-  }
-}
 </style>
 </head>
 <body>
@@ -1121,7 +1059,10 @@ function toggleDarkMode() {
 
 // 页面加载时应用深色模式
 window.addEventListener('load', () => {
-  applyDarkMode();
+	initColumns();
+    applyDarkMode();
+    updateCounter();
+    adjustContainerWidth(); 
   
   // 添加深色模式切换事件
   document.querySelector('.bt-icon').addEventListener('click', toggleDarkMode);
@@ -1832,6 +1773,10 @@ function initColumns() {
     const defaultCols = 3;
     const defaultBtn = document.querySelector(`.column-btn[data-cols="${defaultCols}"]`);
     if (defaultBtn) defaultBtn.classList.add('active');
+    
+    // 设置初始列数
+    const container = document.getElementById('imageContainer');
+    container.style.gridTemplateColumns = `repeat(${defaultCols}, 1fr)`;
 }
 
 // 在页面加载时调用初始化
@@ -1917,6 +1862,20 @@ function updateCounter() {
     count ? buttons.style.opacity = 1 : buttons.style.opacity = 0;
     
     document.getElementById('count').textContent = `已上传 ${count} 张图片`;
+	adjustContainerWidth(); 
+}
+// 新增函数：根据图片数量调整容器宽度
+function adjustContainerWidth() {
+    const imagesSection = document.getElementById('imagesSection');
+    const imageCount = document.querySelectorAll('.image-item').length;
+    
+    if (imagesSection) {
+        if (imageCount >= 5) {
+            imagesSection.style.minWidth = '1490px';
+        } else {
+            imagesSection.style.minWidth = '640px';
+        }
+    }
 }
 // 列数选择功能（使用事件委托）
 document.body.addEventListener('click', function(e) {
@@ -1927,20 +1886,13 @@ document.body.addEventListener('click', function(e) {
         e.target.classList.add('active');
         // 获取列数
         const cols = parseInt(e.target.dataset.cols);
-        // 计算宽度值
-        const widths = {
-            1: 'calc(100% - 0px)',
-            2: 'calc(49% - 10px)',
-            3: 'calc(32% - 10px)',
-            4: 'calc(24% - 10px)',
-            5: 'calc(19% - 10px)'
-        };
-        // 应用新宽度
-        document.querySelectorAll('.image-item').forEach(item => {
-            item.style.width = widths[cols];
-        });
+        
+        // 直接设置grid-template-columns
+        const container = document.getElementById('imageContainer');
+        container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     }
 });
+
 // 新增裁剪相关全局变量
 let cropData = {
     x: 0,
@@ -2537,6 +2489,8 @@ document.addEventListener('keydown', function(e) {
     container.append(checkbox, imgWrapper, inputContainer);
     document.getElementById('imageContainer').appendChild(container);
     updateCounter();
+    adjustContainerWidth(); // 新增调用
+    updateWordStats();
 }
 
 // 触发词处理
@@ -2754,7 +2708,8 @@ document.getElementById('batchDeleteBtn').addEventListener('click', function() {
         itemsToDelete.forEach(checkbox => checkbox.closest('.image-item').remove());
         exitDeleteMode();
         updateCounter();
-        updateWordStats();
+    adjustContainerWidth(); // 新增调用
+    updateWordStats();
     }
 });
 // 新增取消按钮事件
