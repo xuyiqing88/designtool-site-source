@@ -600,30 +600,23 @@
             <p>您的支持是我持续更新的动力</p>
         </div>
     </div>
-   <script>
-  window.giscusConfig = {
-    repo: 'xuyiqing88/design-tools-comments',         // 替换为你的仓库
-    repo-id: 'R_kgDOPIJQug',   // 替换为你的仓库ID
-    category: 'General',      // 替换为你的分类名
-    category-id: 'DIC_kwDOPIJQus4CslI9',// 替换为分类ID
-    mapping: 'pathname',
-    reactions-enabled: '1',
-    emit-metadata: '0',
-    theme: 'preferred_color_scheme',
-    lang: 'zh-CN',
-    crossorigin: 'anonymous'
-  };
-  
-  // 动态加载giscus
-  const giscusScript = document.createElement('script');
-  giscusScript.src = 'https://giscus.app/client.js';
-  Object.entries(window.giscusConfig).forEach(([key, value]) => {
-    giscusScript.setAttribute(`data-${key}`, value);
-  });
-  document.querySelector('.giscus').appendChild(giscusScript);
-</script> 
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="xuyiqing88/design-tools-comments"
+        data-repo-id="R_kgDOPIJQug"
+        data-category="General"
+        data-category-id="DIC_kwDOPIJQus4CslI9"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>    
     <script>
-
         // Tool data - 确保每个工具都有badge属性
         const tools = [
             {
@@ -950,14 +943,7 @@
                 document.body.style.overflow = 'auto';
             }
         });
-        
 
-            
-            document.body.appendChild(script);
-        }
-        
-        // 页面加载完成后初始化Giscus
-        window.addEventListener('DOMContentLoaded', initGiscus);
     </script>
 </body>
 </html>
