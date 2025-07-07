@@ -211,12 +211,30 @@ body {
     margin-left: var(--sidebar-expanded-width);
 }
 
+/* 遮罩层样式 */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #global-sidebar.expanded ~ .sidebar-overlay {
+        display: block;
+    }
+}
+
 /* 移动端菜单开关 */
 .menu-toggle {
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 999;
+    z-index: 1000;
     background: var(--sidebar-bg);
     color: white;
     width: 40px;
@@ -324,53 +342,12 @@ document.body.appendChild(menuToggle);
 function initMenu() {
     const sidebar = document.getElementById('global-sidebar');
     const currentPage = window.location.pathname.split('/').pop();
-    // 创建遮罩层
+    
+    // 创建遮罩层 - 移动到菜单初始化之后
     const overlay = document.createElement('div');
     overlay.className = 'sidebar-overlay';
     document.body.appendChild(overlay);
-    
-    // 遮罩层样式（添加到 menuStyles 中）
-    menuStyles.textContent += `
-    .sidebar-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 999;
-        display: none;
-    }
-    
-    @media (max-width: 768px) {
-        #global-sidebar.expanded ~ .sidebar-overlay {
-            display: block;
-        }
-    }
-    `;
 
-    // 菜单开关事件
-    menuToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        sidebar.classList.toggle('expanded');
-    });
-
-    // 点击遮罩层关闭菜单
-    overlay.addEventListener('click', function() {
-        sidebar.classList.remove('expanded');
-    });
-
-    // 点击菜单内部阻止关闭
-    sidebar.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
-
-    // 窗口大小变化时重置菜单
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768) {
-            sidebar.classList.remove('expanded');
-        }
-    });
     // 创建菜单结构
     let menuHTML = `
         <div class="sidebar-header">
@@ -439,13 +416,36 @@ function initMenu() {
     });
     
     // 移动端菜单切换
-    const menuToggle = document.getElementById('menuToggle');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', function() {
+    const menuToggleBtn = document.getElementById('menuToggle');
+    if (menuToggleBtn) {
+        menuToggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
             sidebar.classList.toggle('expanded');
         });
     }
     
+    // 遮罩层点击事件
+    overlay.addEventListener('click', function() {
+        sidebar.classList.remove('expanded');
+    });
+    
+    // 全局点击事件（移动端点击外部关闭菜单）
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768 && 
+            sidebar.classList.contains('expanded') &&
+            !sidebar.contains(e.target) &&
+            e.target !== menuToggleBtn) {
+            sidebar.classList.remove('expanded');
+        }
+    });
+    
+    // 窗口大小变化时重置菜单
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('expanded');
+        }
+    });
+
     // 检查存储的菜单状态
     const menuState = localStorage.getItem('menuState');
     if (menuState === 'expanded') {
