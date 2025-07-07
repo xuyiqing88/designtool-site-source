@@ -41,7 +41,6 @@
 
         /* 确保比例容器正确 */
         .image-ratio-keeper {
-            position: relative;
             width: 100%;
             padding-top: 100%; /* 1:1 比例 */
             overflow: hidden;
@@ -49,7 +48,7 @@
 
         .image-ratio-keeper img {
             position: absolute;
-            top: 38px;
+            top: 0;
             left: 0;
             width: 100%;
             object-fit: cover;
@@ -862,7 +861,7 @@
                 <div class="image-item">
                     <div class="avatar-container">
                         <div class="image-ratio-keeper">
-                            <img id="person-avatar-img" style="top: 0;" class="avatar-img" alt="随机头像">
+                            <img id="person-avatar-img" class="avatar-img" alt="随机头像">
                             <div class="loading-indicator">
                                 <div class="spinner"></div>
                             </div>
