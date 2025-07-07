@@ -363,45 +363,84 @@
         
         /* 评论区域样式 */
         .comments-section {
-            max-width: 1500px;
-            margin: 50px auto 0;
+            margin-top: 60px;
             padding: 0 20px;
         }
         
         .comments-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border);
         }
         
-        .comments-header i {
-            margin-right: 10px;
+        .comments-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
             color: var(--primary);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
         
         .comments-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            color: var(--darker);
+            color: var(--dark);
         }
         
-        #disqus_thread {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
+        .comments-container {
+            background: var(--card-bg);
+            border-radius: 15px;
             border: 1px solid var(--border);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 40px;
         }
         
-        .disqus-note {
-            text-align: center;
+        .giscus-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
             color: var(--gray);
-            font-size: 0.9rem;
-            margin-top: 10px;
-            padding: 0 20px;
+        }
+        
+        .giscus-loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .giscus-error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .giscus-error a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .giscus-error a:hover {
+            text-decoration: underline;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         @media (max-width: 768px) {
@@ -422,8 +461,8 @@
                 width: 100px;
             }
             
-            #disqus_thread {
-                padding: 15px;
+            .comments-container {
+                padding: 20px 15px;
             }
         }
         
@@ -445,7 +484,6 @@
         }
     </style>
 </head>
-    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
 <body>
     <div class="container">
         <header>
@@ -484,14 +522,21 @@
         </div>
         
         <!-- 评论区域 -->
-        <div class="comments-section">
+        <section class="comments-section">
             <div class="comments-header">
-                <i class="fas fa-comments"></i>
+                <div class="comments-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
                 <h2 class="comments-title">用户评论与反馈</h2>
             </div>
-            <div id="disqus_thread"></div>
-            <p class="disqus-note">评论功能由Disqus提供，加载可能需要几秒钟时间</p>
-        </div>
+            
+            <div class="comments-container">
+                <div id="giscus" class="giscus-loading">
+                    <div class="spinner"></div>
+                    <p>正在加载评论系统...</p>
+                </div>
+            </div>
+        </section>
         
         <footer>
             <p>© 2025 特色效率工具合集 | BY徐艺青<a class="donate-link" id="donateBtn">向我投喂（自愿）</a></p>
@@ -834,25 +879,58 @@
                 document.body.style.overflow = 'auto';
             }
         });
-    </script>
-    
-    <!-- Disqus评论系统 -->
-    <script>
-        // 配置Disqus
-        var disqus_config = function () {
-            // 替换为你的Disqus shortname
-            this.page.url = window.location.href;  // 当前页面URL
-            this.page.identifier = 'design-tools-index'; // 页面唯一标识符
-            this.page.title = '特色设计工具合集';
-        };
         
-        (function() { // 创建并插入脚本
-            var d = document, s = d.createElement('script');
-            s.src = 'https://xuyiqing.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
+        // 初始化Giscus评论系统
+        function initGiscus() {
+            // 替换为你的Giscus配置
+            const repo = "xuyiqing88/design-tools-comments"; // GitHub仓库
+            const repoId = "R_kgDOPIJQug"; // 仓库ID
+            const category = "General"; // 讨论分类
+            const categoryId = "DIC_kwDOPIJQus4CslI9"; // 分类ID
+            
+            const script = document.createElement('script');
+            script.src = "https://giscus.app/client.js";
+            script.setAttribute('data-repo', repo);
+            script.setAttribute('data-repo-id', repoId);
+            script.setAttribute('data-category', category);
+            script.setAttribute('data-category-id', categoryId);
+            script.setAttribute('data-mapping', 'pathname');
+            script.setAttribute('data-strict', '0');
+            script.setAttribute('data-reactions-enabled', '1');
+            script.setAttribute('data-emit-metadata', '0');
+            script.setAttribute('data-input-position', 'bottom');
+            script.setAttribute('data-theme', 'light');
+            script.setAttribute('data-lang', 'zh-CN');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            
+            script.onload = function() {
+                // 成功加载后移除加载状态
+                const giscusContainer = document.getElementById('giscus');
+                giscusContainer.classList.remove('giscus-loading');
+                giscusContainer.innerHTML = ''; // 清除加载状态
+            };
+            
+            script.onerror = function() {
+                // 加载失败显示错误信息
+                const giscusContainer = document.getElementById('giscus');
+                giscusContainer.classList.remove('giscus-loading');
+                giscusContainer.innerHTML = `
+                    <div class="giscus-error">
+                        <p>评论系统加载失败</p>
+                        <p>请刷新页面或<a href="#" onclick="location.reload()">点击这里</a>重试</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            如果问题持续存在，请通过<a href="mailto:support@example.com">support@example.com</a>联系我们
+                        </p>
+                    </div>
+                `;
+            };
+            
+            document.body.appendChild(script);
+        }
+        
+        // 页面加载完成后初始化Giscus
+        window.addEventListener('DOMContentLoaded', initGiscus);
     </script>
-    <noscript>请启用JavaScript以查看<a href="https://disqus.com/?ref_noscript">Disqus评论</a></noscript>
 </body>
 </html>
