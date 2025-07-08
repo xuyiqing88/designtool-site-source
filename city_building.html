@@ -45,7 +45,9 @@
     	box-shadow: 0 1px 0 #fff, 0 -1px #0000000a;
 	margin-bottom: 10px;
 	}
-        
+         .stat-item:last-child {
+            margin-right: 0;
+        }       
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -559,6 +561,10 @@
         let windowCount = 0;
         let skyColor = '#e6f0ff';
         let skyType = 'clouds'; // 默认云朵
+        // 新增全局变量记录特殊建筑数量
+        let towerCount = 0;
+        let pavilionCount = 0;
+        let squatCount = 0;
         
         // 初始化
         window.addEventListener('load', function() {
@@ -619,28 +625,33 @@
         
         downloadBtn.addEventListener('click', downloadSVG);
         
-        // 生成城市函数
-        function generateCity() {
-            // 清除画布
-            canvas.innerHTML = '';
-            buildingCount = 0;
-            windowCount = 0;
-            
-            // 创建背景
-            createBackground();
-            
-            // 生成建筑
-            const count = Math.floor(10 + 25 * density);
-            for (let i = 0; i < count; i++) {
-                createBuilding();
-            }
-            
-            // 添加地面
-            createGround();
-            
-            // 更新统计
-            updateStats();
+    // 生成城市函数
+    function generateCity() {
+        // 重置特殊建筑计数
+        towerCount = 0;
+        pavilionCount = 0;
+        squatCount = 0;
+
+        // 清除画布
+        canvas.innerHTML = '';
+        buildingCount = 0;
+        windowCount = 0;
+        
+        // 创建背景
+        createBackground();
+        
+        // 生成建筑
+        const count = Math.floor(10 + 25 * density);
+        for (let i = 0; i < count; i++) {
+            createBuilding();
         }
+        
+        // 添加地面
+        createGround();
+        
+        // 更新统计
+        updateStats();
+    }
         
         // 添加建筑函数
         function addBuildings() {
@@ -785,20 +796,226 @@
             
             canvas.appendChild(starGroup);
         }
+     // 创建普通建筑（原createBuilding函数中的内容）
+    function createNormalBuilding(x, y, width, height, group) {
+        // 生成同色系渐变
+        const color = hexToHSL(baseColor);
+        const mainColor = `hsl(${color.h}, ${color.s}%, ${Math.max(20, color.l - 5)}%)`;
         
+        // 创建建筑主体
+        const building = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        building.setAttribute('x', x);
+        building.setAttribute('y', y);
+        building.setAttribute('width', width);
+        building.setAttribute('height', height);
+        
+        // 创建渐变
+        const gradientId = `gradient-${buildingCount}`;
+        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.setAttribute('id', gradientId);
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '0%');
+        gradient.setAttribute('y2', '100%');
+        
+        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('stop-color', mainColor);
+        stop1.setAttribute('stop-opacity', '1.0');
+        
+        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop2.setAttribute('offset', '100%');
+        stop2.setAttribute('stop-color', mainColor);
+        stop2.setAttribute('stop-opacity', '0.0');
+        
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        
+        const defs = canvas.querySelector('defs') || canvas.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'defs'));
+        defs.appendChild(gradient);
+        
+        building.setAttribute('fill', `url(#${gradientId})`);
+        group.appendChild(building);
+        
+        // 添加建筑细节
+        addBuildingDetails(x, y, width, height, group, color);
+        
+        // 添加窗户
+        addWindows(x, y, width, height, group, color);
+        
+        // 随机添加天线
+        if (Math.random() > 0.7) {
+            const antennaHeight = Math.random() * 30 + 20;
+            const antenna = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            antenna.setAttribute('x1', x + width/2);
+            antenna.setAttribute('y1', y);
+            antenna.setAttribute('x2', x + width/2);
+            antenna.setAttribute('y2', y - antennaHeight);
+            antenna.setAttribute('stroke', '#cccccc');
+            antenna.setAttribute('stroke-width', '1');
+            antenna.setAttribute('opacity', '0.7');
+            group.appendChild(antenna);
+            
+            const antennaBall = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            antennaBall.setAttribute('cx', x + width/2);
+            antennaBall.setAttribute('cy', y - antennaHeight);
+            antennaBall.setAttribute('r', '3');
+            antennaBall.setAttribute('fill', baseColor);
+            antennaBall.setAttribute('opacity', '0.8');
+            group.appendChild(antennaBall);
+        }
+    }
+    
+    // 添加建筑细节（仅屋顶）
+    function addBuildingDetails(x, y, width, height, group, color) {
+        // 添加建筑顶部
+        const topHeight = Math.random() * 15 + 10;
+        
+        // 随机选择屋顶类型（平顶或斜顶）
+        const roofType = Math.random() > 0.5 ? 'flat' : 'angled';
+        
+        if (roofType === 'flat') {
+            // 平顶
+            const top = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            top.setAttribute('x', x - 5);
+            top.setAttribute('y', y - topHeight);
+            top.setAttribute('width', width + 10);
+            top.setAttribute('height', topHeight);
+            top.setAttribute('fill', '#454545');
+            top.setAttribute('opacity', '1.0');
+            group.appendChild(top);
+        } else {
+            // 斜角屋顶 - 只倾斜顶边
+            const roof = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            
+            // 创建偏移量使顶部倾斜
+            const offset = Math.random() * 20 + 10;
+            
+            // 点顺序：左下 -> 右下 -> 右上 -> 左上
+            const points = `
+                ${x},${y} 
+                ${x + width},${y} 
+                ${x + width - offset},${y - topHeight} 
+                ${x + offset},${y - topHeight}
+            `;
+            
+            roof.setAttribute('points', points);
+            roof.setAttribute('fill', '#333');
+            roof.setAttribute('opacity', '1.0');
+            group.appendChild(roof);
+        }
+    }
+    
+    // 添加窗户 - 高度随机变化，宽度固定
+    function addWindows(x, y, width, height, group, color) {
+        const windowSpacing = 10;
+        const margin = 12;
+        const floorHeight = 28;
+        
+        const floors = Math.floor((height - margin * 2) / floorHeight);
+        
+        for (let floor = 0; floor < floors; floor++) {
+            const windowsPerFloor = Math.floor((width - margin * 2) / windowSpacing);
+            const floorY = y + margin + floor * floorHeight;
+            
+            for (let i = 0; i < windowsPerFloor; i++) {
+                // 根据窗户密度跳过一些窗户
+                if (Math.random() > windowDensity) continue;
+                
+                const windowX = x + margin + i * windowSpacing;
+                
+                // 使用深色窗户设计
+                const windowColor = `hsl(${color.h}, ${color.s}%, ${Math.max(0, color.l - 40)}%)`;
+                
+                // 创建窗户 - 宽度固定，高度随机
+                const windowHeight = Math.random() * 8 + 8; // 8-16高度
+                const window = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                window.setAttribute('x', windowX);
+                window.setAttribute('y', floorY + (floorHeight - windowHeight)/2);
+                window.setAttribute('width', 6); // 固定宽度
+                window.setAttribute('height', windowHeight);
+                window.setAttribute('fill', windowColor);
+                window.setAttribute('rx', '1'); // 圆角
+                window.setAttribute('opacity', '0.3');
+                group.appendChild(window);
+                
+                windowCount++;
+            }
+        }
+    }       
         // 创建建筑
         function createBuilding() {
             buildingCount++;
             
-            // 随机位置和尺寸
-            const width = Math.random() * 80 + 20; // 20-100
-            const height = Math.random() * 250 + 100;
+            // 随机决定建筑类型（普通建筑占80%，特殊建筑占20%）
+            const buildingType = Math.random() > 0.8 ? getRandomSpecialBuildingType() : 'normal';
+            
+            // 根据建筑类型设置尺寸范围
+            let width, height;
+            switch(buildingType) {
+                case 'tower':
+                    // 塔形建筑 - 高而窄
+                    width = Math.random() * 40 + 20; // 20-60
+                    height = Math.random() * 250 + 180; // 200-500
+                    towerCount++;
+                    break;
+                case 'pavilion':
+                    // 亭子 - 小而精致
+                    width = Math.random() * 30 + 20; // 20-50
+                    height = Math.random() * 20 + 50; // 50-130
+                    pavilionCount++;
+                    break;
+                case 'squat':
+                    // 矮胖型建筑 - 宽而矮
+                    width = Math.random() * 100 + 100; // 80-180
+                    height = Math.random() * 120 + 80; // 80-200
+                    squatCount++;
+                    break;
+                default:
+                    // 普通建筑
+                    width = Math.random() * 80 + 20; // 20-100
+                    height = Math.random() * 250 + 100; // 100-350
+            }
+            
             const x = Math.random() * (800 - width);
             const y = 500 - height;
             
             // 创建建筑组
             const buildingGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             
+            // 根据建筑类型创建不同的建筑
+            switch(buildingType) {
+                case 'tower':
+                    createTowerBuilding(x, y, width, height, buildingGroup);
+                    break;
+                case 'pavilion':
+                    createPavilionBuilding(x, y, width, height, buildingGroup);
+                    break;
+                case 'squat':
+                    createSquatBuilding(x, y, width, height, buildingGroup);
+                    break;
+                default:
+                    createNormalBuilding(x, y, width, height, buildingGroup);
+            }
+            
+            canvas.appendChild(buildingGroup);
+        }
+        
+        // 获取随机特殊建筑类型（确保每种不超过2个）
+        function getRandomSpecialBuildingType() {
+            const availableTypes = [];
+            if (towerCount < 2) availableTypes.push('tower');
+            if (pavilionCount < 2) availableTypes.push('pavilion');
+            if (squatCount < 2) availableTypes.push('squat');
+            
+            if (availableTypes.length === 0) return 'normal';
+            
+            const randomIndex = Math.floor(Math.random() * availableTypes.length);
+            return availableTypes[randomIndex];
+        }
+        
+        // 创建普通建筑（原createBuilding函数中的内容）
+        function createNormalBuilding(x, y, width, height, group) {
             // 生成同色系渐变
             const color = hexToHSL(baseColor);
             const mainColor = `hsl(${color.h}, ${color.s}%, ${Math.max(20, color.l - 5)}%)`;
@@ -810,7 +1027,7 @@
             building.setAttribute('width', width);
             building.setAttribute('height', height);
             
-            // 创建渐变 - 仅使用渐变透明度变化
+            // 创建渐变
             const gradientId = `gradient-${buildingCount}`;
             const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
             gradient.setAttribute('id', gradientId);
@@ -836,13 +1053,13 @@
             defs.appendChild(gradient);
             
             building.setAttribute('fill', `url(#${gradientId})`);
-            buildingGroup.appendChild(building);
+            group.appendChild(building);
             
-            // 添加建筑细节（仅屋顶）
-            addBuildingDetails(x, y, width, height, buildingGroup, color);
+            // 添加建筑细节
+            addBuildingDetails(x, y, width, height, group, color);
             
             // 添加窗户
-            addWindows(x, y, width, height, buildingGroup, color);
+            addWindows(x, y, width, height, group, color);
             
             // 随机添加天线
             if (Math.random() > 0.7) {
@@ -855,7 +1072,7 @@
                 antenna.setAttribute('stroke', '#cccccc');
                 antenna.setAttribute('stroke-width', '1');
                 antenna.setAttribute('opacity', '0.7');
-                buildingGroup.appendChild(antenna);
+                group.appendChild(antenna);
                 
                 const antennaBall = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 antennaBall.setAttribute('cx', x + width/2);
@@ -863,86 +1080,240 @@
                 antennaBall.setAttribute('r', '3');
                 antennaBall.setAttribute('fill', baseColor);
                 antennaBall.setAttribute('opacity', '0.8');
-                buildingGroup.appendChild(antennaBall);
+                group.appendChild(antennaBall);
             }
-            
-            canvas.appendChild(buildingGroup);
         }
         
-        // 添加建筑细节（仅屋顶）
-        function addBuildingDetails(x, y, width, height, group, color) {
-            // 添加建筑顶部
-            const topHeight = Math.random() * 15 + 10;
+        // 创建塔形建筑
+        function createTowerBuilding(x, y, width, height, group) {
+            const color = hexToHSL(baseColor);
+            const mainColor = `hsl(${color.h}, ${color.s}%, ${Math.max(20, color.l - 10)}%)`;
             
-            // 随机选择屋顶类型（平顶或斜顶）
-            const roofType = Math.random() > 0.5 ? 'flat' : 'angled';
+            // 创建塔体（多个梯形堆叠）
+            const layers = 3; // 3层
+            const layerHeight = height / layers;
             
-            if (roofType === 'flat') {
-                // 平顶
-                const top = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                top.setAttribute('x', x - 5);
-                top.setAttribute('y', y - topHeight);
-                top.setAttribute('width', width + 10);
-                top.setAttribute('height', topHeight);
-                top.setAttribute('fill', '#454545');
-                top.setAttribute('opacity', '1.0');
-                group.appendChild(top);
-            } else {
-                // 斜角屋顶 - 只倾斜顶边
-                const roof = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            for (let i = 0; i < layers; i++) {
+                const layerWidth = width * (1 - i * 0.15);
+                const layerX = x + (width - layerWidth) / 1.5;
+                const layerY = y + i * layerHeight;
                 
-                // 创建偏移量使顶部倾斜
-                const offset = Math.random() * 20 + 10;
-                
-                // 点顺序：左下 -> 右下 -> 右上 -> 左上
+                // 创建梯形
+                const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
                 const points = `
-                    ${x},${y} 
-                    ${x + width},${y} 
-                    ${x + width - offset},${y - topHeight} 
-                    ${x + offset},${y - topHeight}
+                    ${layerX},${layerY + layerHeight} 
+                    ${layerX + layerWidth},${layerY + layerHeight} 
+                    ${layerX + layerWidth * 0.8},${layerY} 
+                    ${layerX + layerWidth * 0.2},${layerY}
                 `;
-                
-                roof.setAttribute('points', points);
-                roof.setAttribute('fill', '#333');
-                roof.setAttribute('opacity', '1.0');
-                group.appendChild(roof);
+                polygon.setAttribute('points', points);
+                polygon.setAttribute('fill', mainColor);
+                polygon.setAttribute('opacity', (0.9 - i * 0.2).toString());
+                group.appendChild(polygon);
             }
+            
+            // 添加尖顶
+            const spireHeight = layerHeight * 0.5;
+            const spire = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const spirePoints = `
+                ${x + width * 0.4},${y} 
+                ${x + width * 0.6},${y} 
+                ${x + width * 0.5},${y - spireHeight}
+            `;
+            spire.setAttribute('points', spirePoints);
+            spire.setAttribute('fill', '#333');
+            spire.setAttribute('opacity', '0.8');
+            group.appendChild(spire);
+            
+            // 添加顶柱
+            const poleHeight = spireHeight * 0.4;
+            const pole = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            pole.setAttribute('x1', x + width/2);
+            pole.setAttribute('y1', y - spireHeight);
+            pole.setAttribute('x2', x + width/2);
+            pole.setAttribute('y2', y - spireHeight - poleHeight);
+            pole.setAttribute('stroke', '#ccc');
+            pole.setAttribute('stroke-width', '2');
+            group.appendChild(pole);
+            
+            // 添加顶球
+            const ball = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            ball.setAttribute('cx', x + width/2);
+            ball.setAttribute('cy', y - spireHeight - poleHeight);
+            ball.setAttribute('r', '4');
+            ball.setAttribute('fill', '#ffcc00');
+            group.appendChild(ball);
+            
+            // 添加窗户（垂直排列）
+            addTowerWindows(x, y, width, height, group, color);
         }
         
-        // 添加窗户 - 高度随机变化，宽度固定
-        function addWindows(x, y, width, height, group, color) {
-            const windowSpacing = 10;
-            const margin = 12;
-            const floorHeight = 28;
+        // 添加塔形建筑窗户
+        function addTowerWindows(x, y, width, height, group, color) {
+            const windowSpacing = 15;
+            const margin = 10;
+            const floorHeight = 40;
             
             const floors = Math.floor((height - margin * 2) / floorHeight);
             
             for (let floor = 0; floor < floors; floor++) {
-                const windowsPerFloor = Math.floor((width - margin * 2) / windowSpacing);
+                // 跳过一些楼层以创建间距
+                if (Math.random() > 0.7) continue;
+                
                 const floorY = y + margin + floor * floorHeight;
                 
-                for (let i = 0; i < windowsPerFloor; i++) {
-                    // 根据窗户密度跳过一些窗户
-                    if (Math.random() > windowDensity) continue;
-                    
-                    const windowX = x + margin + i * windowSpacing;
-                    
-                    // 使用深色窗户设计
-                    const windowColor = `hsl(${color.h}, ${color.s}%, ${Math.max(0, color.l - 40)}%)`;
-                    
-                    // 创建窗户 - 宽度固定，高度随机
-                    const windowHeight = Math.random() * 8 + 8; // 8-16高度
-                    const window = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    window.setAttribute('x', windowX);
-                    window.setAttribute('y', floorY + (floorHeight - windowHeight)/2);
-                    window.setAttribute('width', 6); // 固定宽度
-                    window.setAttribute('height', windowHeight);
-                    window.setAttribute('fill', windowColor);
-                    window.setAttribute('rx', '1'); // 圆角
-                    window.setAttribute('opacity', '0.3');
-                    group.appendChild(window);
-                    
-                    windowCount++;
+                // 窗户颜色
+                const windowColor = `hsl(${color.h}, ${color.s}%, ${Math.max(0, color.l - 40)}%)`;
+                
+                // 创建窗户 - 垂直排列
+                const window = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                window.setAttribute('x', x + width/2 - 4);
+                window.setAttribute('y', floorY + 10);
+                window.setAttribute('width', 8);
+                window.setAttribute('height', 20);
+                window.setAttribute('fill', windowColor);
+                window.setAttribute('rx', '1');
+                window.setAttribute('opacity', '0.6');
+                group.appendChild(window);
+                
+                windowCount++;
+            }
+        }
+        
+        // 创建亭子
+        function createPavilionBuilding(x, y, width, height, group) {
+            const color = hexToHSL(baseColor);
+            const mainColor = `hsl(${color.h}, ${color.s}%, ${Math.max(20, color.l - 10)}%)`;
+            
+            // 创建柱子
+            const columnWidth = width * 0.15;
+            const columnHeight = height * 0.7;
+                // 柱子向内收进的偏移量（设为柱子宽度的50%）
+    	const columnInset = columnWidth * 0.5;
+
+            // 左柱
+            const leftColumn = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            leftColumn.setAttribute('x', x + columnInset); 
+            leftColumn.setAttribute('y', y + height - columnHeight);
+            leftColumn.setAttribute('width', columnWidth);
+            leftColumn.setAttribute('height', columnHeight);
+            leftColumn.setAttribute('fill', mainColor);
+            leftColumn.setAttribute('opacity', '0.8');
+            group.appendChild(leftColumn);
+            
+            // 右柱
+            const rightColumn = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rightColumn.setAttribute('x', x + width - columnWidth - columnInset); 
+            rightColumn.setAttribute('y', y + height - columnHeight);
+            rightColumn.setAttribute('width', columnWidth);
+            rightColumn.setAttribute('height', columnHeight);
+            rightColumn.setAttribute('fill', mainColor);
+            rightColumn.setAttribute('opacity', '0.8');
+            group.appendChild(rightColumn);
+            
+            // 创建屋顶
+            const roofHeight = height * 0.5;
+            const roof = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const roofPoints = `
+                ${x},${y + height - columnHeight} 
+                ${x + width},${y + height - columnHeight} 
+                ${x + width/2},${y + height - columnHeight - roofHeight}
+            `;
+            roof.setAttribute('points', roofPoints);
+            roof.setAttribute('fill', '#8B4513'); // 棕色屋顶
+            roof.setAttribute('opacity', '0.9');
+            group.appendChild(roof);
+            
+            // 添加顶柱
+            const poleHeight = roofHeight * 0.5;
+            const pole = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            pole.setAttribute('x1', x + width/2);
+            pole.setAttribute('y1', y + height - columnHeight - roofHeight);
+            pole.setAttribute('x2', x + width/2);
+            pole.setAttribute('y2', y + height - columnHeight - roofHeight - poleHeight);
+            pole.setAttribute('stroke', '#ccc');
+            pole.setAttribute('stroke-width', '2');
+            group.appendChild(pole);
+            
+            // 添加顶球
+            const ball = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            ball.setAttribute('cx', x + width/2);
+            ball.setAttribute('cy', y + height - columnHeight - roofHeight - poleHeight);
+            ball.setAttribute('r', '5');
+            ball.setAttribute('fill', '#ffcc00');
+            group.appendChild(ball);
+        }
+        
+        // 创建矮胖型建筑
+        function createSquatBuilding(x, y, width, height, group) {
+            const color = hexToHSL(baseColor);
+            const mainColor = `hsl(${color.h}, ${color.s}%, ${Math.max(20, color.l - 5)}%)`;
+            
+            // 创建建筑主体
+            const building = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            building.setAttribute('x', x);
+            building.setAttribute('y', y);
+            building.setAttribute('width', width);
+            building.setAttribute('height', height);
+            building.setAttribute('fill', mainColor);
+            building.setAttribute('opacity', '0.9');
+            group.appendChild(building);
+            
+            // 添加平顶
+            const top = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            top.setAttribute('x', x - 5);
+            top.setAttribute('y', y - 10);
+            top.setAttribute('width', width + 10);
+            top.setAttribute('height', 10);
+            top.setAttribute('fill', '#454545');
+            top.setAttribute('opacity', '1.0');
+            group.appendChild(top);
+            
+            // 添加特殊窗户（横向长条）
+            addSquatWindows(x, y, width, height, group, color);
+        }
+        
+        // 添加矮胖型建筑窗户
+        function addSquatWindows(x, y, width, height, group, color) {
+            const floorHeight = 30;
+            const margin = 15;
+            const windowHeight = 10;
+            
+            const floors = Math.floor((height - margin * 2) / floorHeight);
+            
+            for (let floor = 0; floor < floors; floor++) {
+                const floorY = y + margin + floor * floorHeight;
+                
+                // 窗户颜色
+                const windowColor = `hsl(${color.h}, ${color.s}%, ${Math.max(0, color.l - 40)}%)`;
+                
+                // 创建横向长条窗户
+                const window = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                window.setAttribute('x', x + 10);
+                window.setAttribute('y', floorY + (floorHeight - windowHeight)/2);
+                window.setAttribute('width', width - 20);
+                window.setAttribute('height', windowHeight);
+                window.setAttribute('fill', windowColor);
+                window.setAttribute('rx', '3');
+                window.setAttribute('opacity', '0.4');
+                group.appendChild(window);
+                
+                windowCount++;
+                
+                // 添加窗户分隔线
+                if (width > 100) {
+                    const separatorCount = Math.floor((width - 20) / 30);
+                    for (let i = 1; i < separatorCount; i++) {
+                        const separator = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        separator.setAttribute('x1', x + 10 + i * ((width - 20) / separatorCount));
+                        separator.setAttribute('y1', floorY + (floorHeight - windowHeight)/2);
+                        separator.setAttribute('x2', x + 10 + i * ((width - 20) / separatorCount));
+                        separator.setAttribute('y2', floorY + (floorHeight - windowHeight)/2 + windowHeight);
+                        separator.setAttribute('stroke', '#000');
+                        separator.setAttribute('stroke-width', '1');
+                        separator.setAttribute('opacity', '0.2');
+                        group.appendChild(separator);
+                    }
                 }
             }
         }
