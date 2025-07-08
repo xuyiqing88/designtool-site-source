@@ -22,73 +22,7 @@
             display: flex;
             flex-direction: column;
         }
-        
-        /* 顶部导航栏 */
-        .navbar {
-            background: rgba(25, 25, 35, 0.95);
-            height: 60px;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            border-bottom: 1px solid #444;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
-            z-index: 100;
-            flex-shrink: 0;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            margin: 0 auto;
-        }
-        
-        .ps {
-            background: #001e36;
-            font-size: 21px;
-            color: #31a8ff;
-            border: 1px solid;
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            line-height: 36px;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        
-        .logo h1 {
-            font-size: 22px;
-            font-weight: 600;
-            color: #31a8ff;
-        }
-        
-        .home-btn {
-            background: linear-gradient(to right, #3498db, #2ecc71);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-            text-decoration: none;
-        }
-        
-        .home-btn i {
-            margin-right: 8px;
-            font-size: 16px;
-        }
-        
-        .home-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.5);
-        }
-        
+
         /* 编辑器容器 */
         .editor-container {
             flex: 1;
@@ -145,41 +79,17 @@
         
         /* 响应式调整 */
         @media (max-width: 768px) {
-            .navbar {
-                height: 50px;
-                padding: 0 15px;
-            }
-            .editor-container {
+           .editor-container {
 	    	margin-left: 0;
 		}
-            .logo h1 {
-                font-size: 18px;
-            }
-            
-            .ps {
-                width: 35px;
-                height: 35px;
-                line-height: 31px;
-                font-size: 18px;
-            }
-            
-            .home-btn {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
+
         }
     </style>
 </head>
 	<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
 <body>
 <div id="global-sidebar"></div>
-    <!-- 顶部导航栏 -->
-    <div class="navbar">
-        <div class="logo">
-            <span class="ps">Ps</span>
-            <h1>专业在线Photoshop</h1>
-        </div>
-    </div>
+    
     
     <!-- 编辑器容器 -->
     <div class="editor-container">
