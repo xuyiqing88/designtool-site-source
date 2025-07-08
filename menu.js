@@ -300,7 +300,8 @@ const menuData = [
             { title: "UI设计数据生成器", link: "数据模拟.html", active: true },
             { title: "在线版Photoshop", link: "PS.html" },
             { title: "城市天际线生成器", link: "city_building.html" },
-            { title: "颜色转换工具", link: "颜色转换工具.html" },
+            { title: "矢量花朵生成器", link: "flower_building.html" },
+	    { title: "颜色转换工具", link: "颜色转换工具.html" },
         ]
     },
     {
