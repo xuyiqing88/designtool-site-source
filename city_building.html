@@ -904,6 +904,7 @@
             roof.setAttribute('opacity', '1.0');
             group.appendChild(roof);
         }
+	return topHeight;
     }
     
     // 添加窗户 - 高度随机变化，宽度固定
@@ -1055,30 +1056,29 @@
             building.setAttribute('fill', `url(#${gradientId})`);
             group.appendChild(building);
             
-            // 添加建筑细节
-            addBuildingDetails(x, y, width, height, group, color);
-            
+    		// 添加建筑细节并获取屋顶高度
+    		const topHeight = addBuildingDetails(x, y, width, height, group, color);            
             // 添加窗户
             addWindows(x, y, width, height, group, color);
             
             // 随机添加天线
-            if (Math.random() > 0.7) {
-                const antennaHeight = Math.random() * 30 + 20;
-                const antenna = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                antenna.setAttribute('x1', x + width/2);
-                antenna.setAttribute('y1', y);
-                antenna.setAttribute('x2', x + width/2);
-                antenna.setAttribute('y2', y - antennaHeight);
+    if (Math.random() > 0.7) {
+        const antennaHeight = Math.random() * 30 + 20;
+        const antenna = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        antenna.setAttribute('x1', x + width/2);
+        antenna.setAttribute('y1', y - topHeight); // 修改为从屋顶顶部开始
+        antenna.setAttribute('x2', x + width/2);
+        antenna.setAttribute('y2', y - topHeight - antennaHeight); // 终点也相应调整
                 antenna.setAttribute('stroke', '#cccccc');
                 antenna.setAttribute('stroke-width', '1');
                 antenna.setAttribute('opacity', '0.7');
                 group.appendChild(antenna);
                 
-                const antennaBall = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                antennaBall.setAttribute('cx', x + width/2);
-                antennaBall.setAttribute('cy', y - antennaHeight);
+        const antennaBall = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        antennaBall.setAttribute('cx', x + width/2);
+        antennaBall.setAttribute('cy', y - topHeight - antennaHeight); // 同样调整
                 antennaBall.setAttribute('r', '3');
-                antennaBall.setAttribute('fill', baseColor);
+                antennaBall.setAttribute('fill', '#ffcc00');
                 antennaBall.setAttribute('opacity', '0.8');
                 group.appendChild(antennaBall);
             }
