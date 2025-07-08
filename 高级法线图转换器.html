@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
- <script src="menu.js" defer></script>
+<script src="menu.js" defer></script>
     <style>
         * {
             margin: 0;
@@ -37,31 +37,33 @@
             overflow-x: hidden;
             color: var(--text2);
         }
-.topgroup {
-	gap: 10px;
-    display: flex;
-    position: fixed;
-    margin-top: 20px;
- left: 20px;
-    background: #2b2b2f;
-    border-radius: 30px;
-    padding: 4px;
-	z-index: 999;
-	backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);}
-.home-icon {
-	font-size: 40px;
-	cursor: pointer;
-    transition: all 0.3s;
-    padding: 8px; 
-	border-radius: 50%;
-	width: 1em; 
-	height: 1em;
-	vertical-align: -0.15em;
-	overflow: hidden;}
-.topgroup:hover {
-	background:#36363b;
-}
+        .topgroup {
+            gap: 10px;
+            display: flex;
+            position: fixed;
+            margin-top: 20px;
+            left: 20px;
+            background: #2b2b2f;
+            border-radius: 30px;
+            padding: 4px;
+            z-index: 999;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .home-icon {
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px; 
+            border-radius: 50%;
+            width: 1em; 
+            height: 1em;
+            vertical-align: -0.15em;
+            overflow: hidden;
+        }
+        .topgroup:hover {
+            background:#36363b;
+        }
         .kuang {
             background: var(--lightbg);
             border-radius: 10px;
@@ -142,7 +144,7 @@
             flex-direction: column;
             height: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-	min-width: 640px;
+            min-width: 640px;
         }
         
         .panel h2 {
@@ -169,7 +171,8 @@
             }
         }
         .toggle-btn{
-	font-size: 0.88rem;}
+            font-size: 0.88rem;
+        }
         .control-group {
             display: flex;
             flex-direction: column;
@@ -556,7 +559,7 @@
             
             .panel {
                 padding: 20px 15px;
-		min-width: auto;
+                min-width: auto;
             }
             
             .file-upload-area {
@@ -660,7 +663,7 @@
             padding: 6px 19px;
             cursor: pointer;
             transition: all 0.3s ease;
-	text-align: center;
+            text-align: center;
         }
         
         .toggle-btn.active {
@@ -720,7 +723,7 @@
             border-radius: 8px;
             overflow: hidden;
             display: none;
-		margin-top: 20px;
+            margin-top: 20px;
         }
         
         #preview3dContainer canvas {
@@ -741,7 +744,7 @@
         .preview-controls .toggle-btn {
             padding: 4px 10px;
             font-size: 0.75rem;
-	margin-right: -1px;
+            margin-right: -1px;
         }
         
         .preview-hint {
@@ -759,9 +762,14 @@
         .preview-ready {
             display: block !important;
         }
+        
+        /* 进度条动画 */
+        .progress-fill {
+            transition: width 0.3s ease-out;
+        }
     </style>
 </head>
-	<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
 <body>
 <div id="global-sidebar"></div>
     <div class="container">
@@ -834,16 +842,14 @@
                             请上传灰度图或选择示例图像
                         </div>
                     </div>
-		</div>
+                </div>
 
-		<!-- 下载灰度图按钮 -->
+                <!-- 下载灰度图按钮 -->
                 <div style="display: flex; justify-content: center; margin-top: 15px;">
                     <button id="downloadGrayBtn" class="button" style=" width: 186px; background: var(--btcolor);">
                         <i class="fas fa-download"></i> 下载灰度图
                     </button>
                 </div>
-
-                
             </div>
             
             <div class="panel">
@@ -939,7 +945,7 @@
                 </div>
                 
                 <div class="panel-title">
-                    <h2>反推灰度图<span class="scrib">拖拽法线图上传反推出灰度图</span></h3>
+                    <h2>反推灰度图<span class="scrib">拖拽法线图上传反推出灰度图</span></h2>
                     <button id="reverseBtn" class="toggle-btn" style="font-size: 14px; height: 38px;">
                         一键反推
                     </button>
@@ -956,7 +962,6 @@
                         <label for="simpleAlgorithm">简单累加算法 (旧版)</label>
                     </div>
                 </div>
-
             </div>
         </div>
         
@@ -976,1035 +981,755 @@
         <img class="modal-content" id="outputModalImg">
     </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // 获取DOM元素
-        const fileInput = document.getElementById('fileInput');
-        // 在全屏添加离屏canvas变量（在DOMContentLoaded开头添加）
-        let offscreenCanvas = document.createElement('canvas');
-        let offscreenCtx = offscreenCanvas.getContext('2d'); 
-        const inputCanvas = document.getElementById('inputCanvas');
-        const outputCanvas = document.getElementById('outputCanvas');
-        const inputPlaceholder = document.getElementById('inputPlaceholder');
-        const outputPlaceholder = document.getElementById('outputPlaceholder');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const resetParamsBtn = document.getElementById('resetParamsBtn');
-        const reverseBtn = document.getElementById('reverseBtn');
-        const strengthSlider = document.getElementById('strengthSlider');
-        const blurSlider = document.getElementById('blurSlider');
-        const strengthValueInput = document.getElementById('strengthValue');
-        const blurValueInput = document.getElementById('blurValue');
-        const invertX = document.getElementById('invertX');
-        const invertY = document.getElementById('invertY');
-        const highQuality = document.getElementById('highQuality');
-        const exampleImages = document.querySelectorAll('.example-image');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressFill = document.getElementById('progressFill');
-        const progressPercent = document.getElementById('progressPercent');
-        const inputUploadArea = document.getElementById('inputUploadArea');
-        const poissonAlgorithm = document.getElementById('poissonAlgorithm');
-        const simpleAlgorithm = document.getElementById('simpleAlgorithm');
-        const cpuModeBtn = document.getElementById('cpuModeBtn');
-        const gpuModeBtn = document.getElementById('gpuModeBtn');
-        const perfInfo = document.getElementById('perfInfo');
-        const currentModeSpan = document.getElementById('currentMode');
-        const processingTimeSpan = document.getElementById('processingTime');
-        const smallSizeBtn = document.getElementById('smallSizeBtn');
-        const largeSizeBtn = document.getElementById('largeSizeBtn');
-        const outputCanvasContainer = document.getElementById('outputCanvasContainer');
-        
-        // 新增3D预览相关元素
-        const normalPreviewBtn = document.getElementById('normalPreviewBtn');
-        const modelPreviewBtn = document.getElementById('modelPreviewBtn');
-        const preview3dContainer = document.getElementById('preview3dContainer');
-        const previewHint = document.getElementById('previewHint');
-        const shapeButtons = document.querySelectorAll('.preview-controls .toggle-btn');
-        
-        // 模态框元素
-        const inputModal = document.getElementById('inputModal');
-        const outputModal = document.getElementById('outputModal');
-        const inputModalImg = document.getElementById('inputModalImg');
-        const outputModalImg = document.getElementById('outputModalImg');
-        const closeBtns = document.querySelectorAll('.close');
-        
-        // Canvas容器元素
-        const inputCanvasContainer = document.getElementById('inputCanvasContainer');
-        
-        let originalWidth = 0;
-        let originalHeight = 0;
-        let currentImageData = null;
-        let blurredImageData = null;
-        let updateTimeout = null;
-        let useGPU = false;
-        let gl = null;
-        let normalMapProgram = null;
-        
-        // Three.js相关变量
-        let scene, camera, renderer, mesh, controls;
-        let currentNormalMap = null;
-        let currentShape = 'box';
-        let is3dPreviewActive = false;
-        let isThreeInitialized = false; // 标记Three.js是否已初始化
-        let animationId = null;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 获取DOM元素
+            const fileInput = document.getElementById('fileInput');
+            const inputCanvas = document.getElementById('inputCanvas');
+            const outputCanvas = document.getElementById('outputCanvas');
+            const inputPlaceholder = document.getElementById('inputPlaceholder');
+            const outputPlaceholder = document.getElementById('outputPlaceholder');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const resetParamsBtn = document.getElementById('resetParamsBtn');
+            const reverseBtn = document.getElementById('reverseBtn');
+            const strengthSlider = document.getElementById('strengthSlider');
+            const blurSlider = document.getElementById('blurSlider');
+            const strengthValueInput = document.getElementById('strengthValue');
+            const blurValueInput = document.getElementById('blurValue');
+            const invertX = document.getElementById('invertX');
+            const invertY = document.getElementById('invertY');
+            const highQuality = document.getElementById('highQuality');
+            const exampleImages = document.querySelectorAll('.example-image');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const inputUploadArea = document.getElementById('inputUploadArea');
+            const poissonAlgorithm = document.getElementById('poissonAlgorithm');
+            const simpleAlgorithm = document.getElementById('simpleAlgorithm');
+            const cpuModeBtn = document.getElementById('cpuModeBtn');
+            const gpuModeBtn = document.getElementById('gpuModeBtn');
+            const perfInfo = document.getElementById('perfInfo');
+            const currentModeSpan = document.getElementById('currentMode');
+            const processingTimeSpan = document.getElementById('processingTime');
+            const smallSizeBtn = document.getElementById('smallSizeBtn');
+            const largeSizeBtn = document.getElementById('largeSizeBtn');
+            const outputCanvasContainer = document.getElementById('outputCanvasContainer');
+            
+            // 新增3D预览相关元素
+            const normalPreviewBtn = document.getElementById('normalPreviewBtn');
+            const modelPreviewBtn = document.getElementById('modelPreviewBtn');
+            const preview3dContainer = document.getElementById('preview3dContainer');
+            const previewHint = document.getElementById('previewHint');
+            const shapeButtons = document.querySelectorAll('.preview-controls .toggle-btn');
+            
+            // 模态框元素
+            const inputModal = document.getElementById('inputModal');
+            const outputModal = document.getElementById('outputModal');
+            const inputModalImg = document.getElementById('inputModalImg');
+            const outputModalImg = document.getElementById('outputModalImg');
+            const closeBtns = document.querySelectorAll('.close');
+            
+            // Canvas容器元素
+            const inputCanvasContainer = document.getElementById('inputCanvasContainer');
+            
+            let originalWidth = 0;
+            let originalHeight = 0;
+            let currentImageData = null;
+            let blurredImageData = null;
+            let updateTimeout = null;
+            let useGPU = false;
+            let gl = null;
+            let normalMapProgram = null;
+            let progressInterval = null;
+            
+            // Three.js相关变量
+            let scene, camera, renderer, mesh, controls;
+            let currentNormalMap = null;
+            let currentShape = 'box';
+            let is3dPreviewActive = false;
+            let isThreeInitialized = false; // 标记Three.js是否已初始化
+            let animationId = null;
 
-        // 初始化Three.js场景
-        function initThreeScene() {
-            // 创建场景
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x1a1b1c);
+            // 初始化Three.js场景
+            function initThreeScene() {
+                // 创建场景
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x1a1b1c);
+                
+                // 创建相机
+                camera = new THREE.PerspectiveCamera(75, preview3dContainer.clientWidth / preview3dContainer.clientHeight, 0.1, 1000);
+                camera.position.z = 3;
+                
+                // 创建渲染器
+                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setSize(preview3dContainer.clientWidth, preview3dContainer.clientHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                preview3dContainer.appendChild(renderer.domElement);
+                
+                // 添加光源
+                const ambientLight = new THREE.AmbientLight(0x404040);
+                scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(1, 1, 1);
+                scene.add(directionalLight);
+                
+                // 添加点光源
+                const pointLight1 = new THREE.PointLight(0xffe7db, 1, 100);
+                pointLight1.position.set(5, 5, 5);
+                scene.add(pointLight1);
+                
+                const pointLight2 = new THREE.PointLight(0xadb7ff, 1, 100);
+                pointLight2.position.set(-5, -5, -5);
+                scene.add(pointLight2);
+                
+                // 创建初始网格（立方体）
+                createMesh('box');
+                
+                // 添加轨道控制器
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                
+                // 处理窗口大小变化
+                window.addEventListener('resize', () => {
+                    if (is3dPreviewActive) {
+                        updateRendererSize();
+                    }
+                });
+                
+                // 标记为已初始化
+                isThreeInitialized = true;
+            }
             
-            // 创建相机
-            camera = new THREE.PerspectiveCamera(75, preview3dContainer.clientWidth / preview3dContainer.clientHeight, 0.1, 1000);
-            camera.position.z = 3;
-            
-            // 创建渲染器
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(preview3dContainer.clientWidth, preview3dContainer.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            preview3dContainer.appendChild(renderer.domElement);
-            
-            // 添加光源
-            const ambientLight = new THREE.AmbientLight(0x404040);
-            scene.add(ambientLight);
-            
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(1, 1, 1);
-            scene.add(directionalLight);
-            
-            // 添加点光源
-            const pointLight1 = new THREE.PointLight(0xffe7db, 1, 100);
-            pointLight1.position.set(5, 5, 5);
-            scene.add(pointLight1);
-            
-            const pointLight2 = new THREE.PointLight(0xadb7ff, 1, 100);
-            pointLight2.position.set(-5, -5, -5);
-            scene.add(pointLight2);
-            
-            // 创建初始网格（立方体）
-            createMesh('box');
-            
-            // 添加轨道控制器
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            
-            // 处理窗口大小变化
-            window.addEventListener('resize', () => {
-                if (is3dPreviewActive) {
-                    updateRendererSize();
+            // 更新渲染器尺寸
+            function updateRendererSize() {
+                if (!renderer || !preview3dContainer) return;
+                
+                const width = preview3dContainer.clientWidth;
+                const height = preview3dContainer.clientHeight;
+                
+                // 避免尺寸为0
+                if (width === 0 || height === 0) {
+                    return;
                 }
-            });
-            
-            // 标记为已初始化
-            isThreeInitialized = true;
-        }
-        
-        // 更新渲染器尺寸
-        function updateRendererSize() {
-            if (!renderer || !preview3dContainer) return;
-            
-            const width = preview3dContainer.clientWidth;
-            const height = preview3dContainer.clientHeight;
-            
-            // 避免尺寸为0
-            if (width === 0 || height === 0) {
-                return;
-            }
-            
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
-        }
-        
-        // 创建网格
-        function createMesh(shape) {
-            currentShape = shape;
-            
-            // 移除现有网格
-            if (mesh) {
-                scene.remove(mesh);
-            }
-            
-            let geometry;
-            
-            switch(shape) {
-                case 'sphere':
-                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
-                    break;
-                case 'cylinder':
-                    geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
-                    break;
-                case 'torus':
-                    geometry = new THREE.TorusGeometry(1.5, 0.5, 16, 100);
-                    break;
-                case 'box':
-                default:
-                    geometry = new THREE.BoxGeometry(2, 2, 2);
-                    break;
-            }
-            
-            // 创建材质
-            const material = new THREE.MeshPhongMaterial({
-                color: 0x808080,
-                shininess: 30,
-                side: THREE.DoubleSide
-            });
-            
-            // 应用法线贴图（如果存在）
-            if (currentNormalMap) {
-                material.normalMap = currentNormalMap;
-                material.normalScale.set(1, 1);
+                
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
             }
             
             // 创建网格
-            mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-        }
-        
-        // 更新法线贴图
-        function updateNormalMap(texture) {
-            if (!mesh) return;
-            
-            currentNormalMap = texture;
-            
-            // 更新材质
-            if (mesh.material) {
-                mesh.material.normalMap = texture;
-                mesh.material.needsUpdate = true;
-            }
-        }
-        
-        // 动画循环
-        function animate() {
-        animationId = requestAnimationFrame(animate);
-        
-        if (controls) {
-            controls.update();
-        }
-        
-        if (mesh && is3dPreviewActive) { // 检查是否处于3D预览模式
-            // 添加轻微旋转
-            mesh.rotation.x += 0.002;
-            mesh.rotation.y += 0.003;
-        }
-        
-        renderer.render(scene, camera);
-    }
-        
-        // 设置GPU模式
-        function setGPUMode(enabled) {
-            useGPU = enabled;
-            if (useGPU) {
-                gpuModeBtn.classList.add('active');
-                cpuModeBtn.classList.remove('active');
-                currentModeSpan.textContent = "GPU模式";
+            function createMesh(shape) {
+                currentShape = shape;
                 
-                // 初始化WebGL
-                initWebGL();
-            } else {
-                gpuModeBtn.classList.remove('active');
-                cpuModeBtn.classList.add('active');
-                currentModeSpan.textContent = "CPU模式";
-            }
-        }
-        
-        // 初始化WebGL
-        function initWebGL() {
-            try {
-                // 创建离屏Canvas用于WebGL处理
-                const glCanvas = document.createElement('canvas');
-                gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
-                
-                if (!gl) {
-                    console.log('WebGL初始化失败，将使用CPU模式');
-                    setGPUMode(false);
-                    return;
+                // 移除现有网格
+                if (mesh) {
+                    scene.remove(mesh);
                 }
                 
-                // 编译着色器
-                const vertexShaderSource = `
-                    attribute vec2 a_position;
-                    attribute vec2 a_texCoord;
-                    varying vec2 v_texCoord;
-                    void main() {
-                        gl_Position = vec4(a_position, 0.0, 1.0);
-                        v_texCoord = a_texCoord;
-                    }
-                `;
+                let geometry;
                 
-                const fragmentShaderSource = `
-                    precision mediump float;
-                    uniform sampler2D u_image;
-                    uniform float u_strength;
-                    uniform float u_invertX;
-                    uniform float u_invertY;
-                    uniform vec2 u_resolution;
-                    
-                    varying vec2 v_texCoord;
-                    
-                    void main() {
-                        // 获取周围像素的高度值
-                        float left = texture2D(u_image, v_texCoord + vec2(-1.0/u_resolution.x, 0.0)).r;
-                        float right = texture2D(u_image, v_texCoord + vec2(1.0/u_resolution.x, 0.0)).r;
-                        float top = texture2D(u_image, v_texCoord + vec2(0.0, -1.0/u_resolution.y)).r;
-                        float bottom = texture2D(u_image, v_texCoord + vec2(0.0, 1.0/u_resolution.y)).r;
-                        
-                        // 计算梯度
-                        float dx = (right - left) * u_strength * 10.0;
-                        float dy = (bottom - top) * u_strength * 10.0;
-                        
-                        // 应用方向反转
-                        dx *= u_invertX;
-                        dy *= u_invertY;
-                        
-                        // 计算法线向量
-                        vec3 normal = normalize(vec3(dx, dy, 1.0));
-                        
-                        // 映射到0-1范围
-                        normal = (normal + 1.0) * 0.5;
-                        
-                        gl_FragColor = vec4(normal, 1.0);
-                    }
-                `;
-                
-                // 创建着色器程序
-                normalMapProgram = createProgram(gl, vertexShaderSource, fragmentShaderSource);
-                
-                if (!normalMapProgram) {
-                    console.error('WebGL程序创建失败，退回到CPU模式');
-                    setGPUMode(false);
-                    return;
+                switch(shape) {
+                    case 'sphere':
+                        geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                        break;
+                    case 'cylinder':
+                        geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
+                        break;
+                    case 'torus':
+                        geometry = new THREE.TorusGeometry(1.5, 0.5, 16, 100);
+                        break;
+                    case 'box':
+                    default:
+                        geometry = new THREE.BoxGeometry(2, 2, 2);
+                        break;
                 }
                 
-                console.log('WebGL初始化成功');
-            } catch (e) {
-                console.error('WebGL初始化错误:', e);
-                setGPUMode(false);
-            }
-        }
-        
-        // 创建WebGL程序
-        function createProgram(gl, vertexSource, fragmentSource) {
-            const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
-            const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
-            
-            if (!vertexShader || !fragmentShader) {
-                return null;
-            }
-            
-            const program = gl.createProgram();
-            gl.attachShader(program, vertexShader);
-            gl.attachShader(program, fragmentShader);
-            gl.linkProgram(program);
-            
-            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                console.error('无法链接程序:', gl.getProgramInfoLog(program));
-                return null;
+                // 创建材质
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0x808080,
+                    shininess: 30,
+                    side: THREE.DoubleSide
+                });
+                
+                // 应用法线贴图（如果存在）
+                if (currentNormalMap) {
+                    material.normalMap = currentNormalMap;
+                    material.normalScale.set(1, 1);
+                }
+                
+                // 创建网格
+                mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
             }
             
-            return program;
-        }
-        
-        // 创建着色器
-        function createShader(gl, type, source) {
-            const shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
-            
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error('无法编译着色器:', gl.getShaderInfoLog(shader));
-                return null;
+            // 更新法线贴图
+            function updateNormalMap(texture) {
+                if (!mesh) return;
+                
+                currentNormalMap = texture;
+                
+                // 更新材质
+                if (mesh.material) {
+                    mesh.material.normalMap = texture;
+                    mesh.material.needsUpdate = true;
+                }
             }
             
-            return shader;
-        }
-        
-        // 模式切换按钮事件
-        cpuModeBtn.addEventListener('click', () => setGPUMode(false));
-        gpuModeBtn.addEventListener('click', () => setGPUMode(true));
-        
-        // 大小图切换功能
-        smallSizeBtn.addEventListener('click', () => {
-            smallSizeBtn.classList.add('active');
-            largeSizeBtn.classList.remove('active');
-            outputCanvasContainer.style.maxHeight = '320px';
-            outputCanvas.style.maxHeight = '320px';
-        });
-        
-        largeSizeBtn.addEventListener('click', () => {
-            largeSizeBtn.classList.add('active');
-            smallSizeBtn.classList.remove('active');
-            outputCanvasContainer.style.maxHeight = '600px';
-            outputCanvas.style.maxHeight = '600px';
-        });
-        
-        // 更新强度值显示
-        strengthSlider.addEventListener('input', () => {
-            strengthValueInput.value = strengthSlider.value;
-            scheduleNormalMapUpdate();
-        });
-        
-        // 更新模糊值显示
-        blurSlider.addEventListener('input', () => {
-            blurValueInput.value = blurSlider.value;
-            scheduleNormalMapUpdate();
-        });
-        
-        // 输入框事件监听
-        strengthValueInput.addEventListener('input', () => {
-            let value = parseFloat(strengthValueInput.value);
+            // 动画循环
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+                
+                if (controls) {
+                    controls.update();
+                }
+                
+                if (mesh && is3dPreviewActive) { // 检查是否处于3D预览模式
+                    // 添加轻微旋转
+                    mesh.rotation.x += 0.002;
+                    mesh.rotation.y += 0.003;
+                }
+                
+                renderer.render(scene, camera);
+            }
             
-            // 验证输入值
-            if (isNaN(value) || value <= 0) {
-                // 恢复为之前的值
+            // 设置GPU模式
+            function setGPUMode(enabled) {
+                useGPU = enabled;
+                if (useGPU) {
+                    gpuModeBtn.classList.add('active');
+                    cpuModeBtn.classList.remove('active');
+                    currentModeSpan.textContent = "GPU模式";
+                    
+                    // 初始化WebGL
+                    initWebGL();
+                } else {
+                    gpuModeBtn.classList.remove('active');
+                    cpuModeBtn.classList.add('active');
+                    currentModeSpan.textContent = "CPU模式";
+                }
+            }
+            
+            // 初始化WebGL
+            function initWebGL() {
+                try {
+                    // 创建离屏Canvas用于WebGL处理
+                    const glCanvas = document.createElement('canvas');
+                    gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
+                    
+                    if (!gl) {
+                        console.log('WebGL初始化失败，将使用CPU模式');
+                        setGPUMode(false);
+                        return;
+                    }
+                    
+                    // 编译着色器
+                    const vertexShaderSource = `
+                        attribute vec2 a_position;
+                        attribute vec2 a_texCoord;
+                        varying vec2 v_texCoord;
+                        void main() {
+                            gl_Position = vec4(a_position, 0.0, 1.0);
+                            v_texCoord = a_texCoord;
+                        }
+                    `;
+                    
+                    const fragmentShaderSource = `
+                        precision mediump float;
+                        uniform sampler2D u_image;
+                        uniform float u_strength;
+                        uniform float u_invertX;
+                        uniform float u_invertY;
+                        uniform vec2 u_resolution;
+                        
+                        varying vec2 v_texCoord;
+                        
+                        void main() {
+                            // 获取周围像素的高度值
+                            float left = texture2D(u_image, v_texCoord + vec2(-1.0/u_resolution.x, 0.0)).r;
+                            float right = texture2D(u_image, v_texCoord + vec2(1.0/u_resolution.x, 0.0)).r;
+                            float top = texture2D(u_image, v_texCoord + vec2(0.0, -1.0/u_resolution.y)).r;
+                            float bottom = texture2D(u_image, v_texCoord + vec2(0.0, 1.0/u_resolution.y)).r;
+                            
+                            // 计算梯度
+                            float dx = (right - left) * u_strength * 10.0;
+                            float dy = (bottom - top) * u_strength * 10.0;
+                            
+                            // 应用方向反转
+                            dx *= u_invertX;
+                            dy *= u_invertY;
+                            
+                            // 计算法线向量
+                            vec3 normal = normalize(vec3(dx, dy, 1.0));
+                            
+                            // 映射到0-1范围
+                            normal = (normal + 1.0) * 0.5;
+                            
+                            gl_FragColor = vec4(normal, 1.0);
+                        }
+                    `;
+                    
+                    // 创建着色器程序
+                    normalMapProgram = createProgram(gl, vertexShaderSource, fragmentShaderSource);
+                    
+                    if (!normalMapProgram) {
+                        console.error('WebGL程序创建失败，退回到CPU模式');
+                        setGPUMode(false);
+                        return;
+                    }
+                    
+                    console.log('WebGL初始化成功');
+                } catch (e) {
+                    console.error('WebGL初始化错误:', e);
+                    setGPUMode(false);
+                }
+            }
+            
+            // 创建WebGL程序
+            function createProgram(gl, vertexSource, fragmentSource) {
+                const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
+                const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+                
+                if (!vertexShader || !fragmentShader) {
+                    return null;
+                }
+                
+                const program = gl.createProgram();
+                gl.attachShader(program, vertexShader);
+                gl.attachShader(program, fragmentShader);
+                gl.linkProgram(program);
+                
+                if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                    console.error('无法链接程序:', gl.getProgramInfoLog(program));
+                    return null;
+                }
+                
+                return program;
+            }
+            
+            // 创建着色器
+            function createShader(gl, type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    console.error('无法编译着色器:', gl.getShaderInfoLog(shader));
+                    return null;
+                }
+                
+                return shader;
+            }
+            
+            // 模式切换按钮事件
+            cpuModeBtn.addEventListener('click', () => setGPUMode(false));
+            gpuModeBtn.addEventListener('click', () => setGPUMode(true));
+            
+            // 大小图切换功能
+            smallSizeBtn.addEventListener('click', () => {
+                smallSizeBtn.classList.add('active');
+                largeSizeBtn.classList.remove('active');
+                outputCanvasContainer.style.maxHeight = '320px';
+                outputCanvas.style.maxHeight = '320px';
+            });
+            
+            largeSizeBtn.addEventListener('click', () => {
+                largeSizeBtn.classList.add('active');
+                smallSizeBtn.classList.remove('active');
+                outputCanvasContainer.style.maxHeight = '600px';
+                outputCanvas.style.maxHeight = '600px';
+            });
+            
+            // 更新强度值显示
+            strengthSlider.addEventListener('input', () => {
                 strengthValueInput.value = strengthSlider.value;
-                return;
-            }
-            
-            // 更新滑块值
-            strengthSlider.value = value;
-            
-            // 调整滑块范围
-            const min = parseFloat(strengthSlider.min);
-            const max = parseFloat(strengthSlider.max);
-            if (value < min) {
-                strengthSlider.min = value;
-            } else if (value > max) {
-                strengthSlider.max = value;
-            }
-            
-            scheduleNormalMapUpdate();
-        });
-        
-        blurValueInput.addEventListener('input', () => {
-            let value = parseFloat(blurValueInput.value);
-            
-            // 验证输入值
-            if (isNaN(value) || value < 0) {
-                // 恢复为之前的值
-                blurValueInput.value = blurSlider.value;
-                return;
-            }
-            
-            // 更新滑块值
-            blurSlider.value = value;
-            
-            // 调整滑块范围
-            const min = parseFloat(blurSlider.min);
-            const max = parseFloat(blurSlider.max);
-            if (value < min) {
-                blurSlider.min = value;
-            } else if (value > max) {
-                blurSlider.max = value;
-            }
-            
-            scheduleNormalMapUpdate();
-        });
-        
-        // 反转方向事件
-        invertX.addEventListener('change', scheduleNormalMapUpdate);
-        invertY.addEventListener('change', scheduleNormalMapUpdate);
-        highQuality.addEventListener('change', scheduleNormalMapUpdate);
-        
-        // 示例图像点击事件
-        exampleImages.forEach(img => {
-            img.addEventListener('click', () => {
-                const imgType = img.dataset.img;
-                generateExampleImage(imgType);
                 scheduleNormalMapUpdate();
             });
-        });
-        
-        // 重置参数按钮
-        resetParamsBtn.addEventListener('click', () => {
-            strengthSlider.value = 0.10;
-            blurSlider.value = 0;
-            strengthValueInput.value = '0.10';
-            blurValueInput.value = '0.0';
-            invertX.checked = false;
-            invertY.checked = true;
-            highQuality.checked = true;
-            scheduleNormalMapUpdate();
-        });
-        
-        // 文件上传处理
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
             
-            loadImageFile(file);
-        });
-        
-        // 加载图像文件
-        function loadImageFile(file) {
-            const validTypes = ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff', 'image/webp', 'image/gif'];
-            
-            // 检查是否为TIFF格式
-            if (file.type === 'image/tiff' || file.name.toLowerCase().endsWith('.tif') || file.name.toLowerCase().endsWith('.tiff')) {
-                // 使用UTIF.js处理TIFF文件
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const arrayBuffer = event.target.result;
-                        const ifds = UTIF.decode(arrayBuffer);
-                        
-                        // 获取第一个图像
-                        UTIF.decodeImage(arrayBuffer, ifds[0]);
-                        const width = ifds[0].width;
-                        const height = ifds[0].height;
-                        
-                        // 将TIFF转换为RGBA格式
-                        const rgba = UTIF.toRGBA8(ifds[0]);
-                        
-                        // 创建ImageData对象
-                        const imageData = new ImageData(width, height);
-                        imageData.data.set(new Uint8ClampedArray(rgba));
-                        
-                        // 更新canvas
-                        inputCanvas.width = width;
-                        inputCanvas.height = height;
-                        const ctx = inputCanvas.getContext('2d');
-                        ctx.putImageData(imageData, 0, 0);
-                        
-                        inputPlaceholder.style.display = 'none';
-                        inputCanvas.style.display = 'block';
-                        
-                        // 存储图像数据
-                        originalWidth = width;
-                        originalHeight = height;
-                        currentImageData = ctx.getImageData(0, 0, width, height);
-                        blurredImageData = new Uint8ClampedArray(currentImageData.data);
-                        
-                        // 立即更新法线图
-                        scheduleNormalMapUpdate();
-                    } catch (error) {
-                        console.error('TIFF处理错误:', error);
-                        alert('无法处理此TIFF文件，请尝试其他文件');
-                    }
-                };
-                reader.readAsArrayBuffer(file);
-            } else if (validTypes.includes(file.type)) {
-                // 处理其他图像格式
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        // 存储原始尺寸
-                        originalWidth = img.width;
-                        originalHeight = img.height;
-                        
-                        // 设置canvas为原始尺寸
-                        inputCanvas.width = originalWidth;
-                        inputCanvas.height = originalHeight;
-                        
-                        const ctx = inputCanvas.getContext('2d');
-                        ctx.clearRect(0, 0, originalWidth, originalHeight);
-                        ctx.drawImage(img, 0, 0);
-                        
-                        inputPlaceholder.style.display = 'none';
-                        inputCanvas.style.display = 'block';
-                        
-                        // 存储图像数据
-                        currentImageData = ctx.getImageData(0, 0, originalWidth, originalHeight);
-                        // 初始化模糊图像数据
-                        blurredImageData = new Uint8ClampedArray(currentImageData.data);
-                        
-                        // 立即更新法线图
-                        scheduleNormalMapUpdate();
-                    };
-                    img.onerror = () => {
-                        alert('图片加载失败，请重试');
-                    };
-                    img.src = event.target.result;
-                };
-                reader.onerror = () => {
-                    alert('文件读取失败');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert('不支持的图片格式，请上传JPG, PNG, BMP, TIFF或WEBP格式的图片');
-            }
-        }
-        
-        // 下载按钮事件
-        downloadBtn.addEventListener('click', () => {
-            if (outputCanvas.style.display === 'none') {
-                alert('请先生成法线图');
-                return;
-            }
-            
-            const link = document.createElement('a');
-            link.download = 'normal-map.png';
-            link.href = outputCanvas.toDataURL('image/png');
-            link.click();
-        });
-
-                // 下载灰度图按钮事件
-        document.getElementById('downloadGrayBtn').addEventListener('click', () => {
-            if (inputCanvas.style.display === 'none') {
-                alert('请先上传或生成灰度图');
-                return;
-            }
-            
-            const link = document.createElement('a');
-            link.download = 'height-map.png';
-            link.href = inputCanvas.toDataURL('image/png');
-            link.click();
-        });
-
-        // 图像放大功能
-        inputCanvasContainer.addEventListener('click', () => {
-            if (inputCanvas.style.display === 'none') return;
-            
-            inputModalImg.src = inputCanvas.toDataURL('image/png');
-            inputModal.style.display = 'flex';
-        });
-        
-        outputCanvasContainer.addEventListener('click', () => {
-            if (outputCanvas.style.display === 'none') return;
-            
-            outputModalImg.src = outputCanvas.toDataURL('image/png');
-            outputModal.style.display = 'flex';
-        });
-        
-        // 关闭模态框
-        closeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                inputModal.style.display = 'none';
-                outputModal.style.display = 'none';
+            // 更新模糊值显示
+            blurSlider.addEventListener('input', () => {
+                blurValueInput.value = blurSlider.value;
+                scheduleNormalMapUpdate();
             });
-        });
-        
-        // 点击模态框外部关闭
-        window.addEventListener('click', (e) => {
-            if (e.target === inputModal) inputModal.style.display = 'none';
-            if (e.target === outputModal) outputModal.style.display = 'none';
-        });
-        
-        // 防抖处理
-        function scheduleNormalMapUpdate() {
-            if (updateTimeout) {
-                clearTimeout(updateTimeout);
-            }
             
-            updateTimeout = setTimeout(() => {
-                if (currentImageData) {
-                    convertToNormalMap();
+            // 输入框事件监听
+            strengthValueInput.addEventListener('input', () => {
+                let value = parseFloat(strengthValueInput.value);
+                
+                // 验证输入值
+                if (isNaN(value) || value <= 0) {
+                    // 恢复为之前的值
+                    strengthValueInput.value = strengthSlider.value;
+                    return;
                 }
-            }, 300);
-        }
-        
-        // 生成示例图像
-        function generateExampleImage(type) {
-            const ctx = inputCanvas.getContext('2d');
-            const width = 512;
-            const height = 512;
+                
+                // 更新滑块值
+                strengthSlider.value = value;
+                
+                // 调整滑块范围
+                const min = parseFloat(strengthSlider.min);
+                const max = parseFloat(strengthSlider.max);
+                if (value < min) {
+                    strengthSlider.min = value;
+                } else if (value > max) {
+                    strengthSlider.max = value;
+                }
+                
+                scheduleNormalMapUpdate();
+            });
             
-            // 更新canvas尺寸
-            inputCanvas.width = width;
-            inputCanvas.height = height;
-            originalWidth = width;
-            originalHeight = height;
+            blurValueInput.addEventListener('input', () => {
+                let value = parseFloat(blurValueInput.value);
+                
+                // 验证输入值
+                if (isNaN(value) || value < 0) {
+                    // 恢复为之前的值
+                    blurValueInput.value = blurSlider.value;
+                    return;
+                }
+                
+                // 更新滑块值
+                blurSlider.value = value;
+                
+                // 调整滑块范围
+                const min = parseFloat(blurSlider.min);
+                const max = parseFloat(blurSlider.max);
+                if (value < min) {
+                    blurSlider.min = value;
+                } else if (value > max) {
+                    blurSlider.max = value;
+                }
+                
+                scheduleNormalMapUpdate();
+            });
             
-            ctx.clearRect(0, 0, width, height);
+            // 反转方向事件
+            invertX.addEventListener('change', scheduleNormalMapUpdate);
+            invertY.addEventListener('change', scheduleNormalMapUpdate);
+            highQuality.addEventListener('change', scheduleNormalMapUpdate);
             
-            switch(type) {
-                case 'bricks':
-                    drawBricks(ctx, width, height);
-                    break;
-                case 'cobblestone':
-                    drawCobblestone(ctx, width, height);
-                    break;
-                case 'metal':
-                    drawMetal(ctx, width, height);
-                    break;
-                case 'rock':
-                    drawRock(ctx, width, height);
-                    break;
-            }
-        
-            inputPlaceholder.style.display = 'none';
-            inputCanvas.style.display = 'block';
+            // 示例图像点击事件
+            exampleImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    const imgType = img.dataset.img;
+                    generateExampleImage(imgType);
+                    scheduleNormalMapUpdate();
+                });
+            });
             
-            // 存储原始图像数据
-            currentImageData = ctx.getImageData(0, 0, width, height);
-            // 初始化模糊图像数据
-            blurredImageData = new Uint8ClampedArray(currentImageData.data);
-        }
-        
-        // 绘制砖块图案
-        function drawBricks(ctx, width, height) {
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, 0, width, height);
+            // 重置参数按钮
+            resetParamsBtn.addEventListener('click', () => {
+                strengthSlider.value = 0.10;
+                blurSlider.value = 0;
+                strengthValueInput.value = '0.10';
+                blurValueInput.value = '0.0';
+                invertX.checked = false;
+                invertY.checked = true;
+                highQuality.checked = true;
+                scheduleNormalMapUpdate();
+            });
             
-            const brickWidth = width / 8;
-            const brickHeight = height / 16;
+            // 文件上传处理
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                loadImageFile(file);
+            });
             
-            ctx.fillStyle = '#999';
-            
-            for (let y = 0; y < height; y += brickHeight) {
-                for (let x = 0; x < width; x += brickWidth) {
-                    // 每行偏移砖块
-                    const offset = (y / brickHeight) % 2 === 0 ? 0 : brickWidth / 2;
-                    ctx.fillRect(x + offset, y, brickWidth - 4, brickHeight - 4);
+            // 加载图像文件
+            function loadImageFile(file) {
+                const validTypes = ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff', 'image/webp', 'image/gif'];
+                
+                // 检查是否为TIFF格式
+                if (file.type === 'image/tiff' || file.name.toLowerCase().endsWith('.tif') || file.name.toLowerCase().endsWith('.tiff')) {
+                    // 使用UTIF.js处理TIFF文件
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const arrayBuffer = event.target.result;
+                            const ifds = UTIF.decode(arrayBuffer);
+                            
+                            // 获取第一个图像
+                            UTIF.decodeImage(arrayBuffer, ifds[0]);
+                            const width = ifds[0].width;
+                            const height = ifds[0].height;
+                            
+                            // 将TIFF转换为RGBA格式
+                            const rgba = UTIF.toRGBA8(ifds[0]);
+                            
+                            // 创建ImageData对象
+                            const imageData = new ImageData(width, height);
+                            imageData.data.set(new Uint8ClampedArray(rgba));
+                            
+                            // 更新canvas
+                            inputCanvas.width = width;
+                            inputCanvas.height = height;
+                            const ctx = inputCanvas.getContext('2d');
+                            ctx.putImageData(imageData, 0, 0);
+                            
+                            inputPlaceholder.style.display = 'none';
+                            inputCanvas.style.display = 'block';
+                            
+                            // 存储图像数据
+                            originalWidth = width;
+                            originalHeight = height;
+                            currentImageData = ctx.getImageData(0, 0, width, height);
+                            blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                            
+                            // 立即更新法线图
+                            scheduleNormalMapUpdate();
+                        } catch (error) {
+                            console.error('TIFF处理错误:', error);
+                            alert('无法处理此TIFF文件，请尝试其他文件');
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else if (validTypes.includes(file.type)) {
+                    // 处理其他图像格式
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            // 存储原始尺寸
+                            originalWidth = img.width;
+                            originalHeight = img.height;
+                            
+                            // 设置canvas为原始尺寸
+                            inputCanvas.width = originalWidth;
+                            inputCanvas.height = originalHeight;
+                            
+                            const ctx = inputCanvas.getContext('2d');
+                            ctx.clearRect(0, 0, originalWidth, originalHeight);
+                            ctx.drawImage(img, 0, 0);
+                            
+                            inputPlaceholder.style.display = 'none';
+                            inputCanvas.style.display = 'block';
+                            
+                            // 存储图像数据
+                            currentImageData = ctx.getImageData(0, 0, originalWidth, originalHeight);
+                            // 初始化模糊图像数据
+                            blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                            
+                            // 立即更新法线图
+                            scheduleNormalMapUpdate();
+                        };
+                        img.onerror = () => {
+                            alert('图片加载失败，请重试');
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.onerror = () => {
+                        alert('文件读取失败');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('不支持的图片格式，请上传JPG, PNG, BMP, TIFF或WEBP格式的图片');
                 }
             }
-        }
-        
-        // 绘制鹅卵石图案
-        function drawCobblestone(ctx, width, height) {
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, 0, width, height);
             
-            const stoneSize = width / 8;
-            ctx.fillStyle = '#999';
+            // 下载按钮事件
+            downloadBtn.addEventListener('click', () => {
+                if (outputCanvas.style.display === 'none') {
+                    alert('请先生成法线图');
+                    return;
+                }
+                
+                const link = document.createElement('a');
+                link.download = 'normal-map.png';
+                link.href = outputCanvas.toDataURL('image/png');
+                link.click();
+            });
+
+            // 下载灰度图按钮事件
+            document.getElementById('downloadGrayBtn').addEventListener('click', () => {
+                if (inputCanvas.style.display === 'none') {
+                    alert('请先上传或生成灰度图');
+                    return;
+                }
+                
+                const link = document.createElement('a');
+                link.download = 'height-map.png';
+                link.href = inputCanvas.toDataURL('image/png');
+                link.click();
+            });
+
+            // 图像放大功能
+            inputCanvasContainer.addEventListener('click', () => {
+                if (inputCanvas.style.display === 'none') return;
+                
+                inputModalImg.src = inputCanvas.toDataURL('image/png');
+                inputModal.style.display = 'flex';
+            });
             
-            for (let y = stoneSize/2; y < height; y += stoneSize) {
-                for (let x = stoneSize/2; x < width; x += stoneSize) {
+            outputCanvasContainer.addEventListener('click', () => {
+                if (outputCanvas.style.display === 'none') return;
+                
+                outputModalImg.src = outputCanvas.toDataURL('image/png');
+                outputModal.style.display = 'flex';
+            });
+            
+            // 关闭模态框
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    inputModal.style.display = 'none';
+                    outputModal.style.display = 'none';
+                });
+            });
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                if (e.target === inputModal) inputModal.style.display = 'none';
+                if (e.target === outputModal) outputModal.style.display = 'none';
+            });
+            
+            // 防抖处理
+            function scheduleNormalMapUpdate() {
+                if (updateTimeout) {
+                    clearTimeout(updateTimeout);
+                }
+                
+                updateTimeout = setTimeout(() => {
+                    if (currentImageData) {
+                        convertToNormalMap();
+                    }
+                }, 300);
+            }
+            
+            // 生成示例图像
+            function generateExampleImage(type) {
+                const ctx = inputCanvas.getContext('2d');
+                const width = 512;
+                const height = 512;
+                
+                // 更新canvas尺寸
+                inputCanvas.width = width;
+                inputCanvas.height = height;
+                originalWidth = width;
+                originalHeight = height;
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                switch(type) {
+                    case 'bricks':
+                        drawBricks(ctx, width, height);
+                        break;
+                    case 'cobblestone':
+                        drawCobblestone(ctx, width, height);
+                        break;
+                    case 'metal':
+                        drawMetal(ctx, width, height);
+                        break;
+                    case 'rock':
+                        drawRock(ctx, width, height);
+                        break;
+                }
+            
+                inputPlaceholder.style.display = 'none';
+                inputCanvas.style.display = 'block';
+                
+                // 存储原始图像数据
+                currentImageData = ctx.getImageData(0, 0, width, height);
+                // 初始化模糊图像数据
+                blurredImageData = new Uint8ClampedArray(currentImageData.data);
+            }
+            
+            // 绘制砖块图案
+            function drawBricks(ctx, width, height) {
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, 0, width, height);
+                
+                const brickWidth = width / 8;
+                const brickHeight = height / 16;
+                
+                ctx.fillStyle = '#999';
+                
+                for (let y = 0; y < height; y += brickHeight) {
+                    for (let x = 0; x < width; x += brickWidth) {
+                        // 每行偏移砖块
+                        const offset = (y / brickHeight) % 2 === 0 ? 0 : brickWidth / 2;
+                        ctx.fillRect(x + offset, y, brickWidth - 4, brickHeight - 4);
+                    }
+                }
+            }
+            
+            // 绘制鹅卵石图案
+            function drawCobblestone(ctx, width, height) {
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, 0, width, height);
+                
+                const stoneSize = width / 8;
+                ctx.fillStyle = '#999';
+                
+                for (let y = stoneSize/2; y < height; y += stoneSize) {
+                    for (let x = stoneSize/2; x < width; x += stoneSize) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, stoneSize/2.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+            
+            // 绘制金属板图案
+            function drawMetal(ctx, width, height) {
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, 0, width, height);
+                
+                const cellSize = width / 8;
+                ctx.fillStyle = '#666';
+                
+                for (let y = 0; y < height; y += cellSize) {
+                    for (let x = 0; x < width; x += cellSize) {
+                        ctx.fillRect(x, y, cellSize, cellSize);
+                        
+                        // 内部方块
+                        ctx.fillStyle = '#999';
+                        ctx.fillRect(x + 4, y + 4, cellSize - 8, cellSize - 8);
+                        ctx.fillStyle = '#ccc';
+                        ctx.fillRect(x + 8, y + 8, cellSize - 16, cellSize - 16);
+                        ctx.fillStyle = '#666';
+                    }
+                }
+            }
+            
+            // 绘制岩石图案
+            function drawRock(ctx, width, height) {
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, 0, width, height);
+                
+                ctx.fillStyle = '#999';
+                ctx.beginPath();
+                ctx.ellipse(width/2, height/2, width/3, height/3, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 岩石纹理
+                ctx.fillStyle = '#777';
+                for (let i = 0; i < 20; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.random() * width/4;
+                    const x = width/2 + Math.cos(angle) * radius;
+                    const y = height/2 + Math.sin(angle) * radius;
+                    const size = 5 + Math.random() * 15;
+                    
                     ctx.beginPath();
-                    ctx.arc(x, y, stoneSize/2.5, 0, Math.PI * 2);
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
                     ctx.fill();
                 }
             }
-        }
-        
-        // 绘制金属板图案
-        function drawMetal(ctx, width, height) {
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, 0, width, height);
             
-            const cellSize = width / 8;
-            ctx.fillStyle = '#666';
-            
-            for (let y = 0; y < height; y += cellSize) {
-                for (let x = 0; x < width; x += cellSize) {
-                    ctx.fillRect(x, y, cellSize, cellSize);
-                    
-                    // 内部方块
-                    ctx.fillStyle = '#999';
-                    ctx.fillRect(x + 4, y + 4, cellSize - 8, cellSize - 8);
-                    ctx.fillStyle = '#ccc';
-                    ctx.fillRect(x + 8, y + 8, cellSize - 16, cellSize - 16);
-                    ctx.fillStyle = '#666';
-                }
-            }
-        }
-        
-        // 绘制岩石图案
-        function drawRock(ctx, width, height) {
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, 0, width, height);
-            
-            ctx.fillStyle = '#999';
-            ctx.beginPath();
-            ctx.ellipse(width/2, height/2, width/3, height/3, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // 岩石纹理
-            ctx.fillStyle = '#777';
-            for (let i = 0; i < 20; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const radius = Math.random() * width/4;
-                const x = width/2 + Math.cos(angle) * radius;
-                const y = height/2 + Math.sin(angle) * radius;
-                const size = 5 + Math.random() * 15;
+            // GPU加速的法线图生成
+            function convertWithGPU() {
+                const startTime = performance.now();
                 
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        
-        // GPU加速的法线图生成
-        function convertWithGPU() {
-            if (!gl || !normalMapProgram) {
-                console.log('WebGL不可用，退回到CPU模式');
-                convertWithCPU();
-                return;
-            }
-            
-            const startTime = performance.now();
-            
-            // 创建临时纹理
-            const texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offscreenCanvas);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            
-            // 创建目标纹理
-            const targetTexture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, targetTexture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, originalWidth, originalHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            
-            // 创建帧缓冲区并绑定目标纹理
-            const framebuffer = gl.createFramebuffer();
-            gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, targetTexture, 0);
-            
-            // 设置视口
-            gl.viewport(0, 0, originalWidth, originalHeight);
-            
-            // 使用程序
-            gl.useProgram(normalMapProgram);
-            
-            // 设置顶点数据
-            const positionBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-                -1.0, -1.0,
-                 1.0, -1.0,
-                -1.0,  1.0,
-                -1.0,  1.0,
-                 1.0, -1.0,
-                 1.0,  1.0
-            ]), gl.STATIC_DRAW);
-            
-            const texCoordBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-                0.0, 0.0,
-                1.0, 0.0,
-                0.0, 1.0,
-                0.0, 1.0,
-                1.0, 0.0,
-                1.0, 1.0
-            ]), gl.STATIC_DRAW);
-            
-            // 设置属性
-            const positionLocation = gl.getAttribLocation(normalMapProgram, 'a_position');
-            gl.enableVertexAttribArray(positionLocation);
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-            
-            const texCoordLocation = gl.getAttribLocation(normalMapProgram, 'a_texCoord');
-            gl.enableVertexAttribArray(texCoordLocation);
-            gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-            gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-            
-            // 设置纹理单元
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            const imageLocation = gl.getUniformLocation(normalMapProgram, 'u_image');
-            gl.uniform1i(imageLocation, 0);
-            
-            // 设置uniform
-            const strengthLocation = gl.getUniformLocation(normalMapProgram, 'u_strength');
-            gl.uniform1f(strengthLocation, parseFloat(strengthSlider.value));
-            
-            const invertXLocation = gl.getUniformLocation(normalMapProgram, 'u_invertX');
-            gl.uniform1f(invertXLocation, invertX.checked ? -1.0 : 1.0);
-            
-            const invertYLocation = gl.getUniformLocation(normalMapProgram, 'u_invertY');
-            gl.uniform1f(invertYLocation, invertY.checked ? -1.0 : 1.0);
-            
-            const resolutionLocation = gl.getUniformLocation(normalMapProgram, 'u_resolution');
-            gl.uniform2f(resolutionLocation, originalWidth, originalHeight);
-            
-            // 绘制
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-            
-            // 读取结果
-            const pixels = new Uint8Array(originalWidth * originalHeight * 4);
-            gl.readPixels(0, 0, originalWidth, originalHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-            
-            // 更新输出Canvas
-            outputCanvas.width = originalWidth;
-            outputCanvas.height = originalHeight;
-            const outputCtx = outputCanvas.getContext('2d');
-            const imageData = outputCtx.createImageData(originalWidth, originalHeight);
-            imageData.data.set(pixels);
-            outputCtx.putImageData(imageData, 0, 0);
-            
-            outputPlaceholder.style.display = 'none';
-            outputCanvas.style.display = 'block';
-            
-            // 更新3D预览（如果激活）
-            if (is3dPreviewActive) {
-                update3dPreview();
-            }
-            
-            // 清理
-            gl.deleteTexture(texture);
-            gl.deleteTexture(targetTexture);
-            gl.deleteFramebuffer(framebuffer);
-            gl.deleteBuffer(positionBuffer);
-            gl.deleteBuffer(texCoordBuffer);
-            
-            const endTime = performance.now();
-            const elapsed = endTime - startTime;
-            processingTimeSpan.textContent = elapsed.toFixed(2);
-            
-            console.log(`GPU处理完成，耗时: ${elapsed.toFixed(2)}ms`);
-            
-            // 隐藏进度条
-            progressContainer.style.display = 'none';
-        }
-        
-        // CPU模式生成法线图
-        function convertWithCPU() {
-            const startTime = performance.now();
-            
-            const strength = parseFloat(strengthSlider.value);
-            const invertXVal = invertX.checked ? -1 : 1;
-            const invertYVal = invertY.checked ? -1 : 1;
-            const useHighQuality = highQuality.checked;
-            
-            outputCanvas.width = originalWidth;
-            outputCanvas.height = originalHeight;
-            
-            const outputCtx = outputCanvas.getContext('2d');
-            const outputImageData = outputCtx.createImageData(originalWidth, originalHeight);
-            const outputData = outputImageData.data;
-            
-            const totalPixels = originalWidth * originalHeight;
-            let processedPixels = 0;
-            
-            // 使用双线性插值采样
-            function getPixel(x, y) {
-                // 确保坐标在有效范围内
-                const cx = Math.max(0.5, Math.min(x, originalWidth - 1.5));
-                const cy = Math.max(0.5, Math.min(y, originalHeight - 1.5));
+                // 显示进度条
+                progressContainer.style.display = 'block';
                 
-                if (useHighQuality) {
-                    return getPixelBicubic(blurredImageData, originalWidth, originalHeight, cx, cy);
-                } else {
-                    return getPixelBilinear(blurredImageData, originalWidth, originalHeight, cx, cy);
-                }
-            }
-            
-            // 处理每个像素
-            for (let y = 0; y < originalHeight; y++) {
-                for (let x = 0; x < originalWidth; x++) {
-                    // 使用Sobel算子计算梯度（减少锯齿）
-                    let dx, dy;
-                    
-                    if (useHighQuality) {
-                        // Sobel算子
-                        dx = 
-                            -1 * getPixel(x-1, y-1) + 
-                             1 * getPixel(x+1, y-1) +
-                            -2 * getPixel(x-1, y)   + 
-                             2 * getPixel(x+1, y) +
-                            -1 * getPixel(x-1, y+1) + 
-                             1 * getPixel(x+1, y+1);
-                        
-                        dy = 
-                            -1 * getPixel(x-1, y-1) - 
-                             2 * getPixel(x, y-1) - 
-                             1 * getPixel(x+1, y-1) +
-                             1 * getPixel(x-1, y+1) + 
-                             2 * getPixel(x, y+1) + 
-                             1 * getPixel(x+1, y+1);
-                        
-                        // 缩放因子（Sobel算子结果较大）
-                        dx *= 0.125;
-                        dy *= 0.125;
-                    } else {
-                        // 中心差分法
-                        dx = (getPixel(x + 1, y) - getPixel(x - 1, y)) * 0.5;
-                        dy = (getPixel(x, y + 1) - getPixel(x, y - 1)) * 0.5;
-                    }
-                    
-                    // 应用强度参数
-                    const scaledDx = dx * strength;
-                    const scaledDy = dy * strength;
-                    
-                    // 应用方向反转
-                    const finalDx = scaledDx * invertXVal;
-                    const finalDy = scaledDy * invertYVal;
-                    
-                    // 计算法线向量
-                    const dz = 1.0;
-                    const length = Math.sqrt(finalDx * finalDx + finalDy * finalDy + dz * dz);
-                    
-                    // 归一化
-                    const nx = finalDx / length;
-                    const ny = finalDy / length;
-                    const nz = dz / length;
-                    
-                    // 将法线向量映射到RGB颜色空间
-                    const idx = (y * originalWidth + x) * 4;
-                    outputData[idx] = Math.round((nx + 1) * 127.5);     // R
-                    outputData[idx + 1] = Math.round((ny + 1) * 127.5); // G
-                    outputData[idx + 2] = Math.round((nz + 1) * 127.5); // B
-                    outputData[idx + 3] = 255;                          // Alpha
-                    
-                    // 更新进度
-                    processedPixels++;
-                }
-                
-                // 每行更新一次进度
-                const percent = Math.round((processedPixels / totalPixels) * 100);
-                progressFill.style.width = `${percent}%`;
-                progressPercent.textContent = `${percent}%`;
-            }
-            
-            // 后处理模糊（抗锯齿和渐变平滑）
-            applyBlur(outputData, originalWidth, originalHeight, 0.7);
-            
-            // 将结果绘制到输出Canvas
-            outputCtx.putImageData(outputImageData, 0, 0);
-            outputPlaceholder.style.display = 'none';
-            outputCanvas.style.display = 'block';
-            
-            // 更新3D预览（如果激活）
-            if (is3dPreviewActive) {
-                update3dPreview();
-            }
-            
-            const endTime = performance.now();
-            const elapsed = endTime - startTime;
-            processingTimeSpan.textContent = elapsed.toFixed(2);
-            
-            console.log(`CPU处理完成，耗时: ${elapsed.toFixed(2)}ms`);
-            
-            // 隐藏进度条
-            progressContainer.style.display = 'none';
-        }
-        
-        // 更新3D预览
-        function update3dPreview() {
-            if (!outputCanvas.style.display || outputCanvas.style.display === 'none') return;
-            
-            // 创建Three.js纹理
-            const texture = new THREE.CanvasTexture(outputCanvas);
-            texture.needsUpdate = true;
-            
-            // 更新法线贴图
-            updateNormalMap(texture);
-            
-            // 显示提示信息
-            previewHint.style.display = 'block';
-        }
-        
-        // 优化的法线图转换函数
-        function convertToNormalMap() {
-            if (!currentImageData) return;
-            
-            progressContainer.style.display = 'block';
-            progressFill.style.width = '0%';
-            progressPercent.textContent = '0%';
-            
-            // 应用模糊到灰度图
-            const blurLevel = parseFloat(blurSlider.value);
-            if (blurLevel > 0) {
-                blurredImageData = new Uint8ClampedArray(currentImageData.data);
-                applyBlur(blurredImageData, originalWidth, originalHeight, blurLevel);
-            } else {
-                // 如果不模糊，直接使用原始数据
-                blurredImageData = new Uint8ClampedArray(currentImageData.data);
-            }
-            
-            // 根据模式选择处理方法
-            if (useGPU) {
-                // 创建离屏canvas绘制模糊图像
+                // 创建离屏canvas
+                const offscreenCanvas = document.createElement('canvas');
                 offscreenCanvas.width = originalWidth;
                 offscreenCanvas.height = originalHeight;
+                const offscreenCtx = offscreenCanvas.getContext('2d');
                 const imageData = new ImageData(
                     blurredImageData, 
                     originalWidth, 
@@ -2012,605 +1737,914 @@
                 );
                 offscreenCtx.putImageData(imageData, 0, 0);
                 
-                setTimeout(convertWithGPU, 100);
-            } else {
-                setTimeout(convertWithCPU, 100);
+                if (!gl || !normalMapProgram) {
+                    console.log('WebGL不可用，退回到CPU模式');
+                    convertWithCPU();
+                    return;
+                }
+                
+                // 创建临时纹理
+                const texture = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offscreenCanvas);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                
+                // 创建目标纹理
+                const targetTexture = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, originalWidth, originalHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                
+                // 创建帧缓冲区并绑定目标纹理
+                const framebuffer = gl.createFramebuffer();
+                gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, targetTexture, 0);
+                
+                // 设置视口
+                gl.viewport(0, 0, originalWidth, originalHeight);
+                
+                // 使用程序
+                gl.useProgram(normalMapProgram);
+                
+                // 设置顶点数据
+                const positionBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+                    -1.0, -1.0,
+                    1.0, -1.0,
+                    -1.0,  1.0,
+                    -1.0,  1.0,
+                    1.0, -1.0,
+                    1.0,  1.0
+                ]), gl.STATIC_DRAW);
+                
+                const texCoordBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+                    0.0, 0.0,
+                    1.0, 0.0,
+                    0.0, 1.0,
+                    0.0, 1.0,
+                    1.0, 0.0,
+                    1.0, 1.0
+                ]), gl.STATIC_DRAW);
+                
+                // 设置属性
+                const positionLocation = gl.getAttribLocation(normalMapProgram, 'a_position');
+                gl.enableVertexAttribArray(positionLocation);
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+                
+                const texCoordLocation = gl.getAttribLocation(normalMapProgram, 'a_texCoord');
+                gl.enableVertexAttribArray(texCoordLocation);
+                gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+                gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+                
+                // 设置纹理单元
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                const imageLocation = gl.getUniformLocation(normalMapProgram, 'u_image');
+                gl.uniform1i(imageLocation, 0);
+                
+                // 设置uniform
+                const strengthLocation = gl.getUniformLocation(normalMapProgram, 'u_strength');
+                gl.uniform1f(strengthLocation, parseFloat(strengthSlider.value));
+                
+                const invertXLocation = gl.getUniformLocation(normalMapProgram, 'u_invertX');
+                gl.uniform1f(invertXLocation, invertX.checked ? -1.0 : 1.0);
+                
+                const invertYLocation = gl.getUniformLocation(normalMapProgram, 'u_invertY');
+                gl.uniform1f(invertYLocation, invertY.checked ? -1.0 : 1.0);
+                
+                const resolutionLocation = gl.getUniformLocation(normalMapProgram, 'u_resolution');
+                gl.uniform2f(resolutionLocation, originalWidth, originalHeight);
+                
+                // 绘制
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+                
+                // 读取结果
+                const pixels = new Uint8Array(originalWidth * originalHeight * 4);
+                gl.readPixels(0, 0, originalWidth, originalHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                
+                // 更新输出Canvas
+                outputCanvas.width = originalWidth;
+                outputCanvas.height = originalHeight;
+                const outputCtx = outputCanvas.getContext('2d');
+                const outputImageData = outputCtx.createImageData(originalWidth, originalHeight);
+                outputImageData.data.set(pixels);
+                outputCtx.putImageData(outputImageData, 0, 0);
+                
+                outputPlaceholder.style.display = 'none';
+                outputCanvas.style.display = 'block';
+                
+                // 更新3D预览（如果激活）
+                if (is3dPreviewActive) {
+                    update3dPreview();
+                }
+                
+                // 清理
+                gl.deleteTexture(texture);
+                gl.deleteTexture(targetTexture);
+                gl.deleteFramebuffer(framebuffer);
+                gl.deleteBuffer(positionBuffer);
+                gl.deleteBuffer(texCoordBuffer);
+                
+                const endTime = performance.now();
+                const elapsed = endTime - startTime;
+                processingTimeSpan.textContent = elapsed.toFixed(2);
+                
+                console.log(`GPU处理完成，耗时: ${elapsed.toFixed(2)}ms`);
+                
+                // 更新进度条到100%
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+                
+                // 隐藏进度条
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                }, 500);
             }
-        }           
-        
-        // 优化的高斯模糊函数
-        function applyBlur(data, width, height, radius) {
-            if (radius <= 0) return;
             
-            const kernelSize = Math.floor(radius) * 2 + 1;
-            const kernel = createGaussianKernel(kernelSize, radius);
-            const r = Math.floor(kernelSize / 2);
-            const tempData = new Uint8ClampedArray(data.length);
-            
-            // 水平模糊
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    let rVal = 0, gVal = 0, bVal = 0, weightSum = 0;
+            // CPU模式生成法线图（使用分块处理）
+            function convertWithCPU() {
+                const startTime = performance.now();
+                
+                const strength = parseFloat(strengthSlider.value);
+                const invertXVal = invertX.checked ? -1 : 1;
+                const invertYVal = invertY.checked ? -1 : 1;
+                const useHighQuality = highQuality.checked;
+                
+                outputCanvas.width = originalWidth;
+                outputCanvas.height = originalHeight;
+                
+                const outputCtx = outputCanvas.getContext('2d');
+                const outputImageData = outputCtx.createImageData(originalWidth, originalHeight);
+                const outputData = outputImageData.data;
+                
+                // 分块处理参数
+                let y = 0;
+                const chunkSize = 10; // 每次处理10行
+                
+                function processChunk() {
+                    const chunkStartTime = performance.now();
+                    const endY = Math.min(y + chunkSize, originalHeight);
                     
-                    for (let kx = -r; kx <= r; kx++) {
-                        const px = Math.max(0, Math.min(width - 1, x + kx));
-                        const idx = (y * width + px) * 4;
-                        const weight = kernel[kx + r];
-                        
-                        rVal += data[idx] * weight;
-                        gVal += data[idx + 1] * weight;
-                        bVal += data[idx + 2] * weight;
-                        weightSum += weight;
+                    for (; y < endY; y++) {
+                        for (let x = 0; x < originalWidth; x++) {
+                            // 使用双线性插值采样
+                            function getPixel(x, y) {
+                                // 确保坐标在有效范围内
+                                const cx = Math.max(0.5, Math.min(x, originalWidth - 1.5));
+                                const cy = Math.max(0.5, Math.min(y, originalHeight - 1.5));
+                                
+                                if (useHighQuality) {
+                                    return getPixelBicubic(blurredImageData, originalWidth, originalHeight, cx, cy);
+                                } else {
+                                    return getPixelBilinear(blurredImageData, originalWidth, originalHeight, cx, cy);
+                                }
+                            }
+                            
+                            // 使用Sobel算子计算梯度（减少锯齿）
+                            let dx, dy;
+                            
+                            if (useHighQuality) {
+                                // Sobel算子
+                                dx = 
+                                    -1 * getPixel(x-1, y-1) + 
+                                    1 * getPixel(x+1, y-1) +
+                                    -2 * getPixel(x-1, y)   + 
+                                    2 * getPixel(x+1, y) +
+                                    -1 * getPixel(x-1, y+1) + 
+                                    1 * getPixel(x+1, y+1);
+                                
+                                dy = 
+                                    -1 * getPixel(x-1, y-1) - 
+                                    2 * getPixel(x, y-1) - 
+                                    1 * getPixel(x+1, y-1) +
+                                    1 * getPixel(x-1, y+1) + 
+                                    2 * getPixel(x, y+1) + 
+                                    1 * getPixel(x+1, y+1);
+                                
+                                // 缩放因子（Sobel算子结果较大）
+                                dx *= 0.125;
+                                dy *= 0.125;
+                            } else {
+                                // 中心差分法
+                                dx = (getPixel(x + 1, y) - getPixel(x - 1, y)) * 0.5;
+                                dy = (getPixel(x, y + 1) - getPixel(x, y - 1)) * 0.5;
+                            }
+                            
+                            // 应用强度参数
+                            const scaledDx = dx * strength;
+                            const scaledDy = dy * strength;
+                            
+                            // 应用方向反转
+                            const finalDx = scaledDx * invertXVal;
+                            const finalDy = scaledDy * invertYVal;
+                            
+                            // 计算法线向量
+                            const dz = 1.0;
+                            const length = Math.sqrt(finalDx * finalDx + finalDy * finalDy + dz * dz);
+                            
+                            // 归一化
+                            const nx = finalDx / length;
+                            const ny = finalDy / length;
+                            const nz = dz / length;
+                            
+                            // 将法线向量映射到RGB颜色空间
+                            const idx = (y * originalWidth + x) * 4;
+                            outputData[idx] = Math.round((nx + 1) * 127.5);     // R
+                            outputData[idx + 1] = Math.round((ny + 1) * 127.5); // G
+                            outputData[idx + 2] = Math.round((nz + 1) * 127.5); // B
+                            outputData[idx + 3] = 255;                          // Alpha
+                        }
                     }
                     
-                    const idx = (y * width + x) * 4;
-                    tempData[idx] = rVal / weightSum;
-                    tempData[idx + 1] = gVal / weightSum;
-                    tempData[idx + 2] = bVal / weightSum;
-                    tempData[idx + 3] = data[idx + 3];
+                    // 更新进度条
+                    const percent = Math.round((y / originalHeight) * 100);
+                    progressFill.style.width = `${percent}%`;
+                    progressPercent.textContent = `${percent}%`;
+                    
+                    // 如果还有行要处理
+                    if (y < originalHeight) {
+                        // 检查处理时间是否过长
+                        const chunkElapsed = performance.now() - chunkStartTime;
+                        if (chunkElapsed > 50) {
+                            // 如果处理时间超过50ms，使用setTimeout让出UI线程
+                            setTimeout(processChunk, 0);
+                        } else {
+                            // 否则立即处理下一块
+                            processChunk();
+                        }
+                    } else {
+                        // 处理完成，进行后处理模糊
+                        applyBlur(outputData, originalWidth, originalHeight, 0.7);
+                        
+                        // 将结果绘制到输出Canvas
+                        outputCtx.putImageData(outputImageData, 0, 0);
+                        outputPlaceholder.style.display = 'none';
+                        outputCanvas.style.display = 'block';
+                        
+                        // 更新3D预览（如果激活）
+                        if (is3dPreviewActive) {
+                            update3dPreview();
+                        }
+                        
+                        const endTime = performance.now();
+                        const elapsed = endTime - startTime;
+                        processingTimeSpan.textContent = elapsed.toFixed(2);
+                        
+                        console.log(`CPU处理完成，耗时: ${elapsed.toFixed(2)}ms`);
+                        
+                        // 隐藏进度条
+                        setTimeout(() => {
+                            progressContainer.style.display = 'none';
+                        }, 500);
+                    }
                 }
+                
+                // 开始处理第一块
+                processChunk();
             }
             
-            // 垂直模糊
-            for (let x = 0; x < width; x++) {
+            // 更新3D预览
+            function update3dPreview() {
+                if (!outputCanvas.style.display || outputCanvas.style.display === 'none') return;
+                
+                // 创建Three.js纹理
+                const texture = new THREE.CanvasTexture(outputCanvas);
+                texture.needsUpdate = true;
+                
+                // 更新法线贴图
+                updateNormalMap(texture);
+                
+                // 显示提示信息
+                previewHint.style.display = 'block';
+            }
+            
+            // 优化的法线图转换函数
+            function convertToNormalMap() {
+                if (!currentImageData) return;
+                
+                // 显示进度条并重置
+                progressContainer.style.display = 'block';
+                progressFill.style.width = '0%';
+                progressPercent.textContent = '0%';
+                
+                // 应用模糊到灰度图
+                const blurLevel = parseFloat(blurSlider.value);
+                if (blurLevel > 0) {
+                    blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                    applyBlur(blurredImageData, originalWidth, originalHeight, blurLevel);
+                } else {
+                    // 如果不模糊，直接使用原始数据
+                    blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                }
+                
+                // 根据模式选择处理方法
+                if (useGPU) {
+                    convertWithGPU();
+                } else {
+                    convertWithCPU();
+                }
+            }           
+            
+            // 优化的高斯模糊函数
+            function applyBlur(data, width, height, radius) {
+                if (radius <= 0) return;
+                
+                const kernelSize = Math.floor(radius) * 2 + 1;
+                const kernel = createGaussianKernel(kernelSize, radius);
+                const r = Math.floor(kernelSize / 2);
+                const tempData = new Uint8ClampedArray(data.length);
+                
+                // 水平模糊
                 for (let y = 0; y < height; y++) {
-                    let rVal = 0, gVal = 0, bVal = 0, weightSum = 0;
-                    
-                    for (let ky = -r; ky <= r; ky++) {
-                        const py = Math.max(0, Math.min(height - 1, y + ky));
-                        const idx = (py * width + x) * 4;
-                        const weight = kernel[ky + r];
+                    for (let x = 0; x < width; x++) {
+                        let rVal = 0, gVal = 0, bVal = 0, weightSum = 0;
                         
-                        rVal += tempData[idx] * weight;
-                        gVal += tempData[idx + 1] * weight;
-                        bVal += tempData[idx + 2] * weight;
-                        weightSum += weight;
-                    }
-                    
-                    const idx = (y * width + x) * 4;
-                    data[idx] = rVal / weightSum;
-                    data[idx + 1] = gVal / weightSum;
-                    data[idx + 2] = bVal / weightSum;
-                }
-            }
-        }
-        
-        // 创建高斯核
-        function createGaussianKernel(size, sigma) {
-            const kernel = [];
-            const mean = size / 2;
-            let sum = 0;
-            
-            for (let i = 0; i < size; i++) {
-                const x = i - mean;
-                kernel[i] = Math.exp(-(x * x) / (2 * sigma * sigma)) 
-                            / (Math.sqrt(2 * Math.PI) * sigma);
-                sum += kernel[i];
-            }
-            
-            // 归一化
-            for (let i = 0; i < size; i++) {
-                kernel[i] /= sum;
-            }
-            
-            return kernel;
-        }
-        
-        // 双线性插值函数
-        function getPixelBilinear(data, width, height, x, y) {
-            const x1 = Math.floor(x);
-            const y1 = Math.floor(y);
-            const x2 = Math.min(width - 1, x1 + 1);
-            const y2 = Math.min(height - 1, y1 + 1);
-            
-            const dx = x - x1;
-            const dy = y - y1;
-            
-            const idx11 = (y1 * width + x1) * 4;
-            const idx12 = (y1 * width + x2) * 4;
-            const idx21 = (y2 * width + x1) * 4;
-            const idx22 = (y2 * width + x2) * 4;
-            
-            // 双线性插值
-            const top = interpolate(
-                getGray(data, idx11),
-                getGray(data, idx12),
-                dx
-            );
-            
-            const bottom = interpolate(
-                getGray(data, idx21),
-                getGray(data, idx22),
-                dx
-            );
-            
-            return interpolate(top, bottom, dy);
-        }
-        
-        // 双三次插值函数（高质量模式）
-        function getPixelBicubic(data, width, height, x, y) {
-            const px = Math.floor(x);
-            const py = Math.floor(y);
-            
-            // 获取16个周围像素
-            const values = [];
-            for (let j = -1; j <= 2; j++) {
-                for (let i = -1; i <= 2; i++) {
-                    const sampleX = Math.max(0, Math.min(width - 1, px + i));
-                    const sampleY = Math.max(0, Math.min(height - 1, py + j));
-                    const idx = (sampleY * width + sampleX) * 4;
-                    values.push(getGray(data, idx));
-                }
-            }
-            
-            // 水平插值
-            const horiz = [];
-            for (let j = 0; j < 4; j++) {
-                const row = values.slice(j * 4, j * 4 + 4);
-                horiz.push(cubicInterpolate(row, x - px));
-            }
-            
-            // 垂直插值
-            return cubicInterpolate(horiz, y - py);
-        }
-        
-        function cubicInterpolate(values, t) {
-            // 三次插值公式
-            const a0 = values[0];
-            const a1 = values[1];
-            const a2 = values[2];
-            const a3 = values[3];
-            
-            // 使用Catmull-Rom样条
-            return a1 + 0.5 * t * (a2 - a0 + 
-                   t * (2*a0 - 5*a1 + 4*a2 - a3 + 
-                   t * (3*(a1 - a2) + a3 - a0)));
-        }
-        
-        function getGray(data, idx) {
-            return (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-        }
-        
-        function interpolate(a, b, t) {
-            return a + (b - a) * t;
-        }
-        
-        // 初始化示例图像
-        generateExampleImage('bricks');
-        // 初始生成法线图
-        setTimeout(() => {
-            scheduleNormalMapUpdate();
-        }, 500);
-        
-        // 初始化拖放功能
-        function setupDragAndDrop() {
-            // 输入区域拖放事件
-            inputUploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                inputUploadArea.classList.add('drag-over');
-            });
-            
-            inputUploadArea.addEventListener('dragleave', () => {
-                inputUploadArea.classList.remove('drag-over');
-            });
-            
-            inputUploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                inputUploadArea.classList.remove('drag-over');
-                
-                if (e.dataTransfer.files.length) {
-                    loadImageFile(e.dataTransfer.files[0]);
-                }
-            });
-            
-            // 输出区域拖放事件（反推功能）
-            outputCanvasContainer.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                outputCanvasContainer.classList.add('drag-over');
-            });
-            
-            outputCanvasContainer.addEventListener('dragleave', () => {
-                outputCanvasContainer.classList.remove('drag-over');
-            });
-            
-            outputCanvasContainer.addEventListener('drop', (e) => {
-                e.preventDefault();
-                outputCanvasContainer.classList.remove('drag-over');
-                
-                if (e.dataTransfer.files.length) {
-                    const file = e.dataTransfer.files[0];
-                    reverseNormalMap(file);
-                }
-            });
-        }
-        
-        // 反推功能：从法线图生成高度图
-        function reverseNormalMap(file) {
-            const validTypes = ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff', 'image/webp', 'image/gif'];
-            const isTiffFile = file.type === 'image/tiff' || file.name.toLowerCase().endsWith('.tif') || file.name.toLowerCase().endsWith('.tiff');
-            const isValidFile = validTypes.includes(file.type) || isTiffFile;
-            
-            if (!isValidFile) {
-                alert('不支持的图片格式，请上传JPG, PNG, BMP, TIFF或WEBP格式的图片');
-                return;
-            }
-            
-            const reader = new FileReader();
-            
-            if (isTiffFile) {
-                // 使用ArrayBuffer读取TIFF
-                reader.onload = function(event) {
-                    try {
-                        const arrayBuffer = event.target.result;
-                        const ifds = UTIF.decode(arrayBuffer);
-                        
-                        // 获取第一个图像
-                        UTIF.decodeImage(arrayBuffer, ifds[0]);
-                        const width = ifds[0].width;
-                        const height = ifds[0].height;
-                        
-                        // 将TIFF转换为RGBA格式
-                        const rgba = UTIF.toRGBA8(ifds[0]);
-                        
-                        // 创建ImageData对象
-                        const normalImageData = new ImageData(width, height);
-                        normalImageData.data.set(new Uint8ClampedArray(rgba));
-                        
-                        // 创建高度图数据
-                        const heightImageData = new ImageData(width, height);
-                        
-                        // 选择算法
-                        const usePoisson = poissonAlgorithm.checked;
-                        
-                        if (usePoisson) {
-                            // 使用Poisson重建算法
-                            reconstructWithPoisson(normalImageData.data, heightImageData.data, width, height);
-                        } else {
-                            // 使用简单累加算法
-                            reconstructWithSimple(normalImageData.data, heightImageData.data, width, height);
+                        for (let kx = -r; kx <= r; kx++) {
+                            const px = Math.max(0, Math.min(width - 1, x + kx));
+                            const idx = (y * width + px) * 4;
+                            const weight = kernel[kx + r];
+                            
+                            rVal += data[idx] * weight;
+                            gVal += data[idx + 1] * weight;
+                            bVal += data[idx + 2] * weight;
+                            weightSum += weight;
                         }
                         
-                        // 绘制到输入canvas
-                        inputCanvas.width = width;
-                        inputCanvas.height = height;
-                        const inputCtx = inputCanvas.getContext('2d');
-                        inputCtx.putImageData(heightImageData, 0, 0);
-                        
-                        inputPlaceholder.style.display = 'none';
-                        inputCanvas.style.display = 'block';
-                        
-                        // 存储图像数据
-                        currentImageData = inputCtx.getImageData(0, 0, width, height);
-                        blurredImageData = new Uint8ClampedArray(currentImageData.data);
-                        
-                        // 更新UI
-                        outputPlaceholder.style.display = 'none';
-                        outputCanvas.style.display = 'block';
-                        
-                        // 提示用户
-                        alert('法线图已成功反推为高度图！您可以在左侧查看并进一步调整参数生成新的法线图。');
-                    } catch (error) {
-                        console.error('TIFF处理错误:', error);
-                        alert('无法处理此TIFF文件，请尝试其他文件');
+                        const idx = (y * width + x) * 4;
+                        tempData[idx] = rVal / weightSum;
+                        tempData[idx + 1] = gVal / weightSum;
+                        tempData[idx + 2] = bVal / weightSum;
+                        tempData[idx + 3] = data[idx + 3];
                     }
-                };
-                reader.readAsArrayBuffer(file);
-            } else {
-                // 使用DataURL读取其他图片
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        // 设置canvas尺寸
-                        originalWidth = img.width;
-                        originalHeight = img.height;
+                }
+                
+                // 垂直模糊
+                for (let x = 0; x < width; x++) {
+                    for (let y = 0; y < height; y++) {
+                        let rVal = 0, gVal = 0, bVal = 0, weightSum = 0;
                         
-                        // 在输出canvas临时绘制
-                        outputCanvas.width = originalWidth;
-                        outputCanvas.height = originalHeight;
-                        const outputCtx = outputCanvas.getContext('2d');
-                        outputCtx.drawImage(img, 0, 0);
-                        
-                        // 获取图像数据
-                        const normalImageData = outputCtx.getImageData(0, 0, originalWidth, originalHeight);
-                        const normalData = normalImageData.data;
-                        
-                        // 创建高度图数据
-                        const heightImageData = outputCtx.createImageData(originalWidth, originalHeight);
-                        const heightData = heightImageData.data;
-                        
-                        // 选择算法
-                        const usePoisson = poissonAlgorithm.checked;
-                        
-                        if (usePoisson) {
-                            // 使用Poisson重建算法
-                            reconstructWithPoisson(normalData, heightData, originalWidth, originalHeight);
-                        } else {
-                            // 使用简单累加算法
-                            reconstructWithSimple(normalData, heightData, originalWidth, originalHeight);
+                        for (let ky = -r; ky <= r; ky++) {
+                            const py = Math.max(0, Math.min(height - 1, y + ky));
+                            const idx = (py * width + x) * 4;
+                            const weight = kernel[ky + r];
+                            
+                            rVal += tempData[idx] * weight;
+                            gVal += tempData[idx + 1] * weight;
+                            bVal += tempData[idx + 2] * weight;
+                            weightSum += weight;
                         }
                         
-                        // 绘制到输入canvas
-                        inputCanvas.width = originalWidth;
-                        inputCanvas.height = originalHeight;
-                        const inputCtx = inputCanvas.getContext('2d');
-                        inputCtx.putImageData(heightImageData, 0, 0);
-                        
-                        inputPlaceholder.style.display = 'none';
-                        inputCanvas.style.display = 'block';
-                        
-                        // 存储图像数据
-                        currentImageData = inputCtx.getImageData(0, 0, originalWidth, originalHeight);
-                        blurredImageData = new Uint8ClampedArray(currentImageData.data);
-                        
-                        // 更新UI
-                        outputPlaceholder.style.display = 'none';
-                        outputCanvas.style.display = 'block';
-                        
-                        // 提示用户
-                        alert('法线图已成功反推为高度图！您可以在左侧查看并进一步调整参数生成新的法线图。');
-                    };
-                    img.onerror = function() {
-                        alert('图片加载失败，请重试');
-                    };
-                    img.src = event.target.result;
-                };
-                reader.onerror = function() {
-                    alert('文件读取失败');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        
-        // 简单累加算法（旧版，有斜线问题）
-        function reconstructWithSimple(normalData, heightData, width, height) {
-            // 初始化高度数组
-            const heightMap = new Array(width * height).fill(0);
-            
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const idx = (y * width + x) * 4;
-                    
-                    // 从法线图获取法线向量
-                    const nx = (normalData[idx] / 127.5) - 1;
-                    const ny = (normalData[idx + 1] / 127.5) - 1;
-                    const nz = (normalData[idx + 2] / 127.5) - 1;
-                    
-                    // 计算高度梯度
-                    const dx = nx / nz;
-                    const dy = ny / nz;
-                    
-                    // 累积高度（简化方法）
-                    let heightVal = 0;
-                    if (x > 0) heightVal += heightMap[y * width + (x-1)] + dx * 10;
-                    if (y > 0) heightVal += heightMap[(y-1) * width + x] + dy * 10;
-                    if (x > 0 && y > 0) heightVal /= 2;
-                    
-                    heightMap[y * width + x] = heightVal;
-                }
-            }
-            
-            // 归一化高度图
-            let min = Number.MAX_VALUE, max = -Number.MAX_VALUE;
-            for (let i = 0; i < heightMap.length; i++) {
-                if (heightMap[i] < min) min = heightMap[i];
-                if (heightMap[i] > max) max = heightMap[i];
-            }
-            
-            const range = max - min;
-            
-            // 转换为灰度图像
-            for (let i = 0; i < heightMap.length; i++) {
-                const heightValue = Math.round(((heightMap[i] - min) / range) * 255);
-                const idx = i * 4;
-                heightData[idx] = heightValue;
-                heightData[idx + 1] = heightValue;
-                heightData[idx + 2] = heightValue;
-                heightData[idx + 3] = 255;
-            }
-        }
-        
-        // Poisson重建算法（解决斜线问题）
-        function reconstructWithPoisson(normalData, heightData, width, height) {
-            // 计算梯度场
-            const dxMap = new Float64Array(width * height);
-            const dyMap = new Float64Array(width * height);
-            
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const idx = (y * width + x) * 4;
-                    
-                    // 从法线图获取法线向量
-                    const nx = (normalData[idx] / 127.5) - 1;
-                    const ny = (normalData[idx + 1] / 127.5) - 1;
-                    const nz = (normalData[idx + 2] / 127.5) - 1;
-                    
-                    // 计算高度梯度
-                    dxMap[y * width + x] = nx / nz;
-                    dyMap[y * width + x] = ny / nz;
-                }
-            }
-            
-            // 计算散度
-            const div = new Float64Array(width * height);
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const idx = y * width + x;
-                    
-                    // 计算散度 (div = d(dx)/dx + d(dy)/dy)
-                    let ddx = 0, ddy = 0;
-                    
-                    if (x > 0 && x < width - 1) {
-                        ddx = (dxMap[idx + 1] - dxMap[idx - 1]) * 0.5;
+                        const idx = (y * width + x) * 4;
+                        data[idx] = rVal / weightSum;
+                        data[idx + 1] = gVal / weightSum;
+                        data[idx + 2] = bVal / weightSum;
                     }
-                    
-                    if (y > 0 && y < height - 1) {
-                        ddy = (dyMap[idx + width] - dyMap[idx - width]) * 0.5;
-                    }
-                    
-                    div[idx] = ddx + ddy;
                 }
             }
             
-            // 使用迭代法求解Poisson方程
-            const heightMap = new Float64Array(width * height);
-            const temp = new Float64Array(width * height);
+            // 创建高斯核
+            function createGaussianKernel(size, sigma) {
+                const kernel = [];
+                const mean = size / 2;
+                let sum = 0;
+                
+                for (let i = 0; i < size; i++) {
+                    const x = i - mean;
+                    kernel[i] = Math.exp(-(x * x) / (2 * sigma * sigma)) 
+                                / (Math.sqrt(2 * Math.PI) * sigma);
+                    sum += kernel[i];
+                }
+                
+                // 归一化
+                for (let i = 0; i < size; i++) {
+                    kernel[i] /= sum;
+                }
+                
+                return kernel;
+            }
             
-            // 迭代次数
-            const iterations = 100;
+            // 双线性插值函数
+            function getPixelBilinear(data, width, height, x, y) {
+                const x1 = Math.floor(x);
+                const y1 = Math.floor(y);
+                const x2 = Math.min(width - 1, x1 + 1);
+                const y2 = Math.min(height - 1, y1 + 1);
+                
+                const dx = x - x1;
+                const dy = y - y1;
+                
+                const idx11 = (y1 * width + x1) * 4;
+                const idx12 = (y1 * width + x2) * 4;
+                const idx21 = (y2 * width + x1) * 4;
+                const idx22 = (y2 * width + x2) * 4;
+                
+                // 双线性插值
+                const top = interpolate(
+                    getGray(data, idx11),
+                    getGray(data, idx12),
+                    dx
+                );
+                
+                const bottom = interpolate(
+                    getGray(data, idx21),
+                    getGray(data, idx22),
+                    dx
+                );
+                
+                return interpolate(top, bottom, dy);
+            }
             
-            for (let iter = 0; iter < iterations; iter++) {
-                // 更新高度图
-                for (let y = 1; y < height - 1; y++) {
-                    for (let x = 1; x < width - 1; x++) {
+            // 双三次插值函数（高质量模式）
+            function getPixelBicubic(data, width, height, x, y) {
+                const px = Math.floor(x);
+                const py = Math.floor(y);
+                
+                // 获取16个周围像素
+                const values = [];
+                for (let j = -1; j <= 2; j++) {
+                    for (let i = -1; i <= 2; i++) {
+                        const sampleX = Math.max(0, Math.min(width - 1, px + i));
+                        const sampleY = Math.max(0, Math.min(height - 1, py + j));
+                        const idx = (sampleY * width + sampleX) * 4;
+                        values.push(getGray(data, idx));
+                    }
+                }
+                
+                // 水平插值
+                const horiz = [];
+                for (let j = 0; j < 4; j++) {
+                    const row = values.slice(j * 4, j * 4 + 4);
+                    horiz.push(cubicInterpolate(row, x - px));
+                }
+                
+                // 垂直插值
+                return cubicInterpolate(horiz, y - py);
+            }
+            
+            function cubicInterpolate(values, t) {
+                // 三次插值公式
+                const a0 = values[0];
+                const a1 = values[1];
+                const a2 = values[2];
+                const a3 = values[3];
+                
+                // 使用Catmull-Rom样条
+                return a1 + 0.5 * t * (a2 - a0 + 
+                       t * (2*a0 - 5*a1 + 4*a2 - a3 + 
+                       t * (3*(a1 - a2) + a3 - a0)));
+            }
+            
+            function getGray(data, idx) {
+                return (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+            }
+            
+            function interpolate(a, b, t) {
+                return a + (b - a) * t;
+            }
+            
+            // 初始化示例图像
+            generateExampleImage('bricks');
+            // 初始生成法线图
+            setTimeout(() => {
+                scheduleNormalMapUpdate();
+            }, 500);
+            
+            // 初始化拖放功能
+            function setupDragAndDrop() {
+                // 输入区域拖放事件
+                inputUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    inputUploadArea.classList.add('drag-over');
+                });
+                
+                inputUploadArea.addEventListener('dragleave', () => {
+                    inputUploadArea.classList.remove('drag-over');
+                });
+                
+                inputUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    inputUploadArea.classList.remove('drag-over');
+                    
+                    if (e.dataTransfer.files.length) {
+                        loadImageFile(e.dataTransfer.files[0]);
+                    }
+                });
+                
+                // 输出区域拖放事件（反推功能）
+                outputCanvasContainer.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    outputCanvasContainer.classList.add('drag-over');
+                });
+                
+                outputCanvasContainer.addEventListener('dragleave', () => {
+                    outputCanvasContainer.classList.remove('drag-over');
+                });
+                
+                outputCanvasContainer.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    outputCanvasContainer.classList.remove('drag-over');
+                    
+                    if (e.dataTransfer.files.length) {
+                        const file = e.dataTransfer.files[0];
+                        reverseNormalMap(file);
+                    }
+                });
+            }
+            
+            // 反推功能：从法线图生成高度图
+            function reverseNormalMap(file) {
+                const validTypes = ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff', 'image/webp', 'image/gif'];
+                const isTiffFile = file.type === 'image/tiff' || file.name.toLowerCase().endsWith('.tif') || file.name.toLowerCase().endsWith('.tiff');
+                const isValidFile = validTypes.includes(file.type) || isTiffFile;
+                
+                if (!isValidFile) {
+                    alert('不支持的图片格式，请上传JPG, PNG, BMP, TIFF或WEBP格式的图片');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                if (isTiffFile) {
+                    // 使用ArrayBuffer读取TIFF
+                    reader.onload = function(event) {
+                        try {
+                            const arrayBuffer = event.target.result;
+                            const ifds = UTIF.decode(arrayBuffer);
+                            
+                            // 获取第一个图像
+                            UTIF.decodeImage(arrayBuffer, ifds[0]);
+                            const width = ifds[0].width;
+                            const height = ifds[0].height;
+                            
+                            // 将TIFF转换为RGBA格式
+                            const rgba = UTIF.toRGBA8(ifds[0]);
+                            
+                            // 创建ImageData对象
+                            const normalImageData = new ImageData(width, height);
+                            normalImageData.data.set(new Uint8ClampedArray(rgba));
+                            
+                            // 创建高度图数据
+                            const heightImageData = new ImageData(width, height);
+                            
+                            // 选择算法
+                            const usePoisson = poissonAlgorithm.checked;
+                            
+                            if (usePoisson) {
+                                // 使用Poisson重建算法
+                                reconstructWithPoisson(normalImageData.data, heightImageData.data, width, height);
+                            } else {
+                                // 使用简单累加算法
+                                reconstructWithSimple(normalImageData.data, heightImageData.data, width, height);
+                            }
+                            
+                            // 绘制到输入canvas
+                            inputCanvas.width = width;
+                            inputCanvas.height = height;
+                            const inputCtx = inputCanvas.getContext('2d');
+                            inputCtx.putImageData(heightImageData, 0, 0);
+                            
+                            inputPlaceholder.style.display = 'none';
+                            inputCanvas.style.display = 'block';
+                            
+                            // 存储图像数据
+                            currentImageData = inputCtx.getImageData(0, 0, width, height);
+                            blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                            
+                            // 更新UI
+                            outputPlaceholder.style.display = 'none';
+                            outputCanvas.style.display = 'block';
+                            
+                            // 提示用户
+                            alert('法线图已成功反推为高度图！您可以在左侧查看并进一步调整参数生成新的法线图。');
+                        } catch (error) {
+                            console.error('TIFF处理错误:', error);
+                            alert('无法处理此TIFF文件，请尝试其他文件');
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    // 使用DataURL读取其他图片
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            // 设置canvas尺寸
+                            originalWidth = img.width;
+                            originalHeight = img.height;
+                            
+                            // 在输出canvas临时绘制
+                            outputCanvas.width = originalWidth;
+                            outputCanvas.height = originalHeight;
+                            const outputCtx = outputCanvas.getContext('2d');
+                            outputCtx.drawImage(img, 0, 0);
+                            
+                            // 获取图像数据
+                            const normalImageData = outputCtx.getImageData(0, 0, originalWidth, originalHeight);
+                            const normalData = normalImageData.data;
+                            
+                            // 创建高度图数据
+                            const heightImageData = outputCtx.createImageData(originalWidth, originalHeight);
+                            const heightData = heightImageData.data;
+                            
+                            // 选择算法
+                            const usePoisson = poissonAlgorithm.checked;
+                            
+                            if (usePoisson) {
+                                // 使用Poisson重建算法
+                                reconstructWithPoisson(normalData, heightData, originalWidth, originalHeight);
+                            } else {
+                                // 使用简单累加算法
+                                reconstructWithSimple(normalData, heightData, originalWidth, originalHeight);
+                            }
+                            
+                            // 绘制到输入canvas
+                            inputCanvas.width = originalWidth;
+                            inputCanvas.height = originalHeight;
+                            const inputCtx = inputCanvas.getContext('2d');
+                            inputCtx.putImageData(heightImageData, 0, 0);
+                            
+                            inputPlaceholder.style.display = 'none';
+                            inputCanvas.style.display = 'block';
+                            
+                            // 存储图像数据
+                            currentImageData = inputCtx.getImageData(0, 0, originalWidth, originalHeight);
+                            blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                            
+                            // 更新UI
+                            outputPlaceholder.style.display = 'none';
+                            outputCanvas.style.display = 'block';
+                            
+                            // 提示用户
+                            alert('法线图已成功反推为高度图！您可以在左侧查看并进一步调整参数生成新的法线图。');
+                        };
+                        img.onerror = function() {
+                            alert('图片加载失败，请重试');
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.onerror = function() {
+                        alert('文件读取失败');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            // 简单累加算法（旧版，有斜线问题）
+            function reconstructWithSimple(normalData, heightData, width, height) {
+                // 初始化高度数组
+                const heightMap = new Array(width * height).fill(0);
+                
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        // 从法线图获取法线向量
+                        const nx = (normalData[idx] / 127.5) - 1;
+                        const ny = (normalData[idx + 1] / 127.5) - 1;
+                        const nz = (normalData[idx + 2] / 127.5) - 1;
+                        
+                        // 计算高度梯度
+                        const dx = nx / nz;
+                        const dy = ny / nz;
+                        
+                        // 累积高度（简化方法）
+                        let heightVal = 0;
+                        if (x > 0) heightVal += heightMap[y * width + (x-1)] + dx * 10;
+                        if (y > 0) heightVal += heightMap[(y-1) * width + x] + dy * 10;
+                        if (x > 0 && y > 0) heightVal /= 2;
+                        
+                        heightMap[y * width + x] = heightVal;
+                    }
+                }
+                
+                // 归一化高度图
+                let min = Number.MAX_VALUE, max = -Number.MAX_VALUE;
+                for (let i = 0; i < heightMap.length; i++) {
+                    if (heightMap[i] < min) min = heightMap[i];
+                    if (heightMap[i] > max) max = heightMap[i];
+                }
+                
+                const range = max - min;
+                
+                // 转换为灰度图像
+                for (let i = 0; i < heightMap.length; i++) {
+                    const heightValue = Math.round(((heightMap[i] - min) / range) * 255);
+                    const idx = i * 4;
+                    heightData[idx] = heightValue;
+                    heightData[idx + 1] = heightValue;
+                    heightData[idx + 2] = heightValue;
+                    heightData[idx + 3] = 255;
+                }
+            }
+            
+            // Poisson重建算法（解决斜线问题）
+            function reconstructWithPoisson(normalData, heightData, width, height) {
+                // 计算梯度场
+                const dxMap = new Float64Array(width * height);
+                const dyMap = new Float64Array(width * height);
+                
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        // 从法线图获取法线向量
+                        const nx = (normalData[idx] / 127.5) - 1;
+                        const ny = (normalData[idx + 1] / 127.5) - 1;
+                        const nz = (normalData[idx + 2] / 127.5) - 1;
+                        
+                        // 计算高度梯度
+                        dxMap[y * width + x] = nx / nz;
+                        dyMap[y * width + x] = ny / nz;
+                    }
+                }
+                
+                // 计算散度
+                const div = new Float64Array(width * height);
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
                         const idx = y * width + x;
                         
-                        // 计算周围四个点的平均值
-                        const sum = 
-                            heightMap[idx - 1] + 
-                            heightMap[idx + 1] + 
-                            heightMap[idx - width] + 
-                            heightMap[idx + width];
+                        // 计算散度 (div = d(dx)/dx + d(dy)/dy)
+                        let ddx = 0, ddy = 0;
                         
-                        // 更新高度值
-                        temp[idx] = (sum - div[idx]) * 0.25;
+                        if (x > 0 && x < width - 1) {
+                            ddx = (dxMap[idx + 1] - dxMap[idx - 1]) * 0.5;
+                        }
+                        
+                        if (y > 0 && y < height - 1) {
+                            ddy = (dyMap[idx + width] - dyMap[idx - width]) * 0.5;
+                        }
+                        
+                        div[idx] = ddx + ddy;
                     }
                 }
                 
-                // 交换数组
-                const swap = heightMap;
-                heightMap.set(temp);
-                temp.set(swap);
+                // 使用迭代法求解Poisson方程
+                const heightMap = new Float64Array(width * height);
+                const temp = new Float64Array(width * height);
+                
+                // 迭代次数
+                const iterations = 100;
+                
+                for (let iter = 0; iter < iterations; iter++) {
+                    // 更新高度图
+                    for (let y = 1; y < height - 1; y++) {
+                        for (let x = 1; x < width - 1; x++) {
+                            const idx = y * width + x;
+                            
+                            // 计算周围四个点的平均值
+                            const sum = 
+                                heightMap[idx - 1] + 
+                                heightMap[idx + 1] + 
+                                heightMap[idx - width] + 
+                                heightMap[idx + width];
+                            
+                            // 更新高度值
+                            temp[idx] = (sum - div[idx]) * 0.25;
+                        }
+                    }
+                    
+                    // 交换数组
+                    const swap = heightMap;
+                    heightMap.set(temp);
+                    temp.set(swap);
+                }
+                
+                // 归一化高度图
+                let min = Number.MAX_VALUE, max = -Number.MAX_VALUE;
+                for (let i = 0; i < heightMap.length; i++) {
+                    if (heightMap[i] < min) min = heightMap[i];
+                    if (heightMap[i] > max) max = heightMap[i];
+                }
+                
+                const range = max - min;
+                
+                // 转换为灰度图像
+                for (let i = 0; i < heightMap.length; i++) {
+                    const heightValue = Math.round(((heightMap[i] - min) / range) * 255);
+                    const idx = i * 4;
+                    heightData[idx] = heightValue;
+                    heightData[idx + 1] = heightValue;
+                    heightData[idx + 2] = heightValue;
+                    heightData[idx + 3] = 255;
+                }
             }
             
-            // 归一化高度图
-            let min = Number.MAX_VALUE, max = -Number.MAX_VALUE;
-            for (let i = 0; i < heightMap.length; i++) {
-                if (heightMap[i] < min) min = heightMap[i];
-                if (heightMap[i] > max) max = heightMap[i];
-            }
-            
-            const range = max - min;
-            
-            // 转换为灰度图像
-            for (let i = 0; i < heightMap.length; i++) {
-                const heightValue = Math.round(((heightMap[i] - min) / range) * 255);
-                const idx = i * 4;
-                heightData[idx] = heightValue;
-                heightData[idx + 1] = heightValue;
-                heightData[idx + 2] = heightValue;
-                heightData[idx + 3] = 255;
-            }
-        }
-        
-        // 反推按钮事件
-        reverseBtn.addEventListener('click', () => {
-            if (outputCanvas.style.display === 'none') {
-                alert('请先生成法线图');
-                return;
-            }
-            
-            // 创建一个临时canvas用于处理
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = outputCanvas.width;
-            tempCanvas.height = outputCanvas.height;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(outputCanvas, 0, 0);
-            
-            // 获取图像数据
-            const normalImageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            
-            // 创建高度图数据
-            const heightImageData = tempCtx.createImageData(tempCanvas.width, tempCanvas.height);
-            
-            // 选择算法
-            const usePoisson = poissonAlgorithm.checked;
-            
-            if (usePoisson) {
-                // 使用Poisson重建算法
-                reconstructWithPoisson(normalImageData.data, heightImageData.data, tempCanvas.width, tempCanvas.height);
-            } else {
-                // 使用简单累加算法
-                reconstructWithSimple(normalImageData.data, heightImageData.data, tempCanvas.width, tempCanvas.height);
-            }
-            
-            // 绘制到输入canvas
-            inputCanvas.width = tempCanvas.width;
-            inputCanvas.height = tempCanvas.height;
-            const inputCtx = inputCanvas.getContext('2d');
-            inputCtx.putImageData(heightImageData, 0, 0);
-            
-            inputPlaceholder.style.display = 'none';
-            inputCanvas.style.display = 'block';
-            
-            // 存储图像数据
-            currentImageData = inputCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            blurredImageData = new Uint8ClampedArray(currentImageData.data);
-            
-            // 提示用户
-            alert('法线图已成功反推为高度图！');
-        });
-        
-        // 初始化拖放功能
-        setupDragAndDrop();
-        
-        // 默认使用GPU模式
-        setGPUMode(true);
-        
-        // 修改normalPreviewBtn事件监听器 - 只暂停动画而不取消
-    normalPreviewBtn.addEventListener('click', () => {
-        normalPreviewBtn.classList.add('active');
-        modelPreviewBtn.classList.remove('active');
-        outputCanvasContainer.style.display = 'flex';
-        normalPreviewTitle.style.display = 'flex';
-	preview3dContainer.style.display = 'none';
-        is3dPreviewActive = false; // 暂停动画
-    });
-
-        
-        // 修改modelPreviewBtn事件监听器 - 确保动画循环总是重新启动
-    modelPreviewBtn.addEventListener('click', () => {
-        modelPreviewBtn.classList.add('active');
-        normalPreviewBtn.classList.remove('active');
-        outputCanvasContainer.style.display = 'none';
-	normalPreviewTitle.style.display = 'none';
-        preview3dContainer.style.display = 'block';
-        is3dPreviewActive = true;
-        
-        // 如果尚未初始化Three.js，则初始化
-        if (!isThreeInitialized) {
-            initThreeScene();
-            animate(); // 启动动画循环
-        } else {
-            // 确保动画循环正在运行
-            if (!animationId) {
-                animate();
-            }
-        }
-        
-        // 强制更新渲染器尺寸
-        updateRendererSize();
-        
-        // 如果已有法线图，更新3D预览
-        if (outputCanvas.style.display !== 'none') {
-            update3dPreview();
-            previewHint.style.display = 'none';
-        } else {
-            previewHint.style.display = 'block';
-        }
-    });
-        
-        // 几何体切换事件
-        shapeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                shapeButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                createMesh(btn.dataset.shape);
+            // 反推按钮事件
+            reverseBtn.addEventListener('click', () => {
+                if (outputCanvas.style.display === 'none') {
+                    alert('请先生成法线图');
+                    return;
+                }
+                
+                // 创建一个临时canvas用于处理
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = outputCanvas.width;
+                tempCanvas.height = outputCanvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.drawImage(outputCanvas, 0, 0);
+                
+                // 获取图像数据
+                const normalImageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                
+                // 创建高度图数据
+                const heightImageData = tempCtx.createImageData(tempCanvas.width, tempCanvas.height);
+                
+                // 选择算法
+                const usePoisson = poissonAlgorithm.checked;
+                
+                if (usePoisson) {
+                    // 使用Poisson重建算法
+                    reconstructWithPoisson(normalImageData.data, heightImageData.data, tempCanvas.width, tempCanvas.height);
+                } else {
+                    // 使用简单累加算法
+                    reconstructWithSimple(normalImageData.data, heightImageData.data, tempCanvas.width, tempCanvas.height);
+                }
+                
+                // 绘制到输入canvas
+                inputCanvas.width = tempCanvas.width;
+                inputCanvas.height = tempCanvas.height;
+                const inputCtx = inputCanvas.getContext('2d');
+                inputCtx.putImageData(heightImageData, 0, 0);
+                
+                inputPlaceholder.style.display = 'none';
+                inputCanvas.style.display = 'block';
+                
+                // 存储图像数据
+                currentImageData = inputCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                
+                // 提示用户
+                alert('法线图已成功反推为高度图！');
             });
+            
+            // 初始化拖放功能
+            setupDragAndDrop();
+            
+            // 默认使用GPU模式
+            setGPUMode(true);
+            
+            // 修改normalPreviewBtn事件监听器 - 只暂停动画而不取消
+            normalPreviewBtn.addEventListener('click', () => {
+                normalPreviewBtn.classList.add('active');
+                modelPreviewBtn.classList.remove('active');
+                outputCanvasContainer.style.display = 'flex';
+                normalPreviewTitle.style.display = 'flex';
+                preview3dContainer.style.display = 'none';
+                is3dPreviewActive = false; // 暂停动画
+            });
+
+            // 修改modelPreviewBtn事件监听器 - 确保动画循环总是重新启动
+            modelPreviewBtn.addEventListener('click', () => {
+                modelPreviewBtn.classList.add('active');
+                normalPreviewBtn.classList.remove('active');
+                outputCanvasContainer.style.display = 'none';
+                normalPreviewTitle.style.display = 'none';
+                preview3dContainer.style.display = 'block';
+                is3dPreviewActive = true;
+                
+                // 如果尚未初始化Three.js，则初始化
+                if (!isThreeInitialized) {
+                    initThreeScene();
+                    animate(); // 启动动画循环
+                } else {
+                    // 确保动画循环正在运行
+                    if (!animationId) {
+                        animate();
+                    }
+                }
+                
+                // 强制更新渲染器尺寸
+                updateRendererSize();
+                
+                // 如果已有法线图，更新3D预览
+                if (outputCanvas.style.display !== 'none') {
+                    update3dPreview();
+                    previewHint.style.display = 'none';
+                } else {
+                    previewHint.style.display = 'block';
+                }
+            });
+            
+            // 几何体切换事件
+            shapeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    shapeButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    createMesh(btn.dataset.shape);
+                });
+            });
+            
+            // 初始化3D预览容器
+            preview3dContainer.style.display = 'none';
         });
-        
-        // 初始化3D预览容器
-        preview3dContainer.style.display = 'none';
-    });
-</script>
+    </script>
 </body>
 </html>
