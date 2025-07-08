@@ -80,23 +80,23 @@
             background: var(--control-bg);
             backdrop-filter: blur(10px);
             border-radius: 16px;
-            padding: 25px;
+            padding: 35px 25px;
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 60px;
+            justify-content: flex-start;
+            gap: 20px;
             margin-bottom: 30px;
             width: 100%;
             max-width: 1280px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.6);
+	    flex-direction: column;
         }
         
         .control-group {
             display: flex;
             flex-direction: column;
             min-width: 200px;
-            flex: 1;
             justify-content: flex-start;
             gap: 4px;
         }
@@ -108,7 +108,6 @@
         }
         
         .control-group-title i {
-            width: 36px;
             height: 36px;
             border-radius: 50%;
             display: flex;
@@ -116,6 +115,7 @@
             justify-content: center;
             font-size: 16px;
             color: var(--text3);
+	margin-right: 8px;
         }
         
         .control-group-title h3 {
@@ -256,10 +256,11 @@
             max-width: 900px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.6);
-            min-height: 500px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-around;
+		    gap: 10px;
         }
         
         #flowerCanvas {
@@ -315,7 +316,6 @@
         .flower-type-selector {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
         }
         
         .flower-option {
@@ -331,7 +331,7 @@
     	display: flex;
     	justify-content: center;
    	align-items: center;
-    	flex-direction: column;
+    	flex-direction: row;
     	font-size: 16px;
     	gap: 4px;
         }
@@ -350,15 +350,32 @@
             display: block;
             margin-bottom: 5px;
         }
-        
+        .buju {
+            display: grid; 
+            grid-template-columns: 1.75fr 1fr; 
+            gap: 20px;
+            }
+        .btgroup {
+            display: flex; 
+            flex-direction: row; 
+            gap: 12px; 
+            margin-top: 8px; 
+            width: 100%;
+            }
         @media (max-width: 768px) {
             .controls {
                 flex-direction: column;
                 align-items: center;
                 padding: 20px;
                 gap: 30px;
+                margin-bottom: 0;
             }
-            
+            .buju {
+                display: flex; 
+                flex-direction: column-reverse;
+            }
+            .btgroup {
+                flex-direction: column;}
             .control-group {
                 width: 100%;
             }
@@ -399,6 +416,15 @@
         <h1>矢量花朵生成器</h1>
         <p class="subtitle">创建独特的花朵图案，具有丰富的颜色和形态变化，支持SVG下载</p>
     </div>
+<div class="buju">    
+    <div class="canvas-container">
+        <svg id="flowerCanvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" style="mix-blend-mode: multiply;"></svg>
+        <div class="btgroup">
+                <button class="bt" id="downloadBtn"><i class="fas fa-download"></i> 下载SVG图像</button>
+                <button id="randomizeBtn"><i class="fas fa-random"></i> 随机生成
+                </button>               
+        </div>
+    </div>
     
     <div class="controls">
         <div class="control-group">
@@ -406,7 +432,6 @@
                 <i class="fas fa-fill-drip"></i>
                 <h3>花朵颜色</h3>
             </div>
-            <div class="line"></div>
             <div class="color-picker">
                 <div class="color-option active" style="background: #FF6B8B;" data-color="#FF6B8B"></div>
                 <div class="color-option" style="background: #FF9A8B;" data-color="#FF9A8B"></div>
@@ -423,11 +448,11 @@
         </div>
         
         <div class="control-group">
+        <div class="line"></div>
             <div class="control-group-title">
                 <i class="fas fa-leaf"></i>
                 <h3>花朵类型</h3>
             </div>
-            <div class="line"></div>
             <div class="flower-type-selector">
                 <div class="flower-option active" data-type="rose">
                     <div>🌹</div>
@@ -445,34 +470,20 @@
         </div>
         
         <div class="control-group">
+        <div class="line"></div> 
             <div class="control-group-title">
                 <i class="fas fa-sliders-h"></i>
                 <h3>花朵设置</h3>
-            </div>
-            <div class="line"></div>            
+            </div>                       
             <label>花瓣数量: <span id="petalCountValue">6</span></label>
             <input type="range" id="petalCountSlider" min="4" max="12" value="6">
             
             <label style="margin-top: 15px;">花朵大小: <span id="sizeValue">50%</span></label>
             <input type="range" id="sizeSlider" min="30" max="100" value="50">
-        </div>
-        
-        <div class="control-group">
-            <div class="control-group-title">
-                <i class="fas fa-cogs"></i>
-                <h3>操作控制</h3>
-            </div>
-            <div class="line"></div>            
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%;">
-                <button id="randomizeBtn"><i class="fas fa-random"></i> 随机生成</button>
-                <button class="bt" id="downloadBtn"><i class="fas fa-download"></i> 下载SVG图像</button>
-            </div>
-        </div>
+        </div>                       
     </div>
+</div>    
     
-    <div class="canvas-container">
-        <svg id="flowerCanvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" style="mix-blend-mode: multiply;"></svg>
-    </div>
     
     <div class="stats">
         <div class="stat-item">
