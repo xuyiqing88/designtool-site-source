@@ -47,40 +47,6 @@
             margin-bottom: 10px;
         }
         
-        .topgroup {
-            gap: 10px;
-            display: flex;
-            position: fixed;
-            margin-top: 20px;
-            left: 20px;
-            background: var(--control-bg);
-            border-radius: 30px;
-            padding: 4px;
-            z-index: 999;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-        }
-        
-        .home-icon {
-            font-size: 40px;
-            cursor: pointer;
-            transition: all 0.3s;
-            padding: 8px; 
-            border-radius: 50%;
-            width: 1em; 
-            height: 1em;
-            vertical-align: -0.15em;
-            overflow: hidden;
-            color: var(--accent);
-        }
-        
-        .topgroup:hover {
-            box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.2), 
-                       -5px -5px 10px rgba(255, 255, 255, 0.7);
-        }
-        
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -427,9 +393,6 @@
 	<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
 <body>
 <div id="global-sidebar"></div>
-    <div class="topgroup">
-        <i class="fas fa-home home-icon"></i>
-    </div>
     
     <div class="header">
         <h1>矢量花朵生成器</h1>
