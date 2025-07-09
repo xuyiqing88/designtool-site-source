@@ -412,7 +412,6 @@
 	<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
 <body>
 <div id="global-sidebar"></div>
-    
     <div class="header">
         <h1>矢量花朵生成器</h1>
         <p class="subtitle">创建独特的花朵图案，具有丰富的颜色和形态变化，支持SVG下载</p>
@@ -422,8 +421,7 @@
         <svg id="flowerCanvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" style="mix-blend-mode: multiply;"></svg>
         <div class="btgroup">
                 <button class="bt" id="downloadBtn"><i class="fas fa-download"></i> 下载SVG图像</button>
-                <button id="randomizeBtn"><i class="fas fa-random"></i> 随机生成
-                </button>               
+                <button id="randomizeBtn"><i class="fas fa-random"></i> 随机生成</button>               
         </div>
     </div>
     
@@ -512,7 +510,6 @@
     <script>
         // 配置变量
         const canvas = document.getElementById('flowerCanvas');
-        const generateBtn = document.getElementById('generateBtn');
         const downloadBtn = document.getElementById('downloadBtn');
         const randomizeBtn = document.getElementById('randomizeBtn');
         const petalCountSlider = document.getElementById('petalCountSlider');
@@ -636,6 +633,9 @@
             // 创建背景
             createBackground();
             
+            // 创建草地
+            createGrass();
+            
             // 创建花朵
             createFlower();
         }
@@ -672,6 +672,113 @@
             canvas.appendChild(bgRect);
         }
         
+function createGrass() {
+    // 创建草地背景
+    const grassBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    grassBg.setAttribute('x', '0');
+    grassBg.setAttribute('y', '400');
+    grassBg.setAttribute('width', '800');
+    grassBg.setAttribute('height', '100');
+    grassBg.setAttribute('fill', '#7fbf7f');
+    grassBg.setAttribute('opacity', '0.2');
+    canvas.appendChild(grassBg);
+    
+    // 创建草地渐变
+    const grassGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    grassGradient.setAttribute('id', 'grassGradient');
+    grassGradient.setAttribute('x1', '0%');
+    grassGradient.setAttribute('y1', '100%');
+    grassGradient.setAttribute('x2', '0%');
+    grassGradient.setAttribute('y2', '0%');
+    
+    const grassStop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    grassStop1.setAttribute('offset', '0%');
+    grassStop1.setAttribute('stop-color', '#5d9e5d');
+    
+    const grassStop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    grassStop2.setAttribute('offset', '100%');
+    grassStop2.setAttribute('stop-color', '#3cb371');
+    
+    grassGradient.appendChild(grassStop1);
+    grassGradient.appendChild(grassStop2);
+    canvas.appendChild(grassGradient);
+    
+    // 创建小草簇
+    for (let i = 0; i < 15; i++) {
+        // 只在画布两侧生成小草（左侧0-300px，右侧500-800px）
+        let x;
+        if (Math.random() > 0.5) {
+            // 左侧区域
+            x = Math.random() * 300;
+        } else {
+            // 右侧区域
+            x = 500 + Math.random() * 300;
+        }
+        
+        // 增加高度范围，使两侧的草更高
+        const height = 40 + Math.random() * 40;
+        const width = 15 + Math.random() * 20;
+        
+        const grassCluster = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        
+        // 每簇草由3-5片叶子组成
+        const leafCount = 3 + Math.floor(Math.random() * 3);
+        for (let j = 0; j < leafCount; j++) {
+            const leaf = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const leafWidth = width * (0.6 + Math.random() * 0.4);
+            const leafHeight = height * (0.7 + Math.random() * 0.6);
+            const leafX = x + (j - leafCount/2) * (width/leafCount);
+            
+            // 计算叶片旋转角度（-20°到20°之间）
+            const leafAngle = -20 + Math.random() * 40;
+            
+            // 创建旋转矩阵
+            const rad = leafAngle * Math.PI / 180;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
+            
+            // 计算旋转后的坐标（围绕簇中心点(x, 400)旋转）
+            const rotatePoint = (px, py) => {
+                const dx = px - x;
+                const dy = py - 400;
+                return {
+                    x: x + dx * cos - dy * sin,
+                    y: 400 + dx * sin + dy * cos
+                };
+            };
+            
+            // 叶片路径的关键点
+            const points = [
+                {x: leafX, y: 400}, // 底部起点
+                {x: leafX - leafWidth/2, y: 400 - leafHeight/2}, // 左控制点
+                {x: leafX, y: 400 - leafHeight}, // 顶部点
+                {x: leafX + leafWidth/2, y: 400 - leafHeight/2}, // 右控制点
+                {x: leafX, y: 400} // 底部终点
+            ];
+            
+            // 旋转所有点
+            const rotatedPoints = points.map(p => rotatePoint(p.x, p.y));
+            
+            // 创建旋转后的叶片路径
+            leaf.setAttribute('d', `
+                M ${rotatedPoints[0].x},${rotatedPoints[0].y}
+                Q ${rotatedPoints[1].x},${rotatedPoints[1].y} 
+                ${rotatedPoints[2].x},${rotatedPoints[2].y}
+                Q ${rotatedPoints[3].x},${rotatedPoints[3].y} 
+                ${rotatedPoints[4].x},${rotatedPoints[4].y}
+            `);
+            
+            leaf.setAttribute('fill', `url(#grassGradient)`);
+            leaf.setAttribute('opacity', '0.8');
+            leaf.setAttribute('stroke-width', '0.5');
+            
+            grassCluster.appendChild(leaf);
+        }
+        
+        canvas.appendChild(grassCluster);
+    }
+}
+        
         // 创建花朵
         function createFlower() {
             const centerX = 400;
@@ -698,16 +805,22 @@
             createLeaves(centerX, centerY, size);
         }
         
-        // 创建花茎
+        // 创建花茎（带随机弯曲）
         function createStem(centerX, centerY, size) {
             const stem = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             const stemHeight = size * 1.5;
             
+            // 随机弯曲参数
+            const curve1X = centerX - 20 + Math.random() * 40 - 20;
+            const curve1Y = centerY + size/2 + 30 + Math.random() * 20 - 10;
+            const curve2X = centerX + 30 + Math.random() * 40 - 20;
+            const curve2Y = centerY + size/2 + 70 + Math.random() * 20 - 10;
+            
             // 创建曲线路径
             const path = `
                 M ${centerX},${centerY + size/2} 
-                C ${centerX - 20},${centerY + size/2 + 30} 
-                ${centerX + 30},${centerY + size/2 + 70} 
+                C ${curve1X},${curve1Y} 
+                ${curve2X},${curve2Y} 
                 ${centerX},${centerY + size/2 + stemHeight}
             `;
             
@@ -752,7 +865,7 @@
             canvas.appendChild(leaf2);
         }
         
-        // 创建玫瑰
+        // 创建玫瑰（修复大小问题）
         function createRose(centerX, centerY, size) {
             // 创建花瓣组
             const petalsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -807,7 +920,7 @@
             canvas.appendChild(center);
         }
         
-        // 创建雏菊 - 已修复位置问题
+        // 创建雏菊（修复大小问题）
         function createDaisy(centerX, centerY, size) {
             // 创建花瓣
             const petalsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -864,17 +977,17 @@
             canvas.appendChild(center);
         }
         
-        // 创建郁金香 - 已修复花瓣数量和连接问题
+        // 创建郁金香（修复花瓣数量和连接问题）
         function createTulip(centerX, centerY, size) {
             const flowerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             
             // 郁金香花瓣数量限制在3-6片
-            const tulipPetalCount = Math.min(6, Math.max(3, petalCount));
+            const tulipPetalCount = Math.min(4, Math.max(2, petalCount));
             
             // 花瓣组
             const petalsContainer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             
-            // 花瓣高度和宽度
+            // 花瓣高度和宽度（修复大小问题）
             const petalHeight = size * 0.8;
             const petalWidth = size * 0.4;
             
@@ -906,10 +1019,10 @@
             // 创建花茎顶部 - 确保与花瓣连接
             const stemTop = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             const stemPath = `
-                M ${centerX - size*0.1},${centerY + size*0.3} 
-                C ${centerX - size*0.1},${centerY + size*0.4} 
-                ${centerX + size*0.1},${centerY + size*0.4} 
-                ${centerX + size*0.1},${centerY + size*0.3}
+                M ${centerX - size*0.1},${centerY + size*0.24} 
+                C ${centerX - size*0.1},${centerY + size*0.55} 
+                ${centerX + size*0.1},${centerY + size*0.55} 
+                ${centerX + size*0.1},${centerY + size*0.24}
             `;
             
             stemTop.setAttribute('d', stemPath);
