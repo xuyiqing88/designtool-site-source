@@ -266,7 +266,7 @@ textarea::placeholder {
         }       
 .alternatives li {
             padding: 0 10px;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
             border-left: 4px solid #d1dfff;
             transition: all 0.3s;
 	font-size: 15px;
@@ -336,9 +336,10 @@ textarea::placeholder {
         }
 
 .placeholder {
-            color: #999;
+            color: var(--sidebar-text);
             text-align: center;
 	    font-size: 14px;
+	    line-height: 220px;
         }
         
 .loading {
@@ -433,7 +434,11 @@ textarea::placeholder {
 		}
 	textarea {
 		min-height: 160px;
-		padding: 14px;}
+		padding: 14px;
+		}
+	.copy-btn {	
+		display: none;
+		}
         }      
         
 
