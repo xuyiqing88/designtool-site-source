@@ -60,7 +60,7 @@
 .container {
             border-radius: 10px;
             width: 100%;
-            max-width: 850px;
+            max-width: 1200px;
             position: relative;
             overflow: hidden;
             transition: all 0.4s ease;
@@ -93,16 +93,16 @@ h2 {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 0 10px;
+            padding: 20px 20px 0;
             border-radius: 8px 8px 0 0;
             margin-bottom: 0;
+	gap: 20px;
         }
         
 .lang-box {
             display: flex;
             flex-direction: column;
             flex: 1;
-            padding: 0 15px;
         }
         
 .lang-label {
@@ -157,19 +157,37 @@ select:focus {
 	background: #5963ff;
 	color: #fff;
         }
-        
+ .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 16px;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}       
 .text-area {
             border-radius: 0 0 8px 8px;
             overflow: hidden;
             transition: transform 0.3s;
+            padding: 20px;
+                display: flex;
+    flex-direction: column;
         }
         
 textarea:focus-within {
     	border: 1px solid #5963ff;
 	box-shadow: 0 0 0 2px #5963ff33;}
 textarea {
-            width: 96%;
-            min-height: 140px;
+            width: 100%;
+    		height: 100%;
             padding: 22px;
                 border-radius: 6px;
 		border: 1px solid #f4f6f9;
@@ -179,7 +197,7 @@ textarea {
             background: #fff;
             color: #333;
             line-height: 1.6;
-	margin: 2px 16px;
+	min-height: 240px;
         }
         
 textarea::placeholder {
@@ -188,9 +206,10 @@ textarea::placeholder {
         
 .char-count {
             text-align: right;
-            padding: 10px 18px;
+            padding: 16px 0 0 0;
             color: #696d81;
             font-size: 0.95rem;
+                display: flex;
         }
         
 .result-container {
@@ -215,12 +234,14 @@ textarea::placeholder {
     		line-height: 1.6;
     		padding: 20px;
 		border-radius: 6px;
+		    margin: 20px;
+    margin-bottom: 58px;
+    background: #fff;
         }       
 .translation {
             font-size: 16px;
-            margin-bottom: 18px;
-            padding-top: 18px;
-            border-top: 1px solid #f0f0f0;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #f0f0f0;
             color: #222;
 		font-weight: 500;
         }
@@ -326,7 +347,9 @@ textarea::placeholder {
             font-weight: 500;
 		font-size: 15px;
         }
-        
+.kuang {
+	display: grid; 
+	grid-template-columns: 1fr 1fr;}        
 @media (max-width: 768px) {
 	.container {
                 padding: 25px 20px;
@@ -345,21 +368,10 @@ textarea::placeholder {
                 padding: 12px 20px;
                 font-size: 0.9rem;
             }
+	.kuang {
+	display: flex;
+    	flex-direction: column;}
         }      
-@media (max-width: 480px) {       
-	.subtitle {
-                font-size: 1rem;
-            }
-            
- 	.btn {
-                padding: 8px;
-                font-size: 1rem;
-            }
-            
-	.feature-list {
-                gap: 12px;
-            }
-        }
         
 .pulse {
             animation: pulseAnimation 2s infinite;
@@ -483,11 +495,18 @@ textarea::placeholder {
                 </select>
             </div>
         </div>
-        
+	<div class="kuang">        
         <div class="text-area">
             <textarea id="text" placeholder="输入要翻译的文本..." rows="4" onblur="translateText()"></textarea>
             <div class="char-count"><span id="charCount">0</span> 字符 ( 限制500字 )</div>
         </div>
+        <div id="result">
+		<div class="empty-state">
+        	<div class="empty-state-icon">📝</div>
+        	<p>翻译结果将在这里显示</p>
+    		</div>
+	</div>
+    </div>    
 </div>
         <div class="result-container">
             <div class="result-header">
@@ -498,8 +517,7 @@ textarea::placeholder {
             </button>
         </div>
 </div>
-            <div id="result">
-            </div>
+            
         </div>
     </div>
 
@@ -539,10 +557,15 @@ textarea::placeholder {
         
         // 清空所有内容
         function clearAll() {
-            textInput.value = '';
-            document.getElementById('result').innerHTML = '<div class="placeholder"></div>';
-            charCount.textContent = '0';
-        }
+    textInput.value = '';
+    document.getElementById('result').innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon">📄</div>
+            <p>翻译结果将在这里显示</p>
+        </div>
+    `;
+    charCount.textContent = '0';
+}
         
         // 复制功能
         function copyToClipboard(text) {
@@ -560,7 +583,7 @@ textarea::placeholder {
             const notification = document.createElement('div');
             notification.textContent = message;
             notification.style.position = 'fixed';
-            notification.style.bottom = '20px';
+            notification.style.top = '20px';
             notification.style.right = '20px';
             notification.style.padding = '12px 20px';
             notification.style.background = isError ? '#ff4444' : '#4CAF50';
@@ -611,7 +634,10 @@ textarea::placeholder {
                         <span>正在翻译，请稍候...</span>
                     </div>
                 `;
-
+    // 移除空状态
+    if (resultDiv.querySelector('.empty-state')) {
+        resultDiv.innerHTML = '';
+    }
                 // API请求参数调整
                 const apiUrl = new URL('https://api.mymemory.translated.net/get');
                 apiUrl.searchParams.append('q', text);
@@ -657,12 +683,13 @@ textarea::placeholder {
                 `;
 
             } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="error">
-                        <strong>⚠️ 翻译出错：</strong> ${error.message}
-                    </div>
-                `;
-                console.error('翻译错误:', error);
+    resultDiv.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <p>${error.message}</p>
+        </div>
+    `;
+    console.error('翻译错误:', error);
             }
         }
         
