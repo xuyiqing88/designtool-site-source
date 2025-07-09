@@ -676,7 +676,7 @@ function createGrass() {
     // 创建草地背景
     const grassBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     grassBg.setAttribute('x', '0');
-    grassBg.setAttribute('y', '400');
+    grassBg.setAttribute('y', '390');
     grassBg.setAttribute('width', '800');
     grassBg.setAttribute('height', '100');
     grassBg.setAttribute('fill', '#7fbf7f');
@@ -982,7 +982,7 @@ function createGrass() {
             const flowerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             
             // 郁金香花瓣数量限制在3-6片
-            const tulipPetalCount = Math.min(4, Math.max(2, petalCount));
+            const tulipPetalCount = Math.min(8, Math.max(4, petalCount));
             
             // 花瓣组
             const petalsContainer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -1012,7 +1012,7 @@ function createGrass() {
                 
                 petal.setAttribute('d', path);
                 petal.setAttribute('fill', baseColor);
-                petal.setAttribute('opacity', '0.85');
+                petal.setAttribute('opacity', '0.65');
                 petalsContainer.appendChild(petal);
             }
             
