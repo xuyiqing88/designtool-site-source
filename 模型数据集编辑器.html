@@ -891,16 +891,21 @@ button:hover {
 .remind{
 	/*background: #00d9ff42;*/
 	text-decoration: 2px #5963ffc2 underline;}
-
+.upbtg {
+	display: flex;
+    align-items: center;}
 @media (max-width: 768px) {
   .container {
     padding: 10px;
 	margin-bottom: 50px;
   }
-  
+.upbtg {
+	flex-direction: column-reverse;
+	align-items: flex-start;
+        width: 100%;}
   .bg-1 {
     min-width: unset !important;
-    margin: 0 0 15px;
+    margin: 0 0 70px;
   }
   
   .image-item {
@@ -922,7 +927,6 @@ button:hover {
   
   button {
     margin: 4px;
-    padding: 6px 12px;
     font-size: 13px;
 	width: 100%;
   }
@@ -936,14 +940,14 @@ button:hover {
     max-width: 90% !important;
     padding: 15px;
     top: 10px;
-    right: 10px;
-    left: 0;
+    left: 10px;
   }
   
   .method-options {
     gap: 15px;
   }
-  
+  .s-tit {
+	    margin: 10px 10px 0 0;}
   .size-options {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -962,6 +966,7 @@ button:hover {
   .buttons button {
     padding: 10px 15px;
     font-size: 14px;
+	    margin-right: 0;
   }
   .column-select {
     display: none; 
@@ -993,9 +998,10 @@ button:hover {
 <div class="bg-1">
     <div class="trigger-word">
         <div class="s-tit">素材上传</div> 
-        <button id="uploadTxtBtn">上传txt文件</button>
+        <div class="upbtg">
+	<button id="uploadTxtBtn">上传txt文件</button>
         <button id="uploadBtn" class="bt">+ 上传图片</button> 
-        <span class="miaoshu" style="margin-left: 6px;">支持png、jpg格式批量上传</span>
+        <span class="miaoshu" style="margin-left: 6px;">支持png、jpg格式批量上传</span></div>
     </div>
     <input type="file" id="txtFileInput" style="display:none;" multiple accept=".txt">
     <div class="trigger-word">
