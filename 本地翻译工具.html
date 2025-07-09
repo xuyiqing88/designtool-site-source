@@ -81,6 +81,8 @@ h2 {
 		justify-content: center;
     		align-items: center;
     		gap: 10px;
+	    font-size: 30px;
+	    color: #3c405e;
         }
         
         
@@ -107,7 +109,7 @@ h2 {
         
 .lang-label {
             font-size: 0.95rem;
-            color: #555;
+            color: #54577c;
             margin-bottom: 10px;
             font-weight: 600;
             display: flex;
@@ -164,8 +166,9 @@ select:focus {
     justify-content: center;
     text-align: center;
     padding: 40px 20px;
-    color: #999;
+    color: var(--sidebar-text);
     font-size: 16px;
+	min-height: 260px;
 }
 
 .empty-state-icon {
@@ -177,7 +180,7 @@ select:focus {
             border-radius: 0 0 8px 8px;
             overflow: hidden;
             transition: transform 0.3s;
-            padding: 20px;
+            padding: 20px 0 20px 20px;
                 display: flex;
     flex-direction: column;
         }
@@ -197,7 +200,7 @@ textarea {
             background: #fff;
             color: #333;
             line-height: 1.6;
-	min-height: 240px;
+	min-height: 260px;
         }
         
 textarea::placeholder {
@@ -234,7 +237,7 @@ textarea::placeholder {
     		line-height: 1.6;
     		padding: 20px;
 		border-radius: 6px;
-		    margin: 20px;
+		    margin: 20px 20px 20px 0;
     margin-bottom: 58px;
     background: #fff;
         }       
@@ -349,30 +352,8 @@ textarea::placeholder {
         }
 .kuang {
 	display: grid; 
-	grid-template-columns: 1fr 1fr;}        
-@media (max-width: 768px) {
-	.container {
-                padding: 25px 20px;
-            }           
-	.lang-selector {
-                flex-direction: column;
-                gap: 25px;
-            }           
-	.swap-btn {
-                transform: rotate(90deg);
-            }          
-	.btn-group {
-                flex-direction: column;
-            }          
-	.feature {
-                padding: 12px 20px;
-                font-size: 0.9rem;
-            }
-	.kuang {
-	display: flex;
-    	flex-direction: column;}
-        }      
-        
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;}   
 .pulse {
             animation: pulseAnimation 2s infinite;
         }
@@ -402,7 +383,38 @@ textarea::placeholder {
         .translation-text {
             font-size: 16px;
             line-height: 1.6;
-        }
+        }     
+@media (max-width: 768px) {
+	.container {
+                padding: 25px 20px;
+            }           
+	.lang-selector {
+                flex-direction: column;
+                gap: 25px;
+            }           
+	.swap-btn {
+                transform: rotate(90deg);
+            }          
+	.btn-group {
+                flex-direction: column;
+            }          
+	.feature {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+	.kuang {
+		display: flex;
+    		flex-direction: column;
+		}
+	.text-area {
+		padding: 20px 20px 0 20px;
+		}
+	#result {
+		margin: 0 20px 20px 20px;
+		}
+        }      
+        
+
 
     </style>
 </head>
@@ -411,11 +423,11 @@ textarea::placeholder {
 <div id="global-sidebar"></div>
     <div class="container pulse">
         <header>
-            <h2 style="color: #171E24">高级翻译工具</h2>
+            <h2>高级翻译工具</h2>
             <p class="subtitle">多语言互译 · 精准快速 · 安全可靠</p>
         </header>
         
-    <div style="background: #f4f6f9; border-radius: 8px;">
+    <div style="background: radial-gradient(185% 35% at 100% 0%, #e6008100, #f9f9fd), linear-gradient(90deg, #D0EFFF, #dfe1ff, #ffd9f2); border-radius: 8px;">
 	<div class="lang-selector">
             <div class="lang-box">
 		<div class="lang-label">源语言</div>
