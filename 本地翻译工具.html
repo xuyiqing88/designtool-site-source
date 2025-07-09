@@ -21,7 +21,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 20px 0;
             color: #333;
         }
 .ico{
@@ -114,7 +114,8 @@ h2 {
             display: flex;
             align-items: center;
             gap: 8px;
-	    text-shadow: 1px 1px 2px #33333345
+	    text-shadow: 1px 1px 2px #33333345;
+	width: 130px;
         }
         
 select {
@@ -388,7 +389,11 @@ textarea::placeholder {
 	.container {
                 padding: 0;
 		margin-bottom: 80px;
-            }           
+            }
+	.lang-box {
+		flex-direction: row;
+		align-items: center;
+		}          
 	.lang-selector {
                 flex-direction: column;
                 gap: 25px;
@@ -403,6 +408,8 @@ textarea::placeholder {
                 padding: 12px 20px;
                 font-size: 0.9rem;
             }
+	.lang-label {
+		margin-bottom: 0;}
 	.kuang {
 		display: flex;
     		flex-direction: column;
