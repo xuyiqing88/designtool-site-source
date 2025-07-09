@@ -976,6 +976,9 @@ button:hover {
 .translate-btn, .ai-btn{
 	width: 20px;
 	}
+.bt-l {
+display: flex;
+    width: 100%;}
 }
 
 </style>
@@ -1031,8 +1034,10 @@ button:hover {
 </div>
 </div>
 <div class="buttons">
+   <div class="bt-l">
 	<button id="cancelDeleteBtn" style="display: none;" class="btcancer">取消删除</button> 
-    <button id="batchDeleteBtn" class="btdel">批量删除</button>
+    	<button id="batchDeleteBtn" class="btdel">批量删除</button>
+   </div>
     <button id="downloadBtn" class="bt"><img class="btico" src="img/xiazai.svg">打包下载</button>
 </div>
 <input type="file" id="fileInput" style="display:none;" multiple accept="image/png, image/jpeg">
