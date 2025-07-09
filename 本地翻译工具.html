@@ -98,6 +98,7 @@ h2 {
             border-radius: 8px 8px 0 0;
             margin-bottom: 0;
 	gap: 20px;
+	align-items: flex-end;
         }
         
 .lang-box {
@@ -152,7 +153,6 @@ select:focus {
             align-items: center;
             cursor: pointer;
             transition: all 0.3s;
-	    margin-top: 34px;
         }
         
 .swap-btn:hover {
@@ -401,12 +401,11 @@ textarea::placeholder {
 		align-items: center;
 		}          
 	.lang-selector {
-                flex-direction: column;
-                gap: 16px;
+                gap: 10px;
 		padding: 20px 14px 0;
             }           
 	.swap-btn {
-		display: none;
+		
             }          
 	.btn-group {
                 flex-direction: column;
@@ -416,7 +415,9 @@ textarea::placeholder {
                 font-size: 0.9rem;
             }
 	.lang-label {
-		margin-bottom: 0;}
+		margin-bottom: 0;
+		display: none;
+		}
 	.kuang {
 		display: flex;
     		flex-direction: column;
@@ -444,6 +445,13 @@ textarea::placeholder {
 		}
 	.copy-btn {	
 		display: none;
+		}
+	select {
+		padding: 8px;
+		}
+	.empty-state {
+		min-height: 160px;
+		padding: 16px;
 		}
         }      
         
