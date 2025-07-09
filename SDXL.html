@@ -198,7 +198,6 @@
         table {
             width: 99%;
             border-collapse: collapse;
-            min-width: 1000px;	
             margin: 0 auto;
             border-radius: 6px;
             overflow: hidden;
@@ -385,30 +384,13 @@
             color: #000;
         }
         
-        @media (max-width: 1100px) {
-            .table-container {
-                font-size: 0.9rem;
-            }
-            
-            th, td {
-                padding: 14px 12px;
-            }
-            
-            .example-image {
-                width: 150px;
-                height: 112px;
-            }
-            
-            .prompt-text {
-                height: 130px;
-            }
-        }
         
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.2rem;
             }
-            
+            .controls-container	{
+		}
             .controls {
                 padding: 0 15px;
             }
@@ -418,6 +400,8 @@
                 overflow-x: auto;
                 padding-bottom: 10px;
                 -webkit-overflow-scrolling: touch;
+		flex-direction: row;
+        	flex-wrap: nowrap;
             }
             
             .category-tab {
