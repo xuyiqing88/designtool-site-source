@@ -93,7 +93,6 @@ h2 {
         
 .lang-selector {
             display: flex;
-            align-items: center;
             justify-content: space-between;
             padding: 20px 20px 0;
             border-radius: 8px 8px 0 0;
@@ -225,7 +224,7 @@ textarea::placeholder {
         
 .result-header {
             color: #696d81;
-            padding: 10px 20px 0 20px;
+            padding: 10px 0;
             font-size: 1.15rem;
             display: flex;
             align-items: center;
@@ -387,7 +386,7 @@ textarea::placeholder {
         }     
 @media (max-width: 768px) {
 	.container {
-                padding: 25px 20px;
+                padding: 0;
             }           
 	.lang-selector {
                 flex-direction: column;
@@ -412,6 +411,16 @@ textarea::placeholder {
 		}
 	#result {
 		margin: 0 20px 20px 20px;
+		}
+	.result-header{
+		position: fixed;
+    		bottom: 0;
+    		margin: 0 auto;
+        	left: 0;
+        	right: 0;
+		background: #ffffff00;
+        	backdrop-filter: blur(20px);
+        	-webkit-backdrop-filter: blur(20px);
 		}
         }      
         
