@@ -7,10 +7,14 @@
  <script src="menu.js" defer></script>
 <style>
 body {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 0px auto;
+    font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
+    color: #333;
     }
 #toBase64 .button-group {
     display: none; /* 初始隐藏按钮 */
@@ -355,8 +359,8 @@ input[type="file"] {
     @media (max-width: 768px) {
         /* 整体布局调整 */
         .container {
-            padding: 10px;
             min-height: auto;
+	    min-width: 100%;
         }
         
         h2 {
@@ -397,7 +401,7 @@ input[type="file"] {
         }
         
         .title {
-            flex-direction: column;
+            flex-direction: row;
             gap: 10px;
         }
         
@@ -442,55 +446,7 @@ input[type="file"] {
             width: 100%;
         }
     }
-    
-    @media (max-width: 480px) {
-        h2 {
-            font-size: 1.3rem;
-            margin-top: 35px;
-        }
-        
-        .tab button {
-            padding: 8px 10px;
-            font-size: 13px;
-            height: 34px;
-        }
-        
-        .beijing {
-            padding: 12px;
-        }
-        
-        textarea {
-            height: 80px;
-        }
-        
-        .preview img {
-            max-height: 30vh;
-        }
-        
-        .zhushi {
-            font-size: 12px;
-        }
-        
-        .button-group button {
-            min-width: 100px;
-            padding: 7px 10px;
-        }
-    }
-    
-    @media (min-width: 769px) and (max-width: 1024px) {
-        /* 平板设备优化 */
-        .container {
-            max-width: 90%;
-        }
-        
-        .tab button {
-            padding: 12px 18px;
-        }
-        
-        .preview img {
-            max-height: 45vh;
-        }
-    }
+
     </style>
 </head>
 	<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
