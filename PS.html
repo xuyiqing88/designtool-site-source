@@ -30,10 +30,10 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-	margin-left: 60px;
+            margin-left: 60px;
         }
         
-        /* 编辑器框架 */
+        /* 编辑器框架 - 添加全屏属性 */
         #photopea-editor {
             flex: 1;
             width: 100%;
@@ -80,9 +80,28 @@
         /* 响应式调整 */
         @media (max-width: 768px) {
            .editor-container {
-	    	margin-left: 0;
-		}
-
+                margin-left: 0;
+            }
+        }
+        
+        /* 全屏提示 */
+        .fullscreen-hint {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(25, 25, 35, 0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #3498db;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .fullscreen-hint i {
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -90,16 +109,25 @@
 <body>
 <div id="global-sidebar"></div>
     
-    
     <!-- 编辑器容器 -->
     <div class="editor-container">
-        <!-- Photopea编辑器 -->
-        <iframe id="photopea-editor"></iframe>
+        <!-- Photopea编辑器 - 添加全屏属性 -->
+        <iframe id="photopea-editor" 
+                allowfullscreen 
+                allow="fullscreen" 
+                webkitallowfullscreen 
+                mozallowfullscreen></iframe>
         
         <!-- 状态提示 -->
         <div class="status-message hidden" id="statusMessage">
             <i class="fas fa-spinner fa-spin"></i>
             <span id="statusText">正在加载编辑器...</span>
+        </div>
+        
+        <!-- 全屏提示 -->
+        <div class="fullscreen-hint" id="fullscreenHint">
+            <i class="fas fa-expand"></i>
+            <span>按F11或使用Photopea的全屏按钮</span>
         </div>
     </div>
 
@@ -108,6 +136,7 @@
             const editorFrame = document.getElementById('photopea-editor');
             const statusMessage = document.getElementById('statusMessage');
             const statusText = document.getElementById('statusText');
+            const fullscreenHint = document.getElementById('fullscreenHint');
             
             // 显示状态消息
             function showStatus(message) {
@@ -120,9 +149,23 @@
                 statusMessage.classList.add('hidden');
             }
             
+            // 隐藏全屏提示
+            function hideFullscreenHint() {
+                fullscreenHint.style.opacity = '0';
+                setTimeout(() => {
+                    fullscreenHint.style.display = 'none';
+                }, 500);
+            }
+            
             // 初始化加载编辑器
             function initEditor() {
                 showStatus("正在启动编辑器...");
+                
+                // 确保全屏属性设置正确
+                editorFrame.setAttribute('allowfullscreen', 'true');
+                editorFrame.setAttribute('allow', 'fullscreen');
+                editorFrame.setAttribute('webkitallowfullscreen', 'true');
+                editorFrame.setAttribute('mozallowfullscreen', 'true');
                 
                 // 使用API模式直接启动编辑器（创建新文档）
                 editorFrame.src = 'https://www.photopea.com#%7B%22files%22:%5B%22new%22%5D%7D';
@@ -133,6 +176,9 @@
                     
                     // 3秒后隐藏状态消息
                     setTimeout(hideStatus, 3000);
+                    
+                    // 5秒后隐藏全屏提示
+                    setTimeout(hideFullscreenHint, 5000);
                 };
                 
                 // 错误处理
