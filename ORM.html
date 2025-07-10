@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORM贴图合成与拆解工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
+ <script src="menu.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+            --main-color: #8080FF;
+            --bg-background: #18161e;
+            --btcolor: linear-gradient(to left, #6450ff, #8f56fa);
+            --text1: #fff;
+            --text2: #c7d1e2;
+            --text3: #969dbb;
+            --line: #7878784d;
+            --mainbg: #2c2c30;
+            --shadow: #8080ff2b;
+            --bg2: #0003;
+            --decompose-bg: rgba(255, 140, 0, 0.1);
+            --decompose-color: #ff8c00;
+            --hover-color: rgba(128, 128, 255, 0.25);
+            --success: #32c832;
+            --warning: #ff8c00;
+            --error: #ff3232;
+        }
+        body {
+            background: #1a1b1c;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+.topgroup {
+	gap: 10px;
+    display: flex;
+    position: fixed;
+    margin-top: 20px;
+ left: 20px;
+    background: #2b2b2f;
+    border-radius: 30px;
+    padding: 4px;
+	z-index: 999;
+	backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);}
+.home-icon {
+	font-size: 40px;
+	cursor: pointer;
+    transition: all 0.3s;
+    padding: 8px; 
+	border-radius: 50%;
+	width: 1em; 
+	height: 1em;
+	vertical-align: -0.15em;
+	overflow: hidden;}
+.topgroup:hover {
+	background:#36363b;
+}
+      .bigbit{
+	color: var(--main-color);
+    	font-size: 18px;
+    	font-weight: bold;
+	margin-right: 6px;
+	}
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--main-color);
+            position: relative;
+            display: inline-block;
+	margin-top: 20px;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+            color: var(--text3);
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+        
+        .feature {
+            background: rgba(128, 128, 255, 0.15);
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-3px);
+            background: rgba(128, 128, 255, 0.25);
+        }
+        
+        .feature i {
+            color: var(--main-color);
+            font-size: 1.2rem;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .upload-section, .preview-section {
+            flex: 1;
+            min-width: 300px;
+            background: var(--mainbg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(128, 128, 255, 0.1);
+        }
+        
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text1);
+        }
+        
+        .section-title i {
+            color: #4facfe;
+            font-size: 1.4rem;
+        }
+        
+        .upload-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+	flex-direction: row;
+        }
+        
+        .upload-box {
+            background: var(--bg-background);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px dashed var(--line);
+            position: relative;
+            height: 200px;
+		width: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;       
+        }
+        
+        .upload-box.drag-over {
+            background: rgba(79, 172, 254, 0.2);
+            border-color: #4facfe;
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: #4facfe;
+        }
+        
+        .upload-text {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            padding: 0 10px;
+        }
+        
+        .upload-box input {
+            display: none;
+        }
+        
+        .channel-label {
+            display: flex;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+        }
+        
+        .ao-label, .roughness-label, .metallic-label { 
+            background: var(--line); 
+        }
+        
+        .preview-img {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            cursor: pointer;
+        }
+        
+        .preview-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+        
+        .preview-img:hover img {
+            transform: scale(1.05);
+        }
+        
+        .preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            font-size: 14px;
+            text-align: center;
+            z-index: 3;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        .delete-btn {
+            background: rgba(255, 50, 50, 0.6);
+            color: white;
+            border: none;
+            border-radius: 0 8px 0 24px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 4;
+            font-size: 1rem;
+	padding-left: 4px;
+    padding-bottom: 4px;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(255, 50, 50, 0.9);
+            transform: scale(1.1);
+        }
+        
+        .result-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            border-radius: 10px;
+            position: relative;
+            min-height: 400px;
+        }
+        
+        .decompose-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 5;
+            border-radius: 12px;
+            border: 2px dashed var(--main-color);
+        }
+        
+        .decompose-icon {
+            font-size: 3rem;
+            color: var(--main-color);
+            margin-bottom: 20px;
+        }
+        
+        .decompose-text {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .decompose-hint {
+            font-size: 1rem;
+            color: var(--text3);
+            max-width: 320px;
+            line-height: 1.5;
+        }
+        
+        .result-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-img {
+            width: 100%;
+            height: 380px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .result-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+        
+        .result-img:hover img {
+            transform: scale(1.05);
+        }
+        
+        .btn {
+            background: var(--btcolor);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 3px #00000073;
+            justify-content: center;
+	width: 100%;
+        }
+        
+        .upload-btn {
+            width: 180px;
+            background: rgba(128, 128, 255, 0.2);
+            border: 1px solid var(--main-color);
+		padding: 10px;
+        }
+        
+        .upload-btn:hover {
+            background: rgba(128, 128, 255, 0.4);
+        }
+        
+        .decompose-btn {
+            background: linear-gradient(to left, #ff8c00, #ffaa33);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+        
+        .btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn i {
+            font-size: 1.05rem;
+        }
+        
+        .instructions {
+            background: var(--mainbg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(128, 128, 255, 0.1);
+        }
+        
+        .instructions h2 {
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions h2 i {
+            color: var(--main-color);
+        }
+        
+        .instructions ul {
+            padding-left: 25px;
+            font-size: 1rem;
+            color: var(--text3);
+            line-height: 1.7;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+        }
+        
+        .channel-info {
+            display: flex;
+            margin-top: 25px;
+            flex-direction: column;
+            flex-wrap: wrap;
+            background: var(--bg2);
+            border-radius: 12px;
+            padding: 20px;
+            gap: 14px;
+        }
+        
+        .channel-card {
+            border-radius: 10px;
+            color: var(--text2);
+            flex: 1;
+            min-width: 200px;
+	    font-size: 14px;
+        }
+        
+        .channel-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+    		font-weight: 400;
+        }
+        
+        .channel-card .color-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .ao .color-indicator { background: #5f2125; }
+        .roughness .color-indicator { background: #285c29; }
+        .metallic .color-indicator { background: #222d61; }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .status.ready {
+            background: rgba(50, 200, 50, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(50, 200, 50, 0.3);
+        }
+        
+        .status.waiting {
+            background: rgba(200, 180, 50, 0.15);
+            color: #c8b432;
+            border: 1px solid rgba(200, 180, 50, 0.3);
+        }
+        
+        .status.processing {
+            background: rgba(50, 100, 255, 0.15);
+            color: #4facfe;
+            border: 1px solid rgba(50, 100, 255, 0.3);
+        }
+        
+        .status.decompose {
+            background: rgba(255, 140, 0, 0.15);
+            color: var(--decompose-color);
+            border: 1px solid rgba(255, 140, 0, 0.3);
+        }
+        
+        .status.error {
+            background: rgba(255, 50, 50, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(255, 50, 50, 0.3);
+        }
+        
+        .upload-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            text-align: center;
+            width: 100%;
+            padding: 20px;
+            transition: opacity 0.3s;
+        }
+        
+        .drag-text {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: var(--text3);
+            font-weight: bold;
+            opacity: 0.8;
+        }
+        
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+            justify-content: space-around;
+            flex-direction: row;
+            gap: 15px;
+        }
+        
+        .orm-upload-btn {
+            background: rgba(255, 140, 0, 0.2);
+            border: 1px solid var(--decompose-color);
+        }
+        
+        .orm-upload-btn:hover {
+            background: rgba(255, 140, 0, 0.4);
+        }
+        
+        .format-support {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: var(--text3);
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            box-shadow: 0 0 30px rgba(128, 128, 255, 0.3);
+            border-radius: 5px;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            opacity: 0.7;
+        }
+        
+        .modal-close:hover {
+            color: #4facfe;
+            opacity: 1;
+        }
+        
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(128, 128, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 140, 0, 0.05) 0%, transparent 20%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .upload-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .modal-close {
+                top: 10px;
+                right: 15px;
+                font-size: 30px;
+            }
+            
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
+<body>
+<div id="global-sidebar"></div>
+    <div class="bg-pattern"></div>
+    <div class="container">
+        <header>
+            <h1>ORM贴图合成与拆解工具</h1>
+            <p class="subtitle">上传AO、粗糙度和金属度贴图自动合成ORM纹理贴图，或上传ORM贴图拆解为独立通道</p>
+        </header>
+        
+        <div class="main-content">
+            <section class="upload-section">
+                <h2 class="section-title">上传并预览贴图</h2>
+                
+                <div id="status" class="status waiting">
+                    <i class="fas fa-info-circle"></i> 等待上传贴图（可选）
+                </div>
+
+               <div class="format-support">
+                    支持格式: JPG, PNG, BMP, TIFF, WEBP
+                </div>
+
+                <div class="upload-container">
+                    <div class="upload-box" id="ao-box">
+                        <div class="upload-hint">
+                            <span class="channel-label ao-label"><span class="bigbit">O</span> (AO)</span>
+                            <span class="drag-text">+ 拖拽图片到这里上传</span>
+                        </div>
+                        <div class="preview-img" id="ao-preview"></div>
+                        <div class="preview-overlay">
+                            <button class="delete-btn" data-type="ao" style="display: none;">×</button>
+                        </div>
+                        <input type="file" id="ao-input" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp">
+                    </div>
+                    
+                    <div class="upload-box" id="roughness-box">
+                        <div class="upload-hint">
+                            <span class="channel-label roughness-label"><span class="bigbit">R</span> (Roughness)</span>
+                            <span class="drag-text">+ 拖拽图片到这里上传</span>
+                        </div>
+                        <div class="preview-img" id="roughness-preview"></div>
+                        <div class="preview-overlay">
+                            <button class="delete-btn" data-type="roughness" style="display: none;">×</button>
+                        </div>
+                        <input type="file" id="roughness-input" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp">
+                    </div>
+                    
+                    <div class="upload-box" id="metallic-box">
+                        <div class="upload-hint">
+                            <span class="channel-label metallic-label"><span class="bigbit">M</span> (Metallic)</span>
+                            <span class="drag-text">+ 拖拽图片到这里上传</span>
+                        </div>
+                        <div class="preview-img" id="metallic-preview"></div>
+                        <div class="preview-overlay">
+                            <button class="delete-btn" data-type="metallic" style="display: none;">×</button>
+                        </div>
+                        <input type="file" id="metallic-input" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp">
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn upload-btn" id="ao-upload-btn">
+                        <i class="fas fa-upload"></i> 选择AO贴图
+                    </button>
+                    <button class="btn upload-btn" id="roughness-upload-btn">
+                        <i class="fas fa-upload"></i> 选择粗糙度贴图
+                    </button>
+                    <button class="btn upload-btn" id="metallic-upload-btn">
+                        <i class="fas fa-upload"></i> 选择金属度贴图
+                    </button>
+                </div>
+                
+                <div class="channel-info">
+                    <div class="channel-card ao">
+                        <h3><span class="color-indicator"></span> AO (环境光遮蔽): 控制模型凹陷和遮挡区域的环境光强度</h3>
+                    </div>
+                    <div class="channel-card roughness">
+                        <h3><span class="color-indicator"></span> Roughness (粗糙度): 控制材质表面的粗糙程度和反射模糊度</h3>
+                    </div>
+                    <div class="channel-card metallic">
+                        <h3><span class="color-indicator"></span> Metallic (金属度): 控制材质的金属属性和反射特性</h3>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="preview-section">
+                <h2 class="section-title">合成结果与拆解</h2>
+                
+                <div class="result-container" id="result-container">
+                    <div class="result-img" id="result-preview">
+                        <div style="text-align: center; padding: 20px;" class="default-placeholder">
+                            <i class="fas fa-sync-alt fa-spin" style="font-size: 3.5rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                            <p>上传图片后自动合成</p>
+                        </div>
+                    </div>
+                    
+                    <div class="decompose-overlay" id="decompose-overlay">
+                        <div class="decompose-icon">
+                            <i class="fas fa-file-import"></i>
+                        </div>
+                        <div class="decompose-text">拖拽ORM贴图到此拆解</div>
+                        <div class="decompose-hint">将合成后的ORM贴图拖拽到此处，工具会自动拆解为AO、粗糙度和金属度贴图</div>
+                        <div class="format-support" style="margin-top: 15px;">支持格式: JPG, PNG, BMP, TIFF, WEBP</div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="orm-upload-btn" class="btn orm-upload-btn">
+                            <i class="fas fa-upload"></i> 选择ORM贴图
+                        </button>
+                      
+                        <button id="decompose-btn" class="btn decompose-btn">
+                            <i class="fas fa-cogs"></i> 拆解ORM贴图
+                        </button>
+
+                        <button id="download-btn" class="btn" disabled>
+                            <i class="fas fa-download"></i> 下载合成贴图
+                        </button>
+                        
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div class="instructions">
+            <h2 class="section-title">说明</h2>
+            <ul>
+                <li><strong>合成模式</strong>：上传AO、粗糙度和金属度贴图，工具会自动合成ORM贴图</li>
+                <li><strong>拆解模式</strong>：拖拽ORM贴图到结果区域，工具会拆解为三个通道的独立贴图</li>
+                <li>红色通道(R): AO贴图（默认纯白）；绿色通道(G): 粗糙度贴图（默认纯白）；蓝色通道(B): 金属度贴图（默认纯白）</li>
+                <li>支持拖拽操作，点击图片可放大查看</li>
+                <li>支持多种图像格式：JPG, PNG, BMP, TIFF, WEBP</li>
+                <li>点击删除按钮可移除上传的图片</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- 图片放大模态框 -->
+    <div id="image-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modal-image">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const aoBox = document.getElementById('ao-box');
+            const roughnessBox = document.getElementById('roughness-box');
+            const metallicBox = document.getElementById('metallic-box');
+            
+            const aoInput = document.getElementById('ao-input');
+            const roughnessInput = document.getElementById('roughness-input');
+            const metallicInput = document.getElementById('metallic-input');
+            
+            const aoPreview = document.getElementById('ao-preview');
+            const roughnessPreview = document.getElementById('roughness-preview');
+            const metallicPreview = document.getElementById('metallic-preview');
+            const resultPreview = document.getElementById('result-preview');
+            const resultContainer = document.getElementById('result-container');
+            const decomposeOverlay = document.getElementById('decompose-overlay');
+            
+            const downloadBtn = document.getElementById('download-btn');
+            const decomposeBtn = document.getElementById('decompose-btn');
+            const status = document.getElementById('status');
+            
+            // 新增的上传按钮
+            const aoUploadBtn = document.getElementById('ao-upload-btn');
+            const roughnessUploadBtn = document.getElementById('roughness-upload-btn');
+            const metallicUploadBtn = document.getElementById('metallic-upload-btn');
+            const ormUploadBtn = document.getElementById('orm-upload-btn');
+            
+            // 模态框元素
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            const modalClose = document.querySelector('.modal-close');
+            
+            // 存储上传的图片
+            const images = {
+                ao: null,
+                roughness: null,
+                metallic: null,
+                orm: null
+            };
+            
+            // 支持的图像格式
+            const supportedFormats = ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff', 'image/webp'];
+            
+            // 自动合成计时器
+            let synthesisTimer = null;
+            
+            // 页面加载后初始化合成
+            setTimeout(autoSynthesizeORM, 300);
+            
+            // 设置拖拽事件
+            setupDragAndDrop(aoBox, aoInput, 'ao');
+            setupDragAndDrop(roughnessBox, roughnessInput, 'roughness');
+            setupDragAndDrop(metallicBox, metallicInput, 'metallic');
+            
+            // 为结果容器设置拖拽事件
+            setupResultDrag();
+            
+            // 文件选择事件
+            aoInput.addEventListener('change', (e) => handleFileSelect(e, 'ao'));
+            roughnessInput.addEventListener('change', (e) => handleFileSelect(e, 'roughness'));
+            metallicInput.addEventListener('change', (e) => handleFileSelect(e, 'metallic'));
+            
+            // 按钮点击事件
+            aoUploadBtn.addEventListener('click', () => aoInput.click());
+            roughnessUploadBtn.addEventListener('click', () => roughnessInput.click());
+            metallicUploadBtn.addEventListener('click', () => metallicInput.click());
+            ormUploadBtn.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp';
+                input.onchange = (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
+                        handleORMFile(file);
+                    }
+                };
+                input.click();
+            });
+            
+            // 下载按钮事件
+            downloadBtn.addEventListener('click', downloadResult);
+            
+            // 拆解按钮事件
+            decomposeBtn.addEventListener('click', () => {
+                if (images.orm) {
+                    decomposeORM(images.orm);
+                } else {
+                    // 如果没有ORM图片，触发文件选择
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp';
+                    input.onchange = (e) => {
+                        if (e.target.files && e.target.files[0]) {
+                            const file = e.target.files[0];
+                            handleORMFile(file);
+                        }
+                    };
+                    input.click();
+                }
+            });
+            
+            // 处理ORM文件上传
+            function handleORMFile(file) {
+                if (!file.type || !supportedFormats.includes(file.type.toLowerCase())) {
+                    updateStatus(`<i class="fas fa-exclamation-triangle"></i> 不支持的格式: ${file.type || '未知格式'}`, 'error');
+                    return;
+                }
+                
+                // 更新状态
+                updateStatus(`<i class="fas fa-spinner fa-spin"></i> 正在加载ORM贴图...`, 'processing');
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const buffer = e.target.result;
+                    const img = new Image();
+                    
+                    if (file.type === 'image/tiff') {
+                        // 处理TIFF格式
+                        try {
+                            const ifds = UTIF.decode(buffer);
+                            if (ifds.length === 0) throw new Error('无效的TIFF文件');
+                            
+                            UTIF.decodeImage(buffer, ifds[0]);
+                            const rgba = UTIF.toRGBA8(ifds[0]);
+                            
+                            const canvas = document.createElement('canvas');
+                            canvas.width = ifds[0].width;
+                            canvas.height = ifds[0].height;
+                            const ctx = canvas.getContext('2d');
+                            const imageData = ctx.createImageData(canvas.width, canvas.height);
+                            
+                            for (let i = 0; i < rgba.length; i++) {
+                                imageData.data[i] = rgba[i];
+                            }
+                            
+                            ctx.putImageData(imageData, 0, 0);
+                            
+                            img.onload = function() {
+                                images.orm = img;
+                                displayResultImage(canvas.toDataURL('image/png'));
+                                decomposeORM(img);
+                            };
+                            
+                            img.src = canvas.toDataURL('image/png');
+                        } catch (error) {
+                            updateStatus(`<i class="fas fa-exclamation-triangle"></i> TIFF解析失败: ${error.message}`, 'error');
+                        }
+                    } else {
+                        img.onload = function() {
+                            images.orm = img;
+                            displayResultImage(e.target.result);
+                            decomposeORM(img);
+                        };
+                        img.src = URL.createObjectURL(file);
+                    }
+                };
+                
+                reader.readAsArrayBuffer(file);
+            }
+            
+            // 设置拖拽区域功能
+            function setupDragAndDrop(box, input, type) {
+                // 拖拽事件 - 阻止默认行为
+                box.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    box.classList.add('drag-over');
+                });
+                
+                box.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    box.classList.add('drag-over');
+                });
+                
+                box.addEventListener('dragleave', () => {
+                    box.classList.remove('drag-over');
+                });
+                
+                box.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    box.classList.remove('drag-over');
+                    
+                    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        handleDroppedFile(e.dataTransfer.files[0], type);
+                    }
+                });
+            }
+            
+            // 设置结果区域的拖拽事件
+            function setupResultDrag() {
+                // 拖拽事件 - 阻止默认行为
+                resultContainer.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    resultContainer.classList.add('drag-over');
+                    // 显示拆解提示层
+                    decomposeOverlay.style.opacity = '1';
+                    decomposeOverlay.style.pointerEvents = 'auto';
+                });
+                
+                resultContainer.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    resultContainer.classList.add('drag-over');
+                    // 显示拆解提示层
+                    decomposeOverlay.style.opacity = '1';
+                    decomposeOverlay.style.pointerEvents = 'auto';
+                });
+                
+                resultContainer.addEventListener('dragleave', (e) => {
+                    // 确保鼠标离开整个结果区域
+                    if (!resultContainer.contains(e.relatedTarget)) {
+                        resultContainer.classList.remove('drag-over');
+                        // 隐藏拆解提示层
+                        decomposeOverlay.style.opacity = '0';
+                        decomposeOverlay.style.pointerEvents = 'none';
+                    }
+                });
+                
+                resultContainer.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    resultContainer.classList.remove('drag-over');
+                    // 隐藏拆解提示层
+                    decomposeOverlay.style.opacity = '0';
+                    decomposeOverlay.style.pointerEvents = 'none';
+                    
+                    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        handleDroppedFile(e.dataTransfer.files[0], 'orm');
+                    }
+                });
+            }
+            
+            // 处理拖放的文件
+            function handleDroppedFile(file, type) {
+                if (!file.type || !supportedFormats.includes(file.type.toLowerCase())) {
+                    updateStatus(`<i class="fas fa-exclamation-triangle"></i> 不支持的格式: ${file.type || '未知格式'}`, 'error');
+                    return;
+                }
+                
+                if (type === 'orm') {
+                    updateStatus(`<i class="fas fa-spinner fa-spin"></i> 正在加载ORM贴图...`, 'processing');
+                } else {
+                    updateStatus(`<i class="fas fa-spinner fa-spin"></i> 正在加载 ${type.toUpperCase()} 图片...`, 'processing');
+                }
+                // 新增状态提示
+    updateStatus(`<i class="fas fa-spinner fa-spin"></i> 正在处理 ${file.name}...`, 'processing');
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const buffer = e.target.result;
+                    const img = new Image();
+                    
+                    if (file.type === 'image/tiff') {
+                        // 处理TIFF格式
+                        try {
+                            const ifds = UTIF.decode(buffer);
+                            if (ifds.length === 0) throw new Error('无效的TIFF文件');
+                            
+                            UTIF.decodeImage(buffer, ifds[0]);
+                            const rgba = UTIF.toRGBA8(ifds[0]);
+                            
+                            const canvas = document.createElement('canvas');
+                            canvas.width = ifds[0].width;
+                            canvas.height = ifds[0].height;
+                            const ctx = canvas.getContext('2d');
+                            const imageData = ctx.createImageData(canvas.width, canvas.height);
+                            
+                            for (let i = 0; i < rgba.length; i++) {
+                                imageData.data[i] = rgba[i];
+                            }
+                            
+                            ctx.putImageData(imageData, 0, 0);
+                            
+                            img.onload = function() {
+                                if (type === 'orm') {
+                                    images.orm = img;
+                                    displayResultImage(canvas.toDataURL('image/png'));
+                                    decomposeORM(img);
+                                } else {
+                                    images[type] = img;
+                                    updatePreview(type, canvas.toDataURL('image/png'));
+                                    autoSynthesizeORM();
+                                }
+                            };
+                            
+                            img.src = canvas.toDataURL('image/png');
+                        } catch (error) {
+                            updateStatus(`<i class="fas fa-exclamation-triangle"></i> TIFF解析失败: ${error.message}`, 'error');
+                        }
+                    } else {
+                        img.onload = function() {
+    const objectURL = URL.createObjectURL(file); // 创建有效的图片URL
+    
+    if (type === 'orm') {
+        images.orm = img;
+        displayResultImage(objectURL); // 使用Object URL
+        decomposeORM(img);
+    } else {
+        images[type] = img;
+        updatePreview(type, objectURL); // 使用Object URL
+        autoSynthesizeORM();
+    }
+};
+img.onerror = function() {
+    updateStatus(`<i class="fas fa-exclamation-triangle"></i> 图片加载失败: ${file.name}`, 'error');
+    console.error("图片加载失败", file.name);
+};
+// TIFF格式图片处理
+try {
+    // TIFF解析代码...
+} catch (error) {
+    updateStatus(`<i class="fas fa-exclamation-triangle"></i> TIFF解析失败: ${error.message}`, 'error');
+}
+                        img.src = URL.createObjectURL(file);
+                    }
+                };
+                
+                reader.readAsArrayBuffer(file);
+            }
+            
+            // 处理文件选择
+            function handleFileSelect(event, type) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                handleDroppedFile(file, type);
+            }
+            
+            // 删除图片
+            function deleteImage(type) {
+		if (images[type] && images[type].src.startsWith('blob:')) {
+        URL.revokeObjectURL(images[type].src);
+    }
+                // 清除图片
+                images[type] = null;
+                
+                // 重置预览
+                const preview = document.getElementById(`${type}-preview`);
+                preview.innerHTML = '';
+                
+                // 显示上传提示
+                const hint = document.getElementById(`${type}-box`).querySelector('.upload-hint');
+                hint.style.display = 'block';
+                setTimeout(() => {
+                    hint.style.opacity = '1';
+                }, 10);
+                
+                // 隐藏删除按钮
+                document.querySelector(`.delete-btn[data-type="${type}"]`).style.display = 'none';
+                
+                // 重置文件输入
+                document.getElementById(`${type}-input`).value = '';
+                
+                // 更新状态
+                updateStatus(`<i class="fas fa-info-circle"></i> ${type.toUpperCase()}图片已删除`, 'waiting');
+                
+                // 自动触发合成
+                autoSynthesizeORM();
+            }
+            
+            // 更新预览
+            function updatePreview(type, src) {
+                const preview = document.getElementById(`${type}-preview`);
+                preview.innerHTML = `<img src="${src}" alt="${type} preview">`;
+                
+                // 隐藏上传提示
+                const hint = document.getElementById(`${type}-box`).querySelector('.upload-hint');
+                if (hint) {
+                    hint.style.opacity = '0';
+                    setTimeout(() => {
+                        hint.style.display = 'none';
+                    }, 300);
+                }
+                
+                // 显示删除按钮
+                const deleteBtn = document.querySelector(`.delete-btn[data-type="${type}"]`);
+                deleteBtn.style.display = 'block';
+                
+                // 添加删除事件
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteImage(type);
+                };
+                
+                // 添加点击放大事件
+                const imgElement = preview.querySelector('img');
+    imgElement.onclick = () => {
+        showModal(src);
+                };
+            }
+            
+            // 显示结果图片
+            function displayResultImage(src) {
+                resultPreview.innerHTML = `<img src="${src}" alt="ORM合成结果">`;
+                resultPreview.querySelector('img').onclick = () => {
+                    showModal(src);
+                };
+            }
+            
+            // 自动合成ORM贴图
+            function autoSynthesizeORM() {
+                // 清除之前的定时器
+                if (synthesisTimer) {
+                    clearTimeout(synthesisTimer);
+                }
+                
+                // 设置新的定时器（300ms后执行合成）
+                synthesisTimer = setTimeout(() => {
+                    // 更新状态
+                    updateStatus('<i class="fas fa-sync-alt fa-spin"></i> 正在合成贴图...', 'processing');
+                    
+                    // 实际合成
+                    setTimeout(performSynthesis, 300);
+                }, 300);
+            }
+            
+            // 执行合成操作
+            function performSynthesis() {
+                // 创建Canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // 确定尺寸 - 使用第一个存在的图片尺寸，都不存在则使用默认512x512
+                let width = 512;
+                let height = 512;
+                
+                if (images.ao) {
+                    width = images.ao.width;
+                    height = images.ao.height;
+                } else if (images.roughness) {
+                    width = images.roughness.width;
+                    height = images.roughness.height;
+                } else if (images.metallic) {
+                    width = images.metallic.width;
+                    height = images.metallic.height;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // 绘制AO（红色通道）或纯白色
+                if (images.ao) {
+                    ctx.drawImage(images.ao, 0, 0);
+                } else {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, width, height);
+                }
+                const aoData = ctx.getImageData(0, 0, width, height);
+                
+                // 绘制粗糙度（绿色通道）或纯白色
+                ctx.clearRect(0, 0, width, height);
+                if (images.roughness) {
+                    ctx.drawImage(images.roughness, 0, 0);
+                } else {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, width, height);
+                }
+                const roughnessData = ctx.getImageData(0, 0, width, height);
+                
+                // 绘制金属度（蓝色通道）或纯白色
+                ctx.clearRect(0, 0, width, height);
+                if (images.metallic) {
+                    ctx.drawImage(images.metallic, 0, 0);
+                } else {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, width, height);
+                }
+                const metallicData = ctx.getImageData(0, 0, width, height);
+                
+                // 创建新的ImageData
+                const outputData = ctx.createImageData(width, height);
+                
+                // 合成ORM贴图
+                for (let i = 0; i < outputData.data.length; i += 4) {
+                    // 红色通道: AO
+                    outputData.data[i] = aoData.data[i];
+                    
+                    // 绿色通道: 粗糙度
+                    outputData.data[i + 1] = roughnessData.data[i];
+                    
+                    // 蓝色通道: 金属度
+                    outputData.data[i + 2] = metallicData.data[i];
+                    
+                    // Alpha通道: 255 (不透明)
+                    outputData.data[i + 3] = 255;
+                }
+                
+                // 将合成数据绘制到Canvas
+                ctx.putImageData(outputData, 0, 0);
+                
+                // 显示合成结果
+                const dataUrl = canvas.toDataURL('image/png');
+                displayResultImage(dataUrl);
+                
+                // 存储ORM图片
+                const ormImg = new Image();
+                ormImg.src = dataUrl;
+                images.orm = ormImg;
+                
+                // 启用下载按钮
+                downloadBtn.disabled = false;
+                downloadBtn.dataset.url = dataUrl;
+                
+                // 更新状态
+                updateStatus('<i class="fas fa-check-circle"></i> ORM贴图合成完成！', 'ready');
+            }
+            
+            // 拆解ORM贴图
+            function decomposeORM(ormImage) {
+                // 更新状态
+                updateStatus('<i class="fas fa-cogs fa-spin"></i> 正在拆解ORM贴图...', 'decompose');
+                
+                setTimeout(() => {
+                    // 创建Canvas
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // 设置Canvas尺寸
+                    canvas.width = ormImage.width;
+                    canvas.height = ormImage.height;
+                    
+                    // 绘制ORM图片
+                    ctx.drawImage(ormImage, 0, 0);
+                    const ormData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    
+                    // 创建三个通道的ImageData
+                    const aoData = ctx.createImageData(canvas.width, canvas.height);
+                    const roughnessData = ctx.createImageData(canvas.width, canvas.height);
+                    const metallicData = ctx.createImageData(canvas.width, canvas.height);
+                    
+                    // 提取通道数据
+                    for (let i = 0; i < ormData.data.length; i += 4) {
+                        // AO通道 (红色)
+                        aoData.data[i] = ormData.data[i]; // R
+                        aoData.data[i + 1] = ormData.data[i]; // G
+                        aoData.data[i + 2] = ormData.data[i]; // B
+                        aoData.data[i + 3] = 255; // A
+                        
+                        // 粗糙度通道 (绿色)
+                        roughnessData.data[i] = ormData.data[i + 1]; // R
+                        roughnessData.data[i + 1] = ormData.data[i + 1]; // G
+                        roughnessData.data[i + 2] = ormData.data[i + 1]; // B
+                        roughnessData.data[i + 3] = 255; // A
+                        
+                        // 金属度通道 (蓝色)
+                        metallicData.data[i] = ormData.data[i + 2]; // R
+                        metallicData.data[i + 1] = ormData.data[i + 2]; // G
+                        metallicData.data[i + 2] = ormData.data[i + 2]; // B
+                        metallicData.data[i + 3] = 255; // A
+                    }
+                    
+                    // 创建三个通道的图片
+                    ctx.putImageData(aoData, 0, 0);
+                    const aoUrl = canvas.toDataURL('image/png');
+                    
+                    ctx.putImageData(roughnessData, 0, 0);
+                    const roughnessUrl = canvas.toDataURL('image/png');
+                    
+                    ctx.putImageData(metallicData, 0, 0);
+                    const metallicUrl = canvas.toDataURL('image/png');
+                    
+                    // 更新左侧预览
+                    updatePreviewWithUrl('ao', aoUrl);
+                    updatePreviewWithUrl('roughness', roughnessUrl);
+                    updatePreviewWithUrl('metallic', metallicUrl);
+                    
+                    // 存储图片对象
+                    const aoImg = new Image();
+                    aoImg.src = aoUrl;
+                    images.ao = aoImg;
+                    
+                    const roughnessImg = new Image();
+                    roughnessImg.src = roughnessUrl;
+                    images.roughness = roughnessImg;
+                    
+                    const metallicImg = new Image();
+                    metallicImg.src = metallicUrl;
+                    images.metallic = metallicImg;
+                    
+                    // 更新状态
+                    updateStatus('<i class="fas fa-check-circle"></i> ORM贴图拆解完成！', 'ready');
+                    
+                    // 启用下载按钮
+                    downloadBtn.disabled = false;
+                    downloadBtn.dataset.url = ormImage.src;
+                    
+                }, 500);
+            }
+            
+            // 使用URL更新预览
+            function updatePreviewWithUrl(type, url) {
+                const preview = document.getElementById(`${type}-preview`);
+                preview.innerHTML = `<img src="${url}" alt="${type} preview">`;
+                
+                // 隐藏上传提示
+                const hint = document.getElementById(`${type}-box`).querySelector('.upload-hint');
+                if (hint) {
+                    hint.style.opacity = '0';
+                    setTimeout(() => {
+                        hint.style.display = 'none';
+                    }, 300);
+                }
+                
+                // 显示删除按钮
+                const deleteBtn = document.querySelector(`.delete-btn[data-type="${type}"]`);
+                deleteBtn.style.display = 'block';
+                
+                // 添加删除事件
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteImage(type);
+                };
+                
+                // 添加点击放大事件
+                const previewImg = document.getElementById(`${type}-preview`);
+                previewImg.onclick = () => {
+                    showModal(url);
+                };
+            }
+            
+            // 显示模态框
+            function showModal(src) {
+                modal.style.display = 'flex';
+                modalImg.src = src;
+            }
+            
+            // 关闭模态框
+            modalClose.onclick = function() {
+                modal.style.display = 'none';
+            };
+            
+            // 点击模态框背景关闭
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+            
+            // 下载结果
+            function downloadResult() {
+                const link = document.createElement('a');
+                link.download = 'orm_texture.png';
+                link.href = downloadBtn.dataset.url;
+                link.click();
+            }
+            
+            // 更新状态
+            function updateStatus(message, statusClass) {
+                status.innerHTML = message;
+                status.className = `status ${statusClass}`;
+            }
+        });
+    </script>
+</body>
+</html>
