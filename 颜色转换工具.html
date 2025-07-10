@@ -29,7 +29,7 @@
             justify-content: center;
             align-items: center;
             transition: background-color 0.5s ease;
-            background: var(--mainbg);
+            background: #f8f9ff;
         }
 .p1 {
 	margin-top: 20px;}
@@ -192,7 +192,7 @@
             font-weight: 700;
             margin-bottom: 8px;
             letter-spacing: -0.5px;
-            color: var(--text1);
+            color: var(--main-color);
         }
         .subtitle {
             font-size: 0.9rem;
@@ -426,7 +426,7 @@
         }
         .picker-tooltip {
             position: absolute;
-            bottom: 330px;
+            bottom: 365px;
             background: rgba(0,0,0,0.7);
             color: white;
             padding: 5px 10px;
@@ -1270,6 +1270,7 @@
                 document.documentElement.style.setProperty('--main-color', themeHex);
                 document.documentElement.style.setProperty('--linearbg', `linear-gradient(113deg, ${adjustColor(themeHex, 20)}, ${adjustColor(themeHex, -20)})`);
                 document.documentElement.style.setProperty('--active-bg', `rgba(${r}, ${g}, ${b}, 0.1)`);
+		document.documentElement.style.setProperty('--mainbg', `rgba(${r}, ${g}, ${b}, 0.025)`);
             }
             
             // 调整颜色亮度
