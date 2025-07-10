@@ -299,25 +299,25 @@ const menuData = [
         submenu: [
             { title: "矢量花朵生成器", link: "flower_building.html" },
             { title: "城市天际线生成器", link: "city_building.html" },
-            { title: "UI设计数据生成器", link: "数据模拟.html", active: true },
+            { title: "UI设计数据生成器", link: "data.html", active: true },
             { title: "在线版Photoshop", link: "PS.html" },
-	    { title: "颜色转换工具", link: "颜色转换工具.html" },
+	    { title: "颜色转换工具", link: "color.html" },
         ]
     },
     {
         title: "3D工具",
         icon: "fas fa-cube",
         submenu: [
-            { title: "无缝贴图预览工具", link: "无缝贴图预览工具.html" },
-            { title: "法线图转换工具", link: "高级法线图转换器.html" },
-            { title: "ORM贴图生成工具", link: "ORM贴图生成工具.html" }
+            { title: "无缝贴图预览工具", link: "map.html" },
+            { title: "法线图转换工具", link: "normal.html" },
+            { title: "ORM贴图生成工具", link: "ORM.html" }
         ]
     },
     {
         title: "AI工具",
         icon: "fas fa-robot",
         submenu: [
-            { title: "模型数据集编辑器", link: "模型数据集编辑器.html" },
+            { title: "模型数据集编辑器", link: "model.html" },
             { title: "SDXL提示词风格大全", link: "SDXL.html" },
         ]
     },
@@ -326,8 +326,8 @@ const menuData = [
         title: "实用工具",
         icon: "fas fa-wrench",
         submenu: [
-            { title: "本地翻译工具", link: "本地翻译工具.html" },
-            { title: "BASE64图片转换器", link: "BASE64图片转换器.html" },
+            { title: "本地翻译工具", link: "translation.html" },
+            { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
     }
 ];
