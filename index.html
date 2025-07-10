@@ -123,7 +123,7 @@
         
         header {
             text-align: center;
-            padding: 40px 0 20px;
+            padding: 40px 0 10px;
             position: relative;
         }
         
@@ -153,7 +153,7 @@
             position: sticky;
             top: 10px;
             z-index: 100;
-            background: linear-gradient(135deg, #8aa6ff, #8879ff);
+            background: radial-gradient(215% 105% at 100% 0%, #e6008100, #f1f1fb), linear-gradient(90deg, #118aff, #8180ff, #db7dff);
             padding: 10px 20px 20px;
             border-radius: 12px;
 		overflow: hidden;
@@ -169,7 +169,7 @@
             padding: 10px 20px 10px 45px;
             border-radius: 50px;
             border: 1px solid var(--card-bg);
-            background: var(--light);
+            background: linear-gradient(0deg, #ffffff, #ffffff69);
             color: var(--dark);
             font-size: 1rem;
             transition: all 0.3s ease;
@@ -271,7 +271,7 @@
         
         .tool-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgb(134 144 209 / 17%);
         }
         
         .tool-cover {
@@ -289,8 +289,11 @@
             width: auto;
             height: 100%;
             object-fit: contain;
+	transition: all ease 0.3s;
         }
-        
+        .tool-cover img:hover {
+		    transform: scale(1.15);
+		transition: all ease 0.3s;}
         .tool-content {
             padding: 20px;
             flex-grow: 1;
@@ -323,7 +326,7 @@
         .tool-link {
             display: inline-block;
             padding: 5px 16px;
-            background: var(--primary);
+            background: linear-gradient(113deg, #6472ff, #8352ff);
             color: white;
             text-decoration: none;
             border-radius: 20px;
@@ -336,7 +339,7 @@
         }
         
         .tool-link:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(113deg, #4c73ffd1, #6a52ffdb);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(89, 99, 255, 0.3);
         }
@@ -604,6 +607,10 @@
 	<div class="shape shape-4"></div><div class="shape shape-5"></div> 
 </div>
 	<div class="category-filter">
+                <button class="category-btn" data-category="design">
+                    <i class="fas fa-paint-brush"></i>
+                    <span>设计工具</span>
+                </button>
                 <button class="category-btn" data-category="3D">
                     <i class="fas fa-cube"></i>
                     <span>3D工具</span>
@@ -611,10 +618,6 @@
                 <button class="category-btn" data-category="dev">
                     <i class="fas fa-robot"></i>
                     <span>AI工具</span>
-                </button>
-                <button class="category-btn" data-category="design">
-                    <i class="fas fa-paint-brush"></i>
-                    <span>设计工具</span>
                 </button>
                 <button class="category-btn" data-category="utility">
                     <i class="fas fa-wrench"></i>
