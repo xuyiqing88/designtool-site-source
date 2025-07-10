@@ -310,7 +310,19 @@
             align-items: flex-start;
             gap: 8px;
         }
-        
+        .h3 {
+		font-size: 1.0rem;
+            margin-bottom: 8px;
+            color: var(--darker);
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+		text-decoration: none;
+    		font-weight: 600;}
+	.h3:hover {
+		color: var(--primary);
+		}
         .tool-card p {
             color: var(--gray);
             margin-bottom: 12px;
@@ -839,11 +851,11 @@
                         }
                         
                         toolCard.innerHTML = `
-                            <div class="tool-cover">
-                                <img src="${tool.icon}" alt="${tool.title}">
-                            </div>
+                            <a class="tool-cover" href="${tool.link}">
+				<img src="${tool.icon}" alt="${tool.title}">
+				</a>
                             <div class="tool-content">
-                                <h3>${badgeHtml}${tool.title}</h3>
+                                <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
                                 <p>${tool.description}</p>
                                 <a href="${tool.link}" class="tool-link">打开工具</a>
                             </div>
