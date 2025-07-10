@@ -131,13 +131,7 @@
             margin-bottom: 30px;
             padding: 0 20px;
         }
-        
-        @media (max-width: 900px) {
-            .content-n {
-                grid-template-columns: 1fr;
-                padding: 0;
-            }
-        }
+
         
         .panel {
             background: var(--mainbg);
@@ -170,14 +164,7 @@
             justify-content: space-between;
         }
         
-        @media (max-width: 768px) {
-            .controls {
-                grid-template-columns: 1fr;
-            }
-        }
-        .toggle-btn{
-            font-size: 0.88rem;
-        }
+
         .control-group {
             display: flex;
             flex-direction: column;
@@ -557,34 +544,6 @@
             text-decoration: none;
         }
         
-        @media (max-width: 768px) {
-            
-            .panel {
-                padding: 20px 15px;
-                min-width: auto;
-            }
-            
-            .file-upload-area {
-                padding: 20px;
-            }
-            
-            .controls {
-                padding: 15px;
-                gap: 20px;
-            }
-            
-            button {
-                padding: 14px;
-                font-size: 1rem;
-                min-width: auto;
-                width: 100%;
-            }
-            
-            .example-image {
-                width: 90px;
-            }
-        }
-        
         .drag-over {
             border-color: var(--main-color) !important;
             background: rgba(128, 128, 255, 0.1) !important;
@@ -769,6 +728,44 @@
         .progress-fill {
             transition: width 0.3s ease-out;
         }
+        @media (max-width: 768px) {
+            .content-n {
+		    display: flex;
+	    	flex-direction: column;
+		    padding: 0;}
+            .panel {
+                padding: 20px 15px;
+                min-width: auto;
+            }
+            
+            .file-upload-area {
+                padding: 20px;
+            }
+            .scrib {
+		display: none;
+		}
+            .controls {
+                padding: 15px;
+                gap: 20px;
+            }
+            
+            button {
+                padding: 14px;
+                font-size: 1rem;
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .example-image {
+                width: 90px;
+            }
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        .toggle-btn{
+            font-size: 0.88rem;
+        }
+        }
     </style>
 </head>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "325c48abf4134d3e983fe8660980a694"}'></script>
@@ -900,7 +897,7 @@
                 </div>
 
                 <div class="btn-group">
-                    <button id="resetParamsBtn" class="toggle-btn" style="width: 186px; font-size: 1rem;">
+                    <button id="resetParamsBtn" class="toggle-btn" style="width: 186px;">
                         <i class="fas fa-redo"></i> 重置参数
                     </button>
 
