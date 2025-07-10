@@ -110,6 +110,11 @@
             color: var(--main-color);
             letter-spacing: 1px;
             position: relative;
+	    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+	margin-top: 20px;
         }
         
         .header-subtitle {
@@ -552,10 +557,7 @@
             text-decoration: none;
         }
         
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-            }
+        @media (max-width: 768px) {
             
             .panel {
                 padding: 20px 15px;
