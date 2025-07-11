@@ -72,7 +72,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 25px 35px;
+            padding: 25px 35px 0;
         }
 
         .logo {
@@ -968,6 +968,12 @@
     </div>
 
     <script>
+// 在脚本开头添加恢复表单的函数
+function restoreSettingsForm() {
+    document.getElementById('apiKey').value = tempSettings.apiKey;
+    document.getElementById('promptTemplate').value = tempSettings.promptTemplate;
+    document.getElementById('visionTemplate').value = tempSettings.visionTemplate;
+}
         // DOM元素
         const themeToggle = document.getElementById('themeToggle');
         const settingsBtn = document.getElementById('settingsBtn');
@@ -1077,10 +1083,18 @@
             });
             
             // 关闭设置弹窗
-            const closeModal = () => {
-                settingsModal.style.display = 'none';
-                modalOverlay.style.display = 'none';
-            };
+const closeModal = () => {
+    restoreSettingsForm(); // 关键修复：关闭时恢复原始设置
+    settingsModal.style.display = 'none';
+    modalOverlay.style.display = 'none';
+};
+
+// 修改取消按钮的事件处理
+cancelSettings.addEventListener('click', () => {
+    restoreSettingsForm(); // 确保取消时也恢复设置
+    closeModal();
+});
+
             
             closeSettings.addEventListener('click', closeModal);
             
@@ -1103,7 +1117,11 @@
                 
                 // 重新检查API状态
                 checkApiStatus();
-                
+                    // 保存后更新临时设置
+    tempSettings.apiKey = document.getElementById('apiKey').value;
+    tempSettings.promptTemplate = document.getElementById('promptTemplate').value;
+    tempSettings.visionTemplate = document.getElementById('visionTemplate').value;
+
                 showAlert('设置已保存！');
                 closeModal();
             });
