@@ -1003,8 +1003,8 @@
         const resetVisionBtn = document.getElementById('resetVisionBtn');
         
         // 默认设置
-        const defaultPromptTemplate = "你是一个提示词优化专家。请将用户提供的提示词优化为更详细、更具表现力的版本，添加适当的细节描述，同时保持核心概念不变。优化后的提示词应适合输入到图像生成模型中。";
-        const defaultVisionTemplate = "请详细描述上传的图像内容，包括主要对象、场景、颜色、风格和氛围。然后基于你的描述，生成一个适合图像生成模型的提示词。";
+        const defaultPromptTemplate = "You are creating a prompt for Stable Diffusion to generate an image. First step: describe this image, then put description into text. Second step: generate a text prompt for %s based on first step.  Only respond with the prompt itself, but embellish it as needed but keep it under 120 tokens.";
+        const defaultVisionTemplate = "You are creating a prompt for Stable Diffusion. First: describe this image. Second: generate a text prompt based on description. Only respond with the prompt, keep it under 120 tokens.";
         
         // 对话历史数组
         let apiHistory = [];
