@@ -1053,7 +1053,7 @@ let currentTriggerWord = "";
 let currentImageItem = null; // 用于存储当前操作的图片项
 
 // 全局API_KEY存储
-let API_KEY = localStorage.getItem('GEMINI_API_KEY') || 'AIXXxxxxxxxxxxxxxxxxxxxxx-xxxxxXXXXxxx';
+let API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
 // 初始化深色模式状态
 let darkMode = localStorage.getItem('darkMode') === 'true';
 
@@ -2779,74 +2779,96 @@ function handleDeleteClick(e) {
 updateCounter(); // 新增调用
     updateCounter();
 }
-
+  // 构建API URL
+function getGeminiApiUrl(modelVersion) {
+  const baseUrl = "https://generativelanguage.googleapis.com/v1beta/models";
+  const apiKey = localStorage.getItem('GEMINI_API_KEY') || '';
+  return `${baseUrl}/${modelVersion}:generateContent?key=${apiKey}`;
+}
 // 图片分析函数
 async function analyzeImage(file) {
-    const base64Image = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.readAsDataURL(file);
-    });
+  const base64Image = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.readAsDataURL(file);
+  });
 
-  // 获取API版本
+  // 获取API版本 - 添加默认值处理
   const API_VERSION = localStorage.getItem('GEMINI_API_VERSION') || 'gemini-1.5-flash';
   
-  // 构建API URL
-  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_VERSION}:generateContent`;
-    const API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
+  // 使用新的URL构建函数
+  const API_URL = getGeminiApiUrl(API_VERSION);
+  
+  // 添加API密钥检查
+  if (!localStorage.getItem('GEMINI_API_KEY')) {
+    throw new Error('未设置Gemini API密钥，请在设置中添加');
+  }
 
-
-    const requestBody = {
-        contents: [{
-            parts: [
-                { 
-                    text: localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT
-                },
-                {
-                    inline_data: {
-                        mime_type: file.type,
-                        data: base64Image
-                    }
-                }
-            ]
-        }],
-        generationConfig: {
-            temperature: 0.4,
-            topP: 1,
-            topK: 32,
-            maxOutputTokens: 200
+const requestBody = {
+  contents: [{
+    parts: [
+      { text: localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT },
+      {
+        inline_data: {
+          mime_type: file.type,
+          data: base64Image
         }
-    };
+      }
+    ]
+  }],
+  generationConfig: {
+    temperature: 0.4,
+    topP: 1,
+    topK: 32,
+    maxOutputTokens: 200
+  }
+};
 
-    const response = await fetch(API_URL, {  // 移除URL参数
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'x-goog-api-key': API_KEY  // 添加认证头
-        },
-        body: JSON.stringify(requestBody)
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
     });
-
-if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error.message || 'API请求失败');
+    
+    // 添加HTTP状态检查
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP错误 ${response.status}`);
     }
-
+    
     const data = await response.json();
     
-    // --- 新增的错误处理逻辑 ---
-    if (!data.candidates || data.candidates.length === 0) {
-        // 检查是否有提示因为安全设置被阻止
-        if (data.promptFeedback && data.promptFeedback.blockReason) {
-            console.error('API 请求被阻止，原因:', data.promptFeedback.blockReason);
-            throw new Error('请求因内容安全策略被阻止，请检查图片或提示词。');
-        }
-        console.error('API 未返回有效候选结果:', data);
-        throw new Error('AI未能生成有效结果，请稍后重试。');
+    // 统一处理不同API版本的响应格式
+    let resultText = "";
+    if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+      resultText = data.candidates[0].content.parts[0].text;
+    } else if (data[0]?.candidates?.[0]?.content?.parts?.[0]?.text) {
+      resultText = data[0].candidates[0].content.parts[0].text;
+    } else if (data[0]?.content?.parts?.[0]?.text) {
+      resultText = data[0].content.parts[0].text;
     }
-    // --- 结束 ---
 
-    return data.candidates[0].content.parts[0].text.trim();
+    if (resultText) {
+      return resultText.trim();
+    }
+    
+    throw new Error('API返回了空响应');
+    
+  } catch (error) {
+    // 更详细的错误处理
+    let errorMsg = `AI分析失败: ${error.message}`;
+    
+    if (error.message.includes('Failed to fetch')) {
+      errorMsg = '无法连接到Gemini API，请检查：1. API密钥是否正确 2. 是否开启全局代理';
+    } else if (error.message.includes('quota')) {
+      errorMsg = 'API配额不足，请检查Gemini API使用量';
+    }
+    
+    throw new Error(errorMsg);
+  }
 }
 </script>
 <template id="findReplaceTemplate">
@@ -2982,8 +3004,8 @@ if (!response.ok) {
   <div class="settitle">API版本</div>
   <div class="selectbg">
     <select id="apiVersionSelect">
-      <option value="gemini-1.5-flash">Gemini 1.5 Flash（免费，速度快）</option>    
-	<option value="gemini-1.5-pro">Gemini 1.5 Pro（免费，效果好）</option>
+      <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash (推荐/快速)</option>
+      <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro (效果好)</option>
     </select>
   </div>
 </div>
@@ -3005,7 +3027,7 @@ if (!response.ok) {
 	<div class="setscrib">源语言
 		<span class="selectbg">
 		<select id="sourceLang">
-					<option value="zh-CN">中文（简体）</option>
+			<option value="zh-CN">中文（简体）</option>
                     <option value="en">英语 English</option>
                     <option value="ja">日语 日本語</option>
                     <option value="ko">韩语 한국어</option>
