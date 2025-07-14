@@ -53,40 +53,6 @@ body {
     width: 100%;
     height: 100%;
 	background: var(--lightbg);}
-.settings-item .model-selector {
-    display: flex;
-    flex-direction: column;
-    margin-top: 12px;
-}
-
-.model-option {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border-radius: 6px;
-    margin-bottom: 6px;
-    background: var(--mainbg);
-    border: 1px solid var(--line);
-    cursor: pointer;
-}
-
-.model-option.active {
-    border-color: var(--main-color);
-    background: var(--button);
-}
-
-.model-option input[type="radio"] {
-    margin-right: 10px;
-}
-
-.free-tag {
-    background: #00c853;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-size: 12px;
-    margin-left: 8px;
-}
 .p1 {
 	margin-top: 20px;}
 .li1 {
@@ -1709,28 +1675,10 @@ document.querySelector('.gear-icon').addEventListener('click', function() {
   const settingsModal = modal.querySelector('.settings-modal');
   
   // 初始化值
-  settingsModal.querySelector('#apiKeyInput').value = localStorage.getItem('GEMINI_API_KEY') || '';
-  settingsModal.querySelector('#promptTextarea').value = localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT;
-  
-  // 初始化模型版本
-  const modelVersion = localStorage.getItem('GEMINI_MODEL_VERSION') || 'gemini-1.5-flash';
-  settingsModal.querySelector(`input[name="modelVersion"][value="${modelVersion}"]`).checked = true;
-
-  // 设置选中状态的样式
-  const selectedOption = settingsModal.querySelector(`input[name="modelVersion"][value="${modelVersion}"]`).closest('.model-option');
-  if (selectedOption) {
-    selectedOption.classList.add('active');
-  }
-  
-  // 添加模型选项点击事件
-  settingsModal.querySelectorAll('.model-option').forEach(option => {
-    option.addEventListener('click', function() {
-      settingsModal.querySelectorAll('.model-option').forEach(opt => 
-        opt.classList.remove('active'));
-      this.classList.add('active');
-      this.querySelector('input').checked = true;
-    });
-  });
+	settingsModal.querySelector('#apiKeyInput').value = localStorage.getItem('GEMINI_API_KEY') || '';
+	settingsModal.querySelector('#promptTextarea').value = localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT;
+const apiVersion = localStorage.getItem('GEMINI_API_VERSION') || 'gemini-1.5-flash';
+settingsModal.querySelector('#apiVersionSelect').value = apiVersion;
 
   // 初始化值 - 新增打包形式
   const packageFormat = localStorage.getItem('PACKAGE_FORMAT') || 'both';
@@ -1758,14 +1706,14 @@ document.querySelector('.gear-icon').addEventListener('click', function() {
   settingsModal.querySelector('#cancelBtn').addEventListener('click', () => settingsModal.remove());
   
   settingsModal.querySelector('#saveBtn').addEventListener('click', () => {
-	  // 获取模型版本
-  const modelVersion = settingsModal.querySelector('input[name="modelVersion"]:checked').value;
-  // 保存到localStorage
-  localStorage.setItem('GEMINI_MODEL_VERSION', modelVersion);
-
     const apiKey = settingsModal.querySelector('#apiKeyInput').value.trim();
     const prompt = settingsModal.querySelector('#promptTextarea').value.trim();
     const showStats = settingsModal.querySelector('#showWordStatsToggle').checked;
+
+  // 保存API版本
+  const apiVersion = settingsModal.querySelector('#apiVersionSelect').value;
+  localStorage.setItem('GEMINI_API_VERSION', apiVersion);
+
     // 获取打包形式
     const packageFormat = settingsModal.querySelector('input[name="packageFormat"]:checked').value;
     localStorage.setItem('PACKAGE_FORMAT', packageFormat);
@@ -2834,17 +2782,17 @@ updateCounter(); // 新增调用
 
 // 图片分析函数
 async function analyzeImage(file) {
-
     const base64Image = await new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result.split(',')[1]);
         reader.readAsDataURL(file);
     });
-// 获取模型版本
-  const modelVersion = localStorage.getItem('GEMINI_MODEL_VERSION') || 'gemini-1.5-flash';
+
+  // 获取API版本
+  const API_VERSION = localStorage.getItem('GEMINI_API_VERSION') || 'gemini-1.5-flash';
   
   // 构建API URL
-  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelVersion}:generateContent`;
+  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_VERSION}:generateContent`;
     const API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
 
 
@@ -2879,12 +2827,25 @@ async function analyzeImage(file) {
         body: JSON.stringify(requestBody)
     });
 
-    if (!response.ok) {
+if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error.message || 'API请求失败');
     }
 
     const data = await response.json();
+    
+    // --- 新增的错误处理逻辑 ---
+    if (!data.candidates || data.candidates.length === 0) {
+        // 检查是否有提示因为安全设置被阻止
+        if (data.promptFeedback && data.promptFeedback.blockReason) {
+            console.error('API 请求被阻止，原因:', data.promptFeedback.blockReason);
+            throw new Error('请求因内容安全策略被阻止，请检查图片或提示词。');
+        }
+        console.error('API 未返回有效候选结果:', data);
+        throw new Error('AI未能生成有效结果，请稍后重试。');
+    }
+    // --- 结束 ---
+
     return data.candidates[0].content.parts[0].text.trim();
 }
 </script>
@@ -3010,28 +2971,23 @@ async function analyzeImage(file) {
     <div class="settings-item">
     <div class="prompt-header">
         <span class="settitle">提示词反推API设置</span>
-            <div class="setscrib" style="display: block;">需申请Gemini API填入此处，科学上网代理模式设置为“全局连接”，勾选支持的国家。查看<a href="https://developer.android.google.cn/studio/preview/gemini/availability?hl=zh-cn" class="linetxt" target=“_blank” style="color:var(--main-color);">支持国家列表</a></div>
+            <div class="setscrib" style="display: block;">需申请Gemini API并填入此处，科学上网代理模式设置为“全局连接”，勾选支持的国家。查看<a href="https://developer.android.google.cn/studio/preview/gemini/availability?hl=zh-cn" class="linetxt" target=“_blank” style="color:var(--main-color);">支持国家列表</a></div>
       <input type="password" 
              class="settings-input" 
              placeholder="输入Gemini API密钥"
              id="apiKeyInput">
     	</div>
 	</div>
-    <!-- 新增模型版本选择器 -->
     <div class="settings-item">
-      <div class="settitle">模型版本</div>
-      <div class="model-selector">
-        <div class="model-option">
-          <input type="radio" name="modelVersion" value="gemini-1.5-flash" id="modelFlash">
-          <label for="modelFlash">Gemini 1.5 Flash <span class="free-tag">免费,每日1500次</span></label>
-        </div>
-        <div class="model-option">
-          <input type="radio" name="modelVersion" value="gemini-1.5-pro" id="modelPro">
-          <label for="modelPro">Gemini 2.5 Pro <span class="free-tag">免费,每日50次</span></label></label>
-        </div>
-      </div>
-    </div>
-    
+  <div class="settitle">API版本</div>
+  <div class="selectbg">
+    <select id="apiVersionSelect">
+      <option value="gemini-1.5-flash">Gemini 1.5 Flash（免费，速度快）</option>    
+	<option value="gemini-1.5-pro">Gemini 1.5 Pro（免费，效果好）</option>
+    </select>
+  </div>
+</div>
+
     <div class="settings-item">
       <div class="prompt-header">
         <span class="settitle">默认提问语
