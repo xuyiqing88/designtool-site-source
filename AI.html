@@ -47,7 +47,7 @@
         }
                 .translate-btn {
             position: absolute;
-            bottom: 16px;
+            bottom: 24px;
             right: 10px;
             background: #fff;
             border: 1px solid var(--line);
@@ -112,7 +112,7 @@
         }
 
         .logo h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
 	color: #fff;
             letter-spacing: -0.5px;
@@ -828,7 +828,7 @@
         .chat-input-area .btn-group {
             position: absolute;
             right: 10px;
-            bottom: 0;
+            bottom: 5px;
             transform: translateY(-50%);
             margin: 0;
             gap: 8px;
@@ -1133,7 +1133,7 @@
     <div class="main-layout">
         <div class="sidebar">
             <div class="logo">
-                <h1>AI数字人助手 <span class="status-indicator" id="apiStatus"></span></h1>
+                <h1>AI 数字人助手 <span class="status-indicator" id="apiStatus"></span></h1>
             </div>
             
             <div class="tabs">
@@ -1435,7 +1435,7 @@
     <script>
     // 默认设置
     const defaultPromptTemplate = "You are creating a prompt for Stable Diffusion to generate an image. First step: describe this image, then put description into text. Second step: generate a text prompt for %s based on first step.  Only respond with the prompt itself, but embellish it as needed but keep it under 120 tokens.";
-    const defaultVisionTemplate = "Describe the uploaded image in detail, covering the main subjects, setting, colors, style, and atmosphere. Then, based on your description, generate a high-quality, detailed prompt suitable for an image generation model, only respond with the prompt.";
+    const defaultVisionTemplate = "Describe the uploaded image in detail, covering the main subjects, setting, colors, style, and atmosphere. Then, based on your description, generate a high-quality, detailed prompt suitable for an image generation model, only respond with the prompt, keep it under 120 tokens.";
     
     // DOM元素
     document.addEventListener('DOMContentLoaded', () => {
