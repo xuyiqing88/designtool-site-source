@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini AI Pro - 智能对话、识图与创作</title>
+    <title>AI助手 - 智能对话、AI绘画</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="menu.js" defer></script>
+ <script src="menu.js" defer></script>
     <style>
         :root {
             --main-color: #5a64ff;
@@ -37,40 +37,75 @@
         }
 
         body {
-            display: flex; /* Make body a flex container */
-            height: 100vh; /* Full viewport height */
-            width: 100vw; /* Full viewport width */
-            overflow: hidden; /* Prevent body scroll, content will scroll within panels */
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
             background: var(--mainbg);
             color: var(--text1);
             transition: background 0.3s ease;
         }
+                .translate-btn {
+            position: absolute;
+            bottom: 16px;
+            right: 10px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 4px 12px;
+            cursor: pointer;
+            color: var(--text2);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        .translate-btn:hover {
+            background: var(--button);
+            color: var(--main-color);
+        }
         
+        /* 调整AI绘画布局 */
+        .drawing-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .drawing-controls-panel {
+            border-radius: 12px;
+        }
+        
+        .drawing-preview-panel {
+            display: flex;
+            flex-direction: column;
+	    align-items: center;
+        }
         .main-layout {
             display: flex;
-            flex-grow: 1; /* Take all available space */
-            border-radius: 24px; /* Apply to outer container if desired, or individual panels */
-            overflow: hidden; /* Keep content within bounds */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Subtle shadow for the whole app */
-            background: var(--card-bg); /* Main background for the app container */
+            flex-grow: 1;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background: var(--card-bg);
         }
 
         .sidebar {
-            width: 250px; /* Fixed width for the sidebar */
+            width: 250px;
             background: var(--card-bg);
             display: flex;
             flex-direction: column;
             padding: 25px 0;
             border-right: 1px solid var(--line);
-            flex-shrink: 0; /* Do not allow sidebar to shrink */
-	margin-left: 60px;
+            flex-shrink: 0;
+	        margin-left: 60px;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 0 25px 25px; /* Padding for the logo */
+            padding: 0 25px 25px;
             border-bottom: 1px solid var(--line);
             margin-bottom: 20px;
         }
@@ -92,20 +127,19 @@
             animation: pulse 2s infinite;
         }
 
-        /* Adjust main tabs for vertical layout in sidebar */
         .tabs {
             display: flex;
-            flex-direction: column; /* Vertical tabs */
-            background: none; /* No background for the tab container itself */
-            max-width: none; /* Remove max-width constraint */
-            margin: 0; /* Remove margin */
+            flex-direction: column;
+            background: none;
+            max-width: none;
+            margin: 0;
             border-radius: 0;
-            padding: 0 20px; /* Horizontal padding for alignment */
-            gap: 10px; /* Space between tab buttons */
+            padding: 0 20px;
+            gap: 10px;
         }
 
         .tab-btn {
-            width: 100%; /* Full width within sidebar padding */
+            width: 100%;
             padding: 12px 20px;
             background: none;
             border: none;
@@ -115,15 +149,15 @@
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
-            justify-content: flex-start; /* Align text to the left */
-            border-radius: 10px; /* Rounded corners for buttons */
+            justify-content: flex-start;
+            border-radius: 10px;
             z-index: 1;
             box-shadow: none;
         }
 
         .tab-btn.active {
             color: var(--main-color);
-            background: var(--btactive); /* Active tab background */
+            background: var(--btactive);
             font-weight: 600;
             box-shadow: none;
         }
@@ -131,19 +165,18 @@
             background: var(--btactive);
         }
 
-        /* Main content area (right panel) */
         .main-content {
-            flex-grow: 1; /* Takes up remaining space */
+            flex-grow: 1;
             background: var(--mainbg);
-            padding: 25px; /* Padding for the content area */
-            overflow-y: hidden; /* Enable scrolling for content if it overflows */
-            min-width: 0; /* Allow content to shrink if needed */
+            padding: 25px;
+            overflow-y: hidden;
+            min-width: 0;
         }
 
-        .tab-content { /* This class is now nested inside .main-content */
-            min-height: auto; /* Remove fixed min-height */
-            padding: 0; /* Remove inner padding as main-content provides it */
-            min-width: auto; /* Remove fixed min-width */
+        .tab-content {
+            min-height: auto;
+            padding: 0;
+            min-width: auto;
         }
 
         .tab-pane { display: none; }
@@ -155,12 +188,12 @@
             border-radius: 0;
             margin-bottom: 20px;
             padding: 0 4px;
-            border: none;
+                border-bottom: 1px solid var(--line);
         }
 
         .secondary-tab-btn {
             flex: 1;
-            padding: 10px 15px;
+            padding: 0 15px 15px;
             background: none;
             border: none;
             color: var(--text2);
@@ -207,7 +240,11 @@
         }
 
         .secondary-tab-pane { display: none; }
-        .secondary-tab-pane.active { display: block; }
+        .secondary-tab-pane.active { 
+	display: block; 
+	max-height: 80vh;
+    	overflow-y: auto;
+	}
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -275,7 +312,7 @@
         
         textarea, input[type="text"], input[type="password"], select {
             width: 100%;
-            padding: 16px 16px 58px;
+            padding: 16px 16px 38px 16px;
             border-radius: 8px;
             border: 1px solid var(--line);
             background: var(--mainbg);
@@ -286,10 +323,9 @@
         }
         textarea { min-height: 160px; }
         
-        /* Adjust textarea for settings panel to be shorter */
         .settings-item textarea {
-            padding: 8px 18px !important; /* Override with specific padding */
-            min-height: 130px !important; /* Override with specific min-height */
+            padding: 8px 18px !important;
+            min-height: 130px !important;
         }
 
         textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
@@ -306,7 +342,7 @@
             display: flex;
             gap: 15px;
             margin-top: 20px;
-            justify-content: flex-end;
+            justify-content: center;
         }
 
         button {
@@ -484,13 +520,11 @@
             flex-grow: 1;
         }
 
-        /* Settings pane styling (formerly modal) */
-        .settings-pane { /* Renamed from settings-modal */
+        .settings-pane {
             background: var(--card-bg);
             border-radius: 10px;
             padding: 20px;
-            /* Removed fixed positioning and display: none */
-            margin-bottom: 25px; /* Consistent with other panels */
+            margin-bottom: 25px;
         }
         .settings-pane h2 {
             color: var(--text1);
@@ -530,7 +564,6 @@
             border-radius: 6px;
             font-size: 15px;
         }
-        /* Removed duplicate min-height for settings-item textarea */
 
         .settings-footer {
             display: flex;
@@ -594,12 +627,13 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            height: 60vh;
+            height: 56vh;
             overflow-y: auto;
             padding: 20px;
             background: var(--mainbg);
             border-radius: 10px;
 	        border: 1px solid var(--line);
+	    margin-bottom: 10px
         }
         
         .history-placeholder {
@@ -778,7 +812,6 @@
         /* Chat Input Area */
         .chat-input-area {
             position: relative;
-            margin-top: 10px;
         }
         .chat-input-area .btn-group {
             position: absolute;
@@ -801,7 +834,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 10px;
+            margin: 10px 0;
             padding: 8px;
             background-color: var(--mainbg);
             border-radius: 8px;
@@ -850,7 +883,7 @@
         .vision-layout {
             display: grid;
             gap: 25px;
-            grid-template-columns: 0.65fr 1.5fr; /* Keep existing proportions */
+            grid-template-columns: 0.65fr 1.5fr;
         }
 
         .vision-layout > div {
@@ -875,44 +908,122 @@
             margin-right: 10px;
         }
         
+        /* AI Drawing Styles */
+        .drawing-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .drawing-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .drawing-control label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text2);
+        }
+        
+        .drawing-control select, .drawing-control input {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--mainbg);
+            font-size: 14px;
+	     -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238d8fa3' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+        
+        .drawing-preview {
+            text-align: center;
+            position: relative;
+        }
+        
+        #generatedImage {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+        
+        .drawing-placeholder {
+            color: var(--text3);
+            padding: 40px;
+            opacity: 0.7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            border: 2px dashed var(--line);
+            border-radius: 12px;
+            min-height: 300px;
+        }
+        
+        .drawing-placeholder i {
+            font-size: 48px;
+            color: var(--main-color);
+            opacity: 0.5;
+        }
+        
+        .image-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .main-layout { 
-                flex-direction: column; /* Stack sidebar and main content vertically */
-                border-radius: 15px;
+                flex-direction: column;
             }
-	.panel {padding: 12px;}
+	        .panel {padding: 12px;}
             .sidebar {
-                width: 100%; /* Sidebar takes full width */
-                height: auto; /* Height adjusts to content */
-                flex-direction: row; /* Tabs in sidebar become horizontal */
+                width: 100%;
+                height: auto;
+                flex-direction: row;
                 padding: 15px 0;
                 border-bottom: 1px solid var(--line);
                 border-right: none;
                 justify-content: center;
                 align-items: center;
+	        margin-left: 0;
+            }
+	.drawing-layout {
+                grid-template-columns: 1fr;
             }
             .logo {
-                display: none; /* Hide logo on small screens for space */
+                display: none;
             }
             .tabs {
-                flex-direction: row; /* Tabs go horizontal */
-                padding: 0 10px;
+                flex-direction: row;
                 gap: 5px;
-                flex-grow: 1; /* Allow tabs to grow */
-                justify-content: space-around; /* Distribute tabs evenly */
+                flex-grow: 1;
+                justify-content: space-around;
             }
             .tab-btn {
-                flex: 1; /* Tabs take equal width */
+                flex: 1;
                 text-align: center;
                 justify-content: center;
                 padding: 10px 15px;
-                margin-bottom: 0; /* No bottom margin for horizontal tabs */
+                margin-bottom: 0;
                 font-size: 15px;
             }
+            .tab-btn i {
+                margin-right: 4px;
+            }
             .main-content {
-                padding: 15px; /* Adjust padding for smaller screens */
-                min-height: calc(100vh - 80px); /* Adjust height to fill remaining space, roughly account for sidebar height */
+                padding: 15px;
+                min-height: calc(100vh - 80px);
             }
             .chat-history {    height: 260px; padding: 12px;}
             .vision-layout {
@@ -921,6 +1032,9 @@
             }
 	        .upload-container {min-height: 190px;}
             .settings-pane {padding: 15px;}
+            .drawing-controls {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -929,7 +1043,7 @@
                 font-size: 14px;
             }
             .tab-btn i {
-                margin-right: 4px; /* Reduce icon margin */
+                margin-right: 4px;
             }
             .main-content {
                 padding: 10px;
@@ -943,7 +1057,7 @@
     <div class="main-layout">
         <div class="sidebar">
             <div class="logo">
-                <h1>Gemini AI助手 <span class="status-indicator" id="apiStatus"></span></h1>
+                <h1>AI数字人助手 <span class="status-indicator" id="apiStatus"></span></h1>
             </div>
             
             <div class="tabs">
@@ -951,7 +1065,7 @@
                     <i class="fas fa-comments" style="margin-right: 8px;"></i> AI对话
                 </button>
                 <button class="tab-btn" data-tab="vision">
-                    <i class="fas fa-image" style="margin-right: 8px;"></i> AI视觉
+                    <i class="fas fa-image" style="margin-right: 8px;"></i> AI图像
                 </button>
                 <button class="tab-btn" data-tab="settings">
                     <i class="fas fa-cog" style="margin-right: 8px;"></i> 设置
@@ -1034,7 +1148,104 @@
                 
                 <div class="tab-pane" id="visionTab">
                     <div class="panel">
-                        <div id="image-analysisSubTab">
+                        <div class="secondary-tabs">
+                            <button class="secondary-tab-btn active" data-subtab="drawing" data-parent="vision">AI绘图</button>
+                            <button class="secondary-tab-btn" data-subtab="image-analysis" data-parent="vision">图像分析</button>
+                        </div>
+                        
+                        <div id="drawingSubTab" class="secondary-tab-pane active">
+                            <h2><i class="fas fa-paint-brush"></i> AI绘图</h2>
+                            <p class="panel-description">
+                                输入提示词，AI将根据您的描述生成图像。您可以选择不同的模型、风格和尺寸。
+                            </p>
+                            
+                            <div class="drawing-layout">
+                                <div class="drawing-controls-panel">
+                                    <div class="chat-input-area" style="position: relative;">
+                                        <textarea id="drawingPrompt" placeholder="输入详细描述以生成图像（例如：一只坐在太空船里的猫，科幻风格，超现实细节）"></textarea>
+                                        <button class="translate-btn" id="translateBtn">
+                                           译
+                                        </button>
+                                        
+                                    </div>
+                                    
+                                    <div class="drawing-controls">
+                                        <div class="drawing-control">
+                                            <label for="modelSelect">模型选择</label>
+                                            <select id="modelSelect">
+                                                <option value="flux">Flux</option>
+
+                                                <option value="turbo">Turbo</option>
+                                                <option value="gptimage">GPTImage</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="drawing-control">
+                                            <label for="styleSelect">艺术风格</label>
+                                            <select id="styleSelect">
+                                                <option value="">默认</option>
+                                                <option value="realistic">写实风格</option>
+                                                <option value="anime">动漫风格</option>
+                                                <option value="oil-painting">油画风格</option>
+                                                <option value="pixel-art">像素艺术</option>
+                                                <option value="surrealism">超现实主义</option>
+                                                <option value="cyberpunk">赛博朋克</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="drawing-control">
+                                            <label for="sizeSelect">图像尺寸</label>
+                                            <select id="sizeSelect">
+                                                <option value="512x512">512×512</option>
+                                                <option value="768x768">768×768</option>
+                                                <option value="1024x1024">1024×1024</option>
+                                                <option value="1024x768">横向 (1024×768)</option>
+                                                <option value="768x1024">纵向 (768×1024)</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="drawing-control">
+                                            <label for="qualitySelect">图像质量</label>
+                                            <select id="qualitySelect">
+                                                <option value="medium">中等</option>
+                                                <option value="high">高</option>
+                                                <option value="ultra">超高</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+				<div class="btn-group" >
+                                            <button class="btn-secondary" id="clearDrawingBtn">
+                                                <i class="fas fa-eraser"></i>清除描述
+                                            </button>
+                                            <button class="btn-primary" id="generateImageBtn" style="background: var(--btcolor);">
+                                                <i class="fas fa-wand-magic-sparkles"></i>生成图像
+                                            </button>
+                                        </div>
+                                </div>
+                                
+                                <div class="drawing-preview-panel">
+                                    <div class="drawing-preview">
+                                        <div id="drawingPlaceholder" class="drawing-placeholder">
+                                            <span style="font-size: 50px;">📝</span>
+                                            <p>输入提示词并点击"生成图像"按钮</p>
+                                        </div>
+                                        <img id="generatedImage" alt="生成的图像">
+                                        
+                                        <div class="image-actions" id="imageActions" style="display: none; margin-top: 20px;">
+                                            <button class="btn-secondary" id="downloadImageBtn" style="flex: 1;">
+                                                <i class="fas fa-download"></i> 下载
+                                            </button>
+                                            <button class="btn-secondary" id="regenerateImageBtn" style="flex: 1;">
+                                                <i class="fas fa-sync-alt"></i> 重新生成
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="image-analysisSubTab" class="secondary-tab-pane">
                             <h2><i class="fas fa-search-plus"></i> 图像分析</h2>
                             <p class="panel-description">
                                 上传图片，Gemini将自动分析图像内容并生成详细的描述提示词。
@@ -1074,9 +1285,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
-
+            </div>
                 <div class="tab-pane" id="settingsTab">
                     <div class="settings-pane">
                         <div class="settings-header">
@@ -1098,9 +1308,9 @@
                                     选择用于所有AI功能的模型。三者均支持多模态。
                                 </p>
                                 <select id="modelSelection">
+					<option value="gemini-2.5-flash">Gemini 2.5 flash (快速)</option>
+                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (强大/稳定)</option> 
                                     <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash (快速/经济)</option>
-                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (强大/稳定)</option>
-                                    <option value="gemini-2.5-flash">Gemini 2.5 flash (快速)</option>
                                 </select>
                             </div>
 
@@ -1134,8 +1344,7 @@
                             <button class="btn-primary" id="saveSettings">保存设置</button>
                         </div>
                     </div>
-                </div>
-            </div>
+
         </div>
     </div>
     
@@ -1146,22 +1355,22 @@
     
     // DOM元素
     document.addEventListener('DOMContentLoaded', () => {
-        // Global elements (API status is still global)
+        // Global elements
         const apiStatus = document.getElementById('apiStatus');
 
-        // Settings pane elements (now within a tab)
+        // Settings pane elements
         const apiKeyInput = document.getElementById('apiKey');
         const modelSelection = document.getElementById('modelSelection');
         const promptTemplateInput = document.getElementById('promptTemplate');
         const visionTemplateInput = document.getElementById('visionTemplate');
         const resetPromptBtn = document.getElementById('resetPromptBtn');
         const resetVisionBtn = document.getElementById('resetVisionBtn');
-        const saveSettingsBtn = document.getElementById('saveSettings'); // Renamed for clarity
-        const cancelSettingsBtn = document.getElementById('cancelSettings'); // Renamed for clarity
+        const saveSettingsBtn = document.getElementById('saveSettings');
+        const cancelSettingsBtn = document.getElementById('cancelSettings');
 
-        // Tab elements (main and secondary)
-        const mainTabBtns = document.querySelectorAll('.tab-btn'); // Main tabs in sidebar
-        const mainTabPanes = document.querySelectorAll('.tab-pane'); // Main content panes
+        // Tab elements
+        const mainTabBtns = document.querySelectorAll('.tab-btn');
+        const mainTabPanes = document.querySelectorAll('.tab-pane');
         const secondaryTabBtns = document.querySelectorAll('.secondary-tab-btn');
         const secondaryTabPanes = document.querySelectorAll('.secondary-tab-pane');
 
@@ -1191,15 +1400,59 @@
         const visionResponse = document.getElementById('visionResponse');
         const copyVisionBtn = document.getElementById('copyVisionBtn');
         const regenerateVisionBtn = document.getElementById('regenerateVisionBtn');
+        
+        // Drawing functionality elements
+        const drawingPrompt = document.getElementById('drawingPrompt');
+        const modelSelect = document.getElementById('modelSelect');
+        const styleSelect = document.getElementById('styleSelect');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const qualitySelect = document.getElementById('qualitySelect');
+        const clearDrawingBtn = document.getElementById('clearDrawingBtn');
+        const generateImageBtn = document.getElementById('generateImageBtn');
+        const drawingPlaceholder = document.getElementById('drawingPlaceholder');
+        const generatedImage = document.getElementById('generatedImage');
+        const imageActions = document.getElementById('imageActions');
+        const downloadImageBtn = document.getElementById('downloadImageBtn');
+        const regenerateImageBtn = document.getElementById('regenerateImageBtn');
 
         // State variables
         let apiHistory = [];
         let displayHistory = [];
         let chatUploadedFile = null;
         let visionUploadedFile = null;
-        let currentSettingsFormState = {}; // To store settings when entering the tab
+        let currentSettingsFormState = {};
         let lastRequestTime = 0;
-        const REQUEST_INTERVAL = 2000; // 2 seconds request interval
+        const REQUEST_INTERVAL = 3000;
+        let currentImageUrl = null;
+            // 新增翻译按钮元素
+            const translateBtn = document.getElementById('translateBtn');
+            
+            // 翻译功能实现
+            translateBtn.addEventListener('click', async () => {
+                const prompt = drawingPrompt.value.trim();
+                if (!prompt) {
+                    showAlert('请输入要翻译的内容', 'error');
+                    return;
+                }
+                
+                setButtonLoading(translateBtn, true, '翻译中...');
+                
+                try {
+                    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(prompt)}&langpair=zh-CN|en`);
+                    const data = await response.json();
+                    
+                    if (data.responseData && data.responseData.translatedText) {
+                        drawingPrompt.value = data.responseData.translatedText;
+                        showAlert('翻译完成！', 'success');
+                    } else {
+                        throw new Error(data.responseDetails || '翻译失败');
+                    }
+                } catch (error) {
+                    showAlert(`翻译失败: ${error.message}`, 'error');
+                } finally {
+                    setButtonLoading(translateBtn, false, '<i class="fas fa-language"></i> 中译英');
+                }
+            });
 
         // --- Initialization ---
         loadSettings();
@@ -1208,15 +1461,15 @@
 
         // --- Event Listener Setup ---
         function setupEventListeners() {
-            // Main tab switching (AI对话, AI视觉, 设置)
+            // Main tab switching
             mainTabBtns.forEach(btn => btn.addEventListener('click', () => switchMainTab(btn)));
 
-            // Secondary tab switching (自由对话, 提示词扩写)
+            // Secondary tab switching
             secondaryTabBtns.forEach(btn => btn.addEventListener('click', () => switchSecondaryTab(btn)));
 
             // Settings tab actions
             saveSettingsBtn.addEventListener('click', saveSettingsAction);
-            cancelSettingsBtn.addEventListener('click', cancelSettingsAction); // New cancel action
+            cancelSettingsBtn.addEventListener('click', cancelSettingsAction);
             resetPromptBtn.addEventListener('click', () => promptTemplateInput.value = defaultPromptTemplate);
             resetVisionBtn.addEventListener('click', () => visionTemplateInput.value = defaultVisionTemplate);
             
@@ -1264,7 +1517,19 @@
             });
             uploadArea.addEventListener('drop', handleDrop, false);
 
-            // Chat history copy button (event delegation)
+            // Drawing functionality
+            clearDrawingBtn.addEventListener('click', clearDrawing);
+            generateImageBtn.addEventListener('click', generateImage);
+            downloadImageBtn.addEventListener('click', downloadImage);
+            regenerateImageBtn.addEventListener('click', generateImage);
+            drawingPrompt.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    generateImage();
+                }
+            });
+
+            // Chat history copy button
             document.addEventListener('click', (e) => {
                 const copyBtn = e.target.closest('.copy-message-btn');
                 if (copyBtn) {
@@ -1289,9 +1554,7 @@
                 targetPane.classList.add('active');
             }
 
-            // Special handling for settings tab
             if (clickedBtn.dataset.tab === 'settings') {
-                // Store current form state when opening settings
                 currentSettingsFormState = {
                     apiKey: apiKeyInput.value,
                     model: modelSelection.value,
@@ -1299,7 +1562,6 @@
                     visionTemplate: visionTemplateInput.value,
                 };
             } else {
-                // When leaving settings tab, reset form to stored values just in case user didn't save/cancel explicitly
                 loadSettings(); 
             }
         }
@@ -1475,11 +1737,98 @@
             }
         }
         
+        // --- Drawing Functionality ---
+        function clearDrawing() {
+            drawingPrompt.value = '';
+            drawingPlaceholder.style.display = 'flex';
+            generatedImage.style.display = 'none';
+            imageActions.style.display = 'none';
+            currentImageUrl = null;
+        }
+        
+            function generateImage() {
+                const prompt = drawingPrompt.value.trim();
+                if (!prompt) return showAlert('请输入图像描述', 'error');
+                if (!checkRequestFrequency()) return;
+                
+                const model = modelSelect.value;
+                const style = styleSelect.value;
+                const [width, height] = sizeSelect.value.split('x');
+                const quality = qualitySelect.value;
+                
+                // 构建Pollinations.ai的API URL
+                let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`;
+                apiUrl += `?width=${width}&height=${height}&model=${model}`;
+                
+                if (style) {
+                    apiUrl += `&style=${style}`;
+                }
+                
+                if (quality) {
+                    apiUrl += `&quality=${quality}`;
+                }
+                
+                // 添加随机种子防止缓存
+                apiUrl += `&seed=${Math.floor(Math.random() * 1000000)}`;
+                
+                setButtonLoading(generateImageBtn, true, '');
+                
+                // 显示加载状态
+                drawingPlaceholder.style.display = 'flex';
+                drawingPlaceholder.innerHTML = `
+                    <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                    <p>正在生成图像，请稍候...</p>
+                `;
+                generatedImage.style.display = 'none';
+                imageActions.style.display = 'none';
+                
+                // 设置图像源
+                generatedImage.src = apiUrl;
+                currentImageUrl = apiUrl;
+                
+                // 图像加载完成时
+                generatedImage.onload = () => {
+                    drawingPlaceholder.style.display = 'none';
+                    generatedImage.style.display = 'block';
+                    imageActions.style.display = 'flex';
+                    setButtonLoading(generateImageBtn, false, '<i class="fas fa-magic"></i>');
+                    showAlert('图像生成成功！', 'success');
+                };
+                
+                // 图像加载失败时
+                generatedImage.onerror = () => {
+                    drawingPlaceholder.style.display = 'flex';
+                    drawingPlaceholder.innerHTML = `
+                        <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                        <p>图像生成失败，请重试</p>
+                    `;
+                    generatedImage.style.display = 'none';
+                    imageActions.style.display = 'none';
+                    setButtonLoading(generateImageBtn, false, '<i class="fas fa-magic"></i>');
+                    showAlert('图像生成失败，请重试', 'error');
+                };
+            }
+        
+        function downloadImage() {
+            if (!currentImageUrl) return;
+            
+            // 创建临时链接下载图像
+            const link = document.createElement('a');
+            link.href = currentImageUrl;
+            const prompt = drawingPrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '');
+            link.download = `ai-art-${prompt || 'image'}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showAlert('图像下载中...', 'success');
+        }
+        
         // --- Settings Management ---
         function loadSettings() {
             const settings = {
                 apiKey: localStorage.getItem('apiKey') || '',
-                model: localStorage.getItem('geminiModel') || 'gemini-1.5-flash-latest',
+                model: localStorage.getItem('geminiModel') || 'gemini-2.5-flash',
                 promptTemplate: localStorage.getItem('promptTemplate') || defaultPromptTemplate,
                 visionTemplate: localStorage.getItem('visionTemplate') || defaultVisionTemplate,
             };
@@ -1499,18 +1848,15 @@
             checkApiStatus();
             showAlert('设置已保存！', 'success');
             
-            // Switch back to chat tab after saving
             document.querySelector('.tab-btn[data-tab="chat"]').click();
         }
 
         function cancelSettingsAction() {
-            // Restore settings from the state when the settings tab was opened
             apiKeyInput.value = currentSettingsFormState.apiKey;
             modelSelection.value = currentSettingsFormState.model;
             promptTemplateInput.value = currentSettingsFormState.promptTemplate;
             visionTemplateInput.value = currentSettingsFormState.visionTemplate;
             
-            // Switch back to chat tab
             document.querySelector('.tab-btn[data-tab="chat"]').click();
         }
 
@@ -1586,7 +1932,7 @@
                 if (!button.dataset.originalContent) {
                     button.dataset.originalContent = button.innerHTML;
                 }
-                button.innerHTML = `<span class="loader"></span> ${loadingText || ''}`;
+                button.innerHTML = loadingText ? loadingText : `<span class="loader"></span>`;
             } else {
                 button.classList.remove('btn-disabled');
                 if(button.dataset.originalContent) {
@@ -1600,7 +1946,7 @@
 
         async function callGeminiApi(contents) {
             const apiKey = localStorage.getItem('apiKey');
-            const model = localStorage.getItem('geminiModel') || 'gemini-1.5-flash-latest';
+            const model = localStorage.getItem('geminiModel') || 'gemini-2.5-flash';
             if (!apiKey) throw new Error('请先在设置中填写您的Gemini API密钥');
 
             const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -1621,7 +1967,13 @@
 
             if (!response.ok || !data.candidates) {
                 console.error('API Error:', data);
-                throw new Error(data.error?.message || 'API请求失败，请检查密钥或网络连接');
+                if (response.status === 429) {
+                    throw new Error('请求过于频繁，请稍后再试。');
+                } else if (data.error && data.error.message) {
+                    throw new Error(data.error.message);
+                } else {
+                    throw new Error('API请求失败，请检查密钥或网络连接');
+                }
             }
 
             return data.candidates[0].content.parts[0].text;
@@ -1635,9 +1987,17 @@
             }
             
             try {
-                await callGeminiApi([{ role: "user", parts: [{ text: "Hello" }] }]);
+                await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ role: "user", parts: [{ text: "ping" }] }],
+                        generationConfig: { maxOutputTokens: 1 }
+                    })
+                });
                 updateApiStatus(true, 'API连接正常');
             } catch (error) {
+                console.error("API Status Check Error:", error);
                 updateApiStatus(false, `API连接失败: ${error.message}`);
             }
         }
@@ -1719,7 +2079,7 @@
             return true;
         }
 
-        // Initialize chat history with the default message
+        // Initialize chat history
         clearChat();
     });
 </script>
