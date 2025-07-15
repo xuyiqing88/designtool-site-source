@@ -1097,15 +1097,16 @@
                 flex: 1;
                 text-align: center;
                 justify-content: center;
-                padding: 10px 15px;
                 margin-bottom: 0;
                 font-size: 15px;
+		padding: 8px 10px;
+		gap: 4px;
             }
             .tab-btn i {
                 margin-right: 4px;
             }
             .main-content {
-                padding: 15px;
+                padding: 0;
                 min-height: calc(100vh - 80px);
             }
             .chat-history {    height: 260px; padding: 12px;}
@@ -1113,25 +1114,13 @@
                 flex-direction: column;
 		        display: flex;
             }
-	        .upload-container {min-height: 190px;}
+	    .upload-container {min-height: 190px;}
             .settings-pane {padding: 20px;}
 	.message-avatar {
-	display: none;}
+		display: none;}
 
         }
 
-        @media (max-width: 480px) {
-            .tab-btn {
-                padding: 8px 10px;
-                font-size: 14px;
-            }
-            .tab-btn i {
-                margin-right: 4px;
-            }
-            .main-content {
-                padding: 0;
-            }
-        }
     </style>
 </head>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
@@ -1145,13 +1134,13 @@
             
             <div class="tabs">
                 <button class="tab-btn active" data-tab="chat">
-                    <i class="fas fa-comments" style="margin-right: 8px;"></i> AI对话
+                    <i class="fas fa-comments"></i> AI对话
                 </button>
                 <button class="tab-btn" data-tab="vision">
-                    <i class="fas fa-image" style="margin-right: 8px;"></i> AI图像
+                    <i class="fas fa-image"></i> AI图像
                 </button>
                 <button class="tab-btn" data-tab="settings">
-                    <i class="fas fa-cog" style="margin-right: 8px;"></i> 设置
+                    <i class="fas fa-cog"></i> API设置
                 </button>
             </div>
         </div>
