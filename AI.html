@@ -571,6 +571,7 @@
             padding: 8px 18px;
             border-radius: 6px;
             font-size: 15px;
+	line-height: 1.5;
         }
 
         .settings-footer {
@@ -1078,7 +1079,8 @@
             }
 	textarea {min-height: 130px;}
 	.shezhik {
-		max-height: 62vh; }
+		max-height: 62vh; 
+	        padding-right: 10px;}
 	.message {
 		gap: 8px;}
 	.drawing-layout {
@@ -1115,9 +1117,11 @@
 		        display: flex;
             }
 	    .upload-container {min-height: 190px;}
-            .settings-pane {padding: 20px;}
+            .settings-pane {padding: 20px 10px 20px 20px;}
 	.message-avatar {
 		display: none;}
+	.secondary-tab-pane.active {
+	max-height: 74vh;}
 
         }
 
@@ -1370,7 +1374,7 @@
                         <div class="shezhik">
                             <div class="settings-item">
                                 <label for="apiKey">Gemini API 密钥</label>
-                                <p style="color: var(--text3); font-size: 14px; margin-bottom: 8px;">
+                                <p class="panel-description" style="color: var(--text3);">
                                     需申请Gemini API并填入此处，查看<a href="https://www.bilibili.com/video/BV1ri42127Kv/?spm_id_from=333.337.search-card.all.click"  target=“_blank” style="color:var(--main-color);">获取密钥教程</a>。科学上网代理模式设置为“全局连接”，勾选支持的国家，查看<a href="https://developer.android.google.cn/studio/preview/gemini/availability?hl=zh-cn" target=“_blank” style="color:var(--main-color);">支持国家列表</a>。密钥只保存在您的浏览器中，不会被发送到任何服务器。
                                 </p>
                                 <input type="password" id="apiKey" placeholder="输入您的Gemini API密钥">
@@ -1378,7 +1382,7 @@
                             
                             <div class="settings-item">
                                 <label for="modelSelection">模型选择</label>
-                                <p style="color: var(--text3); font-size: 14px; margin-bottom: 8px;">
+                                <p class="panel-description" style="color: var(--text3);">
                                     选择用于所有AI功能的模型。三者均支持多模态。
                                 </p>
                                 <select id="modelSelection">
