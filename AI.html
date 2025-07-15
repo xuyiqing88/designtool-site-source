@@ -683,6 +683,7 @@
             color: var(--main-color);
             font-size: 18px;
             flex-shrink: 0;
+	overflow: hidden;
         }
 
         .message-bubble {
@@ -2062,7 +2063,7 @@ function generateImage() {
 
 
                 messageContainer.innerHTML = `
-                    <div class="message-avatar"><i class="fas ${avatarIcon}"></i></div>
+                    <div class="message-avatar"><img src="img/2z.webp" style="width: 36px;" alt="head"></div>
                     <div class="message-bubble">
                         <div class="message-content">${contentHTML}${fileAttachmentHTML}</div>
                         <div class="message-footer">
