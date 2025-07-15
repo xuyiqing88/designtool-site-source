@@ -251,6 +251,7 @@
 	display: flex; 
 	max-height: 84vh;
     	overflow-y: auto;
+	    overflow-x: hidden;
 	}
 
         @keyframes fadeIn {
@@ -966,6 +967,12 @@
             border-radius: 12px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             display: none;
+            cursor: pointer; /* 新增: 提示可点击 */
+            transition: transform 0.2s ease-in-out;
+        }
+
+        #generatedImage:hover {
+            transform: scale(1.03); /* 新增: 悬停放大效果 */
         }
         
         .drawing-placeholder {
@@ -994,6 +1001,65 @@
             gap: 15px;
             margin-top: 20px;
         }
+
+        /* --- 新增：图片放大模态框样式 --- */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none; /* 默认隐藏 */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .image-modal.show {
+            display: flex; /* 显示模态框 */
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+        }
+        
+        .modal-content img {
+            object-fit: contain;
+            border-radius: 8px;
+    	height: 86vh;
+        }
+
+        .modal-close-btn {
+                position: absolute;
+    top: -40px;
+    background: var(--card-bg);
+    border: none;
+    color: var(--text1);
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.3s;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 7px 0 10px;
+        }
+        .modal-close-btn:hover {
+            transform: scale(1.1);
+            color: #ff5a5a;
+        }
+
+        .modal-download-btn {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--btcolor);
+        }
+        /* --- 结束：新增样式 --- */
         
         @media (max-width: 768px) {
             .main-layout { 
@@ -1362,6 +1428,16 @@
         </div>
     </div>
     
+    <div class="image-modal" id="imageModal">
+        <div class="modal-content">
+            <img src="" alt="Enlarged Image" id="modalImage">
+            <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
+            <button class="btn-primary modal-download-btn" id="modalDownloadBtn">
+                <i class="fas fa-download"></i> 下载图片
+            </button>
+        </div>
+    </div>
+
     <script>
     // 默认设置
     const defaultPromptTemplate = "As a prompt optimization expert, enhance the user's original prompt to be more detailed and expressive for an image generation model. Add rich details while keeping the core concept. The final prompt should be suitable for models like Stable Diffusion or Midjourney.";
@@ -1428,6 +1504,13 @@
         const imageActions = document.getElementById('imageActions');
         const downloadImageBtn = document.getElementById('downloadImageBtn');
         const regenerateImageBtn = document.getElementById('regenerateImageBtn');
+        
+        // 新增：Modal elements
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+
 
         // State variables
         let apiHistory = [];
@@ -1542,6 +1625,27 @@
                     generateImage();
                 }
             });
+
+            // --- 新增：图片放大/下载事件 ---
+            generatedImage.addEventListener('click', () => {
+                if(currentImageUrl) {
+                    modalImage.src = currentImageUrl;
+                    imageModal.classList.add('show');
+                }
+            });
+            
+            modalCloseBtn.addEventListener('click', () => imageModal.classList.remove('show'));
+            
+            imageModal.addEventListener('click', (e) => {
+                // 如果点击的是背景（而不是内容区域），则关闭模态框
+                if (e.target === imageModal) {
+                    imageModal.classList.remove('show');
+                }
+            });
+
+            modalDownloadBtn.addEventListener('click', downloadImage);
+            // --- 结束：新增事件 ---
+
 
             // Chat history copy button
             document.addEventListener('click', (e) => {
@@ -1823,19 +1927,52 @@
                 };
             }
         
-        function downloadImage() {
+        // --- 修改: 下载功能 ---
+        async function downloadImage() {
             if (!currentImageUrl) return;
             
-            // 创建临时链接下载图像
-            const link = document.createElement('a');
-            link.href = currentImageUrl;
-            const prompt = drawingPrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '');
-            link.download = `ai-art-${prompt || 'image'}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const originalButtonHtml = downloadImageBtn.innerHTML;
+            setButtonLoading(downloadImageBtn, true, '下载中...');
             
-            showAlert('图像下载中...', 'success');
+            try {
+                // 使用fetch获取图片数据，并设置为cors模式以处理跨域图片
+                const response = await fetch(currentImageUrl, { mode: 'cors' });
+                if (!response.ok) {
+                    throw new Error(`网络响应错误: ${response.statusText}`);
+                }
+                const blob = await response.blob();
+                
+                // 创建一个临时的URL指向该blob对象
+                const url = window.URL.createObjectURL(blob);
+                
+                // 创建一个临时的a标签来触发下载
+                const link = document.createElement('a');
+                link.href = url;
+                
+                // 从提示词中提取一个安全的文件名
+                const prompt = drawingPrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `ai-art-${prompt || 'image'}.png`;
+                
+                document.body.appendChild(link);
+                link.click();
+                
+                // 清理
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                showAlert('图像开始下载...', 'success');
+            } catch (error) {
+                console.error("下载失败:", error);
+                showAlert('下载失败，可能是跨域限制。请尝试右键保存。', 'error');
+                // 如果fetch失败，回退到原始方法
+                const link = document.createElement('a');
+                link.href = currentImageUrl;
+                link.target = '_blank';
+                link.click();
+            } finally {
+                setButtonLoading(downloadImageBtn, false, '');
+                downloadImageBtn.innerHTML = originalButtonHtml; // 恢复按钮原始内容
+            }
         }
         
         // --- Settings Management ---
