@@ -764,12 +764,12 @@
             background-color: var(--mainbg);
             border-radius: 8px;
             padding: 15px;
-            overflow-x: auto;
+            overflow-x: auto; /* 这是实现水平滚动的关键 */
             font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
             font-size: 0.9em;
             margin-top: 10px;
             margin-bottom: 10px;
-            white-space: pre-wrap;
+            white-space: pre-wrap; /* 这允许换行，但可能会被内部的 code 覆盖 */
             word-break: break-all;
         }
 
@@ -787,8 +787,8 @@
             padding: 0;
             border-radius: 0;
             color: inherit;
-            white-space: pre;
-            word-break: normal;
+            white-space: pre-wrap; /* 这是导致截断的主要原因 */
+            word-break: break-word;
         }
 
         .message-content img {
