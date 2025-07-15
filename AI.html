@@ -1446,8 +1446,8 @@
 
     <script>
     // 默认设置
-    const defaultPromptTemplate = "As a prompt optimization expert, enhance the user's original prompt to be more detailed and expressive for an image generation model. Add rich details while keeping the core concept. The final prompt should be suitable for models like Stable Diffusion or Midjourney.";
-    const defaultVisionTemplate = "Describe the uploaded image in detail, covering the main subjects, setting, colors, style, and atmosphere. Then, based on your description, generate a high-quality, detailed prompt suitable for an image generation model.";
+    const defaultPromptTemplate = "You are creating a prompt for Stable Diffusion to generate an image. First step: describe this image, then put description into text. Second step: generate a text prompt for %s based on first step.  Only respond with the prompt itself, but embellish it as needed but keep it under 120 tokens.";
+    const defaultVisionTemplate = "You are creating a prompt for Stable Diffusion. First: describe this image. Second: generate a text prompt based on description. Only respond with the prompt, keep it under 120 tokens.";
     
     // DOM元素
     document.addEventListener('DOMContentLoaded', () => {
