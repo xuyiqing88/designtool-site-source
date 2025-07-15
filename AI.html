@@ -1390,7 +1390,7 @@
                                 </select>
                             </div>
 
-                            <div class="settings-item">
+			<div class="settings-item">
                                 <label for="promptTemplate">
                                     <div class="panel-title-wrapper">
                                         提示词扩写模板
@@ -1438,7 +1438,15 @@
     // 默认设置
     const defaultPromptTemplate = "You are creating a prompt for Stable Diffusion to generate an image. First step: describe this image, then put description into text. Second step: generate a text prompt for %s based on first step.  Only respond with the prompt itself, but embellish it as needed but keep it under 120 tokens.";
     const defaultVisionTemplate = "Describe the uploaded image in detail, covering the main subjects, setting, colors, style, and atmosphere. Then, based on your description, generate a high-quality, detailed prompt suitable for an image generation model, only respond with the prompt, keep it under 120 tokens.";
-    
+
+const stylePrefixes = {
+  "realistic": "photorealistic, ultra detailed, 8k, sharp focus, ",
+  "anime": "anime style, vibrant colors, expressive eyes, ",
+  "oil-painting": "oil painting texture, brush strokes, classical art, ",
+  "pixel-art": "pixel art, 8-bit, retro video game style, ",
+  "surrealism": "surreal, dreamlike, bizarre, impossible perspective, ",
+  "cyberpunk": "cyberpunk, neon lights, futuristic city, rain, "
+};
     // DOM元素
     document.addEventListener('DOMContentLoaded', () => {
         // Global elements
@@ -1860,27 +1868,34 @@
             currentImageUrl = null;
         }
         
-            function generateImage() {
-                const prompt = drawingPrompt.value.trim();
-                if (!prompt) return showAlert('请输入图像描述', 'error');
-                if (!checkRequestFrequency()) return;
-                
-                const model = modelSelect.value;
-                const style = styleSelect.value;
-                const [width, height] = sizeSelect.value.split('x');
-                const quality = qualitySelect.value;
-                
-                // 构建Pollinations.ai的API URL
-                let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`;
-                apiUrl += `?width=${width}&height=${height}&model=${model}`;
-                
-                if (style) {
-                    apiUrl += `&style=${style}`;
-                }
-                
-                if (quality) {
-                    apiUrl += `&quality=${quality}`;
-                }
+function generateImage() {
+    const prompt = drawingPrompt.value.trim();
+    if (!prompt) return showAlert('请输入图像描述', 'error');
+    if (!checkRequestFrequency()) return;
+    
+    const model = modelSelect.value;
+    const style = styleSelect.value;
+    const [width, height] = sizeSelect.value.split('x');
+    const quality = qualitySelect.value;
+    
+    // 添加风格前缀
+    let finalPrompt = prompt;
+    if (style && stylePrefixes[style]) {
+        finalPrompt = stylePrefixes[style] + prompt;
+    }
+    
+    // 构建Pollinations.ai的API URL
+    let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}`;
+    apiUrl += `?width=${width}&height=${height}&model=${model}`;
+    
+    if (style) {
+        apiUrl += `&style=${style}`;
+    }
+    
+    if (quality) {
+        apiUrl += `&quality=${quality}`;
+    }
+
                 
                 // 添加随机种子防止缓存
                 apiUrl += `&seed=${Math.floor(Math.random() * 1000000)}`;
