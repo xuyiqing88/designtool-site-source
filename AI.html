@@ -14,7 +14,7 @@
             --text2: #4a4e6d;
             --text3: #8d8fa3;
             --line: #e2e4f0;
-            --mainbg: #F4F6F9;
+            --mainbg: #f9f9ff;
             --btactive: #e5e8ff;
             --lightbg: #f8f9ff;
             --shadow: #55537512;
@@ -94,11 +94,10 @@
 
         .sidebar {
             width: 250px;
-            background: var(--card-bg);
+            background: linear-gradient(0deg, #bbb2ff, #7a6fff);
             display: flex;
             flex-direction: column;
             padding: 25px 0;
-            border-right: 1px solid var(--line);
             flex-shrink: 0;
 	        margin-left: 60px;
         }
@@ -108,16 +107,14 @@
             align-items: center;
             gap: 15px;
             padding: 0 25px 25px;
-            border-bottom: 1px solid var(--line);
+            border-bottom: 1px solid #00000012;
             margin-bottom: 20px;
         }
 
         .logo h1 {
             font-size: 1.8rem;
             font-weight: 700;
-            background: var(--btcolor);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+	color: #fff;
             letter-spacing: -0.5px;
         }
 
@@ -145,7 +142,7 @@
             padding: 12px 20px;
             background: none;
             border: none;
-            color: var(--text2);
+            color: #fff;
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
@@ -158,19 +155,18 @@
         }
 
         .tab-btn.active {
-            color: var(--main-color);
-            background: var(--btactive);
+            color: #fff;
+            background: #00000012;
             font-weight: 600;
             box-shadow: none;
         }
         .tab-btn:hover:not(.active) {
-            background: var(--btactive);
+            background: #00000012;
         }
 
         .main-content {
             flex-grow: 1;
-            background: var(--mainbg);
-            padding: 25px;
+            padding: 15px;
             overflow-y: hidden;
             min-width: 0;
         }
@@ -702,6 +698,7 @@
         .ai-message .message-bubble {
             background: var(--ai-msg-bg);
             border-top-left-radius: 4px;
+	    box-shadow: 0px 5px 10px #acacbe1c;
         }
 
         .ai-message.initial .message-bubble {
@@ -710,15 +707,16 @@
         }
 
         .ai-message.initial .message-content strong {
-            font-size: 1.1em;
+            font-size: 1.25em;
             font-weight: bold;
+	line-height: 1.5;
         }
         
         .message-content {
-            line-height: 1.2;
+            line-height: 1.3;
             white-space: pre-wrap;
             word-break: break-word;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .message-content strong {
@@ -754,7 +752,6 @@
         .message-content ul li {
             list-style-type: disc;
             margin-bottom: 0;
-	
         }
 
         .message-content ol li {
@@ -831,7 +828,7 @@
         .chat-input-area .btn-group {
             position: absolute;
             right: 10px;
-            bottom: 0;
+            bottom: -4px;
             transform: translateY(-50%);
             margin: 0;
             gap: 8px;
@@ -1061,27 +1058,25 @@
         }
 	.shezhik {
 		max-height: 77vh; 
-		overflow-y: auto; 
-		padding: 0 10px;}
+		overflow-y: auto; }
         /* --- 结束：新增样式 --- */
         
         @media (max-width: 768px) {
             .main-layout { 
                 flex-direction: column;
             }
-	        .panel {padding: 12px;}
+	        .panel {padding: 16px;}
             .sidebar {
                 width: 100%;
                 height: auto;
                 flex-direction: row;
                 padding: 15px 0;
-                border-bottom: 1px solid var(--line);
                 border-right: none;
                 justify-content: center;
                 align-items: center;
 	        margin-left: 0;
             }
-	textarea {min-height: 100px;}
+	textarea {min-height: 130px;}
 	.shezhik {
 		max-height: 62vh; }
 	.message {
@@ -1119,7 +1114,9 @@
 		        display: flex;
             }
 	        .upload-container {min-height: 190px;}
-            .settings-pane {padding: 15px;}
+            .settings-pane {padding: 20px;}
+	.message-avatar {
+	display: none;}
 
         }
 
@@ -1132,7 +1129,7 @@
                 margin-right: 4px;
             }
             .main-content {
-                padding: 10px;
+                padding: 0;
             }
         }
     </style>
