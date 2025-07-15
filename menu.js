@@ -305,20 +305,21 @@ const menuData = [
         ]
     },
     {
+        title: "AI工具",
+        icon: "fas fa-robot",
+        submenu: [
+	    { title: "AI数字人", link: "AI.html" },
+            { title: "模型数据集编辑器", link: "model.html" },
+            { title: "SDXL提示词风格大全", link: "SDXL.html" },
+        ]
+    },
+    {
         title: "3D工具",
         icon: "fas fa-cube",
         submenu: [
             { title: "无缝贴图预览工具", link: "map.html" },
             { title: "法线图转换工具", link: "normal.html" },
             { title: "ORM贴图生成工具", link: "ORM.html" }
-        ]
-    },
-    {
-        title: "AI工具",
-        icon: "fas fa-robot",
-        submenu: [
-            { title: "模型数据集编辑器", link: "model.html" },
-            { title: "SDXL提示词风格大全", link: "SDXL.html" },
         ]
     },
 
