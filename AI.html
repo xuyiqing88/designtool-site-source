@@ -265,7 +265,6 @@
                 background: var(--card-bg);
     border-radius: 12px;
     padding: 20px;
-    margin-bottom: 25px;
     display: flex; /* 让 panel 成为 flex 容器 */
     flex-direction: column; /* 子元素垂直堆叠 */
     flex-grow: 1; /* 让 panel 自动填充可用高度 */
@@ -328,6 +327,7 @@
             font-size: 15px;
             resize: vertical;
             transition: all 0.3s;
+	margin-bottom: 10px;
         }
         textarea { min-height: 160px; }
         
@@ -828,7 +828,7 @@
         .chat-input-area .btn-group {
             position: absolute;
             right: 10px;
-            bottom: -4px;
+            bottom: 0;
             transform: translateY(-50%);
             margin: 0;
             gap: 8px;
@@ -1109,7 +1109,7 @@
                 padding: 0;
                 min-height: calc(100vh - 80px);
             }
-            .chat-history {    height: 260px; padding: 12px;}
+            .chat-history {    padding: 12px;}
             .vision-layout {
                 flex-direction: column;
 		        display: flex;
