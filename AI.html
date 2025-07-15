@@ -104,11 +104,12 @@
 
         .logo {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 15px;
             padding: 0 25px 25px;
             border-bottom: 1px solid #00000012;
             margin-bottom: 20px;
+	    flex-direction: column;
         }
 
         .logo h1 {
@@ -1134,6 +1135,7 @@
         <div class="sidebar">
             <div class="logo">
                 <h1>AI 数字人助手 <span class="status-indicator" id="apiStatus"></span></h1>
+		<p class="panel-description" style="color: #fff;">提供AI对话、提示词扩写、AI绘画、图像识别等能力</p>
             </div>
             
             <div class="tabs">
