@@ -1259,6 +1259,7 @@
                                             <label for="styleSelect">艺术风格</label>
                                             <select id="styleSelect">
                                                 <option value="">默认</option>
+                                                <option value="3D">3D卡通风格</option>
                                                 <option value="realistic">写实风格</option>
                                                 <option value="anime">动漫风格</option>
                                                 <option value="oil-painting">油画风格</option>
@@ -1441,6 +1442,7 @@
     const defaultVisionTemplate = "Describe the uploaded image in detail, covering the main subjects, setting, colors, style, and atmosphere. Then, based on your description, generate a high-quality, detailed prompt suitable for an image generation model, only respond with the prompt, keep it under 120 tokens.";
 
 const stylePrefixes = {
+  "3D": "Adorable 3D Character, 3D render, adorable character, 3D art, ",
   "realistic": "photorealistic, ultra detailed, 8k, sharp focus, ",
   "anime": "anime style, vibrant colors, expressive eyes, ",
   "oil-painting": "oil painting texture, brush strokes, classical art, ",
