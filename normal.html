@@ -236,6 +236,7 @@
             position: relative;
             overflow: hidden;
             height: 46px;
+	    width: 40%;
         }
         
         button:hover {
@@ -277,7 +278,7 @@
             background: rgba(10, 10, 20, 0.7);
             border-radius: 10px;
             overflow: hidden;
-            min-height: 320px;
+            min-height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -735,6 +736,9 @@
 		    display: flex;
 	    	flex-direction: column;
 		    padding: 0;}
+	.container {
+		    padding: 20px 0;
+		}
             .panel {
                 padding: 20px 15px;
                 min-width: auto;
@@ -750,12 +754,15 @@
                 padding: 15px;
                 gap: 20px;
             }
-            
+            .example-images {
+		gap: 10px;
+    		margin-right: 10px;
+		}
             button {
                 padding: 14px;
                 font-size: 1rem;
                 min-width: auto;
-                width: 100%;
+                width: 80%;
             }
             .controls {
                 grid-template-columns: 1fr;
@@ -843,7 +850,7 @@
 
                 <!-- 下载灰度图按钮 -->
                 <div style="display: flex; justify-content: center; margin-top: 15px;">
-                    <button id="downloadGrayBtn" class="button" style=" width: 186px; background: var(--btcolor);">
+                    <button id="downloadGrayBtn" class="button" style="background: var(--btcolor);">
                         <i class="fas fa-download"></i> 下载灰度图
                     </button>
                 </div>
@@ -895,11 +902,11 @@
                 </div>
 
                 <div class="btn-group">
-                    <button id="resetParamsBtn" class="toggle-btn" style="width: 186px;">
+                    <button id="resetParamsBtn" class="toggle-btn">
                         <i class="fas fa-redo"></i> 重置参数
                     </button>
 
-                    <button id="downloadBtn"  style="width: 186px;">
+                    <button id="downloadBtn">
                         <i class="fas fa-download"></i> 下载法线图
                     </button>
                 </div>
@@ -943,7 +950,7 @@
                 
                 <div class="panel-title">
                     <h2>反推灰度图<span class="scrib">拖拽法线图上传反推出灰度图</span></h2>
-                    <button id="reverseBtn" class="toggle-btn" style="font-size: 14px; height: 38px;">
+                    <button id="reverseBtn" class="toggle-btn" style="font-size: 14px; height: 38px; width: 120px;">
                         一键反推
                     </button>
                 </div>
