@@ -36,7 +36,6 @@
             background: #1a1b1c;
             color: #fff;
             min-height: 100vh;
-            padding: 20px;
             justify-content: center;
             align-items: center;
             position: relative;
@@ -77,6 +76,7 @@
             width: 100%;
             max-width: 1300px;
             margin: 0 auto;
+	padding: 20px;
         }
         
         header {
@@ -225,7 +225,6 @@
     font-size: 1rem;
     align-items: center;
     justify-content: center;
-    margin: 0 10px;
         }
         
         .ao-label, .roughness-label, .metallic-label { 
@@ -430,8 +429,8 @@
         .instructions {
             background: var(--mainbg);
             border-radius: 10px;
-            padding: 25px;
-            margin-top: 30px;
+            padding: 20px;
+            margin-top: 20px;
             border: 1px solid rgba(128, 128, 255, 0.1);
         }
         
@@ -641,7 +640,8 @@
             .main-content {
                 flex-direction: column;
             }
-            
+            .instructions {
+		    padding: 14px;}
             .upload-container {
                 flex-direction: column;
                 align-items: center;
@@ -657,7 +657,12 @@
                 flex-direction: column;
                 align-items: center;
             }
-            
+            .container {
+		padding: 10px;
+		}
+	.upload-section, .preview-section {
+		padding: 14px;
+		}
             .btn {
                 width: 100%;
                 max-width: 300px;
