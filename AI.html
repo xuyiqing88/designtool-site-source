@@ -1283,14 +1283,19 @@
                                             </select>
                                         </div>
                                         
-                                        <div class="drawing-control">
-                                            <label for="qualitySelect">图像质量</label>
-                                            <select id="qualitySelect">
-                                                <option value="ultra">超高</option>
-                                                <option value="high">高</option>
-                                                <option value="medium">中等</option>
-                                            </select>
-                                        </div>
+<!-- 替换这个div -->
+<div class="drawing-control">
+    <label for="seedInput">种子</label>
+    <div class="seed-input-group" style="display: flex; gap: 5px;">
+        <input type="text" id="seedInput" placeholder="-1" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--mainbg); font-size: 14px;">
+        <button id="randomSeedBtn" class="btn-secondary" style="padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+            <i class="fas fa-dice"></i>
+        </button>
+        <button id="lockSeedBtn" class="btn-secondary" style="padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+            <i class="fas fa-lock-open"></i>
+        </button>
+    </div>
+</div>
                                     </div>
 
 				<div class="btn-group" >
@@ -1506,7 +1511,6 @@ const stylePrefixes = {
         const modelSelect = document.getElementById('modelSelect');
         const styleSelect = document.getElementById('styleSelect');
         const sizeSelect = document.getElementById('sizeSelect');
-        const qualitySelect = document.getElementById('qualitySelect');
         const clearDrawingBtn = document.getElementById('clearDrawingBtn');
         const generateImageBtn = document.getElementById('generateImageBtn');
         const drawingPlaceholder = document.getElementById('drawingPlaceholder');
@@ -1882,14 +1886,13 @@ function generateImage() {
     const model = modelSelect.value;
     const style = styleSelect.value;
     const [width, height] = sizeSelect.value.split('x');
-    const quality = qualitySelect.value;
     
     // 添加风格前缀
     let finalPrompt = prompt;
     if (style && stylePrefixes[style]) {
         finalPrompt = stylePrefixes[style] + prompt;
     }
-    
+
     // 构建Pollinations.ai的API URL
     let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}`;
     apiUrl += `?width=${width}&height=${height}&model=${model}`;
@@ -1898,51 +1901,54 @@ function generateImage() {
         apiUrl += `&style=${style}`;
     }
     
-    if (quality) {
-        apiUrl += `&quality=${quality}`;
-    }
 
-                
-                // 添加随机种子防止缓存
-                apiUrl += `&seed=${Math.floor(Math.random() * 1000000)}`;
-                
-                setButtonLoading(generateImageBtn, true, '');
-                
-                // 显示加载状态
-                drawingPlaceholder.style.display = 'flex';
-                drawingPlaceholder.innerHTML = `
-                    <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
-                    <p>正在生成图像，请稍候...</p>
-                `;
-                generatedImage.style.display = 'none';
-                imageActions.style.display = 'none';
-                
-                // 设置图像源
-                generatedImage.src = apiUrl;
-                currentImageUrl = apiUrl;
-                
-                // 图像加载完成时
-                generatedImage.onload = () => {
-                    drawingPlaceholder.style.display = 'none';
-                    generatedImage.style.display = 'block';
-                    imageActions.style.display = 'flex';
-                    setButtonLoading(generateImageBtn, false, '<i class="fas fa-magic"></i>');
-                    showAlert('图像生成成功！', 'success');
-                };
-                
-                // 图像加载失败时
-                generatedImage.onerror = () => {
-                    drawingPlaceholder.style.display = 'flex';
-                    drawingPlaceholder.innerHTML = `
-                        <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-                        <p>图像生成失败，请重试</p>
-                    `;
-                    generatedImage.style.display = 'none';
-                    imageActions.style.display = 'none';
-                    setButtonLoading(generateImageBtn, false, '<i class="fas fa-magic"></i>');
-                    showAlert('图像生成失败，请重试', 'error');
-                };
-            }
+    // === 修复1：正确添加种子参数 ===
+    // 获取种子值
+    const seed = seedInput.value.trim();
+    if (seed) {
+        apiUrl += `&seed=${seed}`;
+    } else {
+        apiUrl += `&seed=${Math.floor(Math.random() * 1000000)}`;
+    }
+    // ================================
+    
+    setButtonLoading(generateImageBtn, true, '');
+    
+    // 显示加载状态
+    drawingPlaceholder.style.display = 'flex';
+    drawingPlaceholder.innerHTML = `
+        <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
+        <p>正在生成图像，请稍候...</p>
+    `;
+    generatedImage.style.display = 'none';
+    imageActions.style.display = 'none';
+    
+    // 设置图像源
+    generatedImage.src = apiUrl;
+    currentImageUrl = apiUrl;
+    
+    // 图像加载完成时
+    generatedImage.onload = () => {
+        drawingPlaceholder.style.display = 'none';
+        generatedImage.style.display = 'block';
+        imageActions.style.display = 'flex';
+        setButtonLoading(generateImageBtn, false, '<i class="fas fa-magic"></i>');
+        showAlert('图像生成成功！', 'success');
+    };
+    
+    // 图像加载失败时
+    generatedImage.onerror = () => {
+        drawingPlaceholder.style.display = 'flex';
+        drawingPlaceholder.innerHTML = `
+            <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+            <p>图像生成失败，请重试</p>
+        `;
+        generatedImage.style.display = 'none';
+        imageActions.style.display = 'none';
+        setButtonLoading(generateImageBtn, false, '<i class="fas fa-magic"></i>');
+        showAlert('图像生成失败，请重试', 'error');
+    };
+}
         
         // --- 修改: 下载功能 ---
         async function downloadImage() {
@@ -2265,6 +2271,27 @@ function renderChatHistory() {
 
         // Initialize chat history
         clearChat();
+// 种子按钮事件
+const randomSeedBtn = document.getElementById('randomSeedBtn');
+const lockSeedBtn = document.getElementById('lockSeedBtn');
+const seedInput = document.getElementById('seedInput');
+
+randomSeedBtn.addEventListener('click', () => {
+    const randomSeed = Math.floor(Math.random() * 1000000);
+    seedInput.value = randomSeed;
+});
+
+lockSeedBtn.addEventListener('click', () => {
+    const isLocked = lockSeedBtn.classList.toggle('locked');
+    lockSeedBtn.innerHTML = isLocked ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>';
+    seedInput.disabled = isLocked;
+    
+    // 如果锁定且种子为空，生成随机种子
+    if (isLocked && !seedInput.value.trim()) {
+        const randomSeed = Math.floor(Math.random() * 1000000);
+        seedInput.value = randomSeed;
+    }
+});
     });
 </script>
 
