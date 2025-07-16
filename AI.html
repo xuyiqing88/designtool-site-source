@@ -2026,58 +2026,74 @@ function generateImage() {
 
         // --- Render and UI Update ---
 
-        function renderChatHistory() {
-            chatHistory.innerHTML = '';
-            
-            displayHistory.forEach(msg => {
-                const messageContainer = document.createElement('div');
-                messageContainer.className = `message ${msg.role}-message ${msg.initial ? 'initial' : ''}`;
-                
-                const avatarIcon = msg.role === 'user' ? 'fa-user' : 'fa-robot';
-                let contentHTML = msg.content;
+function renderChatHistory() {
+    chatHistory.innerHTML = '';
+    
+    // 头像配置
+    const AVATARS = {
+        user: "img/user.png",    // 用户头像
+        ai: "img/2z.gif",        // AI普通头像
+        initial: "img/2z.gif"   // 初始欢迎消息头像
+    };
 
-                if (msg.role === 'ai') {
-                    contentHTML = marked.parse(msg.content);
-                }
-
-                let fileAttachmentHTML = '';
-                if (msg.fileData) {
-                    const fileName = msg.fileData.name;
-                    let fileIconClass = 'fas fa-file';
-                    let filePreviewSrc = '';
-                    if (msg.fileData.type.startsWith('image/')) {
-                        filePreviewSrc = msg.fileData.preview;
-                        fileIconClass = '';
-                    } else if (msg.fileData.type === 'application/pdf') {
-                        fileIconClass = 'fas fa-file-pdf';
-                    } else if (msg.fileData.type === 'text/plain') {
-                        fileIconClass = 'fas fa-file-alt';
-                    }
-                    
-                    fileAttachmentHTML = `
-                        <div class="message-file-attachment">
-                            ${filePreviewSrc ? `<img src="${filePreviewSrc}" alt="file preview" style="max-width: 100px; max-height: 100px; border-radius: 8px; margin-right: 10px;">` : `<i class="${fileIconClass}" style="font-size: 24px; margin-right: 10px; color: var(--text3);"></i>`}
-                            <span>${fileName}</span>
-                        </div>
-                    `;
-                }
-
-
-                messageContainer.innerHTML = `
-                    <div class="message-avatar"><img src="img/2z.gif" style="width: 36px;" alt="head"></div>
-                    <div class="message-bubble">
-                        <div class="message-content">${contentHTML}${fileAttachmentHTML}</div>
-                        <div class="message-footer">
-                            <span class="message-time">${msg.timestamp}</span>
-                            ${msg.role === 'ai' ? `<button class="copy-message-btn" title="复制"><i class="fas fa-copy"></i></button>` : ''}
-                        </div>
-                    </div>
-                `;
-                chatHistory.appendChild(messageContainer);
-            });
-            
-            chatHistory.scrollTop = chatHistory.scrollHeight;
+    displayHistory.forEach(msg => {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = `message ${msg.role}-message ${msg.initial ? 'initial' : ''}`;
+        
+        // 确定头像URL
+        let avatarSrc = AVATARS.ai; // 默认AI头像
+        if (msg.initial) {
+            avatarSrc = AVATARS.initial; // 初始欢迎消息头像
+        } else if (msg.role === 'user') {
+            avatarSrc = AVATARS.user; // 用户头像
         }
+
+        const avatarIcon = msg.role === 'user' ? 'fa-user' : 'fa-robot';
+        let contentHTML = msg.content;
+
+        if (msg.role === 'ai') {
+            contentHTML = marked.parse(msg.content);
+        }
+
+        let fileAttachmentHTML = '';
+        if (msg.fileData) {
+            const fileName = msg.fileData.name;
+            let fileIconClass = 'fas fa-file';
+            let filePreviewSrc = '';
+            if (msg.fileData.type.startsWith('image/')) {
+                filePreviewSrc = msg.fileData.preview;
+                fileIconClass = '';
+            } else if (msg.fileData.type === 'application/pdf') {
+                fileIconClass = 'fas fa-file-pdf';
+            } else if (msg.fileData.type === 'text/plain') {
+                fileIconClass = 'fas fa-file-alt';
+            }
+            
+            fileAttachmentHTML = `
+                <div class="message-file-attachment">
+                    ${filePreviewSrc ? `<img src="${filePreviewSrc}" alt="file preview" style="max-width: 100px; max-height: 100px; border-radius: 8px; margin-right: 10px;">` : `<i class="${fileIconClass}" style="font-size: 24px; margin-right: 10px; color: var(--text3);"></i>`}
+                    <span>${fileName}</span>
+                </div>
+            `;
+        }
+
+        messageContainer.innerHTML = `
+            <div class="message-avatar">
+                <img src="${avatarSrc}" style="width: 40px;" alt="${msg.role}头像">
+            </div>
+            <div class="message-bubble">
+                <div class="message-content">${contentHTML}${fileAttachmentHTML}</div>
+                <div class="message-footer">
+                    <span class="message-time">${msg.timestamp}</span>
+                    ${msg.role === 'ai' ? `<button class="copy-message-btn" title="复制"><i class="fas fa-copy"></i></button>` : ''}
+                </div>
+            </div>
+        `;
+        chatHistory.appendChild(messageContainer);
+    });
+    
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+}
 
         function showAlert(message, type = 'success') {
             const alert = document.createElement('div');
