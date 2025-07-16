@@ -327,6 +327,7 @@ const menuData = [
         title: "实用工具",
         icon: "fas fa-wrench",
         submenu: [
+            { title: "图片压缩工具", link: "comp.html" },
             { title: "本地翻译工具", link: "translation.html" },
             { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
