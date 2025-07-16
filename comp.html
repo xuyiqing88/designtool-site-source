@@ -249,6 +249,14 @@
             font-size: 1rem;
             display: flex;
             align-items: center;
+	overflow: hidden;
+    	text-overflow: ellipsis;
+    	display: -webkit-box;
+    	-webkit-line-clamp: 2; 
+    	-webkit-box-orient: vertical;
+    	white-space: normal; 
+    	max-height: 3em; 
+    	line-height: 1.5em;
         }
 
         .info-grid {
@@ -256,7 +264,6 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-top: 6px;
-	max-width: 380px;
         }
 
         .info-item {
@@ -563,11 +570,32 @@
                 margin-right: 0;
                 margin-bottom: 20px;
             }
-            
-            .download-btn-small {
-                width: 100%;
-                margin-top: 20px;
-            }
+          .image-name {
+        padding-right: 20px; /* 为标签留出空间 */
+        -webkit-line-clamp: 1; /* 移动端只显示一行 */
+        max-height: 1.5em;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr) !important; /* 两列布局 */
+        margin-top: 10px;
+    }
+    
+    .download-btn-small {
+        align-self: flex-end;
+        margin-top: 10px;
+        margin-right: 0;
+	width: 100%;
+       margin-top: 20px;
+    }
+    
+    .file-tag {
+        top: 10px;
+        right: 10px;
+        font-size: 10px;
+        padding: 1px 6px;
+        border-radius: 8px;
+    }
         }
     </style>
 </head>
@@ -630,6 +658,9 @@
             
                 <div class="status" id="status">
                     <div>准备上传图片...</div>
+	    		<div id="mobileHint" style="display:none;font-size:0.9rem;margin-top:10px;">
+        		提示：长按图片名称可查看完整文件名
+    		</div>
                     <div class="progress-container">
                         <div class="progress-bar" id="progressBar"></div>
                     </div>
@@ -690,7 +721,15 @@
             dropArea.addEventListener(eventName, preventDefaults, false);
             document.body.addEventListener(eventName, preventDefaults, false);
         });
-        
+        // 在JS中添加移动端检测
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// 在handleFiles函数中显示提示
+if (isMobileDevice()) {
+    document.getElementById('mobileHint').style.display = 'block';
+}
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -986,13 +1025,14 @@
             }
             
             row.innerHTML = `
-                ${methodTag}
-                <div class="thumbnail">
-                    <img src="${originalImg}" alt="原始图片">
-                </div>
-                <div class="image-info">
-                    <div class="image-name">
-                        ${name}
+   		 ${methodTag}
+    		<div class="thumbnail">
+       			<img src="${originalImg}" alt="原始图片">
+    		</div>
+    		<div class="image-info">
+        		<div class="image-name" title="${name}"> 
+            		${name}
+        		</div>
                     </div>
                     <div class="info-grid">
                         <div class="info-item">
