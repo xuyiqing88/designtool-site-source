@@ -1203,7 +1203,7 @@
                         <div class="secondary-tab-pane" id="promptSubTab">
                              <h2 style="display: none;">提示词扩写</h2>
                             <p class="panel-description">
-                                输入您的原始提示词，Gemini将为您扩展优化，生成更适合AI绘画、更具想象力的详细描述。
+                                输入您的原始提示词，Gemini将为您扩展优化，生成更适合AI绘画、更具想象力的详细描述（可在设置里修改扩写模板）。
                             </p>
                             <div class="chat-input-area">
                                  <textarea id="promptInput" placeholder="在此输入您的原始提示词..." style="min-height: 250px;"></textarea>
@@ -1225,7 +1225,7 @@
                     <div class="panel">
                         <div class="secondary-tabs">
                             <button class="secondary-tab-btn active" data-subtab="drawing" data-parent="vision">AI绘图</button>
-                            <button class="secondary-tab-btn" data-subtab="image-analysis" data-parent="vision">提示词反推</button>
+                            <button class="secondary-tab-btn" data-subtab="image-analysis" data-parent="vision">图像识别（提示词反推）</button>
                         </div>
                         
                         <div id="drawingSubTab" class="secondary-tab-pane active">
@@ -1325,7 +1325,7 @@
                         <div id="image-analysisSubTab" class="secondary-tab-pane">
                             <h2><i class="fas fa-random"></i> 提示词反推</h2>
                             <p class="panel-description">
-                                上传图片，Gemini将自动分析图像内容并生成详细的描述提示词。
+                                上传图片，Gemini将自动分析图像内容并生成详细的描述提示词（可在设置里修改反推模板）。
                             </p>
                             <div class="vision-layout">
                                 <div>
@@ -1406,7 +1406,7 @@
                             <div class="settings-item">
                                 <label for="visionTemplate">
                                     <div class="panel-title-wrapper">
-                                        图像识别模板
+                                        提示词反推模板
                                     </div>
                                     <button class="reset-btn" id="resetVisionBtn">
                                         <i class="fas fa-undo"></i> 恢复默认
