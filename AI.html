@@ -820,7 +820,7 @@
             transition: all 0.3s;
         }
         .message-bubble:hover .copy-message-btn { opacity: 1; }
-        .copy-message-btn:hover { color: var(--main-color); }
+        .copy-message-btn:hover { background: var(--lightbg);}
         
         /* Chat Input Area */
         .chat-input-area {
@@ -1348,7 +1348,7 @@
                                         <div class="response-header">
                                             <h3> Gemini分析结果</h3>
                                             <button class="copy-btn" id="copyVisionBtn" title="复制结果">
-                                                <i class="fas fa-copy"></i> 复制
+                                                <img src="img/copy.svg"></img> 复制
                                             </button>
                                         </div>
                                         <div class="response-content" id="visionResponse">
@@ -2088,7 +2088,7 @@ function renderChatHistory() {
                 <div class="message-content">${contentHTML}${fileAttachmentHTML}</div>
                 <div class="message-footer">
                     <span class="message-time">${msg.timestamp}</span>
-                    ${msg.role === 'ai' ? `<button class="copy-message-btn" title="复制"><i class="fas fa-copy"></i></button>` : ''}
+                    ${msg.role === 'ai' ? `<button class="copy-message-btn" title="复制"><img src="img/copy.svg"></img></button>` : ''}
                 </div>
             </div>
         `;
