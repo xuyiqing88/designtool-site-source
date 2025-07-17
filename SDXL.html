@@ -36,7 +36,6 @@
             background: linear-gradient(135deg, #f0f3ff, #e6e9ff);
             color: #333;
             min-height: 100vh;
-            padding: 20px;
             line-height: 1.6;
         }
 /* 新增返回顶部按钮样式 */
@@ -75,7 +74,7 @@
         
         header {
             text-align: center;
-            padding: 10px 0;
+            padding: 20px;
         }
         
         h1 {
@@ -239,6 +238,7 @@
     height: 183px;
     align-items: center;
 	flex-wrap: wrap;
+	font-size: 15px;
         }
         
         .prompt-cell {
@@ -393,7 +393,10 @@
             .controls {
                 padding: 0 15px;
             }
-            
+            .style-name {
+		min-width: 50px;
+        	font-size: 14px;
+	}
             .category-tabs {
                 justify-content: flex-start;
                 overflow-x: auto;
@@ -402,31 +405,32 @@
 		flex-direction: row;
         	flex-wrap: nowrap;
             }
-            
+            .none {        
+		display: none;}
             .category-tab {
                 flex-shrink: 0;
             }
             
             th {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
             
             td {
-                padding: 12px 10px;
+                padding: 12px 4px;
             }
-            
+            .translation { display: none;}
             .prompt-cell {
-                min-width: 250px;
+                min-width: 50px;
+        	max-width: 100px;
             }
             
             .prompt-text {
-                height: 120px;
                 font-size: 0.85rem;
             }
             
             .example-image {
-                width: 120px;
-                height: 90px;
+                width: 100px;
+                height: 120px;
             }
             
             thead {
@@ -462,7 +466,7 @@
                     <tr>
                         <th width="15%">风格名称</th>
                         <th width="25%">正向提示词</th>
-                        <th width="25%">中文翻译</th>
+                        <th width="25%" class="none">中文翻译</th>
                         <th width="25%">负向提示词</th>
                         <th width="15%">例图</th>
                     </tr>
