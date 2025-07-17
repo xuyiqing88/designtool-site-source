@@ -352,14 +352,9 @@
 
         .status {
             text-align: center;
-            padding: 20px;
             color: var(--text2);
-            font-size: 1.05rem;
-            border-radius: 10px;
-            margin-top: 20px;
-            background: rgba(90, 100, 255, 0.05);
-            border: 1px dashed var(--border);
-            font-weight: 500;
+            font-size: 0.9rem;
+            font-weight: 400;
         }
 
         .footer {
@@ -378,7 +373,7 @@
 
         .download-all-container {
             text-align: center;
-            padding: 15px;
+            padding: 10px;
             position: fixed;
             bottom: 0;
             background: #ffffff52;
@@ -432,7 +427,7 @@
             background: var(--border);
             border-radius: 3px;
             overflow: hidden;
-            margin-top: 15px;
+            margin-top: 8px;
         }
 
         .progress-bar {
@@ -822,22 +817,23 @@
                             </select>
                         </div>
                     </div>
-                </div>
-            
-                <div class="status" id="status">
-                    <div>准备上传图片...</div>
-                    <div id="mobileHint" style="display:none;font-size:0.9rem;margin-top:10px;">
-                        提示：长按图片名称可查看完整文件名
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progressBar"></div>
-                    </div>
-                </div>               
+                </div>            
             </div>
             
             <div class="preview-panel">
                 <h2 class="panel-title">
                     <span>压缩结果 (<span id="compressedFileCount">0</span>)</span>
+		            
+                <div class="status" id="status">
+                    <div>准备上传图片...</div>
+                    <div id="mobileHint" style="display:none;font-size:0.9rem;margin-top:10px;">
+                        
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>   
+
                     <button id="clearAllBtn" class="clear-all-btn" style="display:none;">清空所有</button>
                 </h2>
                 <div class="scrib">
