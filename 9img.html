@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈九宫格图片裁剪工具</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+ <script src="menu.js" defer></script>
+    <style>
+        :root {
+            --main-color: #5a64ff;
+            --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
+            --text1: #1a1d2e;
+            --text2: #4a4e6d;
+            --text3: #8d8fa3;
+            --line: #e2e4f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7ff 0%, #eef0fa 100%);
+            color: var(--text1);
+            min-height: 100vh;
+        }
+
+        .container {
+            min-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            gap: 20px;
+        }
+
+        header {
+            padding: 28px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            position: relative;
+            color: var(--main-color);
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content1 {
+            display: flex;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content1 {
+                flex-direction: column;
+            }
+        }
+	.content1 {
+            gap: 10px;
+        }
+        .left-panel {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--line);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel {
+            flex: 1.5;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--text1);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-container {
+            margin-bottom: 32px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--line);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fbfcff;
+            margin: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--main-color);
+            background-color: rgba(90, 100, 255, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(90, 100, 255, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 64px;
+            color: var(--main-color);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .upload-text {
+            color: var(--text2);
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .upload-hint {
+            color: var(--text3);
+            font-size: 14px;
+            max-width: 300px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .preview-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--line);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .preview-title {
+            font-size: 16px;
+            color: var(--text1);
+            font-weight: 600;
+        }
+
+        .download-btn {
+            background: var(--btcolor);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 15px rgba(90, 100, 255, 0.4);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(90, 100, 255, 0.5);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .nine-grid-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        .nine-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px; /* Default gap */
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            aspect-ratio: 1/1;
+            background: var(--line); /* Background for gaps */
+            border-radius: 8px;
+            padding: 6px; /* Padding for gaps */
+            overflow: hidden;
+        }
+
+        .grid-item {
+            background: #f0f2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .grid-placeholder {
+            color: var(--text3);
+            font-size: 42px;
+            opacity: 0.3;
+        }
+
+        .success-message {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 18px;
+            margin-top: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .image-display {
+            max-width: 100%;
+            max-height: 360px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .upload-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .image-loaded .upload-icon,
+        .image-loaded .upload-text,
+        .image-loaded .upload-hint {
+            display: none;
+        }
+
+        .image-loaded .image-display {
+            display: block;
+        }
+
+        .image-placeholder {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+    </style>
+</head>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
+<body>
+<div id="global-sidebar"></div>
+    <div class="container">
+        <header>
+            <h1>朋友圈九宫格图片裁剪工具</h1>
+            <p>上传图片一键等分裁剪成9张图，打造完美朋友圈</p>
+        </header>
+
+        <div class="content1">
+            <div class="left-panel">
+                <div class="upload-container">
+                    <h2 class="panel-title">上传图片</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content" id="uploadContent">
+                            <div class="image-placeholder" id="imagePlaceholder">
+                                <div class="upload-icon">📁</div>
+                                <p class="upload-text">点击或拖拽上传图片</p>
+                                <p class="upload-hint">支持 JPG、PNG 格式，建议尺寸大于 900×900 像素</p>
+                            </div>
+                            <img id="imageDisplay" class="image-display" src="" alt="上传图片预览" style="display: none;">
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*">
+                        <div id="successMessage" class="success-message"></div>
+                    </div>
+                </div>
+
+                <div class="settings" style="display:none;"></div>
+            </div>
+
+            <div class="right-panel">
+                <div class="preview-container">
+                    <div class="preview-header">
+                        <h2 class="preview-title">预览效果</h2>
+                        <button class="download-btn" id="downloadBtn">
+                            <span>下载九宫格</span>
+                        </button>
+                    </div>
+                    <div class="nine-grid-container">
+                        <div class="nine-grid" id="nineGrid">
+                            <div class="grid-item"><div class="grid-placeholder">1</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">2</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">3</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">4</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">5</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">6</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">7</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">8</div></div>
+                            <div class="grid-item"><div class="grid-placeholder">9</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const nineGrid = document.getElementById('nineGrid');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const successMessage = document.getElementById('successMessage');
+            const imageDisplay = document.getElementById('imageDisplay');
+            const imagePlaceholder = document.getElementById('imagePlaceholder');
+
+            let processedImages = [];
+            let currentFileName = "";
+
+            // 处理拖拽上传
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    handleFile(file);
+                }
+            });
+
+            // 点击上传区域触发文件选择
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // 文件选择变化
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    const file = e.target.files[0];
+                    handleFile(file);
+                }
+            });
+
+            // 下载按钮
+            downloadBtn.addEventListener('click', function() {
+                if (processedImages.length === 0) {
+                    showMessage("请先上传图片", "error");
+                    return;
+                }
+
+                // 创建ZIP文件
+                const zip = new JSZip();
+                const folder = zip.folder("九宫格图片");
+
+                // 添加图片到ZIP
+                processedImages.forEach((imgData, index) => {
+                    const base64Data = imgData.replace(/^data:image\/(png|jpeg);base64,/, "");
+                    folder.file(`九宫格-${index + 1}.jpg`, base64Data, {base64: true});
+                });
+
+                // 生成ZIP并下载
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    saveAs(content, `九宫格-${currentFileName}.zip`);
+                    showMessage("九宫格图片下载成功！", "success");
+                });
+            });
+
+            function handleFile(file) {
+                if (file.type.startsWith('image/')) {
+                    currentFileName = file.name.replace(/\.[^/.]+$/, ""); // 移除扩展名
+                    processImage(file);
+                } else {
+                    showMessage("请上传图片文件！", "error");
+                }
+            }
+
+            function processImage(file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // 显示上传的图片预览并隐藏上传提示
+                        imageDisplay.src = e.target.result;
+                        imageDisplay.style.display = "block";
+                        imagePlaceholder.style.display = "none";
+                        uploadArea.classList.add('image-loaded'); // 添加类以隐藏上传图标和文本
+
+                        // 创建正方形画布
+                        const size = Math.min(img.width, img.height);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size;
+                        canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+
+                        // 居中裁剪
+                        const sx = (img.width - size) / 2;
+                        const sy = (img.height - size) / 2;
+                        ctx.drawImage(img, sx, sy, size, size, 0, 0, size, size);
+
+                        // 分割九宫格
+                        const smallSize = size / 3;
+                        const gridItems = nineGrid.querySelectorAll('.grid-item');
+
+                        // 清除现有内容
+                        gridItems.forEach(item => {
+                            item.innerHTML = '';
+                        });
+
+                        // 重置处理后的图片数组
+                        processedImages = [];
+
+                        // 创建9个小图片
+                        for (let row = 0; row < 3; row++) {
+                            for (let col = 0; col < 3; col++) {
+                                const index = row * 3 + col;
+                                const smallCanvas = document.createElement('canvas');
+                                smallCanvas.width = smallSize;
+                                smallCanvas.height = smallSize;
+                                const smallCtx = smallCanvas.getContext('2d');
+
+                                // 绘制小图
+                                smallCtx.drawImage(
+                                    canvas,
+                                    col * smallSize,
+                                    row * smallSize,
+                                    smallSize,
+                                    smallSize,
+                                    0,
+                                    0,
+                                    smallSize,
+                                    smallSize
+                                );
+
+                                // 创建图片数据URL
+                                const imgData = smallCanvas.toDataURL('image/jpeg', 0.92);
+
+                                // 保存用于下载
+                                processedImages.push(imgData);
+
+                                // 创建图片元素
+                                const imgElement = document.createElement('img');
+                                imgElement.src = imgData;
+
+                                // 添加到九宫格
+                                gridItems[index].appendChild(imgElement);
+                            }
+                        }
+
+                        // 显示成功消息
+                        showMessage("图片上传成功！已分割为九宫格", "success");
+                    };
+
+                    img.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            function showMessage(text, type) {
+                successMessage.textContent = text;
+                successMessage.style.color = type === "success" ? "#10b981" : "#ef4444";
+
+                // 3秒后消失
+                setTimeout(() => {
+                    successMessage.textContent = "";
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

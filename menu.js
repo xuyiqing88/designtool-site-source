@@ -304,6 +304,7 @@ const menuData = [
 	    { title: "颜色转换工具", link: "color.html" },
         ]
     },
+
     {
         title: "AI工具",
         icon: "fas fa-robot",
@@ -311,15 +312,6 @@ const menuData = [
 	    { title: "AI数字人", link: "AI.html" },
             { title: "模型数据集编辑器", link: "model.html" },
             { title: "SDXL提示词风格大全", link: "SDXL.html" },
-        ]
-    },
-    {
-        title: "3D工具",
-        icon: "fas fa-cube",
-        submenu: [
-            { title: "无缝贴图预览工具", link: "map.html" },
-            { title: "法线图转换工具", link: "normal.html" },
-            { title: "ORM贴图生成工具", link: "ORM.html" }
         ]
     },
 
@@ -332,7 +324,18 @@ const menuData = [
             { title: "本地翻译工具", link: "translation.html" },
             { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
-    }
+    },
+
+    {
+        title: "3D工具",
+        icon: "fas fa-cube",
+        submenu: [
+            { title: "无缝贴图预览工具", link: "map.html" },
+            { title: "法线图转换工具", link: "normal.html" },
+            { title: "ORM贴图生成工具", link: "ORM.html" }
+        ]
+    },
+
 ];
 
 // 创建移动端菜单开关
