@@ -126,11 +126,12 @@
         }
 
         label {
-            display: block;
+            display: flex;
             margin-bottom: 6px;
             font-weight: 600;
             color: var(--text2);
-            font-size: 1.05rem;
+            font-size: 1.0rem;
+	justify-content: space-between;
         }
 
         input[type="number"] {
@@ -190,7 +191,7 @@
         .drop-text {
             color: var(--text2);
             margin-bottom: 10px;
-            font-size: 1.1rem;
+            font-size: 1.0rem;
             font-weight: 500;
         }
 
@@ -765,8 +766,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="maxDimension">最大尺寸限制</label>
-                    <p class="info-label" style="margin-bottom:8px;">0表示不调整图片尺寸</p>
+                    <label for="maxDimension">最大尺寸限制
+			<span class="info-label" style="margin-bottom:8px;">0表示不调整图片尺寸</span>
+		    </label>
+                    
                     <div class="input-wrapper">
                         <input type="number" id="maxDimension" min="100" max="5000" step="50" value="800">
                         <span class="unit">像素</span>
@@ -780,7 +783,7 @@
                     </div>
 
                     <div class="transparency-toggle">
-                        <span style="color: var(--text2);">智能优化PNG压缩</span>
+                        <span style="color: var(--text2); font-size: 14px;">智能优化PNG压缩</span>
                         <label class="toggle-container">
                             <input type="checkbox" id="transparencyToggle" checked>
                             <span class="toggle-slider"></span>
