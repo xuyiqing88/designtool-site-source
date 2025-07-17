@@ -952,13 +952,14 @@ if (isMobileDevice()) {
                             if (maxSize === 0 || blob.size <= maxSize || quality <= 0.1) {
                                 let newFileName = file.name;
                                 
-                                // 对于优化压缩的PNG，更改文件扩展名
-                                if (file.type === 'image/png' && !hasTransparency && targetMimeType === 'image/jpeg') {
-                                    newFileName = file.name.replace(/\.png$/i, '.jpg');
-                                }
+			// 对于优化压缩的PNG，不更改文件扩展名，仍保持为PNG
+                            if (file.type === 'image/png' && !hasTransparency && targetMimeType === 'image/jpeg') {
+                                // 保持 originalFileName 不变，但内部处理仍按 JPEG 压缩
+                                // newFileName = file.name.replace(/\.png$/i, '.jpg'); // 移除此行，不修改后缀
+                            }
                                 
-                                const compressedFile = new File([blob], newFileName, {
-                                    type: targetMimeType,
+				const compressedFile = new File([blob], newFileName, {
+                                    type: file.type, // 保持原始文件的 MIME 类型
                                     lastModified: Date.now()
                                 });
                                 
@@ -1064,9 +1065,9 @@ if (isMobileDevice()) {
         }
         
         // 下载单个文件
-        function downloadFile(file) {
-            saveAs(file, `compressed_${file.name}`);
-        }
+       function downloadFile(file) {
+    	saveAs(file, file.name); // 移除 'compressed_' 前缀
+	}
         
         // 打包下载所有文件
         downloadAllBtn.addEventListener('click', () => {
