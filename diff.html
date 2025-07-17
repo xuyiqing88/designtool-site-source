@@ -56,6 +56,7 @@
             align-items: center;
             margin-right: 10px;
 	    margin-left: 60px;
+	gap: 10px;
         }
 
         .menu-label {
@@ -80,10 +81,11 @@
             justify-content: center;
             border: 1px solid var(--light-bg);
             min-height: 36px;
+	    gap: 2px;
         }
 
         .btn-sync {
-            margin-left: 8px;
+            
         }
 
         .btn:hover, .btn-sync:hover {
@@ -451,14 +453,20 @@
 <body>
 <div id="global-sidebar"></div>
     <div class="menu-bar">
-        <div class="menu-item2">
-            <button id="reset-size" class="btn">
-                <i class="fas fa-expand-arrows-alt"></i> 1:1 尺寸
-            </button>
-            <button id="sync-size" class="btn-sync">
-                <i class="fas fa-object-group"></i> 同步尺寸
-            </button>
-        </div>
+
+<div class="menu-item2">
+    <button id="reset-size" class="btn">
+        <i class="fas fa-expand-arrows-alt"></i> 适合屏幕
+    </button>
+    <button id="sync-size" class="btn-sync">
+        <i class="fas fa-object-group"></i> 同步尺寸
+    </button>
+    <!-- 新增调换位置按钮 -->
+    <button id="swap-images" class="btn">
+        <i class="fas fa-exchange-alt"></i> 调换位置
+    </button>
+</div>
+
         <div class="menu-item2">
             <div class="menu-label">图片缩放:</div>
             <div class="zoom-slider-container">
@@ -510,7 +518,7 @@
                 <i class="fas fa-minus"></i>
             </button>
             <button class="mobile-btn" id="reset-pos">
-                <i class="fas fa-sync"></i>
+                <i class="fas fa-expand-arrows-alt"></i>
             </button>
         </div>
     </div>
@@ -538,6 +546,7 @@
         const zoomInBtn = document.getElementById('zoom-in');
         const zoomOutBtn = document.getElementById('zoom-out');
         const resetPosBtn = document.getElementById('reset-pos');
+	const swapImagesBtn = document.getElementById('swap-images');
 
         let isResizing = false;
         let isDragging = false;
@@ -572,14 +581,36 @@
         }
         
         // 图片上传逻辑
-        function handleImageDrop(event, targetImage, dropZone, isBefore) {
-            event.preventDefault();
-            dropZone.classList.remove('active');
-            const file = event.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                loadImage(file, targetImage, dropZone, isBefore);
+function handleImageDrop(event, targetImage, dropZone, isBefore) {
+    event.preventDefault();
+    dropZone.classList.remove('active');
+    const files = event.dataTransfer.files;
+    
+    // 处理多个文件的情况
+    if (files.length >= 2) {
+        // 前两个文件分配给左右两侧
+        const file1 = files[0];
+        const file2 = files[1];
+        
+        if (file1.type.startsWith('image/') && file2.type.startsWith('image/')) {
+            loadImage(file1, imageBefore, dropZoneLeft, true);
+            loadImage(file2, imageAfter, dropZoneRight, false);
+        } else {
+            // 如果其中至少一个不是图片，则只处理第一个图片文件
+            const imageFile = file1.type.startsWith('image/') ? file1 : 
+                             file2.type.startsWith('image/') ? file2 : null;
+            if (imageFile) {
+                loadImage(imageFile, targetImage, dropZone, isBefore);
             }
         }
+    } else if (files.length === 1) {
+        // 单个文件处理逻辑不变
+        const file = files[0];
+        if (file && file.type.startsWith('image/')) {
+            loadImage(file, targetImage, dropZone, isBefore);
+        }
+    }
+}
         
         function handleImageSelect(event, targetImage, dropZone, isBefore) {
             const file = event.target.files[0];
@@ -919,7 +950,25 @@
             
             updateImageTransform();
         });
+// 添加交换图片功能
+swapImagesBtn.addEventListener('click', swapImages);
 
+function swapImages() {
+    if (!imageBeforeLoaded || !imageAfterLoaded) return;
+    
+    // 交换图片
+    const tempSrc = imageBefore.src;
+    imageBefore.src = imageAfter.src;
+    imageAfter.src = tempSrc;
+    
+    // 交换图片加载状态
+    const tempLoaded = imageBeforeLoaded;
+    imageBeforeLoaded = imageAfterLoaded;
+    imageAfterLoaded = tempLoaded;
+    
+    // 重置位置
+    resetToOriginalSize();
+}
         // 同步尺寸功能
         syncSizeBtn.addEventListener('click', syncImageSizes);
         
