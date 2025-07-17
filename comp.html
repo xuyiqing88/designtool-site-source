@@ -101,7 +101,7 @@
 
         .panel-title {
             font-size: 1.2rem;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border);
             color: var(--text1);
@@ -167,7 +167,7 @@
         .drop-area {
             border: 2px dashed var(--border);
             border-radius: 12px;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
@@ -220,6 +220,7 @@
 
         .preview-container {
             flex: 1;
+	margin-top: 14px;
         }
 
         .image-row {
@@ -231,6 +232,7 @@
             background: var(--bg-light);
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
+		overflow: hidden;
         }
 
 
@@ -309,7 +311,6 @@
             justify-content: center;
             color: var(--main-color);
             border: none;
-            border-radius: 12px;
             font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.2s;
@@ -325,7 +326,7 @@
 
         .no-preview {
             text-align: center;
-            padding: 50px 20px;
+            padding: 70px 20px;
             color: var(--text3);
             flex: 1;
             display: flex;
@@ -513,15 +514,14 @@
         }
 
         .file-tag {
-            position: absolute;
-            top: 0;
-            right: 58px;
-            background: var(--warning);
-            color: white;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 0 0 5px 5px;
-            font-weight: bold;
+                position: absolute;
+    	top: 10px;
+    	right: -25px;
+    	background: var(--warning);
+    	color: white;
+    	font-size: 10px;
+    	padding: 1px 24px;
+    	transform: rotate(45deg);
         }
 
         .info-tip {
@@ -639,7 +639,10 @@
             margin-bottom: 8px;
             line-height: 1.6;
         }
-
+	.scrib {
+		    color: var(--text2);
+    		font-size: 14px;
+		}
         @media (max-width: 768px) {
             .container {
                 min-width: 100%;
@@ -653,7 +656,7 @@
                 flex-direction: column;
                 align-items: flex-start;
                 overflow: hidden;
-		padding: 10px;
+		padding: 10px 10px 6px;
             }
             
             .thumbnail {
@@ -677,18 +680,14 @@
     
             .download-btn-small {
                 align-self: flex-end;
-                margin-top: 10px;
                 margin-right: 0;
                 width: 100%;
-                margin-top: 20px;
+                margin-top: 15px;
+	        border-top: 1px solid var(--border);
             }
     
             .file-tag {
-                top: 10px;
-                right: 10px;
-                font-size: 10px;
-                padding: 1px 6px;
-                border-radius: 8px;
+                font-size: 12px;
             }
         }
 
@@ -783,7 +782,7 @@
                     </div>
 
                     <div class="transparency-toggle">
-                        <span style="color: var(--text2); font-size: 14px;">智能优化PNG压缩</span>
+                        <span class="scrib">智能优化PNG压缩</span>
                         <label class="toggle-container">
                             <input type="checkbox" id="transparencyToggle" checked>
                             <span class="toggle-slider"></span>
@@ -840,7 +839,10 @@
                     <span>压缩结果 (<span id="compressedFileCount">0</span>)</span>
                     <button id="clearAllBtn" class="clear-all-btn" style="display:none;">清空所有</button>
                 </h2>
-                
+                <div class="scrib">
+				<li>透明优化：对含有透明背景的png图片进行针对性压缩</li>
+				<li>优化压缩：对于非透明背景的png图片按照jpg的方式去压缩，导出后修改为png格式</li>
+		</div>
                 <div class="preview-container" id="previewContainer">
                     <div class="no-preview" id="noPreviewMessage">
                         <i>🖼️</i>
