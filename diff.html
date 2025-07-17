@@ -1064,31 +1064,6 @@ function swapImages() {
             }
         });
 
-        // 添加示例图片
-        window.addEventListener('load', () => {
-            imageBefore.src = 'https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1200';
-            imageAfter.src = 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200';
-            
-            imageBefore.onload = () => {
-                imageBeforeLoaded = true;
-                if (imageAfterLoaded) {
-                    beforeText.classList.add('visible');
-                    afterText.classList.add('visible');
-                    comparisonSection.style.cursor = 'grab';
-                    calculateInitialImageSizeAndPosition();
-                }
-            };
-            
-            imageAfter.onload = () => {
-                imageAfterLoaded = true;
-                if (imageBeforeLoaded) {
-                    beforeText.classList.add('visible');
-                    afterText.classList.add('visible');
-                    comparisonSection.style.cursor = 'grab';
-                    calculateInitialImageSizeAndPosition();
-                }
-            };
-        });
     </script>
 </body>
 </html>
