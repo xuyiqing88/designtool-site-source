@@ -88,7 +88,6 @@
         .subtitle {
             color: var(--gray);
             font-size: 0.9rem;
-            max-width: 700px;
             margin: 0 auto 20px;
             line-height: 1.6;
         }  
@@ -445,7 +444,10 @@
     <div class="container">
         <header>
             <h1>SDXL 提示词风格库</h1>
-            <p class="subtitle">用法：大模型加载SDXL及以上（包括但不限于XL基础版、XL-Lightning版等），无需LoRA，只需替换关键词 {prompt} 里的内容即可，支持一键复制提示词</p>
+            <p class="subtitle">用法：大模型加载SDXL及以上版本，无需LoRA，只需替换关键词 {prompt} 里的内容即可</p>
+            <p style="color: var(--gray); font-size: 0.85rem;">
+                <i class="fas fa-exclamation-circle"></i> 提示：点击提示词可复制到剪贴板，使用分类标签和搜索框可快速筛选风格
+            </p>
             
         </header>
         
@@ -483,10 +485,7 @@
         </div>
         
         <footer>
-            <p>SDXL 提示词风格库 &copy; 2023 | 包含 SAI 官方、TWRI、Cyberbill、Fooocus、mre 和 MK 的贡献</p>
-            <p style="margin-top: 10px; font-size: 0.85rem;">
-                <i class="fas fa-exclamation-circle"></i> 提示：点击提示词可复制到剪贴板，使用分类标签和搜索框可快速筛选风格
-            </p>
+            <p>SDXL 提示词风格库，包含来自 SAI 官方、TWRI、Cyberbill、Fooocus、mre 和 MK 的贡献</p>
         </footer>
     </div>
     <button id="backToTop" title="返回顶部">
