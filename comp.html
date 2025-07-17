@@ -1066,7 +1066,7 @@ if (isMobileDevice()) {
         
         // 下载单个文件
        function downloadFile(file) {
-    	saveAs(file, file.name); // 移除 'compressed_' 前缀
+    	saveAs(file, file.name); 
 	}
         
         // 打包下载所有文件
@@ -1078,7 +1078,7 @@ if (isMobileDevice()) {
             const zip = new JSZip();
             
             processedImages.forEach(item => {
-                zip.file(`compressed_${item.compressedFile.name}`, item.compressedFile);
+                zip.file(item.compressedFile.name, item.compressedFile); 
             });
             
             zip.generateAsync({type:"blob"}).then(function(content) {
