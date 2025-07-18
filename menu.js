@@ -301,7 +301,6 @@ const menuData = [
             { title: "城市天际线生成器", link: "city.html" },
             { title: "UI设计数据生成器", link: "data.html", active: true },
             { title: "在线版Photoshop", link: "PS.html" },
-	    { title: "颜色转换工具", link: "color.html" },
         ]
     },
 
@@ -335,7 +334,8 @@ const menuData = [
         submenu: [
             { title: "无缝贴图预览工具", link: "map.html" },
             { title: "法线图转换工具", link: "normal.html" },
-            { title: "ORM贴图生成工具", link: "ORM.html" }
+            { title: "ORM贴图生成工具", link: "ORM.html" },
+	    { title: "颜色转换工具", link: "color.html" },
         ]
     },
 
