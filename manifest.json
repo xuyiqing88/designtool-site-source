@@ -1,0 +1,21 @@
+{
+  "name": "特色设计工具合集",
+  "short_name": "设计工具",
+  "description": "集成各种特色设计工具，提高办公效率",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5963ff",
+  "icons": [
+    {
+      "src": "img/app-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/app-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
