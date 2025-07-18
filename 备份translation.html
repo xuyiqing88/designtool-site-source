@@ -391,87 +391,8 @@ textarea::placeholder {
         .translation-text {
             font-size: 16px;
             line-height: 1.6;
-        }
-        
-        /* 新增的TTS按钮样式 */
-        .tts-btn {
-            background: #f0f4ff;
-            color: var(--main-color);
-            border: 1px solid #d1dfff;
-            border-radius: 4px;
-            padding: 4px 10px;
-            margin-left: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .tts-btn:hover:not(:disabled) {
-            background: #c3d5ff;
-            color: white;
-        }
-        .tts-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .tts-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-        .tts-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .tts-info {
-            color: #888;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        
-        /* 音频播放器样式 */
-        .audio-player {
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .audio-player audio {
-            flex: 1;
-        }
-        .audio-player button {
-            background: #f0f4ff;
-            border: 1px solid #d1dfff;
-            border-radius: 4px;
-            padding: 4px 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .audio-player button:hover {
-            background: var(--main-color);
-            color: white;
-        }
-        .audio-player button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        /* 支持语言指示器 */
-        .language-support {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-        .support-icon {
-            margin-right: 5px;
-        }
-        .supported { color: #4CAF50; }
-        .unsupported { color: #F44336; }
-        
-        @media (max-width: 768px) {
+        }     
+@media (max-width: 768px) {
 	.container {
                 padding: 0;
 		margin-bottom: 80px;
@@ -546,7 +467,7 @@ textarea::placeholder {
     <div class="container pulse">
         <header>
             <h2>高级翻译工具</h2>
-            <p class="subtitle">多语言互译 · 精准快速 · 安全可靠 · 语音朗读</p>
+            <p class="subtitle">多语言互译 · 精准快速 · 安全可靠</p>
         </header>
         
     <div style="background: radial-gradient(185% 35% at 100% 0%, #e6008100, #f1f1fb), linear-gradient(90deg, #118aff, #8180ff, #db7dff); border-radius: 12px;">
@@ -644,11 +565,14 @@ textarea::placeholder {
 </div>
         <div class="result-container">
             <div class="result-header">
-                <div class="btn-group">
-                    <button class="btn translate-btn" onclick="translateText()">翻译文本</button>
-                    <button class="btn clear-btn" onclick="clearAll()">清空所有</button>
-                </div>
-            </div>
+<div class="btn-group">
+            <button class="btn translate-btn" onclick="translateText()">翻译文本
+            </button>
+            <button class="btn clear-btn" onclick="clearAll()">清空所有
+            </button>
+        </div>
+</div>
+            
         </div>
     </div>
 
@@ -660,19 +584,10 @@ textarea::placeholder {
             'hu', 'ro', 'sk', 'th', 'id', 'vi', 'he', 'hi', 'bg', 'uk'
         ]);
         
-        // 支持语音合成的语言列表 (主要语言代码)
-        const supportedSpeechLanguages = new Set([
-            'en', 'zh', 'ja', 'ko', 'fr', 'de', 'es', 'ru', 
-            'it', 'pt', 'nl', 'tr', 'pl', 'th', 'id', 'vi', 'hi'
-        ]);
-        
         // 获取DOM元素
         const textInput = document.getElementById('text');
         const charCount = document.getElementById('charCount');
         const swapBtn = document.getElementById('swapBtn');
-        let voices = [];
-        let audioURL = null;
-        let currentUtterance = null;
         
         // 字符计数功能
         textInput.addEventListener('input', function() {
@@ -697,17 +612,15 @@ textarea::placeholder {
         
         // 清空所有内容
         function clearAll() {
-            textInput.value = '';
-            document.getElementById('result').innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📝</div>
-                    <p>翻译结果将在这里显示</p>
-                </div>
-            `;
-            charCount.textContent = '0';
-            stopSpeech();
-            audioURL = null;
-        }
+    textInput.value = '';
+    document.getElementById('result').innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <p>翻译结果将在这里显示</p>
+        </div>
+    `;
+    charCount.textContent = '0';
+}
         
         // 复制功能
         function copyToClipboard(text) {
@@ -752,88 +665,6 @@ textarea::placeholder {
             }, 3000);
         }
         
-        // 停止语音
-        function stopSpeech() {
-            if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
-            }
-            if (currentUtterance) {
-                currentUtterance = null;
-            }
-        }
-        
-        // --- 全新优化的语音朗读功能 ---
-        function speakText(text, lang) {
-            stopSpeech();
-
-            if (!('speechSynthesis' in window)) {
-                showNotification('您的浏览器不支持语音朗读功能', true);
-                return;
-            }
-
-            const targetLangCode = lang.split('-')[0];
-            if (!supportedSpeechLanguages.has(targetLangCode)) {
-                showNotification('该语言暂不支持语音朗读', true);
-                return;
-            }
-            
-            try {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = lang; // 设置语言，这是重要的后备选项
-
-                // 增强版语音查找逻辑
-                let foundVoice = voices.find(v => v.lang === lang); // 1. 查找完全匹配 (e.g., zh-CN)
-                if (!foundVoice) {
-                    foundVoice = voices.find(v => v.lang.startsWith(targetLangCode)); // 2. 查找匹配主要语言 (e.g., zh)
-                }
-                
-                if (foundVoice) {
-                    utterance.voice = foundVoice;
-                }
-                // 如果在本地列表中没找到，浏览器会根据 utterance.lang 尝试匹配
-
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
-                utterance.volume = 1.0;
-                
-                currentUtterance = utterance;
-
-                utterance.onend = function() {
-                    currentUtterance = null;
-                };
-                utterance.onerror = function(event) {
-                    console.error('语音朗读发生错误:', event.error);
-                    showNotification('语音朗读失败: ' + event.error, true);
-                    currentUtterance = null;
-                };
-
-                window.speechSynthesis.speak(utterance);
-                showNotification('正在朗读...');
-
-            } catch (error) {
-                console.error('语音朗读失败:', error);
-                showNotification('语音朗读失败: ' + error.message, true);
-            }
-        }
-        
-        // 加载语音列表
-        function loadVoices() {
-            return new Promise((resolve) => {
-                const synth = window.speechSynthesis;
-                let anvoices = synth.getVoices();
-                if (anvoices.length) return resolve(anvoices);
-                
-                synth.onvoiceschanged = () => resolve(synth.getVoices());
-            });
-        }
-        
-        // 初始化语音
-        async function initSpeech() {
-            if ('speechSynthesis' in window) {
-                voices = await loadVoices();
-            }
-        }
-        
         // 翻译功能
         async function translateText() {
             const text = textInput.value.trim();
@@ -842,6 +673,7 @@ textarea::placeholder {
             const resultDiv = document.getElementById('result');
 
             try {
+                // 输入验证
                 if (!text) {
                     resultDiv.innerHTML = '<div class="placeholder">请输入要翻译的内容</div>';
                     return;
@@ -857,17 +689,21 @@ textarea::placeholder {
                         <span>正在翻译，请稍候...</span>
                     </div>
                 `;
-                if (resultDiv.querySelector('.empty-state')) {
-                    resultDiv.innerHTML = '';
-                }
-
+    // 移除空状态
+    if (resultDiv.querySelector('.empty-state')) {
+        resultDiv.innerHTML = '';
+    }
+                // API请求参数调整
                 const apiUrl = new URL('https://api.mymemory.translated.net/get');
                 apiUrl.searchParams.append('q', text);
                 apiUrl.searchParams.append('langpair', `${sourceLang}|${targetLang}`);
+                
+                // 添加随机参数避免缓存问题
                 apiUrl.searchParams.append('_', Date.now());
 
                 const response = await fetch(apiUrl);
                 
+                // 增强错误处理
                 if (!response.ok) {
                     throw new Error(`网络错误 ${response.status}`);
                 }
@@ -879,34 +715,15 @@ textarea::placeholder {
                     throw new Error(`翻译服务错误: ${details}`);
                 }
 
+                // 结果显示优化
                 const translation = data.responseData.translatedText;
-                const langCode = targetLang;
-                const isSpeechSupported = supportedSpeechLanguages.has(langCode.split('-')[0]);
-                
                 resultDiv.innerHTML = `
                     <div class="translation">
                         <div class="translation-header">
                             <div style="color:var(--main-color);">译文：</div>
-                            <div class="tts-actions">
-                                <button class="copy-btn" onclick="copyToClipboard('${translation.replace(/'/g, "\\'")}')">复制</button>
-                                <button class="tts-btn" onclick="speakText('${translation.replace(/'/g, "\\'")}', '${langCode}')" 
-                                    title="${isSpeechSupported ? '朗读翻译结果' : '该语言不支持朗读'}" 
-                                    ${isSpeechSupported ? '' : 'disabled'}>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M3 9V15H7L12 20V4L7 9H3Z" fill="${isSpeechSupported ? '#5963ff' : '#aaa'}"/>
-                                        <path d="M16.5 12C16.5 10.23 15.48 8.71 14 7.97V16.02C15.48 15.29 16.5 13.77 16.5 12Z" fill="${isSpeechSupported ? '#5963ff' : '#aaa'}"/>
-                                        <path d="M14 3.23V5.29C16.89 6.15 19 8.83 19 12C19 15.17 16.89 17.85 14 18.71V20.77C18.01 19.86 21 16.28 21 12C21 7.72 18.01 4.14 14 3.23Z" fill="${isSpeechSupported ? '#5963ff' : '#aaa'}"/>
-                                    </svg>
-                                </button>
-                            </div>
+                            <button class="copy-btn" onclick="copyToClipboard('${translation.replace(/'/g, "\\'")}')">复制</button>
                         </div>
                         <div class="translation-text">${translation}</div>
-                        <div class="language-support">
-                            <span class="support-icon">${isSpeechSupported ? '✅' : '⚠️'}</span>
-                            <span class="${isSpeechSupported ? 'supported' : 'unsupported'}">
-                                ${isSpeechSupported ? '该语言支持语音朗读' : '该语言暂不支持语音朗读'}
-                            </span>
-                        </div>
                     </div>
                     ${data.matches?.length > 0 ? `
                         <div class="alternatives">
@@ -921,13 +738,13 @@ textarea::placeholder {
                 `;
 
             } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⚠️</div>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-                console.error('翻译错误:', error);
+    resultDiv.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <p>${error.message}</p>
+        </div>
+    `;
+    console.error('翻译错误:', error);
             }
         }
         
@@ -936,12 +753,10 @@ textarea::placeholder {
             textInput.value = "Hello, welcome to our advanced translation tool!";
             charCount.textContent = textInput.value.length;
             
+            // 添加初始动画
             setTimeout(() => {
                 document.querySelector('.container').classList.remove('pulse');
             }, 3000);
-            
-            // 初始化语音，确保在用户操作前加载好声音列表
-            initSpeech();
         };
     </script>
 <script src="menu.js" defer></script>
