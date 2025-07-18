@@ -544,18 +544,26 @@
         .gallery-controls {
             display: flex;
             justify-content: flex-end;
-            padding: 15px;
-            border-top: 1px solid var(--line);
-            margin-top: 10px;
-	bottom: 0;
+    padding: 15px;
+    border-top: 1px solid var(--line);
+    margin-bottom: 10px;
+    background: var(--card-bg);
+    bottom: 0;
     position: fixed;
-        width: 93%;
-    z-index: 9;
-    background: #fff;
+    width: 93%;
         }
         
         .empty-gallery {
             text-align: center;
+            padding: 50px;
+            color: var(--text3);
+            display: flex; /* Added for centering */
+            flex-direction: column; /* Added for centering */
+            justify-content: center; /* Added for vertical centering */
+            align-items: center; /* Added for horizontal centering */
+            height: 100%; /* Ensure it takes full height of its container */
+            width: 100%; /* Ensure it takes full width of its container */
+	text-align: center;
             padding: 50px;
             color: var(--text3);
         }
@@ -600,9 +608,12 @@
             
             .gallery-container {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	min-height: calc(100vh - 300px);
 		padding: 0;
             }
-            
+            .empty-gallery {
+                padding: 30px;
+            }
             .history-image {
                 height: 140px;
             }
@@ -727,20 +738,20 @@
                         </div>
                     </div>
                 </div>
-                       <div class="gallery-controls">
-                        <button class="btn-secondary" id="clearGalleryBtn">
-                            <i class="fas fa-trash-alt"></i> 清空历史记录
-                        </button>
-                    </div>
 
-                <div id="gallerySubTab" class="secondary-tab-pane">
-                    <p class="panel-description">
-                        所有通过AI绘画生成的作品都会自动保存在这里（存储在您的浏览器本地）
-                    </p>
-                    
-                    <div class="gallery-container" id="historyGallery">
-                        <!-- 历史项目将通过JS动态添加 -->
-                    </div>
+    <div id="gallerySubTab" class="secondary-tab-pane">
+        <div class="gallery-controls">
+            <button class="btn-secondary" id="clearGalleryBtn">
+                <i class="fas fa-trash-alt"></i> 清空历史记录
+            </button>
+        </div>
+
+        <p class="panel-description">
+            所有通过AI绘画生成的作品都会自动保存在这里（存储在您的浏览器本地）
+        </p>
+        
+        <div class="gallery-container" id="historyGallery">
+                        </div>
                    
                 </div>
             </div>
@@ -972,11 +983,11 @@ apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
             };
             
             // 图像加载完成时
-            generatedImage.onload = () => {
+	generatedImage.onload = () => {
                 drawingPlaceholder.style.display = 'none';
                 generatedImage.style.display = 'block';
                 imageActions.style.display = 'flex';
-                setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+                setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像'); /* 确保成功时也重置按钮 */
                 showAlert('图像生成成功！', 'success');
                 
                 // 保存到历史记录
@@ -984,7 +995,7 @@ apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
             };
             
             // 图像加载失败时
-            generatedImage.onerror = () => {
+	generatedImage.onerror = () => {
                 drawingPlaceholder.style.display = 'flex';
                 drawingPlaceholder.innerHTML = `
                     <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
@@ -992,7 +1003,7 @@ apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
                 `;
                 generatedImage.style.display = 'none';
                 imageActions.style.display = 'none';
-                setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+                setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像'); /* 确保失败时也重置按钮 */
                 showAlert('图像生成失败，请重试', 'error');
             };
         }
@@ -1025,7 +1036,6 @@ apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
                     <div class="empty-gallery">
                         <i class="fas fa-box-open"></i>
                         <p>暂无历史记录</p>
-                        <p class="panel-description">生成的图像将自动保存在这里</p>
                     </div>
                 `;
                 return;
@@ -1156,14 +1166,18 @@ apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
             seedInput.value = '';
         }
         
-        // 设置按钮加载状态
+	// 设置按钮加载状态
         function setButtonLoading(button, isLoading, loadingText) {
             button.disabled = isLoading;
             if (isLoading) {
                 button.classList.add('btn-disabled');
-                button.innerHTML = loadingText ? loadingText : `<span class="loader"></span>`;
+                button.innerHTML = loadingText; // 直接设置加载文本
             } else {
                 button.classList.remove('btn-disabled');
+                // 在这里恢复按钮的原始内容
+                // 由于生成图像按钮的初始内容是固定的，可以直接设置
+                // 如果其他按钮也有不同的初始内容，可以考虑将原始内容作为参数传入或通过data-属性存储
+                button.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> 生成图像'; 
             }
         }
         
