@@ -309,6 +309,8 @@ const menuData = [
         title: "AI工具",
         icon: "fas fa-robot",
         submenu: [
+	    { title: "AI数字人（免费版）", link: "freeAI.html" },
+	    { title: "AI绘画", link: "draw.html" },
 	    { title: "AI数字人", link: "AI.html" },
             { title: "模型数据集编辑器", link: "model.html" },
             { title: "SDXL提示词风格大全", link: "SDXL.html" },
@@ -321,6 +323,7 @@ const menuData = [
         submenu: [
             { title: "图片对比工具", link: "diff.html" },
             { title: "图片压缩工具", link: "comp.html" },
+            { title: "朋友圈九宫格裁剪", link: "9img.html" },
             { title: "本地翻译工具", link: "translation.html" },
             { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
