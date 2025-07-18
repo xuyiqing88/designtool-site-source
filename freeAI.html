@@ -6,6 +6,7 @@
     <title>免费AI助手 - 智能对话、图像识别、文本转语音</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+ <script src="menu.js" defer></script>
     <style>
         :root {
             --main-color: #5a64ff;
@@ -45,34 +46,12 @@
             color: var(--text1);
             transition: background 0.3s ease;
         }
-        
-        .translate-btn {
-            position: absolute;
-            bottom: 14px;
-            right: 10px;
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 4px 12px;
-            cursor: pointer;
-            color: var(--text2);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            z-index: 10;
-        }
-        
-        .translate-btn:hover {
-            background: var(--button);
-            color: var(--main-color);
-        }
-        
-        .message-file-attachment {
-            display: flex;
-            align-items: center;
-        }
-        
+        .line {
+		width: 100%;
+		height: 1px;
+		background: var(--line);
+	    margin: 10px 0;
+		}
         .main-layout {
             display: flex;
             flex-grow: 1;
@@ -88,6 +67,7 @@
             flex-direction: column;
             padding: 25px 0;
             flex-shrink: 0;
+	margin-left: 60px;
         }
 
         .logo {
@@ -277,14 +257,6 @@
             margin-bottom: 20px;
             font-size: 14px;
             line-height: 1.6;
-        }
-        
-        .faq {
-            color: var(--main-color);
-            padding: 20px 20px 0;
-            font-size: 14px;
-            line-height: 1.6;
-            mix-blend-mode: luminosity;
         }
         
         .panel h2 i {
@@ -876,56 +848,6 @@
             border: none;
         }
         
-        #chatFilePreview {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0;
-            padding: 8px;
-            background-color: var(--mainbg);
-            border-radius: 8px;
-            display: none;
-        }
-        
-        #chatFileDisplay {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            background-color: var(--lightbg);
-            color: var(--text2);
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        #chatFileDisplay img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-
-        #chatFileDisplay i {
-            font-size: 20px;
-        }
-
-        #chatFilePreview span {
-            font-size: 13px;
-            color: var(--text2);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        #removeChatFile {
-            font-size: 16px;
-            margin-left: auto;
-            color: var(--text3);
-            cursor: pointer;
-        }
-
         /* AI Vision Layout */
         .vision-layout {
             display: grid;
@@ -1027,6 +949,50 @@
             100% { opacity: 0; transform: translate(-50%, -20px); }
         }
         
+        /* Template controls */
+        .template-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .template-label {
+            font-weight: 600;
+            color: var(--text2);
+            font-size: 16px;
+        }
+        
+        .template-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .template-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 8px;
+            background: var(--mainbg);
+            border: 1px solid var(--line);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .template-btn:hover {
+            background: var(--button);
+            color: var(--main-color);
+        }
+        
+        .template-description {
+            color: var(--text3);
+            font-size: 13px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
         @media (max-width: 768px) {
             .main-layout { 
                 flex-direction: column;
@@ -1046,6 +1012,7 @@
                 border-right: none;
                 justify-content: center;
                 align-items: center;
+	margin-left: 0;
             }
             
             textarea {min-height: 130px;}
@@ -1063,6 +1030,7 @@
                 gap: 5px;
                 flex-grow: 1;
                 justify-content: space-around;
+	        margin-left: 20px;
             }
             
             .tab-btn {
@@ -1077,6 +1045,7 @@
             
             .tab-btn i {
                 margin-right: 4px;
+	        display: none;
             }
             
             .main-content {
@@ -1093,13 +1062,15 @@
             
             .upload-container {min-height: 190px;}
             
-            .message-avatar, .faq {
+            .message-avatar {
                 display: none;
             }
         }
     </style>
 </head>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
+<div id="global-sidebar"></div>
     <div class="main-layout">
         <div class="sidebar">
             <div class="logo">
@@ -1114,6 +1085,9 @@
                 <button class="tab-btn" data-tab="vision">
                     <i class="fas fa-image"></i> AI图像识别
                 </button>
+                <button class="tab-btn" data-tab="tts">
+                    <i class="fas fa-volume-up"></i> 文本转语音
+                </button>
             </div>
         </div>
         
@@ -1124,7 +1098,6 @@
                         <div class="secondary-tabs">
                             <button class="secondary-tab-btn active" data-subtab="conversation" data-parent="chat">自由对话</button>
                             <button class="secondary-tab-btn" data-subtab="prompt" data-parent="chat">提示词扩写</button>
-                            <button class="secondary-tab-btn" data-subtab="tts" data-parent="chat">文本转语音</button>
                         </div>
                     
                         <div class="secondary-tab-pane active" id="conversationSubTab">
@@ -1137,22 +1110,10 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div id="chatFilePreview">
-                                <div id="chatFileDisplay">
-                                    <img id="chatFilePreviewImg" src="" alt="preview" style="display: none;">
-                                    <i id="chatFileIcon" class="fas fa-file-alt" style="display: none;"></i>
-                                </div>
-                                <span id="chatFilePreviewName"></span>
-                                <i class="fas fa-times-circle" id="removeChatFile" title="移除文件"></i>
-                            </div>
                             
                             <div class="chat-input-area">
-                                <textarea id="chatInput" placeholder="输入您的问题或想法（按Enter发送，Shift+Enter换行。支持图片、pdf、txt格式上传）" rows="1"></textarea>
+                                <textarea id="chatInput" placeholder="输入您的问题或想法（按Enter发送，Shift+Enter换行）" rows="1"></textarea>
                                 <div class="btn-group">
-                                    <button class="btn-secondary" id="uploadChatFileBtn" title="支持图片、pdf、txt格式上传">
-                                        <i class="fas fa-paperclip"></i>
-                                    </button>
                                      <button class="btn-secondary" id="clearChatBtn" title="清空对话历史" style="margin-right: 16px;">
                                         <i class="fas fa-eraser"></i>
                                     </button>
@@ -1161,64 +1122,31 @@
                                     </button>
                                 </div>
                             </div>
-                            <input type="file" id="chatFileUpload" accept="image/*, application/pdf, text/plain" style="display: none;">
                         </div>
 
-                        <div class="secondary-tab-pane" id="promptSubTab">
-                             <h2 style="display: none;">提示词扩写</h2>
-                            <p class="panel-description">
-                                输入您的原始提示词，AI将为您扩展优化，生成更适合AI绘画、更具想象力的详细描述。
-                            </p>
+                        <div class="secondary-tab-pane" id="promptSubTab">                            
+                            <div class="template-controls">
+                                <div class="template-label">提示词模板</div>
+                                <div class="template-actions">
+                                    <button class="template-btn" id="resetPromptTemplate">
+                                        <i class="fas fa-undo"></i> 恢复默认
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="panel-description">
+                                该模板用于生成适合AI绘画的详细描述。第一步描述图像内容，第二步基于描述生成高质量的提示词。
+                            </div>
+                            
                             <div class="chat-input-area">
-                                 <textarea id="promptInput" placeholder="在此输入您的原始提示词..." style="min-height: 250px;"></textarea>
+                                 <textarea id="promptTemplate" placeholder="在此输入提示词模板..." style="min-height: 150px;"></textarea>
+                                 <textarea id="promptInput" placeholder="在此输入您的原始提示词..." style="min-height: 150px; margin-top: 15px;"></textarea>
                                  <div class="btn-group">
                                     <button class="btn-secondary" id="clearExpandBtn" style="margin-right: 16px;">
-                                        <i class="fas fa-eraser"></i>
+                                        <i class="fas fa-eraser"></i> 
                                     </button>
                                     <button class="btn-primary" id="expandBtn" style="width: 62px; background: var(--btcolor);">
                                         <i class="fas fa-wand-magic-sparkles"></i>
                                     </button>
-                                </div>
-                            </div>
-                            <input type="file" id="promptFileUpload" accept="image/*" style="display: none;">
-                        </div>
-                        
-                        <div class="secondary-tab-pane" id="ttsSubTab">
-                            <h2><i class="fas fa-volume-up"></i> 文本转语音</h2>
-                            <p class="panel-description">
-                                输入文本内容，AI将为您生成自然流畅的语音。
-                            </p>
-                            <div class="tts-container">
-                                <div class="chat-input-area">
-                                    <textarea id="ttsInput" placeholder="在此输入要转换为语音的文本..." style="min-height: 180px;"></textarea>
-                                    <div class="tts-controls">
-                                        <label for="voiceSelect">选择语音：</label>
-                                        <select id="voiceSelect">
-                                            <option value="alloy">Alloy</option>
-                                            <option value="echo">Echo</option>
-                                            <option value="fable">Fable</option>
-                                            <option value="onyx">Onyx</option>
-                                            <option value="nova">Nova</option>
-                                            <option value="shimmer">Shimmer</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="btn-group">
-                                    <button class="btn-secondary" id="clearTtsBtn">
-                                        <i class="fas fa-eraser"></i> 清除文本
-                                    </button>
-                                    <button class="btn-primary" id="generateTtsBtn" style="background: var(--btcolor);">
-                                        <i class="fas fa-play"></i> 生成语音
-                                    </button>
-                                </div>
-                                
-                                <div class="audio-player" id="audioPlayer">
-                                    <audio controls id="ttsAudio"></audio>
-                                    <div class="audio-actions">
-                                        <button class="btn-secondary" id="downloadTtsBtn">
-                                            <i class="fas fa-download"></i> 下载
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1226,16 +1154,22 @@
                 </div>
                 
                 <div class="tab-pane" id="visionTab">
-                    <div class="panel">
-                        <div class="secondary-tabs">
-                            <button class="secondary-tab-btn active" data-subtab="image-analysis" data-parent="vision">图像识别（提示词反推）</button>
-                        </div>
-                        
+                    <div class="panel">                        
                         <div id="image-analysisSubTab" class="secondary-tab-pane active">
                             <h2><i class="fas fa-random"></i> 提示词反推</h2>
-                            <p class="panel-description">
-                                上传图片，AI将自动分析图像内容并生成详细的描述提示词。
-                            </p>
+				<div class="line"></div>                           
+                            <div class="template-controls">
+                                <div class="template-label">提示词模板</div>
+                                <div class="template-actions">
+                                    <button class="template-btn" id="resetVisionTemplate">
+                                        <i class="fas fa-undo"></i> 恢复默认
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="panel-description">
+                                该模板用于分析图像并生成适合AI图像生成的详细提示词。首先详细描述图像内容，然后基于描述生成高质量的提示词。
+                            </div>
+                           <textarea id="visionTemplate" placeholder="在此输入提示词模板..." style="margin-bottom: 15px;"></textarea>
                             <div class="vision-layout">
                                 <div>
                                     <div class="upload-container" id="uploadArea">
@@ -1272,6 +1206,49 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- 新增的TTS一级标签 -->
+                <div class="tab-pane" id="ttsTab">
+                    <div class="panel">
+                        <h2><i class="fas fa-volume-up"></i> 文本转语音</h2>
+                        <p class="panel-description">
+                            输入文本内容，AI将为您生成自然流畅的语音。
+                        </p>
+                        <div class="tts-container">
+                            <div class="chat-input-area">
+                                <textarea id="ttsInput" placeholder="在此输入要转换为语音的文本..." style="min-height: 280px;"></textarea>
+                                <div class="tts-controls">
+                                    <label for="voiceSelect">选择语音：</label>
+                                    <select id="voiceSelect">
+                                        <option value="alloy">Alloy</option>
+                                        <option value="echo">Echo</option>
+                                        <option value="fable">Fable</option>
+                                        <option value="onyx">Onyx</option>
+                                        <option value="nova">Nova</option>
+                                        <option value="shimmer">Shimmer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn-secondary" id="clearTtsBtn">
+                                    <i class="fas fa-eraser"></i> 清除文本
+                                </button>
+                                <button class="btn-primary" id="generateTtsBtn" style="background: var(--btcolor);">
+                                    <i class="fas fa-play"></i> 生成语音
+                                </button>
+                            </div>
+                            
+                            <div class="audio-player" id="audioPlayer">
+                                <audio controls id="ttsAudio"></audio>
+                                <div class="audio-actions">
+                                    <button class="btn-secondary" id="downloadTtsBtn">
+                                        <i class="fas fa-download"></i> 下载
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1279,593 +1256,535 @@
     <div id="alertContainer"></div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // 状态变量
-        let apiHistory = [];
-        let displayHistory = [];
-        let chatUploadedFile = null;
-        let visionUploadedFile = null;
-        let lastRequestTime = 0;
-        const REQUEST_INTERVAL = 15000;  // 15秒
-        
-        // DOM元素
-        const apiStatus = document.getElementById('apiStatus');
-        
-        // Tab元素
-        const mainTabBtns = document.querySelectorAll('.tab-btn');
-        const mainTabPanes = document.querySelectorAll('.tab-pane');
-        const secondaryTabBtns = document.querySelectorAll('.secondary-tab-btn');
-        const secondaryTabPanes = document.querySelectorAll('.secondary-tab-pane');
-        
-        // Chat功能元素
-        const expandBtn = document.getElementById('expandBtn');
-        const clearExpandBtn = document.getElementById('clearExpandBtn');
-        const promptInput = document.getElementById('promptInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const clearChatBtn = document.getElementById('clearChatBtn');
-        const chatInput = document.getElementById('chatInput');
-        const chatHistory = document.getElementById('chatHistory');
-        const uploadChatFileBtn = document.getElementById('uploadChatFileBtn');
-        const chatFileUpload = document.getElementById('chatFileUpload');
-        const chatFilePreview = document.getElementById('chatFilePreview');
-        const chatFileDisplay = document.getElementById('chatFileDisplay');
-        const chatFilePreviewImg = document.getElementById('chatFilePreviewImg');
-        const chatFileIcon = document.getElementById('chatFileIcon');
-        const chatFilePreviewName = document.getElementById('chatFilePreviewName');
-        const removeChatFile = document.getElementById('removeChatFile');
-        
-        // 图像识别功能元素
-        const uploadArea = document.getElementById('uploadArea');
-        const uploadContent = document.getElementById('uploadContent');
-        const imageUpload = document.getElementById('imageUpload');
-        const imagePreview = document.getElementById('imagePreview');
-        const closePreview = document.getElementById('closePreview');
-        const visionResponse = document.getElementById('visionResponse');
-        const copyVisionBtn = document.getElementById('copyVisionBtn');
-        const regenerateVisionBtn = document.getElementById('regenerateVisionBtn');
-        
-        // 文本转语音功能元素
-        const ttsInput = document.getElementById('ttsInput');
-        const voiceSelect = document.getElementById('voiceSelect');
-        const clearTtsBtn = document.getElementById('clearTtsBtn');
-        const generateTtsBtn = document.getElementById('generateTtsBtn');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const ttsAudio = document.getElementById('ttsAudio');
-        const downloadTtsBtn = document.getElementById('downloadTtsBtn');
-        
-        // 初始化聊天历史
-        clearChat();
-        
-        // 设置事件监听器
-        function setupEventListeners() {
-            // 主选项卡切换
-            mainTabBtns.forEach(btn => btn.addEventListener('click', () => switchMainTab(btn)));
+// 新增函数：加载可用语音
+function loadVoices() {
+  return new Promise((resolve) => {
+    const synth = window.speechSynthesis;
+    let voices = synth.getVoices();
+    if (voices.length) return resolve(voices);
+    
+    synth.onvoiceschanged = () => resolve(synth.getVoices());
+  });
+}
+
+// 初始化时填充语音下拉菜单
+async function initTts() {
+  const voices = await loadVoices();
+  const voiceSelect = document.getElementById('voiceSelect');
+  voiceSelect.innerHTML = '';
+  
+  voices.filter(v => v.lang.includes('zh') || v.lang.includes('CN')).forEach(voice => {
+    const option = document.createElement('option');
+    option.value = voice.name;
+    option.textContent = `${voice.name} (${voice.lang})`;
+    voiceSelect.appendChild(option);
+  });
+}
+        document.addEventListener('DOMContentLoaded', () => {
+		initTts();
+            // 状态变量
+            let apiHistory = [];
+            let displayHistory = [];
+            let visionUploadedFile = null;
+            let lastRequestTime = 0;
+            const REQUEST_INTERVAL = 15000;  // 15秒
             
-            // 次级选项卡切换
-            secondaryTabBtns.forEach(btn => btn.addEventListener('click', () => switchSecondaryTab(btn)));
+            // 默认模板
+            const DEFAULT_PROMPT_TEMPLATE = "You are creating a prompt for Stable Diffusion to generate an image. First step: describe this image, then put description into text. Second step: generate a text prompt for %s based on first step. Only respond with the prompt itself, but embellish it as needed but keep it under 120 tokens.";
+            const DEFAULT_VISION_TEMPLATE = "Describe the uploaded image in detail, covering the main subjects, setting, colors, style, and atmosphere. Then, based on your description, generate a high-quality, detailed prompt suitable for an image generation model, only respond with the prompt, keep it under 120 tokens.";
             
-            // 提示词扩写
-            expandBtn.addEventListener('click', handleExpandPrompt);
-            clearExpandBtn.addEventListener('click', () => promptInput.value = '');
-            promptInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    expandBtn.click();
+            // DOM元素
+            // Tab元素
+            const mainTabBtns = document.querySelectorAll('.tab-btn');
+            const mainTabPanes = document.querySelectorAll('.tab-pane');
+            const secondaryTabBtns = document.querySelectorAll('.secondary-tab-btn');
+            const secondaryTabPanes = document.querySelectorAll('.secondary-tab-pane');
+            
+            // Chat功能元素
+            const expandBtn = document.getElementById('expandBtn');
+            const clearExpandBtn = document.getElementById('clearExpandBtn');
+            const promptInput = document.getElementById('promptInput');
+            const promptTemplate = document.getElementById('promptTemplate');
+            const resetPromptTemplate = document.getElementById('resetPromptTemplate');
+            const sendBtn = document.getElementById('sendBtn');
+            const clearChatBtn = document.getElementById('clearChatBtn');
+            const chatInput = document.getElementById('chatInput');
+            const chatHistory = document.getElementById('chatHistory');
+            
+            // 图像识别功能元素
+            const uploadArea = document.getElementById('uploadArea');
+            const uploadContent = document.getElementById('uploadContent');
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreview = document.getElementById('imagePreview');
+            const closePreview = document.getElementById('closePreview');
+            const visionResponse = document.getElementById('visionResponse');
+            const copyVisionBtn = document.getElementById('copyVisionBtn');
+            const regenerateVisionBtn = document.getElementById('regenerateVisionBtn');
+            const visionTemplate = document.getElementById('visionTemplate');
+            const resetVisionTemplate = document.getElementById('resetVisionTemplate');
+            
+            // 文本转语音功能元素
+            const ttsInput = document.getElementById('ttsInput');
+            const voiceSelect = document.getElementById('voiceSelect');
+            const clearTtsBtn = document.getElementById('clearTtsBtn');
+            const generateTtsBtn = document.getElementById('generateTtsBtn');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const ttsAudio = document.getElementById('ttsAudio');
+            const downloadTtsBtn = document.getElementById('downloadTtsBtn');
+            
+            // 设置默认模板
+            promptTemplate.value = DEFAULT_PROMPT_TEMPLATE;
+            visionTemplate.value = DEFAULT_VISION_TEMPLATE;
+            
+            // 初始化聊天历史
+            clearChat();
+            
+            // 设置事件监听器
+            function setupEventListeners() {
+                // 主选项卡切换
+                mainTabBtns.forEach(btn => btn.addEventListener('click', () => switchMainTab(btn)));
+                
+                // 次级选项卡切换
+                secondaryTabBtns.forEach(btn => btn.addEventListener('click', () => switchSecondaryTab(btn)));
+                
+                // 提示词扩写
+                expandBtn.addEventListener('click', handleExpandPrompt);
+                clearExpandBtn.addEventListener('click', () => promptInput.value = '');
+                resetPromptTemplate.addEventListener('click', () => promptTemplate.value = DEFAULT_PROMPT_TEMPLATE);
+                promptInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        expandBtn.click();
+                    }
+                });
+                
+                // 聊天
+                sendBtn.addEventListener('click', handleSendMessage);
+                clearChatBtn.addEventListener('click', clearChat);
+                chatInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendBtn.click();
+                    }
+                });
+                
+                // 图像识别
+                uploadArea.addEventListener('click', () => imageUpload.click());
+                imageUpload.addEventListener('change', handleVisionFileSelect);
+                closePreview.addEventListener('click', resetVisionUpload);
+                copyVisionBtn.addEventListener('click', copyVisionResult);
+                regenerateVisionBtn.addEventListener('click', handleRegenerateVision);
+                resetVisionTemplate.addEventListener('click', () => visionTemplate.value = DEFAULT_VISION_TEMPLATE);
+                
+                // 图像识别拖放
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, preventDefaults, false);
+                });
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, () => uploadArea.classList.add('highlight'), false);
+                });
+                ['dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('highlight'), false);
+                });
+                uploadArea.addEventListener('drop', handleDrop, false);
+                
+                // 聊天历史复制按钮
+                document.addEventListener('click', (e) => {
+                    const copyBtn = e.target.closest('.copy-message-btn');
+                    if (copyBtn) {
+                        const messageContent = copyBtn.closest('.message-bubble').querySelector('.message-content').innerHTML;
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = messageContent;
+                        navigator.clipboard.writeText(tempDiv.textContent || tempDiv.innerText).then(() => {
+                            showAlert('已复制消息内容', 'success');
+                        });
+                    }
+                });
+                
+                // 文本转语音
+                clearTtsBtn.addEventListener('click', () => {
+                    ttsInput.value = '';
+                    audioPlayer.style.display = 'none';
+                });
+                generateTtsBtn.addEventListener('click', handleGenerateTts);
+                ttsInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        generateTtsBtn.click();
+                    }
+                });
+            }
+            
+            // --- 选项卡切换逻辑 ---
+            function switchMainTab(clickedBtn) {
+                mainTabBtns.forEach(b => b.classList.remove('active'));
+                mainTabPanes.forEach(pane => pane.classList.remove('active'));
+                
+                clickedBtn.classList.add('active');
+                const targetPane = document.getElementById(`${clickedBtn.dataset.tab}Tab`);
+                if (targetPane) {
+                    targetPane.classList.add('active');
                 }
-            });
+            }
             
-            // 聊天
-            sendBtn.addEventListener('click', handleSendMessage);
-            clearChatBtn.addEventListener('click', clearChat);
-            chatInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendBtn.click();
+            function switchSecondaryTab(clickedBtn) {
+                const parentTabId = clickedBtn.dataset.parent;
+                const relevantSecondaryBtns = document.querySelectorAll(`.secondary-tab-btn[data-parent="${parentTabId}"]`);
+                const relevantSecondaryPanes = document.getElementById(`${parentTabId}Tab`).querySelectorAll('.secondary-tab-pane');
+                
+                relevantSecondaryBtns.forEach(b => b.classList.remove('active'));
+                relevantSecondaryPanes.forEach(pane => pane.classList.remove('active'));
+                
+                clickedBtn.classList.add('active');
+                const targetPane = document.getElementById(`${clickedBtn.dataset.subtab}SubTab`);
+                if (targetPane) {
+                    targetPane.classList.add('active');
                 }
-            });
-            
-            // 聊天文件上传
-            uploadChatFileBtn.addEventListener('click', () => chatFileUpload.click());
-            chatFileUpload.addEventListener('change', handleChatFileSelect);
-            removeChatFile.addEventListener('click', removeChatUploadedFile);
-            
-            // 图像识别
-            uploadArea.addEventListener('click', () => imageUpload.click());
-            imageUpload.addEventListener('change', handleVisionFileSelect);
-            closePreview.addEventListener('click', resetVisionUpload);
-            copyVisionBtn.addEventListener('click', copyVisionResult);
-            regenerateVisionBtn.addEventListener('click', handleRegenerateVision);
-            
-            // 图像识别拖放
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => uploadArea.classList.add('highlight'), false);
-            });
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('highlight'), false);
-            });
-            uploadArea.addEventListener('drop', handleDrop, false);
-            
-            // 文本转语音
-            clearTtsBtn.addEventListener('click', () => {
-                ttsInput.value = '';
-                audioPlayer.style.display = 'none';
-            });
-            generateTtsBtn.addEventListener('click', handleGenerateTts);
-            downloadTtsBtn.addEventListener('click', downloadTtsAudio);
-            ttsInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    generateTtsBtn.click();
-                }
-            });
-            
-            // 聊天历史复制按钮
-            document.addEventListener('click', (e) => {
-                const copyBtn = e.target.closest('.copy-message-btn');
-                if (copyBtn) {
-                    const messageContent = copyBtn.closest('.message-bubble').querySelector('.message-content').innerHTML;
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = messageContent;
-                    navigator.clipboard.writeText(tempDiv.textContent || tempDiv.innerText).then(() => {
-                        showAlert('已复制消息内容', 'success');
-                    });
-                }
-            });
-        }
-        
-        // --- 选项卡切换逻辑 ---
-        function switchMainTab(clickedBtn) {
-            mainTabBtns.forEach(b => b.classList.remove('active'));
-            mainTabPanes.forEach(pane => pane.classList.remove('active'));
-            
-            clickedBtn.classList.add('active');
-            const targetPane = document.getElementById(`${clickedBtn.dataset.tab}Tab`);
-            if (targetPane) {
-                targetPane.classList.add('active');
             }
-        }
-        
-        function switchSecondaryTab(clickedBtn) {
-            const parentTabId = clickedBtn.dataset.parent;
-            const relevantSecondaryBtns = document.querySelectorAll(`.secondary-tab-btn[data-parent="${parentTabId}"]`);
-            const relevantSecondaryPanes = document.getElementById(`${parentTabId}Tab`).querySelectorAll('.secondary-tab-pane');
             
-            relevantSecondaryBtns.forEach(b => b.classList.remove('active'));
-            relevantSecondaryPanes.forEach(pane => pane.classList.remove('active'));
-            
-            clickedBtn.classList.add('active');
-            const targetPane = document.getElementById(`${clickedBtn.dataset.subtab}SubTab`);
-            if (targetPane) {
-                targetPane.classList.add('active');
-            }
-        }
-        
-        // --- 核心功能 ---
-        async function handleExpandPrompt() {
-            const prompt = promptInput.value.trim();
-            if (!prompt) return showAlert('请输入要扩写的提示词', 'error');
-            if (!checkRequestFrequency()) return;
-            
-            setButtonLoading(expandBtn, true, '');
-            try {
-                const expandedPrompt = await callFreeAiApi(`请扩展以下提示词，使其更加详细和富有想象力：\n\n${prompt}`);
-                promptInput.value = expandedPrompt;
-                showAlert('提示词扩写完成！', 'success');
-            } catch (error) {
-                showAlert(`扩写失败: ${error.message}`, 'error');
-            } finally {
-                setButtonLoading(expandBtn, false, '<i class="fas fa-wand-magic-sparkles"></i>');
-            }
-        }
-        
-        async function handleSendMessage() {
-            const message = chatInput.value.trim();
-            if (!message && !chatUploadedFile) return showAlert('请输入消息或上传文件', 'error');
-            if (!checkRequestFrequency()) return;
-            
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            displayHistory.push({
-                role: 'user', content: message, timestamp,
-                fileData: chatUploadedFile ? { type: chatUploadedFile.mime, name: chatUploadedFile.name, preview: chatUploadedFile.mime.startsWith('image/') ? `data:${chatUploadedFile.mime};base64,${chatUploadedFile.base64}` : null } : null
-            });
-            
-            renderChatHistory();
-            chatInput.value = '';
-            removeChatUploadedFile();
-            
-            setButtonLoading(sendBtn, true, '');
-            
-            try {
-                const response = await callFreeAiApi(message);
+            // --- API调用函数 ---
+            async function callTextApi(prompt) {
+                if (!checkRequestFrequency()) return;
                 
-                const aiTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                displayHistory.push({ role: 'ai', content: response, timestamp: aiTimestamp });
-                
-                renderChatHistory();
-            } catch (error) {
-                showAlert(`发送失败: ${error.message}`, 'error');
-                renderChatHistory();
-            } finally {
-                setButtonLoading(sendBtn, false, '<i class="fas fa-paper-plane"></i>');
-            }
-        }
-        
-        function clearChat() {
-            apiHistory = [];
-            displayHistory = [];
-            displayHistory.push({
-                role: 'ai',
-                content: '<strong>您好 👏🏻😊<br>我是免费AI助手</strong><br><br>我可以为您答疑解惑，处理图像，转语音，完全免费使用！',
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                initial: true
-            });
-            renderChatHistory();
-            showAlert('对话历史已清空', 'success');
-        }
-        
-        async function handleVisionFileSelect(e) {
-            const file = e.target.files[0];
-            if (file) {
-                visionUploadedFile = file;
-                await processAndAnalyzeImage(file);
-            }
-        }
-        
-        async function handleRegenerateVision() {
-            if (!visionUploadedFile) {
-                showAlert('请先上传图片', 'error');
-                return;
-            }
-            await processAndAnalyzeImage(visionUploadedFile);
-        }
-        
-        async function processAndAnalyzeImage(file) {
-            if (!checkRequestFrequency()) {
-                imageUpload.value = '';
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-                imagePreview.src = event.target.result;
-                imagePreview.style.display = 'block';
-                closePreview.style.display = 'flex';
-                uploadContent.style.display = 'none';
-                
-                visionResponse.innerHTML = '正在分析图片...';
-                
-            try {
-                const base64Image = event.target.result.split(',')[1];
-                visionResponse.innerHTML = '正在分析图片...';
-                
-                // 使用新的API调用
-                const analysis = await callFreeAiApi("请详细描述以下图片内容：", base64Image);
-                visionResponse.innerHTML = marked.parse(analysis);
-                showAlert('图片分析完成！', 'success');
-            } catch (error) {
-                    showAlert(`分析失败: ${error.message}`, 'error');
-                    visionResponse.innerHTML = '分析失败，请重试。';
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-        
-        function resetVisionUpload(e) {
-            if (e) e.stopPropagation();
-            imagePreview.style.display = 'none';
-            closePreview.style.display = 'none';
-            imagePreview.src = '';
-            imageUpload.value = '';
-            uploadContent.style.display = 'block';
-            visionResponse.innerHTML = '图片上传后将自动分析...';
-            visionUploadedFile = null;
-        }
-        
-        function copyVisionResult() {
-            const text = visionResponse.innerText; 
-            if (text && text !== '图片上传后将自动分析...') {
-                navigator.clipboard.writeText(text).then(() => showAlert('已复制到剪贴板！', 'success'));
-            } else {
-                showAlert('没有可复制的内容', 'error');
-            }
-        }
-        
-        async function handleGenerateTts() {
-            const text = ttsInput.value.trim();
-            if (!text) return showAlert('请输入要转换的文本', 'error');
-            if (!checkRequestFrequency()) return;
-            
-            const voice = voiceSelect.value;
-            
-            setButtonLoading(generateTtsBtn, true, '');
-            
-            try {
-                const audioUrl = await generateTts(text, voice);
-                ttsAudio.src = audioUrl;
-                audioPlayer.style.display = 'block';
-                showAlert('语音生成成功！点击播放按钮试听', 'success');
-            } catch (error) {
-                showAlert(`语音生成失败: ${error.message}`, 'error');
-            } finally {
-                setButtonLoading(generateTtsBtn, false, '<i class="fas fa-play"></i>');
-            }
-        }
-        
-        function downloadTtsAudio() {
-            if (!ttsAudio.src) {
-                showAlert('没有可下载的音频', 'error');
-                return;
-            }
-            
-            const link = document.createElement('a');
-            link.href = ttsAudio.src;
-            link.download = `ai-voice-${new Date().getTime()}.mp3`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        // --- 渲染和UI更新 ---
-        function renderChatHistory() {
-            chatHistory.innerHTML = '';
-            
-            // 头像配置
-            const AVATARS = {
-                user: "https://i.imgur.com/6VBx3bo.png",
-                ai: "https://i.imgur.com/4ZQZQ9u.gif",
-                initial: "https://i.imgur.com/4ZQZQ9u.gif"
-            };
-            
-            displayHistory.forEach(msg => {
-                const messageContainer = document.createElement('div');
-                messageContainer.className = `message ${msg.role}-message ${msg.initial ? 'initial' : ''}`;
-                
-                // 确定头像URL
-                let avatarSrc = AVATARS.ai;
-                if (msg.initial) {
-                    avatarSrc = AVATARS.initial;
-                } else if (msg.role === 'user') {
-                    avatarSrc = AVATARS.user;
-                }
-                
-                let contentHTML = msg.content;
-                
-                if (msg.role === 'ai') {
-                    contentHTML = marked.parse(msg.content);
-                }
-                
-                let fileAttachmentHTML = '';
-                if (msg.fileData) {
-                    const fileName = msg.fileData.name;
-                    let fileIconClass = 'fas fa-file';
-                    let filePreviewSrc = '';
-                    if (msg.fileData.type.startsWith('image/')) {
-                        filePreviewSrc = msg.fileData.preview;
-                        fileIconClass = '';
-                    } else if (msg.fileData.type === 'application/pdf') {
-                        fileIconClass = 'fas fa-file-pdf';
-                    } else if (msg.fileData.type === 'text/plain') {
-                        fileIconClass = 'fas fa-file-alt';
+                try {
+                    const encodedPrompt = encodeURIComponent(prompt);
+                    const url = `https://text.pollinations.ai/${encodedPrompt}?model=openai`;
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`API错误: ${response.status} - ${await response.text()}`);
                     }
                     
-                    fileAttachmentHTML = `
-                        <div class="message-file-attachment">
-                            ${filePreviewSrc ? `<img src="${filePreviewSrc}" alt="file preview" style="max-width: 100px; max-height: 100px; border-radius: 8px; margin-right: 10px;">` : `<i class="${fileIconClass}" style="font-size: 24px; margin-right: 10px; color: var(--text3);"></i>`}
-                            <span>${fileName}</span>
-                        </div>
-                    `;
-                }
-                
-                messageContainer.innerHTML = `
-                    <div class="message-avatar">
-                        <img src="${avatarSrc}" style="width: 40px;" alt="${msg.role}头像">
-                    </div>
-                    <div class="message-bubble">
-                        <div class="message-content">${contentHTML}${fileAttachmentHTML}</div>
-                        <div class="message-footer">
-                            <span class="message-time">${msg.timestamp}</span>
-                            ${msg.role === 'ai' ? `<button class="copy-message-btn" title="复制"><i class="fas fa-copy"></i></button>` : ''}
-                        </div>
-                    </div>
-                `;
-                chatHistory.appendChild(messageContainer);
-            });
-            
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
-        
-        function showAlert(message, type = 'success') {
-            const alert = document.createElement('div');
-            alert.className = `alert ${type}`;
-            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-            alert.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
-            document.getElementById('alertContainer').appendChild(alert);
-            
-            setTimeout(() => alert.remove(), 3000);
-        }
-        
-        function setButtonLoading(button, isLoading, loadingText) {
-            button.disabled = isLoading;
-            if (isLoading) {
-                button.classList.add('btn-disabled');
-                if (!button.dataset.originalContent) {
-                    button.dataset.originalContent = button.innerHTML;
-                }
-                button.innerHTML = loadingText ? loadingText : `<span class="loader"></span>`;
-            } else {
-                button.classList.remove('btn-disabled');
-                if(button.dataset.originalContent) {
-                    button.innerHTML = button.dataset.originalContent;
-                    button.dataset.originalContent = '';
+                    return await response.text();
+                } catch (error) {
+                    console.error('文本API请求失败:', error);
+                    throw new Error(`请求失败: ${error.message}`);
                 }
             }
-        }
-        
-        // --- API调用 ---
-        async function callFreeAiApi(prompt, imageBase64 = null) {
-            const now = Date.now();
-            if (now - lastRequestTime < REQUEST_INTERVAL) {
-                throw new Error('操作过于频繁，请15秒后再试');
-            }
-            lastRequestTime = now;
             
-            try {
-                let url;
-                let options = {};
+            async function callVisionApi(imageBase64, template) {
+                if (!checkRequestFrequency()) return;
                 
-                if (imageBase64) {
-                    // 图像识别API
-                    url = 'https://text.pollinations.ai/openai';
-                    options = {
+                try {
+                    const url = 'https://text.pollinations.ai/openai';
+                    const payload = {
+                        model: "openai",
+                        messages: [
+                            {
+                                role: "user",
+                                content: [
+                                    { type: "text", text: template },
+                                    {
+                                        type: "image_url",
+                                        image_url: { url: `data:image/jpeg;base64,${imageBase64}` }
+                                    }
+                                ]
+                            }
+                        ],
+                        max_tokens: 500
+                    };
+                    
+                    const response = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            model: "openai",
-                            messages: [
-                                {
-                                    role: "user",
-                                    content: [
-                                        { type: "text", text: prompt || "详细描述图片内容" },
-                                        {
-                                            type: "image_url",
-                                            image_url: { url: `data:image/jpeg;base64,${imageBase64}` }
-                                        }
-                                    ]
-                                }
-                            ],
-                            max_tokens: 500
-                        })
-                    };
-                } else {
-                    // 文本生成API
-                    const encodedPrompt = encodeURIComponent(prompt);
-                    url = `https://text.pollinations.ai/${encodedPrompt}?model=openai`;
-                }
-                
-                const response = await fetch(url, options);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`API错误: ${response.status} - ${errorText}`);
-                }
-                
-                if (imageBase64) {
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`API错误: ${response.status} - ${errorText}`);
+                    }
+                    
                     const data = await response.json();
                     return data.choices[0].message.content;
+                } catch (error) {
+                    console.error('视觉API请求失败:', error);
+                    throw new Error(`请求失败: ${error.message}`);
+                }
+            }
+            
+            async function callTtsApi(text, voice) {
+                if (!checkRequestFrequency()) return;
+                
+                try {
+                    // 限制文本长度
+                    if (text.length > 1000) {
+                        throw new Error('文本过长，请缩短至1000字符以内');
+                    }
+                    
+                    const encodedText = encodeURIComponent(text);
+                    const url = `https://text.pollinations.ai/${encodedText}?model=openai-audio&voice=${voice}`;
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`TTS错误: ${response.status} - ${await response.text()}`);
+                    }
+                    
+                    const blob = await response.blob();
+                    return URL.createObjectURL(blob);
+                } catch (error) {
+                    console.error('TTS请求失败:', error);
+                    throw new Error(`语音生成失败: ${error.message}`);
+                }
+            }
+            
+            // --- 核心功能 ---
+            async function handleExpandPrompt() {
+                const prompt = promptInput.value.trim();
+                if (!prompt) return showAlert('请输入要扩写的提示词', 'error');
+                
+                setButtonLoading(expandBtn, true, '');
+                try {
+                    const expandedPrompt = await callTextApi(promptTemplate.value.replace('%s', prompt));
+                    promptInput.value = expandedPrompt;
+                    showAlert('提示词扩写完成！', 'success');
+                } catch (error) {
+                    showAlert(`扩写失败: ${error.message}`, 'error');
+                } finally {
+                    setButtonLoading(expandBtn, false, '<i class="fas fa-wand-magic-sparkles"></i>');
+                }
+            }
+            
+            async function handleSendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return showAlert('请输入消息', 'error');
+                
+                const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                displayHistory.push({
+                    role: 'user', content: message, timestamp
+                });
+                
+                renderChatHistory();
+                chatInput.value = '';
+                
+                setButtonLoading(sendBtn, true, '');
+                
+                try {
+                    const response = await callTextApi(message);
+                    
+                    const aiTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    displayHistory.push({ role: 'ai', content: response, timestamp: aiTimestamp });
+                    
+                    renderChatHistory();
+                } catch (error) {
+                    showAlert(`发送失败: ${error.message}`, 'error');
+                    renderChatHistory();
+                } finally {
+                    setButtonLoading(sendBtn, false, '<i class="fas fa-paper-plane"></i>');
+                }
+            }
+            
+            function clearChat() {
+                apiHistory = [];
+                displayHistory = [];
+                displayHistory.push({
+                    role: 'ai',
+                    content: '<strong>您好 👏🏻😊<br>我是免费AI助手</strong><br><br>我可以为您答疑解惑，处理图像，转语音，完全免费使用！',
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    initial: true
+                });
+                renderChatHistory();
+                showAlert('对话历史已清空', 'success');
+            }
+            
+            async function handleVisionFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    visionUploadedFile = file;
+                    await processAndAnalyzeImage(file);
+                }
+            }
+            
+            async function handleRegenerateVision() {
+                if (!visionUploadedFile) {
+                    showAlert('请先上传图片', 'error');
+                    return;
+                }
+                await processAndAnalyzeImage(visionUploadedFile);
+            }
+            
+            async function processAndAnalyzeImage(file) {
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                    closePreview.style.display = 'flex';
+                    uploadContent.style.display = 'none';
+                    
+                    visionResponse.innerHTML = '正在分析图片...';
+                    
+                    try {
+                        const base64Image = event.target.result.split(',')[1];
+                        const analysis = await callVisionApi(base64Image, visionTemplate.value);
+                        visionResponse.innerHTML = marked.parse(analysis);
+                        showAlert('图片分析完成！', 'success');
+                    } catch (error) {
+                        showAlert(`分析失败: ${error.message}`, 'error');
+                        visionResponse.innerHTML = '分析失败，请重试。';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            function resetVisionUpload(e) {
+                if (e) e.stopPropagation();
+                imagePreview.style.display = 'none';
+                closePreview.style.display = 'none';
+                imagePreview.src = '';
+                imageUpload.value = '';
+                uploadContent.style.display = 'block';
+                visionResponse.innerHTML = '图片上传后将自动分析...';
+                visionUploadedFile = null;
+            }
+            
+            function copyVisionResult() {
+                const text = visionResponse.innerText; 
+                if (text && text !== '图片上传后将自动分析...') {
+                    navigator.clipboard.writeText(text).then(() => showAlert('已复制到剪贴板！', 'success'));
                 } else {
-                    return await response.text();
+                    showAlert('没有可复制的内容', 'error');
                 }
-            } catch (error) {
-                console.error('API请求失败:', error);
-                throw new Error(`请求失败: ${error.message}`);
             }
-        }
+            
+// 替换现有的 handleGenerateTts 函数
+async function handleGenerateTts() {
+  const text = ttsInput.value.trim();
+  if (!text) return showAlert('请输入要转换的文本', 'error');
 
-        // 使用Pollinations.AI的免费TTS API
-        async function generateTts(text, voice) {
-            const now = Date.now();
-            if (now - lastRequestTime < REQUEST_INTERVAL) {
-                throw new Error('操作过于频繁，请15秒后再试');
-            }
-            lastRequestTime = now;
+  // 使用浏览器内置的语音合成
+  if ('speechSynthesis' in window) {
+    // 停止当前语音
+    window.speechSynthesis.cancel();
+
+    // 创建新的语音实例
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // 设置语音类型
+    const voices = window.speechSynthesis.getVoices();
+    const selectedVoice = voices.find(v => v.name.includes(voiceSelect.value)) || voices[0];
+    utterance.voice = selectedVoice;
+
+    // 设置语速和音高
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+
+    // 播放语音
+    window.speechSynthesis.speak(utterance);
+    showAlert('开始播放语音', 'success');
+  } else {
+    showAlert('您的浏览器不支持语音合成功能', 'error');
+  }
+}
+
+// 移除下载功能（因为Web Speech API不支持直接下载）
+downloadTtsBtn.disabled = true;
+downloadTtsBtn.title = "当前浏览器不支持下载语音";
             
-            try {
-                const encodedText = encodeURIComponent(text);
-                const url = `https://text.pollinations.ai/${encodedText}?model=openai-audio&voice=${voice}`;
+            // --- 渲染和UI更新 ---
+            function renderChatHistory() {
+                chatHistory.innerHTML = '';
                 
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`TTS错误: ${response.status} - ${errorText}`);
-                }
-                
-                const blob = await response.blob();
-                return URL.createObjectURL(blob);
-            } catch (error) {
-                console.error('TTS请求失败:', error);
-                throw new Error(`语音生成失败: ${error.message}`);
-            }
-        }
-        
-        // --- 辅助功能 ---
-        function handleChatFileSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                chatUploadedFile = {
-                    base64: event.target.result.split(',')[1],
-                    mime: file.type,
-                    name: file.name
+                // 头像配置
+                const AVATARS = {
+                    user: "img/user.png",
+                    ai: "img/2z.gif",
+                    initial: "img/2z.gif"
                 };
                 
-                chatFilePreviewName.textContent = file.name;
-                chatFilePreview.style.display = 'flex';
-                
-                if (file.type.startsWith('image/')) {
-                    chatFilePreviewImg.src = event.target.result;
-                    chatFilePreviewImg.style.display = 'block';
-                    chatFileIcon.style.display = 'none';
-                } else {
-                    chatFilePreviewImg.style.display = 'none';
-                    let iconClass = 'fas fa-file-alt';
-                    if (file.type === 'application/pdf') {
-                        iconClass = 'fas fa-file-pdf';
-                    } else if (file.type === 'text/plain') {
-                        iconClass = 'fas fa-file-alt';
+                displayHistory.forEach(msg => {
+                    const messageContainer = document.createElement('div');
+                    messageContainer.className = `message ${msg.role}-message ${msg.initial ? 'initial' : ''}`;
+                    
+                    // 确定头像URL
+                    let avatarSrc = AVATARS.ai;
+                    if (msg.initial) {
+                        avatarSrc = AVATARS.initial;
+                    } else if (msg.role === 'user') {
+                        avatarSrc = AVATARS.user;
                     }
-                    chatFileIcon.className = iconClass;
-                    chatFileIcon.style.display = 'block';
+                    
+                    let contentHTML = msg.content;
+                    
+                    if (msg.role === 'ai') {
+                        contentHTML = marked.parse(msg.content);
+                    }
+                    
+                    messageContainer.innerHTML = `
+                        <div class="message-avatar">
+                            <img src="${avatarSrc}" style="width: 40px;" alt="${msg.role}头像">
+                        </div>
+                        <div class="message-bubble">
+                            <div class="message-content">${contentHTML}</div>
+                            <div class="message-footer">
+                                <span class="message-time">${msg.timestamp}</span>
+                                ${msg.role === 'ai' ? `<button class="copy-message-btn" title="复制"><i class="fas fa-copy"></i></button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    chatHistory.appendChild(messageContainer);
+                });
+                
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+            
+            function showAlert(message, type = 'success') {
+                const alert = document.createElement('div');
+                alert.className = `alert ${type}`;
+                const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                alert.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+                document.getElementById('alertContainer').appendChild(alert);
+                
+                setTimeout(() => alert.remove(), 3000);
+            }
+            
+            function setButtonLoading(button, isLoading, loadingText) {
+                button.disabled = isLoading;
+                if (isLoading) {
+                    button.classList.add('btn-disabled');
+                    if (!button.dataset.originalContent) {
+                        button.dataset.originalContent = button.innerHTML;
+                    }
+                    button.innerHTML = loadingText ? loadingText : `<span class="loader"></span>`;
+                } else {
+                    button.classList.remove('btn-disabled');
+                    if(button.dataset.originalContent) {
+                        button.innerHTML = button.dataset.originalContent;
+                        button.dataset.originalContent = '';
+                    }
                 }
-            };
-            reader.readAsDataURL(file);
-        }
-        
-        function removeChatUploadedFile() {
-            chatUploadedFile = null;
-            chatFileUpload.value = '';
-            chatFilePreview.style.display = 'none';
-            chatFilePreviewImg.src = '';
-            chatFilePreviewImg.style.display = 'none';
-            chatFileIcon.style.display = 'none';
-            chatFilePreviewName.textContent = '';
-        }
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        function handleDrop(e) {
-            let dt = e.dataTransfer;
-            let file = dt.files[0];
-            if (file && file.type.startsWith('image/')) {
-                visionUploadedFile = file;
-                processAndAnalyzeImage(file);
-            } else {
-                showAlert('AI视觉功能目前只支持图片上传', 'error');
             }
-        }
-        
-        function checkRequestFrequency() {
-            const now = Date.now();
-            if (now - lastRequestTime < REQUEST_INTERVAL) {
-                showAlert('操作过于频繁，请稍后再试', 'error');
-                return false;
+            
+            // --- 辅助功能 ---
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-            lastRequestTime = now;
-            return true;
-        }
-        
-        // 初始化
-        setupEventListeners();
-    });
+            
+            function handleDrop(e) {
+                let dt = e.dataTransfer;
+                let file = dt.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    visionUploadedFile = file;
+                    processAndAnalyzeImage(file);
+                } else {
+                    showAlert('AI视觉功能目前只支持图片上传', 'error');
+                }
+            }
+            
+            function checkRequestFrequency() {
+                const now = Date.now();
+                if (now - lastRequestTime < REQUEST_INTERVAL) {
+                    showAlert('操作过于频繁，请稍后再试', 'error');
+                    return false;
+                }
+                lastRequestTime = now;
+                return true;
+            }
+            
+            // 初始化
+            setupEventListeners();
+        });
     </script>
 </body>
 </html>
