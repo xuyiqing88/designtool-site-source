@@ -1682,7 +1682,7 @@ downloadTtsBtn.disabled = true;
 downloadTtsBtn.title = "当前浏览器不支持下载语音";
             
             // --- 渲染和UI更新 ---
-            function renderChatHistory() {
+function renderChatHistory() {
                 chatHistory.innerHTML = '';
                 
                 // 头像配置
@@ -1707,7 +1707,13 @@ downloadTtsBtn.title = "当前浏览器不支持下载语音";
                     let contentHTML = msg.content;
                     
                     if (msg.role === 'ai') {
-                        contentHTML = marked.parse(msg.content);
+                        // **在这里添加检查，确保 msg.content 有效**
+                        if (msg.content) {
+                            contentHTML = marked.parse(msg.content);
+                        } else {
+                            contentHTML = 'AI没有返回有效的消息内容。'; // 替代文本
+                            console.warn('AI消息内容为空或无效:', msg); // 控制台警告
+                        }
                     }
                     
                     messageContainer.innerHTML = `
