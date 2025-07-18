@@ -585,7 +585,60 @@
                 padding: 30px 15px;
             }
         }
-        
+        /* 添加到桌面提示 */
+.add-to-home-screen {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: var(--dark);
+  padding: 10px;
+  border-radius: 50px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: none;
+  animation: slideUp 0.5s ease-out;
+  max-width: 90%;
+}
+
+.add-to-home-content {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.add-to-home-screen span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#closeAddToHome {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (max-width: 768px) {
+  .add-to-home-screen {
+    display: flex;
+  }
+}
         @media (max-width: 480px) {
             .tools-grid {
                 grid-template-columns: 1fr;
@@ -678,8 +731,16 @@
             <p>您的支持是我持续更新的动力</p>
         </div>
     </div>
-        
-        <script src="https://giscus.app/client.js"
+
+      <!-- 添加到桌面提示气泡 -->
+<div id="addToHomeScreen" class="add-to-home-screen">
+  <div class="add-to-home-content">
+    <span>可添加至桌面图标访问</span>
+    <button id="closeAddToHome">&times;</button>
+  </div>
+</div>  
+
+<script src="https://giscus.app/client.js"
         data-repo="xuyiqing88/design-tools-comments"
         data-repo-id="R_kgDOPIJQug"
         data-category="General"
@@ -864,7 +925,33 @@
             });
             return grouped;
         }
+// 添加到桌面提示功能
+const addToHomeElement = document.getElementById('addToHomeScreen');
+const closeAddToHomeBtn = document.getElementById('closeAddToHome');
 
+// 检查是否已经显示过提示
+const isAddToHomeShown = localStorage.getItem('addToHomeShown');
+
+// 显示提示（如果是移动设备且未显示过）
+function showAddToHomePrompt() {
+  if (!isAddToHomeShown && window.innerWidth <= 768) {
+    setTimeout(() => {
+      addToHomeElement.style.display = 'flex';
+      localStorage.setItem('addToHomeShown', 'true');
+    }, 5000); // 5秒后显示
+  }
+}
+
+// 关闭提示
+closeAddToHomeBtn.addEventListener('click', () => {
+  addToHomeElement.style.display = 'none';
+});
+
+// 初始化
+showAddToHomePrompt();
+
+// 监听窗口大小变化
+window.addEventListener('resize', showAddToHomePrompt);
         // 渲染分类区域
         function renderCategorySections() {
             const container = document.getElementById('toolsContainer');
