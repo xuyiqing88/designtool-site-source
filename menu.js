@@ -310,7 +310,7 @@ const menuData = [
         icon: "fas fa-robot",
         submenu: [
 	    { title: "AI数字人（免费版）", link: "freeAI.html" },
-	    { title: "AI绘画", link: "draw.html" },
+	    { title: "AI绘画（API版）", link: "draw.html" },
 	    { title: "AI数字人", link: "AI.html" },
             { title: "模型数据集编辑器", link: "model.html" },
             { title: "SDXL提示词风格大全", link: "SDXL.html" },
