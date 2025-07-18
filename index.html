@@ -593,7 +593,8 @@
   transform: translateX(-50%);
   background: #fff;
   color: var(--dark);
-  padding: 10px;
+  padding: 10px 20px;
+  padding-bottom: 15px; /* 增加底部内边距给箭头空间 */
   border-radius: 50px;
   z-index: 1000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -601,7 +602,19 @@
   animation: slideUp 0.5s ease-out;
   max-width: 90%;
 }
-
+/* 三角形指示器 */
+.bubble-arrow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white; /* 与气泡背景色匹配 */
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.1)); /* 添加阴影匹配气泡 */
+}
 .add-to-home-content {
   display: flex;
   align-items: center;
@@ -732,13 +745,14 @@
         </div>
     </div>
 
-      <!-- 添加到桌面提示气泡 -->
+<!-- 添加到桌面提示气泡 -->
 <div id="addToHomeScreen" class="add-to-home-screen">
   <div class="add-to-home-content">
-    <span>可添加至桌面图标访问</span>
+    <span>可添加至桌面图标</span>
     <button id="closeAddToHome">&times;</button>
   </div>
-</div>  
+  <div class="bubble-arrow"></div>
+</div>
 
 <script src="https://giscus.app/client.js"
         data-repo="xuyiqing88/design-tools-comments"
