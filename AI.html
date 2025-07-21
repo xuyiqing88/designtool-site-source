@@ -15,7 +15,7 @@
             --line: #e2e4f0;
             --mainbg: #f9f9ff;
             --btactive: #e5e8ff;
-            --lightbg: #f8f9ff;
+            --lightbg: #f5f5f8;
             --shadow: #55537512;
             --card-bg: #ffffff;
             --blur: rgba(255, 255, 255, 0.5);
@@ -644,10 +644,7 @@
     /* height: 56vh;  删除或注释掉这一行 */
     	flex-grow: 1; /* 让它自动填充父容器的剩余高度 */
     	overflow-y: auto;
-    	padding: 20px;
-    	background: var(--mainbg);
     	border-radius: 10px;
-    	border: 1px solid var(--line);
     	margin-bottom: 10px;
 	height: 100vh;
         }
@@ -714,16 +711,17 @@
         .user-message .message-bubble {
             background: var(--user-msg-bg);
             border-top-right-radius: 4px;
+	    padding: 15px;
         }
         
         .ai-message .message-bubble {
-            background: var(--ai-msg-bg);
+            background: var(--lightbg);
             border-top-left-radius: 4px;
-	    box-shadow: 0px 5px 10px #acacbe1c;
+	    padding: 15px;
         }
 
         .ai-message.initial .message-bubble {
-            background: radial-gradient(185% 45% at 100% 0%, #e6008100, #ffffff), linear-gradient(90deg, #D0EFFF, #d4dcff, #ffd9f2);
+            background: radial-gradient(185% 45% at 100% 0%, #e6008100, #f9f9fe), linear-gradient(90deg, #D0EFFF, #d4dcff, #ffd9f2);
 	width: 480px;
         }
 
@@ -823,7 +821,7 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            margin-top: 12px;
+            margin-top: 5px;
             gap: 15px;
         }
         
@@ -1087,7 +1085,7 @@
                 flex-direction: column;
             }
 	.secondary-tab-pane{
-		max-height: 74vh;
+		max-height: 84vh;
 	}
 	        .panel {padding: 16px;}
             .sidebar {
@@ -1134,7 +1132,7 @@
                 padding: 0;
                 min-height: calc(100vh - 80px);
             }
-            .chat-history {    padding: 12px;}
+            .chat-history {    }
             .vision-layout {
                 flex-direction: column;
 		        display: flex;

@@ -17,7 +17,7 @@
             --line: #e2e4f0;
             --mainbg: #f9f9ff;
             --btactive: #e5e8ff;
-            --lightbg: #f8f9ff;
+            --lightbg: #f5f5f8;
             --shadow: #55537512;
             --card-bg: #ffffff;
             --blur: rgba(255, 255, 255, 0.5);
@@ -46,6 +46,27 @@
             color: var(--text1);
             transition: background 0.3s ease;
         }
+.message-file-attachment {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    padding: 8px;
+    background: var(--lightbg);
+    border-radius: 8px;
+    border: 1px solid var(--line);
+}
+
+.message-file-attachment img {
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+
+.message-file-attachment span {
+    font-size: 14px;
+    color: var(--text2);
+}
         .line {
 		width: 100%;
 		height: 1px;
@@ -614,10 +635,7 @@
             gap: 20px;
             flex-grow: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: var(--mainbg);
             border-radius: 10px;
-            border: 1px solid var(--line);
             margin-bottom: 10px;
             height: 100vh;
         }
@@ -696,16 +714,17 @@
         .user-message .message-bubble {
             background: var(--user-msg-bg);
             border-top-right-radius: 4px;
+	padding: 15px;
         }
         
         .ai-message .message-bubble {
-            background: var(--ai-msg-bg);
+            background: var(--lightbg);
             border-top-left-radius: 4px;
-            box-shadow: 0px 5px 10px #acacbe1c;
+	padding: 15px;
         }
 
         .ai-message.initial .message-bubble {
-            background: radial-gradient(185% 45% at 100% 0%, #e6008100, #ffffff), linear-gradient(90deg, #D0EFFF, #d4dcff, #ffd9f2);
+            background: radial-gradient(185% 45% at 100% 0%, #e6008100, #f9f9fe), linear-gradient(90deg, #D0EFFF, #d4dcff, #ffd9f2);
             width: 480px;
         }
 
@@ -805,7 +824,7 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            margin-top: 12px;
+            margin-top: 5px;
             gap: 15px;
         }
         
@@ -1000,7 +1019,7 @@
             }
             
             .secondary-tab-pane{
-                max-height: 74vh;
+                max-height: 84vh;
             }
             
             .panel {padding: 16px;}
@@ -1054,7 +1073,7 @@
                 min-height: calc(100vh - 80px);
             }
             
-            .chat-history { padding: 12px; }
+            .chat-history { }
             
             .vision-layout {
                 flex-direction: column;
@@ -1111,18 +1130,30 @@
                                     </div>
                                 </div>
                             </div>
+<div id="chatFilePreview" style="display: none; margin-bottom: 10px; align-items: center; gap: 10px; padding: 8px 12px; background: var(--mainbg); border-radius: 8px; border: 1px solid var(--line);">
+    <div id="chatFileDisplay" style="display: flex; align-items: center; gap: 10px;">
+        <img id="chatImagePreview" alt="preview" style="max-width: 60px; max-height: 60px; border-radius: 6px; display: none;">
+        <i id="chatFileIcon" class="fas fa-file-image" style="font-size: 24px; color: var(--main-color); display: none;"></i>
+    </div>
+    <span id="chatFilePreviewName" style="flex-grow: 1; font-size: 14px; color: var(--text2);"></span>
+    <i class="fas fa-times-circle" id="removeChatFile" title="移除文件" style="cursor: pointer; color: var(--text3);"></i>
+</div>
                             
-                            <div class="chat-input-area">
-                                <textarea id="chatInput" placeholder="输入您的问题或想法（按Enter发送，Shift+Enter换行）" rows="1"></textarea>
-                                <div class="btn-group">
-                                     <button class="btn-secondary" id="clearChatBtn" title="清空对话历史" style="margin-right: 16px;">
-                                        <i class="fas fa-eraser"></i>
-                                    </button>
-                                    <button class="btn-primary" id="sendBtn" title="发送消息" style="width: 62px; background: var(--btcolor);">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
-                            </div>
+<div class="chat-input-area">
+    <textarea id="chatInput" placeholder="输入您的问题或想法（按Enter发送，Shift+Enter换行）" rows="1"></textarea>
+    <div class="btn-group">
+        <button class="btn-secondary" id="uploadImageBtn" title="上传图片">
+            <i class="fas fa-paperclip"></i>
+        </button>
+        <button class="btn-secondary" id="clearChatBtn" title="清空对话历史" style="margin-right: 16px;">
+            <i class="fas fa-eraser"></i>
+        </button>
+        <button class="btn-primary" id="sendBtn" title="发送消息" style="width: 62px; background: var(--btcolor);">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+    <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
+</div>
                         </div>
 
                         <div class="secondary-tab-pane" id="promptSubTab">                            
@@ -1208,7 +1239,6 @@
                     </div>
                 </div>
                 
-                <!-- 新增的TTS一级标签 -->
                 <div class="tab-pane" id="ttsTab">
                     <div class="panel">
                         <h2><i class="fas fa-volume-up"></i> 文本转语音</h2>
@@ -1302,6 +1332,9 @@ async function initTts() {
             const secondaryTabPanes = document.querySelectorAll('.secondary-tab-pane');
             
             // Chat功能元素
+	// 获取新增的DOM元素
+	const uploadImageBtn = document.getElementById('uploadImageBtn');
+	const imageUploadInput = document.getElementById('imageUploadInput');
             const expandBtn = document.getElementById('expandBtn');
             const clearExpandBtn = document.getElementById('clearExpandBtn');
             const promptInput = document.getElementById('promptInput');
@@ -1369,6 +1402,51 @@ async function initTts() {
                     }
                 });
                 
+// 图片上传事件监听
+uploadImageBtn.addEventListener('click', () => {
+    imageUploadInput.click();
+});
+
+imageUploadInput.addEventListener('change', handleImageUpload);
+
+// 图片上传处理函数
+// 修改后的图片上传处理函数
+async function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+        showAlert('请上传图片文件', 'error');
+        return;
+    }
+    
+    // 显示在预览区域
+    const preview = document.getElementById('chatFilePreview');
+    const imagePreview = document.getElementById('chatImagePreview');
+    const fileIcon = document.getElementById('chatFileIcon');
+    const fileName = document.getElementById('chatFilePreviewName');
+    
+    fileName.textContent = file.name;
+    imagePreview.style.display = 'block';
+    fileIcon.style.display = 'none';
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        imagePreview.src = event.target.result;
+        preview.style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+    
+    // 重置文件输入
+    imageUploadInput.value = '';
+}
+
+// 添加移除文件功能
+document.getElementById('removeChatFile').addEventListener('click', () => {
+    document.getElementById('chatFilePreview').style.display = 'none';
+    document.getElementById('chatImagePreview').src = '';
+});
+
                 // 图像识别
                 uploadArea.addEventListener('click', () => imageUpload.click());
                 imageUpload.addEventListener('change', handleVisionFileSelect);
@@ -1546,36 +1624,80 @@ async function initTts() {
                 }
             }
             
+            // ==========================================================
+            // ========== 核心修改开始 (Core fix starts here) ==========
+            // ==========================================================
             async function handleSendMessage() {
                 const message = chatInput.value.trim();
-                if (!message) return showAlert('请输入消息', 'error');
+                const chatImagePreview = document.getElementById('chatImagePreview');
+                const hasImage = chatImagePreview.src && chatImagePreview.src.startsWith('data:image/');
+
+                if (!message && !hasImage) {
+                    return showAlert('请输入消息或上传图片', 'error');
+                }
                 
+                // 步骤 1: 从UI捕获所有需要的数据
                 const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                
-                displayHistory.push({
-                    role: 'user', content: message, timestamp
-                });
-                
-                renderChatHistory();
-                chatInput.value = '';
-                
-                setButtonLoading(sendBtn, true, '');
-                
-                try {
-                    const response = await callTextApi(message);
+                let userMessageContent = message;
+                let base64DataForApi = null;
+
+                if (hasImage) {
+                    const base64DataForDisplay = chatImagePreview.src;
+                    base64DataForApi = base64DataForDisplay.split(',')[1];
                     
+                    // 为聊天记录构建包含图片附件的HTML
+                    userMessageContent += `
+                        <div class="message-file-attachment">
+                            <img src="${base64DataForDisplay}" alt="附件">
+                            <span>${document.getElementById('chatFilePreviewName').textContent}</span>
+                        </div>
+                    `;
+                }
+
+                // 步骤 2: 立即更新UI，显示用户发送的消息
+                displayHistory.push({
+                    role: 'user', 
+                    content: userMessageContent,
+                    timestamp
+                });
+                renderChatHistory();
+
+                // 步骤 3: 立即清空输入区和预览区，为下一次输入做准备
+                chatInput.value = '';
+                document.getElementById('chatFilePreview').style.display = 'none';
+                chatImagePreview.src = '';
+                document.getElementById('chatFilePreviewName').textContent = '';
+
+                // 步骤 4: 执行后台API调用
+                setButtonLoading(sendBtn, true, '');
+
+                try {
+                    let response;
+                    if (hasImage && base64DataForApi) {
+                        // 如果有图片，调用视觉API
+                        const question = message || "请详细描述这张图片。";
+                        response = await callVisionApi(base64DataForApi, question);
+                    } else {
+                        // 如果没有图片，调用文本API
+                        response = await callTextApi(message);
+                    }
+                    
+                    // 步骤 5: 用AI的回复更新UI
                     const aiTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     displayHistory.push({ role: 'ai', content: response, timestamp: aiTimestamp });
-                    
                     renderChatHistory();
+
                 } catch (error) {
                     showAlert(`发送失败: ${error.message}`, 'error');
-                    renderChatHistory();
                 } finally {
                     setButtonLoading(sendBtn, false, '<i class="fas fa-paper-plane"></i>');
                 }
             }
-            
+            // ========================================================
+            // ========== 核心修改结束 (Core fix ends here) ==========
+            // ========================================================
+
+
             function clearChat() {
                 apiHistory = [];
                 displayHistory = [];
@@ -1705,18 +1827,20 @@ function renderChatHistory() {
                         avatarSrc = AVATARS.user;
                     }
                     
-                    let contentHTML = msg.content;
-                    
-                    if (msg.role === 'ai') {
-                        // **在这里添加检查，确保 msg.content 有效**
+                    let contentHTML;
+                    // 对用户消息和AI消息使用不同的解析方式
+                    if (msg.role === 'user') {
+                        // 用户消息直接显示HTML内容（因为它可能包含我们手动构建的图片附件）
+                        contentHTML = msg.content;
+                    } else { // AI消息
                         if (msg.content) {
+                            // AI的回复使用marked库来解析Markdown
                             contentHTML = marked.parse(msg.content);
                         } else {
-                            contentHTML = 'AI没有返回有效的消息内容。'; // 替代文本
-                            console.warn('AI消息内容为空或无效:', msg); // 控制台警告
+                            contentHTML = 'AI没有返回有效的消息内容。';
                         }
                     }
-                    
+
                     messageContainer.innerHTML = `
                         <div class="message-avatar">
                             <img src="${avatarSrc}" style="width: 40px;" alt="${msg.role}头像">
