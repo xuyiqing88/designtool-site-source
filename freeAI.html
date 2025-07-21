@@ -146,9 +146,7 @@
         }
 
         .tab-btn.active {
-            color: #fff;
-            background: #00000012;
-            font-weight: 600;
+            color: var(--main-color);
             box-shadow: none;
         }
         
@@ -271,6 +269,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+	justify-content: center;
         }
         
         .panel-description {
@@ -332,7 +331,6 @@
         textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
             outline: none;
             border-color: var(--main-color);
-            box-shadow: 0 0 0 3px rgba(89, 99, 255, 0.15);
         }
         
         .input-wrapper {
@@ -635,7 +633,7 @@
             gap: 20px;
             flex-grow: 1;
             overflow-y: auto;
-            border-radius: 10px;
+            border-radius: 4px 4px 10px 10px;
             margin-bottom: 10px;
             height: 100vh;
         }
@@ -1015,7 +1013,7 @@
         
         @media (max-width: 768px) {
             .main-layout { 
-                flex-direction: column;
+                flex-direction: column-reverse;
             }
             
             .secondary-tab-pane{
@@ -1033,6 +1031,8 @@
                 justify-content: center;
                 align-items: center;
 	margin-left: 0;
+	        background: #fff;
+	        box-shadow: 0 -2px 10px #0000000d;
             }
             .chat-input-area {
 	margin-bottom: 10px;}
@@ -1051,7 +1051,6 @@
                 gap: 5px;
                 flex-grow: 1;
                 justify-content: space-around;
-	        margin-left: 20px;
             }
             
             .tab-btn {
@@ -1059,16 +1058,19 @@
                 text-align: center;
                 justify-content: center;
                 margin-bottom: 0;
-                font-size: 15px;
-                padding: 8px 10px;
+                font-size: 12px;
+                padding: 0;
                 gap: 4px;
+	        flex-direction: column;
+	        color: var(--text3);
             }
             
             .tab-btn i {
                 margin-right: 4px;
-	        display: none;
             }
-            
+            .panel h2 i {
+            display: none;
+        }
             .main-content {
                 padding: 0;
                 min-height: calc(100vh - 80px);
