@@ -80,7 +80,7 @@
 
     /* 拖拽区域 */
     #dropzone {
-      width: 80%;
+      width: 60%;
       height: 70%;
       border: 2px dashed rgba(255, 255, 255, 0.3);
       background: rgba(255, 255, 255, 0.1);
@@ -241,6 +241,55 @@
     #file-input {
       display: none;
     }
+/* 移动端适配 */
+@media (max-width: 768px) {
+  /* 调整拖拽区域大小 */
+  #dropzone {
+    width: 85%;
+    height: 60%;
+  }
+
+  /* 调整控制面板 */
+  #controls {
+    width: 80%;
+    padding: 12px 24px;
+    bottom: 20px;
+  }
+
+  /* 调整文字大小 */
+  .drop-text {
+    font-size: 1em;
+  }
+
+  /* 调整顶部按钮组 */
+  .topgroup {
+    left: 10px;
+    margin-top: 10px;
+    padding: 3px;
+  }
+
+  /* 调整渐变背景动画性能 */
+  #gradient {
+    animation: gradientFlow 30s ease infinite;
+  }
+
+  /* 调整滑竿大小 */
+  #size-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* 隐藏不必要的阴影和效果以提升性能 */
+  #dropzone {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  #dropzone:hover, #dropzone.dragover {
+    transform: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
   </style>
 </head>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
