@@ -245,7 +245,7 @@
 	display: none; 
 	flex: 1; /* 让它占据所有可用空间 */
     flex-direction: column; /* 子元素垂直堆叠 */
-    max-height: 88vh; /* 确保它不会超出父容器 */
+    max-height: calc(100vh - 100px); /* 确保它不会超出父容器 */
 	}
         .secondary-tab-pane.active { 
 	display: flex; 
@@ -1086,7 +1086,7 @@
                 flex-direction: column-reverse;
             }
 	.secondary-tab-pane{
-		max-height: 84vh;
+		max-height: calc(100vh - 120px);
 	}
 	.settings-pane h2 {
 		    justify-content: center;}
