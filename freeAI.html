@@ -146,8 +146,8 @@
         }
 
         .tab-btn.active {
-            color: var(--main-color);
             box-shadow: none;
+		background: #00000012;
         }
         
         .tab-btn:hover:not(.active) {
@@ -1015,7 +1015,6 @@
             .main-layout { 
                 flex-direction: column-reverse;
             }
-            
             .secondary-tab-pane{
                 max-height: 84vh;
             }
@@ -1067,7 +1066,10 @@
 	        flex-direction: column;
 	        color: var(--text3);
             }
-            
+            .tab-btn.active {
+            color: var(--main-color);
+		background: none;
+        }
             .tab-btn i {
                 margin-right: 4px;
             }
