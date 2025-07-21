@@ -80,7 +80,7 @@
 
     /* 拖拽区域 */
     #dropzone {
-      width: 60%;
+      width: 80%;
       height: 70%;
       border: 2px dashed rgba(255, 255, 255, 0.3);
       background: rgba(255, 255, 255, 0.1);
@@ -95,6 +95,7 @@
                 transform 0.3s; 
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       z-index: 2;
+	padding: 10px;
 	
     }
 
@@ -235,6 +236,11 @@
     .toast.show {
       right: 24px;
     }
+
+    /* 隐藏的文件输入 */
+    #file-input {
+      display: none;
+    }
   </style>
 </head>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
@@ -258,6 +264,9 @@
   </div>
 </div>
 
+<!-- 添加隐藏的文件输入元素 -->
+<input type="file" id="file-input" accept="image/*">
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -265,6 +274,7 @@
   const dropzone = document.getElementById('dropzone');
   const loader = document.querySelector('.loader');
   const toast = document.getElementById('toast');
+  const fileInput = document.getElementById('file-input');
   const bgImage = document.createElement('div');
 
   // 背景图层级设置
@@ -298,55 +308,12 @@
     }, duration);
   }
 
-  // 全局拖拽事件处理
-  document.addEventListener('dragover', e => e.preventDefault());
-  document.addEventListener('drop', e => e.preventDefault());
-
-  // 拖拽进入时始终显示拖拽区域
-  dropzone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-    if (!isImageLoaded) {
-      dropzone.style.display = 'flex';
-    }
-  });
-
-  // 拖拽离开时隐藏拖拽区域
-  dropzone.addEventListener('dragleave', () => {
-    dropzone.classList.remove('dragover');
-  });
-
-  // 处理拖拽放置事件
-document.addEventListener('dragenter', e => {
-    if (e.dataTransfer.types.includes('Files')) {
-      dropzone.classList.remove('hidden');
-      dropzone.style.pointerEvents = 'auto';  // 确保可交互
-    }
-  });
-
-  dropzone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-  });
-
-  dropzone.addEventListener('dragleave', () => {
-    dropzone.classList.remove('dragover');
-  });
-
-  // 强化文件处理流程
-  dropzone.addEventListener('drop', async e => {
-    e.preventDefault();
-    e.stopPropagation();
-    dropzone.classList.remove('dragover');
-    loader.style.display = 'block';
-
-    const file = e.dataTransfer.files[0];
-    console.log('Dropped file:', file);  // 调试日志
-
+  // 处理图片文件
+  async function handleImageFile(file) {
     if (!file || !isValidImage(file)) {
       showToast('⚠️ 仅支持 JPG/PNG/WEBP/SVG/BMP/GIF 格式文件');
       loader.style.display = 'none';
-      return;
+      return false;
     }
 
     try {
@@ -382,12 +349,76 @@ document.addEventListener('dragenter', e => {
         dropzone.style.pointerEvents = 'none';
       }, 300);
       
+      return true;
     } catch (error) {
       console.error('加载失败详情:', error);
       showToast(`❌ ${error.message || '图片加载失败'}`);
       isImageLoaded = false;
+      return false;
     } finally {
       loader.style.display = 'none';
+    }
+  }
+
+  // 全局拖拽事件处理
+  document.addEventListener('dragover', e => e.preventDefault());
+  document.addEventListener('drop', e => e.preventDefault());
+
+  // 拖拽进入时始终显示拖拽区域
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+    if (!isImageLoaded) {
+      dropzone.style.display = 'flex';
+    }
+  });
+
+  // 拖拽离开时隐藏拖拽区域
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('dragover');
+  });
+
+  // 处理拖拽放置事件
+  document.addEventListener('dragenter', e => {
+    if (e.dataTransfer.types.includes('Files')) {
+      dropzone.classList.remove('hidden');
+      dropzone.style.pointerEvents = 'auto';  // 确保可交互
+    }
+  });
+
+  dropzone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('dragover');
+  });
+
+  // 处理拖拽放置
+  dropzone.addEventListener('drop', async e => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropzone.classList.remove('dragover');
+    loader.style.display = 'block';
+
+    const file = e.dataTransfer.files[0];
+    await handleImageFile(file);
+  });
+
+  // 点击事件处理 - 触发文件选择
+  dropzone.addEventListener('click', () => {
+    if (!isImageLoaded) {
+      fileInput.click();
+    }
+  });
+
+  // 文件选择变化处理
+  fileInput.addEventListener('change', async () => {
+    if (fileInput.files.length > 0) {
+      loader.style.display = 'block';
+      await handleImageFile(fileInput.files[0]);
+      fileInput.value = ''; // 重置以便可以选择同一个文件再次上传
     }
   });
 
