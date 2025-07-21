@@ -61,6 +61,9 @@ body {
 	}
 .anniuzu {
 	display: flex;}
+.upimg {
+	   display: flex;
+	}
 .p1 {
 	margin-top: 20px;}
 .li1 {
@@ -913,6 +916,11 @@ button:hover {
     padding: 70px 10px;
 	margin-bottom: 50px;
   }
+.upimg {
+	width: 100%;
+    gap: 10px;
+    flex: 1;
+	}
 .chzhzu {
 	display: flex;
 	flex-wrap: nowrap;
@@ -1042,9 +1050,11 @@ display: flex;
     <div class="trigger-word">
         <div class="s-tit">素材上传</div> 
         <div class="upbtg">
-	<button id="uploadTxtBtn">上传txt文件</button>
-        <button id="uploadBtn" class="bt">+ 上传图片</button>
-        <span class="miaoshu" style="margin-left: 6px;">支持png、jpg格式批量上传</span></div>
+	<div class="upimg">
+		<button id="uploadTxtBtn">上传txt文件</button>
+        	<button id="uploadBtn" class="bt">+ 上传图片</button>
+	</div>
+        <span class="miaoshu" style="margin: 10px 6px 10px 0;">支持png、jpg格式批量上传</span></div>
     </div>
     <input type="file" id="txtFileInput" style="display:none;" multiple accept=".txt">
     <div class="trigger-word">
