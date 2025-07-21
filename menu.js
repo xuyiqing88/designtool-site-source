@@ -274,6 +274,8 @@ body {
     
     .menu-toggle {
         display: flex;
+	top: 10px;
+        left: 10px;
     }
 }
 `;
