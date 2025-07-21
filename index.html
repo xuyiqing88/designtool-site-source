@@ -546,44 +546,7 @@
             100% { transform: rotate(360deg); }
         }
         
-        @media (max-width: 768px) {
-            .tools-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            }
-            
-            h1 {
-                font-size: 2.0rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-		margin: 0 16px 16px;
-        	position: relative;
-	        padding: 0 10px 10px;
-            }
-            
-            .tool-cover {
-                width: 100px;
-            }
-            
-            /* 移动端评论区优化 */
-            .comments-section {
-                padding: 25px;
-            }
-            
-            .comments-container {
-                border-radius: 12px;
-            }
-            
-            .giscus-loading {
-                padding: 30px 0;
-            }
-            
-            .giscus-error {
-                padding: 30px 15px;
-            }
-        }
+
         /* 添加到桌面提示 */
 .add-to-home-screen {
   position: fixed;
@@ -645,24 +608,57 @@
     transform: translate(-50%, 0);
   }
 }
-
-@media (max-width: 768px) {
-  .add-to-home-screen {
-    display: flex;
-  }
-}
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             .tools-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
             
-            .tool-card {
-                flex-direction: row;
+            h1 {
+                font-size: 2.0rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+		margin: 0 16px 16px;
+        	position: relative;
+	        padding: 0 10px 10px;
             }
             
             .tool-cover {
-                width: 120px;
-                height: auto;
+                width: 100px;
+            }
+            
+            /* 移动端评论区优化 */
+            .comments-section {
+                padding: 25px;
+            }
+            .tool-content {
+	    	padding: 10px;}
+            .comments-container {
+                border-radius: 12px;
+            }
+            
+            .giscus-loading {
+                padding: 30px 0;
+            }
+            
+            .giscus-error {
+                padding: 30px 15px;
+            }
+
+  .add-to-home-screen {
+    display: flex;
+  }
+            
+            .tool-card {
+                flex-direction: column;
+	        height: 190px;
+            }
+            
+            .tool-cover {
+                width: 100%;
+                height: 80px;
                 border-right: none;
                 border-bottom: 1px solid var(--border);
             }
