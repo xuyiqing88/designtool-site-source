@@ -306,12 +306,18 @@
             justify-content: center;
             overflow: hidden;
             border: 1px solid var(--light-border);
+            cursor: pointer;
         }
         
         .example-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .example-image:hover img {
+            transform: scale(1.03);
         }
         
         .placeholder-img {
@@ -385,6 +391,58 @@
             color: #000;
         }
         
+        /* 全屏图片查看样式 */
+        #imageOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #expandedImg {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        #closeBtn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            transition: all 0.2s;
+        }
+        
+        #closeBtn:hover {
+            color: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        #imageCaption {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
         
         @media (max-width: 768px) {
             .controls-container	{
@@ -435,6 +493,23 @@
             
             thead {
                 top: 160px; /* 移动设备上controls-container高度增加 */
+            }
+            
+            /* 移动端全屏样式调整 */
+            #expandedImg {
+                max-width: 95%;
+                max-height: 80%;
+            }
+            
+            #closeBtn {
+                top: 15px;
+                right: 15px;
+                font-size: 30px;
+            }
+            
+            #imageCaption {
+                font-size: 1rem;
+                padding: 8px;
             }
         }
     </style>
@@ -489,6 +564,14 @@
             <p>SDXL 提示词风格库，包含来自 SAI 官方、TWRI、Cyberbill、Fooocus、mre 和 MK 的贡献</p>
         </footer>
     </div>
+    
+    <!-- 全屏图片查看器 -->
+    <div id="imageOverlay">
+        <span id="closeBtn">&times;</span>
+        <img id="expandedImg" alt="全屏预览">
+        <div id="imageCaption"></div>
+    </div>
+    
     <button id="backToTop" title="返回顶部">
         <i class="fas fa-arrow-up"></i>
     </button>    
@@ -525,6 +608,21 @@
                     top: 0,
                     behavior: 'smooth'
                 });
+            });
+            
+            // 关闭全屏图片查看器
+            document.getElementById('closeBtn').addEventListener('click', closeImageOverlay);
+            document.getElementById('imageOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeImageOverlay();
+                }
+            });
+            
+            // 按ESC键关闭全屏图片
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeImageOverlay();
+                }
             });
         });
         
@@ -595,7 +693,7 @@
                     </td>
                     <td>
                         <div class="example-image">
-                            <img src="${imgPath}" alt="${style.name}" title="${style.name}" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\">
+                            <img src="${imgPath}" alt="${style.name}" title="点击查看大图" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\">
                         </div>
                     </td>
                 `;
@@ -606,6 +704,11 @@
             // 添加提示词复制功能
             document.querySelectorAll('.prompt-text').forEach(el => {
                 el.addEventListener('click', copyPromptToClipboard);
+            });
+            
+            // 添加图片点击事件
+            document.querySelectorAll('.example-image img').forEach(img => {
+                img.addEventListener('click', showFullScreenImage);
             });
         }
         
@@ -666,6 +769,28 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 2000);
+        }
+        
+        // 显示全屏图片
+        function showFullScreenImage(e) {
+            const img = e.target;
+            const overlay = document.getElementById('imageOverlay');
+            const expandedImg = document.getElementById('expandedImg');
+            const caption = document.getElementById('imageCaption');
+            
+            expandedImg.src = img.src;
+            caption.textContent = img.alt || '风格预览';
+            
+            // 显示全屏查看器
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+        
+        // 关闭全屏图片查看器
+        function closeImageOverlay() {
+            const overlay = document.getElementById('imageOverlay');
+            overlay.style.display = 'none';
+            document.body.style.overflow = ''; // 恢复背景滚动
         }
         
         // 辅助函数：转义正则表达式特殊字符
