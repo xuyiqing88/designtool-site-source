@@ -43,7 +43,18 @@
             min-height: 100vh;
             line-height: 1.6;
         }
-        
+        .footer-bottom {
+	    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    	padding: 20px;
+	    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+	color: var(--gray);
+	font-size: 0.9rem;
+	    gap: 10px;
+	flex-wrap: wrap;
+	}
         /* 二维码弹窗 */
         .modal {
             display: none;
@@ -85,8 +96,8 @@
         }
         
         .modal img {
-            max-width: 300px;
-            max-height: 300px;
+            max-width: 260px;
+            max-height: 260px;
             margin: 15px 0;
             border: 1px solid #eee;
             border-radius: 8px;
@@ -396,6 +407,7 @@
 		justify-content: space-between;
 	flex-wrap: wrap;
 	    align-items: baseline;
+	padding-bottom: 10px;
         }
         
         .comments-icon {
@@ -736,7 +748,7 @@
                 <div class="comments-icon">
 		<h2 class="comments-title">评论/反馈</h2>
                 </div>
-                <p class="subtitle" style="margin-right: 0;">© 2025 特色效率工具合集 | BY徐艺青<a class="donate-link" id="donateBtn">向我投喂（自愿）</a></p>
+                <a class="donate-link" id="donateBtn">向我投喂（自愿）</a>
             </div>
             <div class="giscus"></div>
         </section>
@@ -751,7 +763,12 @@
             <p>您的支持是我持续更新的动力</p>
         </div>
     </div>
-
+<div class="footer-bottom">
+© 2025 designtool.site 保留所有权利 | BY徐艺青 | 
+<a href="https://cloud.umami.is/share/0HTJCNc5eh5ILEs7/designtool.site" target="_blank" rel="noopener" class="footer-link" style="color: var(--gray);  text-decoration: none;">
+                            <i class="fas fa-chart-bar"></i> 网站统计
+                        </a>
+</div>
 <!-- 添加到桌面提示气泡 -->
 <div id="addToHomeScreen" class="add-to-home-screen">
   <div class="add-to-home-content">
