@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>数据集编辑器2.0</title>
+<title>数据集编辑器</title>
 <script type="text/javascript" src="http://at.alicdn.com/t/c/font_4814134_gfwa6jjc3jq.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
  <script src="menu.js" defer></script>
@@ -834,6 +834,27 @@ button:hover {
     font-size: 13px;
 	margin-right: 0;
     border-left: none;}
+.checkbtn4 {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: var(--blur);
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.checkbtn4:hover {
+    background: var(--mainbg);
+    color: var(--text2);
+}
+
+.checkbtn4 img {
+    margin-right: 4px;
+}
 .checkbtn, .checkbtn2, .checkbtn3 {
 	padding: 4px 8px;
     border-radius: 4px;
@@ -1010,7 +1031,7 @@ display: flex;
 	<span style="background: var(--btcolor); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
 	模型数据集编辑器</span>
     </h2>
-    <div class="miaoshu" style="color: var(--text2);">V2.0 2025-06-24 徐艺青
+    <div class="miaoshu" style="color: var(--text2);">V2.1 2025-07-21 徐艺青
 <a href="#" id="featureLink" class="linetxt" style="margin-left: 8px;">功能介绍</a>
 </div>
 <div class="bg-1">
@@ -2711,6 +2732,74 @@ document.getElementById('uploadBtn').addEventListener('click', () => document.ge
 document.getElementById('uploadTxtBtn').addEventListener('click', () => document.getElementById('txtFileInput').click());
 document.getElementById('fileInput').addEventListener('change', handleFiles);
 
+// 新增：“一键反推”功能
+document.querySelector('.checkbtn4').addEventListener('click', async function() {
+    const reverseButton = this; // 保存按钮自身的引用
+    const imageItems = document.querySelectorAll('.image-item');
+
+    if (imageItems.length === 0) {
+        showAlert('请先上传图片再使用此功能', '#ff9500');
+        return;
+    }
+
+    // 禁用按钮并更新文本，提供用户反馈
+    reverseButton.disabled = true;
+    reverseButton.innerHTML = '<img class="btico" src="img/AIrengongzhineng.svg">反推中...';
+
+    let successCount = 0;
+    let failCount = 0;
+
+    // 使用 for...of 循环确保请求按顺序（逐一）发送
+    for (const item of imageItems) {
+        const img = item.querySelector('img');
+        const input = item.querySelector('.input-box');
+        const originalBorderStyle = input.style.border; // 保存原始边框样式
+
+        try {
+            // 在处理当前项时，给它一个视觉提示（例如，高亮边框）
+            input.style.border = '2px solid var(--main-color)';
+
+            const imgBlob = await fetch(img.src).then(r => r.blob());
+            const prompt = await analyzeImage(imgBlob);
+            
+            // 结合触发词更新输入框内容
+            const triggerWord = document.getElementById('triggerWord').value.trim();
+            if (triggerWord) {
+                input.value = `${triggerWord}, ${prompt}`;
+            } else {
+                input.value = prompt;
+            }
+
+            successCount++;
+
+        } catch (error) {
+            failCount++;
+            console.error(`处理图片 ${img.src} 失败:`, error);
+            // 可以在输入框中提示错误
+            input.value += " (AI反推失败)";
+            showAlert(`有一张图片反推失败，请检查API Key和网络连接`, '#ff4444');
+        
+        } finally {
+            // 恢复原始边框
+            input.style.border = originalBorderStyle;
+            
+            // 在两次API请求之间加入一个小的延迟（例如 500毫秒）
+            // 这有助于避免因请求频率过高而导致的API限流问题
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+    }
+
+    // 全部处理完毕后，恢复按钮状态
+    reverseButton.disabled = false;
+    reverseButton.innerHTML = '<img class="btico" src="img/AIrengongzhineng.svg">一键反推';
+    
+    // 调用词汇统计函数，更新统计结果
+    updateWordStats();
+
+    // 显示最终结果
+    showAlert(`处理完成！成功 ${successCount} 张，失败 ${failCount} 张。`, '#00c853');
+});
+
 // 修改后的批量删除功能
 document.getElementById('batchDeleteBtn').addEventListener('click', function() {
     const cancelBtn = document.getElementById('cancelDeleteBtn');
@@ -3065,6 +3154,10 @@ async function analyzeImage(file) {
         <div class="modal-title">功能更新说明
 	</div>
         <div class="modal-content">
+        <p class="p1"><strong>版本 V2.1 2025-07-21 更新内容：</strong></p>
+        	<ul>
+        	<li class="li1">新增<span class="remind">一键反推</span>功能，点击按钮可实现一键反推，无需挨个去操作</li>
+        	</ul>
         <p class="p1"><strong>版本 V2.0 2025-06-24 更新内容：</strong></p>
         	<ul>
         	<li class="li1">新增<span class="remind">文件打包形式</span>选项，可选择“图片+文本”、“仅图片”、“仅文本”多种形式进行打包下载</li>
