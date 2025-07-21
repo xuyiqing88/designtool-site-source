@@ -6,7 +6,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
  <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c">data-host-url="xuyiqing88.github.io"</script>
+<script>
+  if (window.location.hostname === "xuyiqing88.github.io") {
+    (function() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://your-umami-instance.com/script.js';
+      script.setAttribute('data-website-id', '5a2e10cd-bf73-47df-be48-079c9ba7783c');
+      document.head.appendChild(script);
+    })();
+  }
+</script>
 <style>
 body {
     font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
