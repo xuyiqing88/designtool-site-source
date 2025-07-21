@@ -148,7 +148,6 @@
             color: var(--gray);
             font-size: 1rem;
             margin: 0 auto 20px;
-            max-width: 600px;
         }
         
         .controls {
@@ -392,10 +391,10 @@
             display: flex;
             align-items: center;
             margin-bottom: 25px;
-            padding-bottom: 15px;
             border-bottom: 1px solid var(--border);
 		justify-content: space-between;
 	flex-wrap: wrap;
+	    align-items: baseline;
         }
         
         .comments-icon {
@@ -404,11 +403,11 @@
             justify-content: center;
             margin-right: 12px;
             color: var(--primary);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
         
         .comments-title {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--dark);
         }
@@ -736,7 +735,7 @@
                 <div class="comments-icon">
 		<h2 class="comments-title">评论/反馈</h2>
                 </div>
-                <p style="display: flex; flex-wrap: wrap;">© 2025 特色效率工具合集 | BY徐艺青<a class="donate-link" id="donateBtn">向我投喂（自愿）</a></p>
+                <p class="subtitle" style="margin-right: 0;">© 2025 特色效率工具合集 | BY徐艺青<a class="donate-link" id="donateBtn">向我投喂（自愿）</a></p>
             </div>
             <div class="giscus"></div>
         </section>
