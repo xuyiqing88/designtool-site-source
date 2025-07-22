@@ -320,7 +320,7 @@
         textarea, input[type="text"], input[type="password"], select {
             width: 100%;
             padding: 16px 16px 38px 16px;
-            border-radius: 8px;
+            border-radius:12px;
             border: 1px solid var(--line);
             background: var(--mainbg);
             color: var(--text1);
@@ -2107,27 +2107,6 @@ function renderChatHistory() {
 
         // Initialize chat history
         clearChat();
-// 种子按钮事件
-const randomSeedBtn = document.getElementById('randomSeedBtn');
-const lockSeedBtn = document.getElementById('lockSeedBtn');
-const seedInput = document.getElementById('seedInput');
-
-randomSeedBtn.addEventListener('click', () => {
-    const randomSeed = Math.floor(Math.random() * 1000000);
-    seedInput.value = randomSeed;
-});
-
-lockSeedBtn.addEventListener('click', () => {
-    const isLocked = lockSeedBtn.classList.toggle('locked');
-    lockSeedBtn.innerHTML = isLocked ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>';
-    seedInput.disabled = isLocked;
-    
-    // 如果锁定且种子为空，生成随机种子
-    if (isLocked && !seedInput.value.trim()) {
-        const randomSeed = Math.floor(Math.random() * 1000000);
-        seedInput.value = randomSeed;
-    }
-});
     });
 </script>
 
