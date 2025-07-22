@@ -17,7 +17,7 @@
       --text3: #8d8fa3;
       --light: #f8f9fa;
       --dark: #212529;
-      --success: #4cc9f0;
+      --success: #33b763;
       --danger: #f72585;
       --border-radius: 10px;
       --box-shadow: 0 4px 20px rgba(90, 100, 255, 0.12);
@@ -38,7 +38,19 @@
       position: relative;
 	background-color: #f5f7ff;
     }
-    
+    .download-all-container {
+	text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    background: #ffffff52;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+	}
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -80,7 +92,7 @@
       box-shadow: var(--box-shadow);
       padding: 25px;
       transition: var(--transition);
-      height: fit-content;
+      min-height: -webkit-fill-available;
       position: relative;
     }
 
@@ -100,7 +112,7 @@
     }
     
     .upload-area {
-      border: 3px dashed #dee2e6;
+      border: 2px dashed #dee2e6;
       border-radius: var(--border-radius);
       padding: 30px 20px;
       text-align: center;
@@ -143,7 +155,7 @@
       display: inline-block;
       background: var(--btcolor);
       color: white;
-      padding: 12px 25px;
+      padding: 10px 90px;
       border-radius: 50px;
       border: none;
       font-weight: 600;
@@ -152,8 +164,8 @@
       text-align: center;
       font-size: 1rem;
       box-shadow: 0 4px 12px rgba(90, 100, 255, 0.3);
-      margin: 10px 0;
-      width: 100%;
+      margin: 10px auto;
+	display: flex;
     }
     
     .btn:hover {
@@ -192,7 +204,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 15px;
-      margin-top: 20px;
+      margin: 20px 0 40px 0;
       justify-content: flex-start;
     }
     
@@ -304,14 +316,14 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 15px;
-      margin-top: 15px;
+      margin: 15px 0 40px 0;
       min-height: 300px;
       position: relative;
     }
     @media (max-width: 768px) {
       .panel {
         padding: 16px;
-        margin: 0 10px;
+	width: 100vw;
       }
 	}  
     @media (min-width: 768px) {
@@ -327,11 +339,9 @@
     .result-item {
       display: flex;
       flex-direction: column;
-      gap: 10px;
       position: relative;
       border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
     .preview-container {
@@ -365,31 +375,32 @@
       right: 10px;
       width: 32px;
       height: 32px;
-      background: rgba(255, 255, 255, 0.8);
+      background: #00000054;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--main-color);
+      color: #fff;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       z-index: 2;
     }
     
     .download-btn:hover {
-      background: white;
+      background: #000000a1;
       transform: scale(1.1);
     }
     
     .image-name-result {
-      padding: 8px;
+      padding: 12px 8px;
       font-size: 0.8rem;
       color: var(--text2);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: center;
+	background: var(--light);
+	   border-radius: 0 0 10px 10px;
     }
     
     /* 修复对齐问题：使用flex布局确保标题、进度和按钮在同一行 */
@@ -497,18 +508,15 @@
     }
     
     .batch-download-btn {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 60px;
-      height: 60px;
+      width: 200px;
+      height: 48px;
       background: var(--btcolor);
       color: white;
-      border-radius: 50%;
+      border-radius: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 16px;
       cursor: pointer;
       box-shadow: 0 6px 15px rgba(90, 100, 255, 0.4);
       z-index: 100;
@@ -516,6 +524,8 @@
       transform: translateY(10px);
       opacity: 0;
       pointer-events: none;
+	    margin: 0 auto;
+	    gap: 8px;
     }
     
     .batch-download-btn.visible {
@@ -525,7 +535,7 @@
     }
     
     .batch-download-btn:hover {
-      transform: scale(1.1) translateY(0);
+      transform: scale(1.05) translateY(0);
       box-shadow: 0 8px 20px rgba(90, 100, 255, 0.5);
     }
     
@@ -697,14 +707,12 @@
       </div>
     </div>
     
-    <div class="batch-download-btn" id="batch-download">
-      <i class="fas fa-download"></i>
+    <div class="download-all-container">
+	<div class="batch-download-btn" id="batch-download">
+      <i class="fas fa-download"></i>下载全部
+	</div>
     </div>
-    
-    <footer>
-      <p>本工具完全在浏览器中运行，您的图片不会上传到任何服务器 | 基于 ONNX Runtime 和 u2netp 模型</p>
-    </footer>
-  </div>
+   </div>
 
   <!-- 图片预览模态框 -->
   <div class="modal" id="image-modal">
@@ -967,7 +975,7 @@
     // 重置处理按钮
     function resetProcessButton() {
       processBtn.disabled = false;
-      processBtn.innerHTML = '<i class="fas fa-magic"></i> 开始批量抠图';
+      processBtn.innerHTML = '开始抠图';
     }
 
     // 处理单张图片
