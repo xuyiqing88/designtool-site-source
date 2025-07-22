@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D无缝纹理制作工具</title>
     
-    <!-- Font Awesome 图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- UTIF.js库用于TIFF支持 -->
-    <script src="https://cdn.jsdelivr.net/npm/utif@4.0.1/UTIF.js"></script>
- <script src="menu.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
+    <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>    
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>    
     <style>
         /* 全局样式重置 */
         * {
@@ -593,7 +591,6 @@
                 <p>专业的无缝贴图制作与编辑工具</p>
             </div>
             
-            <!-- 导出控制移到右上角 -->
             <div class="header-export" id="headerExport" style="display: none;">
                 <select id="exportFormat" class="export-select">
                     <option value="image/png">PNG</option>
@@ -615,9 +612,7 @@
     </div>
 
     <div class="container">
-        <!-- 左侧控制面板 -->
         <div class="sidebar">
-            <!-- 文件上传 -->
             <div class="upload-area" id="uploadArea">
                 <div class="upload-icon">
                     <i class="fas fa-file-upload icon-large"></i>
@@ -625,14 +620,9 @@
                 <h3>拖拽图像文件到此处</h3>
                 <p>或点击选择文件</p>
                 <small>支持 PNG, JPG, BMP, WebP, TIFF 格式</small>
-                <div id="tiffLoading" style="display:none; margin-top:10px;">
-                    <div class="loading"></div>
-                    <span style="font-size:0.8rem; margin-left:5px;">加载TIFF库...</span>
-                </div>
             </div>
             <input type="file" id="fileInput" accept="image/*,.tiff,.tif">
 
-            <!-- 无缝化处理 (移到上方) -->
             <div class="control-group" id="seamlessControls" style="display: none;">
                 <h3>
                     <i class="fas fa-sync-alt fa-icon"></i>
@@ -665,7 +655,6 @@
                     <small>提示：可同时选择多个方法，按1→2→3顺序应用</small>
                 </div>
                 
-                <!-- 镜像边缘强度控制 -->
                 <div id="mirrorControls">
                     <div class="control-item">
                         <label>镜像强度 <span class="value-display" id="mirrorStrengthValue">20%</span></label>
@@ -692,7 +681,6 @@
                 </div>
             </div>
 
-            <!-- 图像调整 (移到下方) -->
             <div class="control-group" id="imageControls" style="display: none;">
                 <h3>
                     <i class="fas fa-sliders-h fa-icon"></i>
@@ -719,7 +707,6 @@
                     <input type="range" id="hue" min="-180" max="180" value="0">
                 </div>
                 
-                <!-- 旋转控制 -->
                 <div class="control-item rotation-control">
                     <label>旋转</label>
                     <span class="rotation-display" id="rotationValue">0°</span>
@@ -733,9 +720,7 @@
             </div>
         </div>
 
-        <!-- 主预览区域 -->
         <div class="main-content">
-            <!-- 处理后图像 -->
             <div class="preview-panel">
                 <div class="preview-header">
                     <span>
@@ -762,7 +747,6 @@
                 </div>
             </div>
 
-            <!-- 平铺预览 -->
             <div class="preview-panel">
                 <div class="preview-header">
                     <span>
@@ -785,7 +769,6 @@
         </div>
     </div>
 
-    <!-- 放大查看模态框 -->
     <div class="modal" id="imageModal">
         <div class="modal-close" onclick="closeModal()">×</div>
         <img id="modalImage" class="modal-content" src="" alt="放大图像">
@@ -952,21 +935,18 @@
         }
 
         function loadTiffImage(file) {
+            // 检查 UTIF 库是否已加载。如果未加载，说明 <script> 标签加载失败。
             if (typeof UTIF === 'undefined') {
-                // 显示加载提示
-                document.getElementById('tiffLoading').style.display = 'flex';
-                
-                // 尝试重新加载UTIF库
-                console.log("UTIF library not loaded, attempting to reload...");
-                loadUTIFLibrary(file);
+                alert('TIFF 支持库加载失败。请检查您的网络连接并刷新页面。');
                 return;
             }
-            
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const buffer = e.target.result;
                     const ifds = UTIF.decode(buffer);
+                    // 处理多页TIFF，我们只使用第一页
                     const page = ifds[0];
                     UTIF.decodeImage(buffer, page);
                     
@@ -975,14 +955,14 @@
                     canvas.width = page.width;
                     canvas.height = page.height;
                     
+                    const rgba = UTIF.toRGBA8(page);
                     const imageData = new ImageData(
-                        new Uint8ClampedArray(UTIF.toRGBA8(page)), 
+                        new Uint8ClampedArray(rgba), 
                         page.width, 
                         page.height
                     );
                     ctx.putImageData(imageData, 0, 0);
                     
-                    // 转换为图像对象
                     const img = new Image();
                     img.onload = function() {
                         originalImageData = {
@@ -1000,38 +980,14 @@
                     };
                     img.src = canvas.toDataURL();
                 } catch (error) {
-                    console.error('TIFF loading error:', error);
-                    alert('无法加载TIFF文件，请尝试其他格式。');
-                } finally {
-                    document.getElementById('tiffLoading').style.display = 'none';
+                    console.error('TIFF 加载错误:', error);
+                    alert('无法处理此TIFF文件，可能已损坏或格式不受支持。');
                 }
             };
+            reader.onerror = () => {
+                alert('文件读取失败。');
+            };
             reader.readAsArrayBuffer(file);
-        }
-
-        // 动态加载UTIF库
-        function loadUTIFLibrary(file) {
-            // 检查是否已经加载
-            if (typeof UTIF !== 'undefined') {
-                loadTiffImage(file);
-                return;
-            }
-            
-            // 创建脚本元素
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/utif@4.0.1/UTIF.js';
-            script.onload = function() {
-                console.log("UTIF library loaded successfully");
-                document.getElementById('tiffLoading').style.display = 'none';
-                loadTiffImage(file);
-            };
-            script.onerror = function() {
-                console.error("Failed to load UTIF library");
-                document.getElementById('tiffLoading').style.display = 'none';
-                alert('无法加载TIFF支持库，请刷新页面或使用其他图像格式。');
-            };
-            
-            document.head.appendChild(script);
         }
 
         function setupCanvases() {
@@ -1099,7 +1055,7 @@
             adjustCtx.drawImage(originalImageData.image, 0, 0);
             adjustCtx.filter = 'none';
             
-            // 应用旋转（围绕中心旋转并裁剪）
+            // 应用旋转（围绕中心旋转并铺满）
             applyRotation(rotation);
             
             // 根据显示模式更新预览
@@ -1116,31 +1072,50 @@
             updateTiledPreview();
         }
         
+        // --- 已修复的旋转函数 ---
         function applyRotation(rotation) {
             const { width, height } = adjustCanvas;
-            
-            // 设置旋转画布尺寸（保持原始尺寸）
+
+            // 设置旋转画布尺寸以保持原始尺寸
             rotatedCanvas.width = width;
             rotatedCanvas.height = height;
             rotatedCtx.clearRect(0, 0, width, height);
-            
-            // 如果不需要旋转，直接绘制
+
+            // 如果不旋转，直接复制图像并返回
             if (rotation == 0) {
                 rotatedCtx.drawImage(adjustCanvas, 0, 0);
                 return;
             }
-            
-            // 转换为弧度
+
             const radians = rotation * Math.PI / 180;
             
-            // 围绕中心旋转并裁剪
+            // 计算覆盖整个画布所需的缩放比例
+            // 以确保旋转后的图像的边缘可以延伸到画布的角落之外
+            const absCos = Math.abs(Math.cos(radians));
+            const absSin = Math.abs(Math.sin(radians));
+            
+            // 这是为确保旋转后的矩形能填满原始矩形区域所需的最小放大比例
+            // 计算缩放比例，使其能填满原始宽度和高度
+            const scaleX = width / (width * absCos + height * absSin);
+            const scaleY = height / (width * absSin + height * absCos);
+            const scale = 1 / Math.min(scaleX, scaleY);
+
+            // 保存当前上下文状态
             rotatedCtx.save();
-            // 将原点移动到画布中心
+            
+            // 移动到画布中心
             rotatedCtx.translate(width / 2, height / 2);
-            // 旋转画布
+            
+            // 旋转上下文
             rotatedCtx.rotate(radians);
-            // 将图像绘制在中心位置（偏移一半尺寸）
+            
+            // 缩放上下文以确保覆盖
+            rotatedCtx.scale(scale, scale);
+            
+            // 在新的中心点绘制图像（原点现在是画布中心）
             rotatedCtx.drawImage(adjustCanvas, -width / 2, -height / 2);
+            
+            // 恢复上下文状态
             rotatedCtx.restore();
         }
 
