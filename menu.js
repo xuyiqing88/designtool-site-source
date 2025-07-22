@@ -25,7 +25,6 @@ menuStyles.textContent = `
 
 body {
     min-height: 100vh;
-    display: flex;
     transition: margin-left var(--transition-speed);
 }
 

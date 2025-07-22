@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D无缝纹理制作工具</title>
+    
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- UTIF.js库用于TIFF支持 -->
+    <script src="https://cdn.jsdelivr.net/npm/utif@4.0.1/UTIF.js"></script>
+ <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>    
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #e2e8f0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 头部样式 */
+        .header {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            padding: 0.5rem 1.5rem;
+            border-bottom: 2px solid #475569;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+	margin-left: 60px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header p {
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        /* 导出控制面板 - 移到右上角 */
+        .header-export {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .export-select {
+            padding: 0.5rem;
+            background: #374151;
+            color: white;
+            border: 1px solid #4b5563;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* 主容器 */
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+	margin-left: 60px;
+        }
+
+        /* 左侧控制面板 */
+        .sidebar {
+            width: 320px;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            border-right: 2px solid #475569;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        /* 主预览区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .preview-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 12px;
+            border: 2px solid #475569;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-header {
+            background: linear-gradient(135deg, #374151, #4b5563);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #6b7280;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: 
+                linear-gradient(45deg, #374151 25%, transparent 25%), 
+                linear-gradient(-45deg, #374151 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #374151 75%), 
+                linear-gradient(-45deg, transparent 75%, #374151 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            cursor: pointer;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            border: 2px solid #6b7280;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 文件上传区域 */
+        .upload-area {
+            border: 3px dashed #475569;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #1e293b, #334155);
+        }
+
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #1e3a8a, #3730a3);
+        }
+
+        .upload-icon {
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 控制组 */
+        .control-group {
+            margin-bottom: 2rem;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .control-group h3 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #475569;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-item {
+            margin-bottom: 1rem;
+        }
+
+        .control-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .control-item input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #374151;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+        }
+
+        .control-item input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .value-display {
+            float: right;
+            background: #374151;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.1s ease;
+            margin: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5b6570, #374151);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #0d9668, #047857);
+        }
+
+        .btn-orange {
+            background: linear-gradient(113deg, #4c73ff, #6a52ff);
+            color: white;
+        }
+
+        .btn-orange:hover {
+            opacity: 0.92;
+    box-shadow: 0 7px 18px rgba(89, 99, 255, 0.35);
+        }
+
+        /* 无缝化方法选择 */
+        .method-selector {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .method-btn {
+            padding: 0.75rem;
+            background: #374151;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+        }
+
+        .method-btn:hover {
+            border-color: #6b7280;
+            background: #4b5563;
+        }
+
+        .method-btn.active {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #065f46, #047857);
+            color: white;
+        }
+
+        .method-btn strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            padding-right: 20px;
+        }
+
+        .method-btn small {
+            opacity: 0.8;
+            font-size: 0.8rem;
+            display: block;
+        }
+
+        .method-btn .order-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        /* 切换按钮样式 */
+        .toggle-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: #1e293b;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .toggle-btn:hover {
+            background: #334155;
+            border-color: #64748b;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-color: #2563eb;
+        }
+
+        /* 滚动条样式 */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* 隐藏文件输入 */
+        #fileInput {
+            display: none;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 实时预览标识 */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: #10b981;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 模态框 - 放大查看 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            cursor: zoom-out;
+            border: 2px solid #475569;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+            .header {
+		margin-left: 0;
+		}
+            .container {
+                flex-direction: column;
+                height: auto;
+                overflow-y: visible;
+		margin-left: 0;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 2px solid #475569;
+            }
+            
+            .main-content {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .header-export {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .preview-panel {
+                min-height: 50vh;
+            }
+            
+            .preview-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            #toggleOriginalBtn {
+                margin-top: 0.5rem;
+            }
+        }
+        
+        /* 旋转控制样式 */
+        .rotation-control {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .rotation-display {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #374151;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+        }
+        
+        /* 图标样式 */
+        .icon {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+        
+        .icon-large {
+            width: 3rem;
+            height: 3rem;
+	font-size: 3rem;
+        }
+        
+        .icon-xl {
+            width: 4rem;
+            height: 4rem;
+	font-size: 4rem;
+        }
+        
+        .fa-icon {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+<div id="global-sidebar"></div>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>
+                    3D无缝纹理制作工具
+                </h1>
+                <p>专业的无缝贴图制作与编辑工具</p>
+            </div>
+            
+            <!-- 导出控制移到右上角 -->
+            <div class="header-export" id="headerExport" style="display: none;">
+                <select id="exportFormat" class="export-select">
+                    <option value="image/png">PNG</option>
+                    <option value="image/jpeg">JPEG</option>
+                    <option value="image/webp">WebP</option>
+                    <option value="image/tiff">TIFF</option>
+                </select>
+                <div><button class="btn btn-orange" onclick="exportImage()">
+                    <i class="fas fa-download fa-icon"></i>
+                    下载纹理
+                </button>
+                <button class="btn btn-secondary" onclick="clearImage()">
+                    <i class="fas fa-trash fa-icon"></i>
+                    清空
+                </button>
+	</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 左侧控制面板 -->
+        <div class="sidebar">
+            <!-- 文件上传 -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-file-upload icon-large"></i>
+                </div>
+                <h3>拖拽图像文件到此处</h3>
+                <p>或点击选择文件</p>
+                <small>支持 PNG, JPG, BMP, WebP, TIFF 格式</small>
+                <div id="tiffLoading" style="display:none; margin-top:10px;">
+                    <div class="loading"></div>
+                    <span style="font-size:0.8rem; margin-left:5px;">加载TIFF库...</span>
+                </div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*,.tiff,.tif">
+
+            <!-- 无缝化处理 (移到上方) -->
+            <div class="control-group" id="seamlessControls" style="display: none;">
+                <h3>
+                    <i class="fas fa-sync-alt fa-icon"></i>
+                    无缝化处理
+                    <span class="live-indicator" id="liveIndicator" style="display: none;">
+                        <span class="live-dot"></span>
+                        实时预览
+                    </span>
+                </h3>
+                
+                <div class="method-selector">
+                    <div class="method-btn" data-method="mirror">
+                        <strong>镜像边缘</strong>
+                        <small>通过镜像边缘像素创建无缝效果</small>
+                        <span class="order-indicator">1</span>
+                    </div>
+                    <div class="method-btn" data-method="blend">
+                        <strong>边缘混合</strong>
+                        <small>混合相对边缘创建平滑过渡</small>
+                        <span class="order-indicator">2</span>
+                    </div>
+                    <div class="method-btn" data-method="offset">
+                        <strong>偏移映射</strong>
+                        <small>重新排列图像四象限实现无缝</small>
+                        <span class="order-indicator">3</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:1rem; font-size:0.9rem; color:#94a3b8;">
+                    <small>提示：可同时选择多个方法，按1→2→3顺序应用</small>
+                </div>
+                
+                <!-- 镜像边缘强度控制 -->
+                <div id="mirrorControls">
+                    <div class="control-item">
+                        <label>镜像强度 <span class="value-display" id="mirrorStrengthValue">20%</span></label>
+                        <input type="range" id="mirrorStrength" min="0" max="50" value="20">
+                    </div>
+                </div>
+                
+                <div id="blendControls">
+                    <div class="control-item">
+                        <label>混合强度 <span class="value-display" id="blendStrengthValue">20%</span></label>
+                        <input type="range" id="blendStrength" min="0" max="50" value="20">
+                    </div>
+                </div>
+                
+                <div id="offsetControls">
+                    <div class="control-item">
+                        <label>水平偏移 <span class="value-display" id="offsetXValue">50%</span></label>
+                        <input type="range" id="offsetX" min="0" max="100" value="50">
+                    </div>
+                    <div class="control-item">
+                        <label>垂直偏移 <span class="value-display" id="offsetYValue">50%</span></label>
+                        <input type="range" id="offsetY" min="0" max="100" value="50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图像调整 (移到下方) -->
+            <div class="control-group" id="imageControls" style="display: none;">
+                <h3>
+                    <i class="fas fa-sliders-h fa-icon"></i>
+                    图像调整
+                </h3>
+                
+                <div class="control-item">
+                    <label>亮度 <span class="value-display" id="brightnessValue">100%</span></label>
+                    <input type="range" id="brightness" min="0" max="200" value="100">
+                </div>
+                
+                <div class="control-item">
+                    <label>对比度 <span class="value-display" id="contrastValue">100%</span></label>
+                    <input type="range" id="contrast" min="0" max="200" value="100">
+                </div>
+                
+                <div class="control-item">
+                    <label>饱和度 <span class="value-display" id="saturationValue">100%</span></label>
+                    <input type="range" id="saturation" min="0" max="200" value="100">
+                </div>
+                
+                <div class="control-item">
+                    <label>色调 <span class="value-display" id="hueValue">0°</span></label>
+                    <input type="range" id="hue" min="-180" max="180" value="0">
+                </div>
+                
+                <!-- 旋转控制 -->
+                <div class="control-item rotation-control">
+                    <label>旋转</label>
+                    <span class="rotation-display" id="rotationValue">0°</span>
+                    <input type="range" id="rotation" min="0" max="360" value="0">
+                </div>
+                
+                <button class="btn btn-secondary" onclick="resetAdjustments()">
+                    <i class="fas fa-redo fa-icon"></i>
+                    重置调整
+                </button>
+            </div>
+        </div>
+
+        <!-- 主预览区域 -->
+        <div class="main-content">
+            <!-- 处理后图像 -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <span>
+                        <i class="fas fa-image fa-icon"></i>
+                        处理后图像
+                    </span>
+                    <div style="display: flex; align-items: center;">
+                        <span id="imageDimensions" style="margin-right: 10px;"></span>
+                        <button class="toggle-btn" id="toggleOriginalBtn" onclick="toggleOriginalPreview()">
+                            <i class="fas fa-eye fa-icon"></i>
+                            显示原图
+                        </button>
+                    </div>
+                </div>
+                <div class="preview-content" onclick="zoomImage()">
+                    <canvas id="processedCanvas" style="display: none;"></canvas>
+                    <div id="noImageMessage">
+                        <div style="text-align: center; opacity: 0.6;">
+                            <i class="fas fa-star icon-xl" style="margin-bottom: 1rem;"></i>
+                            <h3>欢迎使用无缝纹理工具</h3>
+                            <p>请上传图像开始制作</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 平铺预览 -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <span>
+                        <i class="fas fa-th fa-icon"></i>
+                        平铺预览
+                    </span>
+                    <span>3×3 网格</span>
+                </div>
+                <div class="preview-content" onclick="zoomTiledImage()">
+                    <canvas id="tiledCanvas" style="display: none;"></canvas>
+                    <div id="noTileMessage">
+                        <div style="text-align: center; opacity: 0.6;">
+                            <i class="fas fa-th-large icon-xl" style="margin-bottom: 1rem;"></i>
+                            <h3>平铺预览</h3>
+                            <p>上传图像后查看无缝效果</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 放大查看模态框 -->
+    <div class="modal" id="imageModal">
+        <div class="modal-close" onclick="closeModal()">×</div>
+        <img id="modalImage" class="modal-content" src="" alt="放大图像">
+    </div>
+
+    <script>
+        // 全局变量
+        let originalImageData = null;
+        let processedCanvas = document.getElementById('processedCanvas');
+        let processedCtx = processedCanvas.getContext('2d');
+        let tiledCanvas = document.getElementById('tiledCanvas');
+        let tiledCtx = tiledCanvas.getContext('2d');
+        let activeMethods = []; // 存储选中的无缝处理方法
+        let isRealTimePreview = false;
+        let showOriginal = false; // 是否显示原图模式
+        let adjustCanvas = document.createElement('canvas'); // 用于保存调整后的图像
+        let adjustCtx = adjustCanvas.getContext('2d');
+        let rotatedCanvas = document.createElement('canvas'); // 用于旋转后的图像
+        let rotatedCtx = rotatedCanvas.getContext('2d');
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            initializeSliders();
+        });
+
+        function initializeEventListeners() {
+            // 文件上传
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // 拖拽上传
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    loadImage(files[0]);
+                }
+            });
+
+            // 无缝化方法选择 - 改为多选
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const method = this.dataset.method;
+                    
+                    if (this.classList.contains('active')) {
+                        if (!activeMethods.includes(method)) {
+                            activeMethods.push(method);
+                        }
+                    } else {
+                        const index = activeMethods.indexOf(method);
+                        if (index > -1) {
+                            activeMethods.splice(index, 1);
+                        }
+                    }
+                    
+                    // 更新顺序指示器
+                    updateMethodOrderIndicators();
+                    
+                    // 如果启用实时预览，立即应用
+                    if (isRealTimePreview && originalImageData) {
+                        applySeamlessEffect();
+                    }
+                });
+            });
+        }
+
+        function initializeSliders() {
+            // 图像调整滑竿
+            ['brightness', 'contrast', 'saturation', 'hue', 'rotation'].forEach(id => {
+                const slider = document.getElementById(id);
+                const valueDisplay = document.getElementById(id + 'Value');
+                
+                slider.addEventListener('input', function() {
+                    const unit = id === 'hue' || id === 'rotation' ? '°' : '%';
+                    valueDisplay.textContent = this.value + unit;
+                    applyImageAdjustments();
+                });
+            });
+
+            // 镜像强度控制 - 实时预览
+            const mirrorSlider = document.getElementById('mirrorStrength');
+            const mirrorValue = document.getElementById('mirrorStrengthValue');
+            mirrorSlider.addEventListener('input', function() {
+                mirrorValue.textContent = this.value + '%';
+                if (isRealTimePreview && activeMethods.includes('mirror') && originalImageData) {
+                    applySeamlessEffect();
+                }
+            });
+
+            // 偏移控制 - 实时预览
+            ['offsetX', 'offsetY'].forEach(id => {
+                const slider = document.getElementById(id);
+                const valueDisplay = document.getElementById(id + 'Value');
+                
+                slider.addEventListener('input', function() {
+                    valueDisplay.textContent = this.value + '%';
+                    if (isRealTimePreview && activeMethods.includes('offset') && originalImageData) {
+                        applySeamlessEffect();
+                    }
+                });
+            });
+
+            // 混合强度 - 实时预览
+            const blendSlider = document.getElementById('blendStrength');
+            const blendValue = document.getElementById('blendStrengthValue');
+            blendSlider.addEventListener('input', function() {
+                blendValue.textContent = this.value + '%';
+                if (isRealTimePreview && activeMethods.includes('blend') && originalImageData) {
+                    applySeamlessEffect();
+                }
+            });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                loadImage(file);
+            }
+        }
+
+        function loadImage(file) {
+            // 检查是否是TIFF文件
+            if (file.type === 'image/tiff' || file.name.toLowerCase().endsWith('.tiff') || file.name.toLowerCase().endsWith('.tif')) {
+                loadTiffImage(file);
+                return;
+            }
+            
+            // 处理其他格式
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImageData = {
+                        image: img,
+                        width: img.width,
+                        height: img.height
+                    };
+                    
+                    setupCanvases();
+                    drawOriginalImage();
+                    applyImageAdjustments();
+                    showControls();
+                    updateImageDimensions();
+                    enableRealTimePreview();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadTiffImage(file) {
+            if (typeof UTIF === 'undefined') {
+                // 显示加载提示
+                document.getElementById('tiffLoading').style.display = 'flex';
+                
+                // 尝试重新加载UTIF库
+                console.log("UTIF library not loaded, attempting to reload...");
+                loadUTIFLibrary(file);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const buffer = e.target.result;
+                    const ifds = UTIF.decode(buffer);
+                    const page = ifds[0];
+                    UTIF.decodeImage(buffer, page);
+                    
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = page.width;
+                    canvas.height = page.height;
+                    
+                    const imageData = new ImageData(
+                        new Uint8ClampedArray(UTIF.toRGBA8(page)), 
+                        page.width, 
+                        page.height
+                    );
+                    ctx.putImageData(imageData, 0, 0);
+                    
+                    // 转换为图像对象
+                    const img = new Image();
+                    img.onload = function() {
+                        originalImageData = {
+                            image: img,
+                            width: img.width,
+                            height: img.height
+                        };
+                        
+                        setupCanvases();
+                        drawOriginalImage();
+                        applyImageAdjustments();
+                        showControls();
+                        updateImageDimensions();
+                        enableRealTimePreview();
+                    };
+                    img.src = canvas.toDataURL();
+                } catch (error) {
+                    console.error('TIFF loading error:', error);
+                    alert('无法加载TIFF文件，请尝试其他格式。');
+                } finally {
+                    document.getElementById('tiffLoading').style.display = 'none';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // 动态加载UTIF库
+        function loadUTIFLibrary(file) {
+            // 检查是否已经加载
+            if (typeof UTIF !== 'undefined') {
+                loadTiffImage(file);
+                return;
+            }
+            
+            // 创建脚本元素
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/utif@4.0.1/UTIF.js';
+            script.onload = function() {
+                console.log("UTIF library loaded successfully");
+                document.getElementById('tiffLoading').style.display = 'none';
+                loadTiffImage(file);
+            };
+            script.onerror = function() {
+                console.error("Failed to load UTIF library");
+                document.getElementById('tiffLoading').style.display = 'none';
+                alert('无法加载TIFF支持库，请刷新页面或使用其他图像格式。');
+            };
+            
+            document.head.appendChild(script);
+        }
+
+        function setupCanvases() {
+            const { width, height } = originalImageData;
+            
+            // 设置处理后图像画布
+            processedCanvas.width = width;
+            processedCanvas.height = height;
+            
+            // 设置平铺预览画布
+            tiledCanvas.width = width * 3;
+            tiledCanvas.height = height * 3;
+            
+            // 设置调整画布
+            adjustCanvas.width = width;
+            adjustCanvas.height = height;
+            
+            // 设置旋转画布 - 保持原始尺寸
+            rotatedCanvas.width = width;
+            rotatedCanvas.height = height;
+            
+            // 显示画布
+            processedCanvas.style.display = 'block';
+            tiledCanvas.style.display = 'block';
+            document.getElementById('noImageMessage').style.display = 'none';
+            document.getElementById('noTileMessage').style.display = 'none';
+        }
+
+        function drawOriginalImage() {
+            processedCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+            processedCtx.drawImage(originalImageData.image, 0, 0);
+            
+            // 保存到调整画布
+            adjustCtx.clearRect(0, 0, adjustCanvas.width, adjustCanvas.height);
+            adjustCtx.drawImage(originalImageData.image, 0, 0);
+        }
+
+        function applyImageAdjustments() {
+            if (!originalImageData) return;
+            
+            const brightness = document.getElementById('brightness').value;
+            const contrast = document.getElementById('contrast').value;
+            const saturation = document.getElementById('saturation').value;
+            const hue = document.getElementById('hue').value;
+            const rotation = document.getElementById('rotation').value;
+            
+            // 清除并重绘原图
+            processedCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+            
+            // 应用滤镜
+            const filters = [
+                `brightness(${brightness}%)`,
+                `contrast(${contrast}%)`,
+                `saturate(${saturation}%)`,
+                `hue-rotate(${hue}deg)`
+            ];
+            
+            processedCtx.filter = filters.join(' ');
+            processedCtx.drawImage(originalImageData.image, 0, 0);
+            processedCtx.filter = 'none';
+            
+            // 保存调整后的图像到调整画布
+            adjustCtx.clearRect(0, 0, adjustCanvas.width, adjustCanvas.height);
+            adjustCtx.filter = filters.join(' ');
+            adjustCtx.drawImage(originalImageData.image, 0, 0);
+            adjustCtx.filter = 'none';
+            
+            // 应用旋转（围绕中心旋转并裁剪）
+            applyRotation(rotation);
+            
+            // 根据显示模式更新预览
+            if (showOriginal) {
+                // 显示调整后的图像（未应用无缝效果）
+                processedCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+                processedCtx.drawImage(rotatedCanvas, 0, 0);
+            } else {
+                // 应用无缝效果
+                applySeamlessEffect();
+            }
+            
+            // 更新平铺预览
+            updateTiledPreview();
+        }
+        
+        function applyRotation(rotation) {
+            const { width, height } = adjustCanvas;
+            
+            // 设置旋转画布尺寸（保持原始尺寸）
+            rotatedCanvas.width = width;
+            rotatedCanvas.height = height;
+            rotatedCtx.clearRect(0, 0, width, height);
+            
+            // 如果不需要旋转，直接绘制
+            if (rotation == 0) {
+                rotatedCtx.drawImage(adjustCanvas, 0, 0);
+                return;
+            }
+            
+            // 转换为弧度
+            const radians = rotation * Math.PI / 180;
+            
+            // 围绕中心旋转并裁剪
+            rotatedCtx.save();
+            // 将原点移动到画布中心
+            rotatedCtx.translate(width / 2, height / 2);
+            // 旋转画布
+            rotatedCtx.rotate(radians);
+            // 将图像绘制在中心位置（偏移一半尺寸）
+            rotatedCtx.drawImage(adjustCanvas, -width / 2, -height / 2);
+            rotatedCtx.restore();
+        }
+
+        function enableRealTimePreview() {
+            isRealTimePreview = true;
+            document.getElementById('liveIndicator').style.display = 'flex';
+            
+            // 立即应用无缝效果
+            if (originalImageData) {
+                applySeamlessEffect();
+            }
+        }
+
+        function applySeamlessEffect() {
+            if (!originalImageData || showOriginal) return;
+            
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = rotatedCanvas.width;
+            tempCanvas.height = rotatedCanvas.height;
+            
+            // 复制旋转后的图像
+            tempCtx.drawImage(rotatedCanvas, 0, 0);
+            
+            // 应用所有选中的无缝处理方法
+            if (activeMethods.length > 0) {
+                // 按照预设顺序应用方法
+                const methodOrder = ['offset', 'mirror', 'blend'];
+                
+                methodOrder.forEach(method => {
+                    if (activeMethods.includes(method)) {
+                        switch (method) {
+                            case 'mirror':
+                                applyMirrorSeamless(tempCanvas);
+                                break;
+                            case 'offset':
+                                applyOffsetSeamless(tempCanvas);
+                                break;
+                            case 'blend':
+                                applyBlendSeamless(tempCanvas);
+                                break;
+                        }
+                    }
+                });
+            }
+            
+            // 更新显示
+            processedCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+            processedCtx.drawImage(tempCanvas, 0, 0);
+            updateTiledPreview();
+        }
+
+        function applyMirrorSeamless(sourceCanvas) {
+            const { width, height } = sourceCanvas;
+            const ctx = sourceCanvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+            const newData = new Uint8ClampedArray(data);
+            
+            const strength = parseInt(document.getElementById('mirrorStrength').value);
+            const edgeSize = Math.min(width, height) * strength / 100;
+            
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = (y * width + x) * 4;
+                    
+                    // 计算到边缘的距离
+                    const distLeft = x;
+                    const distRight = width - 1 - x;
+                    const distTop = y;
+                    const distBottom = height - 1 - y;
+                    
+                    const minDistX = Math.min(distLeft, distRight);
+                    const minDistY = Math.min(distTop, distBottom);
+                    
+                    // 处理边缘像素
+                    if (minDistX < edgeSize || minDistY < edgeSize) {
+                        const weightX = minDistX < edgeSize ? minDistX / edgeSize : 1;
+                        const weightY = minDistY < edgeSize ? minDistY / edgeSize : 1;
+                        const weight = Math.min(weightX, weightY);
+                        
+                        // 获取镜像位置的像素
+                        const mirrorX = distLeft < distRight ? width - 1 - x : x;
+                        const mirrorY = distTop < distBottom ? height - 1 - y : y;
+                        const mirrorIndex = (mirrorY * width + mirrorX) * 4;
+                        
+                        // 混合像素
+                        for (let i = 0; i < 3; i++) {
+                            newData[index + i] = data[index + i] * weight + data[mirrorIndex + i] * (1 - weight);
+                        }
+                    }
+                }
+            }
+            
+            const newImageData = new ImageData(newData, width, height);
+            ctx.putImageData(newImageData, 0, 0);
+        }
+
+        function applyOffsetSeamless(sourceCanvas) {
+            const { width, height } = sourceCanvas;
+            const ctx = sourceCanvas.getContext('2d');
+            
+            const offsetX = parseInt(document.getElementById('offsetX').value);
+            const offsetY = parseInt(document.getElementById('offsetY').value);
+            
+            const actualOffsetX = Math.floor(width * offsetX / 100);
+            const actualOffsetY = Math.floor(height * offsetY / 100);
+            
+            // 创建临时画布保存原图
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            tempCtx.drawImage(sourceCanvas, 0, 0);
+            
+            // 清空原画布
+            ctx.clearRect(0, 0, width, height);
+            
+            // 重新排列四象限
+            // 左上 -> 右下
+            ctx.drawImage(tempCanvas, 
+                0, 0, width - actualOffsetX, height - actualOffsetY,
+                actualOffsetX, actualOffsetY, width - actualOffsetX, height - actualOffsetY
+            );
+            
+            // 右上 -> 左下
+            ctx.drawImage(tempCanvas,
+                width - actualOffsetX, 0, actualOffsetX, height - actualOffsetY,
+                0, actualOffsetY, actualOffsetX, height - actualOffsetY
+            );
+            
+            // 左下 -> 右上
+            ctx.drawImage(tempCanvas,
+                0, height - actualOffsetY, width - actualOffsetX, actualOffsetY,
+                actualOffsetX, 0, width - actualOffsetX, actualOffsetY
+            );
+            
+            // 右下 -> 左上
+            ctx.drawImage(tempCanvas,
+                width - actualOffsetX, height - actualOffsetY, actualOffsetX, actualOffsetY,
+                0, 0, actualOffsetX, actualOffsetY
+            );
+        }
+
+        function applyBlendSeamless(sourceCanvas) {
+            const { width, height } = sourceCanvas;
+            const ctx = sourceCanvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+            const newData = new Uint8ClampedArray(data);
+            
+            const strength = parseInt(document.getElementById('blendStrength').value);
+            const blendSize = Math.floor(Math.min(width, height) * strength / 200);
+            
+            if (blendSize === 0) return;
+            
+            // 水平边缘混合
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < blendSize; x++) {
+                    const leftIndex = (y * width + x) * 4;
+                    const rightIndex = (y * width + (width - 1 - x)) * 4;
+                    const weight = (x + 1) / (blendSize + 1);
+                    
+                    for (let i = 0; i < 3; i++) {
+                        const leftOriginal = data[leftIndex + i];
+                        const rightOriginal = data[rightIndex + i];
+                        
+                        newData[leftIndex + i] = leftOriginal * weight + rightOriginal * (1 - weight);
+                        newData[rightIndex + i] = rightOriginal * weight + leftOriginal * (1 - weight);
+                    }
+                }
+            }
+            
+            // 垂直边缘混合
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < blendSize; y++) {
+                    const topIndex = (y * width + x) * 4;
+                    const bottomIndex = ((height - 1 - y) * width + x) * 4;
+                    const weight = (y + 1) / (blendSize + 1);
+                    
+                    for (let i = 0; i < 3; i++) {
+                        const topOriginal = data[topIndex + i];
+                        const bottomOriginal = data[bottomIndex + i];
+                        
+                        newData[topIndex + i] = topOriginal * weight + bottomOriginal * (1 - weight);
+                        newData[bottomIndex + i] = bottomOriginal * weight + topOriginal * (1 - weight);
+                    }
+                }
+            }
+            
+            const finalImageData = new ImageData(newData, width, height);
+            ctx.putImageData(finalImageData, 0, 0);
+        }
+
+        function updateTiledPreview() {
+            if (!originalImageData) return;
+            
+            const { width, height } = processedCanvas;
+            
+            // 清空平铺画布
+            tiledCtx.clearRect(0, 0, tiledCanvas.width, tiledCanvas.height);
+            
+            // 绘制3x3网格
+            for (let y = 0; y < 3; y++) {
+                for (let x = 0; x < 3; x++) {
+                    tiledCtx.drawImage(processedCanvas, x * width, y * height);
+                }
+            }
+        }
+
+        function updateMethodOrderIndicators() {
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                const method = btn.dataset.method;
+                const indicator = btn.querySelector('.order-indicator');
+                
+                if (activeMethods.includes(method)) {
+                    const order = activeMethods.indexOf(method) + 1;
+                    indicator.textContent = order;
+                    indicator.style.display = 'flex';
+                } else {
+                    indicator.style.display = 'none';
+                }
+            });
+        }
+
+        function showControls() {
+            document.getElementById('imageControls').style.display = 'block';
+            document.getElementById('seamlessControls').style.display = 'block';
+            document.getElementById('headerExport').style.display = 'flex';
+        }
+
+        function updateImageDimensions() {
+            if (originalImageData) {
+                document.getElementById('imageDimensions').textContent = 
+                    `${rotatedCanvas.width} × ${rotatedCanvas.height}`;
+            }
+        }
+
+        function resetAdjustments() {
+            document.getElementById('brightness').value = 100;
+            document.getElementById('contrast').value = 100;
+            document.getElementById('saturation').value = 100;
+            document.getElementById('hue').value = 0;
+            document.getElementById('rotation').value = 0;
+            
+            document.getElementById('brightnessValue').textContent = '100%';
+            document.getElementById('contrastValue').textContent = '100%';
+            document.getElementById('saturationValue').textContent = '100%';
+            document.getElementById('hueValue').textContent = '0°';
+            document.getElementById('rotationValue').textContent = '0°';
+            
+            applyImageAdjustments();
+        }
+
+        function toggleOriginalPreview() {
+            showOriginal = !showOriginal;
+            const btn = document.getElementById('toggleOriginalBtn');
+            
+            if (showOriginal) {
+                // 显示原图（调整后的图像）
+                processedCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+                processedCtx.drawImage(rotatedCanvas, 0, 0);
+                btn.classList.add('active');
+                btn.innerHTML = `
+                    <i class="fas fa-eye fa-icon"></i>
+                    显示处理结果
+                `;
+            } else {
+                // 显示处理结果，重新应用无缝处理
+                applySeamlessEffect();
+                btn.classList.remove('active');
+                btn.innerHTML = `
+                    <i class="fas fa-eye fa-icon"></i>
+                    显示原图
+                `;
+            }
+        }
+
+        // 图像放大功能
+        function zoomImage() {
+            if (!originalImageData) return;
+            
+            const dataURL = processedCanvas.toDataURL();
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            
+            modalImage.src = dataURL;
+            modal.style.display = 'flex';
+        }
+        
+        function zoomTiledImage() {
+            if (!originalImageData) return;
+            
+            const dataURL = tiledCanvas.toDataURL();
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            
+            modalImage.src = dataURL;
+            modal.style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function exportImage() {
+            if (!originalImageData) return;
+            
+            const format = document.getElementById('exportFormat').value;
+            let quality = 1;
+            let extension = 'png';
+            
+            // 根据格式设置质量和扩展名
+            switch (format) {
+                case 'image/jpeg':
+                    quality = 0.9;
+                    extension = 'jpg';
+                    break;
+                case 'image/webp':
+                    quality = 0.9;
+                    extension = 'webp';
+                    break;
+                case 'image/tiff':
+                    // TIFF导出会转换为高质量PNG
+                    extension = 'tiff';
+                    break;
+                default:
+                    extension = 'png';
+            }
+            
+            const actualFormat = format === 'image/tiff' ? 'image/png' : format;
+            
+            processedCanvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `seamless-texture-${Date.now()}.${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, actualFormat, quality);
+        }
+
+        function clearImage() {
+            originalImageData = null;
+            isRealTimePreview = false;
+            showOriginal = false;
+            activeMethods = [];
+            
+            // 隐藏画布
+            processedCanvas.style.display = 'none';
+            tiledCanvas.style.display = 'none';
+            
+            // 显示占位消息
+            document.getElementById('noImageMessage').style.display = 'block';
+            document.getElementById('noTileMessage').style.display = 'block';
+            
+            // 隐藏控制面板
+            document.getElementById('imageControls').style.display = 'none';
+            document.getElementById('seamlessControls').style.display = 'none';
+            document.getElementById('headerExport').style.display = 'none';
+            document.getElementById('liveIndicator').style.display = 'none';
+            
+            // 重置文件输入
+            document.getElementById('fileInput').value = '';
+            
+            // 清空尺寸显示
+            document.getElementById('imageDimensions').textContent = '';
+            
+            // 重置切换按钮
+            const btn = document.getElementById('toggleOriginalBtn');
+            btn.classList.remove('active');
+            btn.innerHTML = `
+                <i class="fas fa-eye fa-icon"></i>
+                显示原图
+            `;
+            
+            // 重置调整值
+            resetAdjustments();
+            
+            // 重置方法选择
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.querySelector('.order-indicator').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
