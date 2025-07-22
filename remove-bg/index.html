@@ -34,81 +34,84 @@
   <br/>
   <a id="download" download="no-bg.png">下载透明图</a>
 
-<!-- 加载 ORT -->
-<script src="libs/onnx.min.js"></script>
-<script>
-  const upload = document.getElementById('upload');
-  const canvas = document.getElementById('canvas');
-  const output = document.getElementById('output');
-  const download = document.getElementById('download');
+  <!-- 使用官方 CDN 版本 -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.min.js"></script>
+  <script>
+    // 设置从 CDN 自动加载 .wasm 文件
+    ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/';
+    ort.env.wasm.numThreads = 1;
 
-  async function loadModel() {
-    const session = await ort.InferenceSession.create('model/u2netp.onnx');
-    return session;
-  }
+    const upload = document.getElementById('upload');
+    const canvas = document.getElementById('canvas');
+    const output = document.getElementById('output');
+    const download = document.getElementById('download');
 
-  function imageToTensor(img, size = 320) {
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, size, size);
-    const imgData = ctx.getImageData(0, 0, size, size).data;
-
-    const float32Data = new Float32Array(size * size * 3);
-    for (let i = 0; i < size * size; i++) {
-      float32Data[i] = imgData[i * 4] / 255;
-      float32Data[i + size * size] = imgData[i * 4 + 1] / 255;
-      float32Data[i + size * size * 2] = imgData[i * 4 + 2] / 255;
+    async function loadModel() {
+      const session = await ort.InferenceSession.create('model/u2netp.onnx');
+      return session;
     }
 
-    return new ort.Tensor('float32', float32Data, [1, 3, size, size]);
-  }
+    function imageToTensor(img, size = 320) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, size, size);
+      const imgData = ctx.getImageData(0, 0, size, size).data;
 
-  function applyAlphaMask(originalImg, mask, width, height) {
-    canvas.style.display = 'block';
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(originalImg, 0, 0, width, height);
-    const imgData = ctx.getImageData(0, 0, width, height);
-    const data = imgData.data;
+      const float32Data = new Float32Array(size * size * 3);
+      for (let i = 0; i < size * size; i++) {
+        float32Data[i] = imgData[i * 4] / 255;
+        float32Data[i + size * size] = imgData[i * 4 + 1] / 255;
+        float32Data[i + size * size * 2] = imgData[i * 4 + 2] / 255;
+      }
 
-    for (let i = 0; i < width * height; i++) {
-      const alpha = Math.floor(mask[i] * 255);
-      data[i * 4 + 3] = alpha;
+      return new ort.Tensor('float32', float32Data, [1, 3, size, size]);
     }
 
-    ctx.putImageData(imgData, 0, 0);
-  }
+    function applyAlphaMask(originalImg, mask, width, height) {
+      canvas.style.display = 'block';
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(originalImg, 0, 0, width, height);
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data;
 
-  upload.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+      for (let i = 0; i < width * height; i++) {
+        const alpha = Math.floor(mask[i] * 255);
+        data[i * 4 + 3] = alpha;
+      }
 
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    await img.decode();
+      ctx.putImageData(imgData, 0, 0);
+    }
 
-    const width = img.width;
-    const height = img.height;
+    upload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    const session = await loadModel();
-    const inputTensor = imageToTensor(img);
-    const feeds = { 'input': inputTensor };
-    const results = await session.run(feeds);
-    const outputData = results[session.outputNames[0]].data;
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      await img.decode();
 
-    applyAlphaMask(img, outputData, width, height);
+      const width = img.width;
+      const height = img.height;
 
-    canvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      output.src = url;
-      download.href = url;
-      download.style.display = 'inline-block';
-    }, 'image/png');
-  });
-</script>
+      const session = await loadModel();
+      const inputTensor = imageToTensor(img);
+      const feeds = { 'input': inputTensor };
+      const results = await session.run(feeds);
+      const outputData = results[session.outputNames[0]].data;
 
+      applyAlphaMask(img, outputData, width, height);
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        output.src = url;
+        download.href = url;
+        download.style.display = 'inline-block';
+      }, 'image/png');
+    });
+  </script>
 </body>
 </html>
