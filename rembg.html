@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>离线一键抠图工具（轻量版）</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
   <style>
     :root {
       --main-color: #5a64ff;
@@ -74,7 +77,8 @@
     
     @media (min-width: 992px) {
       .app-container {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 40% 60%; /* 调整左右面板比例 */
+        align-items: stretch; /* 确保两列高度同步 */
       }
     }
     
@@ -412,19 +416,6 @@
       color: var(--text1);
     }
     
-    .batch-info {
-      background: rgba(76, 201, 240, 0.15);
-      border-radius: var(--border-radius);
-      padding: 15px;
-      text-align: center;
-      margin: 20px 0;
-      display: none;
-    }
-    
-    .batch-info.active {
-      display: block;
-    }
-    
     .loading {
       position: absolute;
       top: 0;
@@ -511,6 +502,9 @@
       border-radius: 50px;
       font-size: 0.9rem;
       color: var(--text2);
+      position: absolute;
+      right: 90px;
+      top: 25px;
     }
     
     .progress-header span {
@@ -615,9 +609,23 @@
     .delete-btn:hover {
       color: var(--danger);
     }
+    
+    /* 新增样式 */
+    .panel-header h2 {
+      margin-bottom: 0;
+    }
+    
+    .panel-header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      position: relative;
+    }
   </style>
 </head>
 <body>
+<div id="global-sidebar"></div>
   <div class="container">
     <header>
       <h1><i class="fas fa-cut"></i> 离线一键抠图工具</h1>
@@ -636,18 +644,7 @@
           <input type="file" id="file-input" accept="image/*" multiple>
         </div>
         
-        <button id="select-btn" class="btn">
-          <i class="fas fa-folder-open"></i> 选择图片
-        </button>
-        
-        <div class="batch-info" id="batch-info">
-          <p>已选择 <span id="file-count">0</span> 张图片 | 处理中：<span id="processing-count">0</span> | 已完成：<span id="completed-count">0</span></p>
-          <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-          </div>
-        </div>
-        
-        <button id="process-btn" class="btn btn-secondary" disabled>
+        <button id="process-btn" class="btn" disabled>
           <i class="fas fa-magic"></i> 开始批量抠图
         </button>
         
@@ -658,7 +655,7 @@
       
       <!-- 输出面板 -->
       <div class="panel">
-        <div class="panel-header">
+        <div class="panel-header-container">
           <h2 class="panel-title"><i class="fas fa-images"></i> 抠图结果</h2>
           <div class="progress-header">
             <span id="completed-count-header">0</span>/<span id="total-count-header">0</span>
@@ -708,20 +705,14 @@
     ort.env.wasm.numThreads = 1;
 
     // DOM 元素
-    const selectBtn = document.getElementById('select-btn');
     const fileInput = document.getElementById('file-input');
     const dropArea = document.getElementById('drop-area');
     const processBtn = document.getElementById('process-btn');
     const batchDownload = document.getElementById('batch-download');
     const previewContainer = document.getElementById('preview-container');
     const resultsContainer = document.getElementById('results-container');
-    const batchInfo = document.getElementById('batch-info');
-    const fileCount = document.getElementById('file-count');
-    const processingCount = document.getElementById('processing-count');
-    const completedCount = document.getElementById('completed-count');
     const completedCountHeader = document.getElementById('completed-count-header');
     const totalCountHeader = document.getElementById('total-count-header');
-    const progressBar = document.getElementById('progress-bar');
     const headerProgressBar = document.getElementById('header-progress-bar');
     const clearBtn = document.getElementById('clear-btn');
     const modal = document.getElementById('image-modal');
@@ -734,7 +725,9 @@
 
     // 初始化事件监听器
     function initEventListeners() {
-      selectBtn.addEventListener('click', () => fileInput.click());
+      // 点击上传区域触发文件选择
+      dropArea.addEventListener('click', () => fileInput.click());
+      
       fileInput.addEventListener('change', handleFileSelect);
       
       // 拖放功能
@@ -881,20 +874,12 @@
       const processing = document.querySelectorAll('.status-processing').length;
       const completed = document.querySelectorAll('.status-completed').length;
       
-      fileCount.textContent = total;
-      processingCount.textContent = processing;
-      completedCount.textContent = completed;
-      completedCountHeader.textContent = completed;
       totalCountHeader.textContent = total;
+      completedCountHeader.textContent = completed;
       
-      if (total > 0) {
-        batchInfo.classList.add('active');
-        const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
-        progressBar.style.width = `${progress}%`;
-        headerProgressBar.style.width = `${progress}%`;
-      } else {
-        batchInfo.classList.remove('active');
-      }
+      // 更新header中的进度条
+      const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+      headerProgressBar.style.width = `${progress}%`;
       
       // 当所有文件处理完成时显示下载按钮
       batchDownload.classList.toggle('visible', completed === total && total > 0);
