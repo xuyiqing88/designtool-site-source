@@ -20,7 +20,7 @@
       --success: #4cc9f0;
       --danger: #f72585;
       --border-radius: 10px;
-      --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      --box-shadow: 0 4px 20px rgba(90, 100, 255, 0.12);
       --transition: all 0.3s ease;
     }
     
@@ -32,11 +32,11 @@
     
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
       color: var(--text1);
       line-height: 1.6;
       min-height: 100vh;
       position: relative;
+	background-color: #f5f7ff;
     }
     
     .container {
@@ -47,7 +47,6 @@
     
     header {
       text-align: center;
-      margin-bottom: 30px;
       padding: 20px;
     }
     
@@ -63,7 +62,7 @@
     
     .subtitle {
       color: var(--text3);
-      font-size: 1.1rem;
+      font-size: 0.9rem;
       max-width: 700px;
       margin: 0 auto 15px;
     }
@@ -84,10 +83,7 @@
       height: fit-content;
       position: relative;
     }
-    
-    .panel:hover {
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-    }
+
     
     .panel-title {
       display: flex;
@@ -312,7 +308,12 @@
       min-height: 300px;
       position: relative;
     }
-    
+    @media (max-width: 768px) {
+      .panel {
+        padding: 16px;
+        margin: 0 10px;
+      }
+	}  
     @media (min-width: 768px) {
       .results-container {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -321,9 +322,7 @@
         grid-template-columns: 40% 60%;
         align-items: stretch;
       }
-      .panel {
-        padding: 20px;
-      }
+
     }
     .result-item {
       display: flex;
@@ -435,7 +434,6 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
       flex: 0 0 auto;
       order: 2;
     }
