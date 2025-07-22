@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SDXL 提示词风格库</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <script src="menu.js" defer></script>
-<script src="prompts.js" defer></script>
+    <script src="menu.js" defer></script>
+    <script src="prompts.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <style>
         :root {
             --primary: #5963ff;
@@ -40,7 +40,7 @@
             min-height: 100vh;
             line-height: 1.6;
         }
-/* 新增返回顶部按钮样式 */
+        /* 新增返回顶部按钮样式 */
         #backToTop {
             position: fixed;
             bottom: 30px;
@@ -83,7 +83,7 @@
             font-size: 1.8rem;
             margin-bottom: 10px;
             color: var(--primary);
-	        margin-top: 20px;
+            margin-top: 20px;
             text-shadow: 0 2px 10px var(--shadow);
         }
         
@@ -112,19 +112,19 @@
             background: var(--light);
             padding-top: 20px;
             border-radius: 10px 10px 0 0;
-		transition: all ease 0.3s;
+            transition: all ease 0.3s;
         }
-	.container {
-	margin: 0 auto;
-    	left: 0;
-    	right: 0;
-    	position: absolute;
-    	max-width: 1300px;
-}
+        .container {
+            margin: 0 auto;
+            left: 0;
+            right: 0;
+            position: absolute;
+            max-width: 1300px;
+        }
         .controls-container:hover {
-		top: 0px;
-		transition: all ease 0.3s;
-	}
+            top: 0px;
+            transition: all ease 0.3s;
+        }
         .controls {
             max-width: 1400px;
             margin: 0 auto;
@@ -236,10 +236,10 @@
             color: var(--primary-dark);
             min-width: 130px;
             display: flex;
-    height: 183px;
-    align-items: center;
-	flex-wrap: wrap;
-	font-size: 15px;
+            height: 183px;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 15px;
         }
         
         .prompt-cell {
@@ -257,15 +257,15 @@
             overflow: hidden;
             height: 182px;
             overflow-y: auto;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-transition: background-color 0.2s;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            transition: background-color 0.2s;
         }
-  .prompt-text:active {
-    background-color: rgba(89, 99, 255, 0.15) !important;
-} 
+        .prompt-text:active {
+            background-color: rgba(89, 99, 255, 0.15) !important;
+        } 
         .prompt-text::-webkit-scrollbar {
             width: 6px;
         }
@@ -447,27 +447,29 @@ transition: background-color 0.2s;
             background: rgba(0, 0, 0, 0.5);
         }
         
-        
         @media (max-width: 768px) {
-            .controls-container	{
-		   top: 0;}
+            .controls-container {
+                top: 0;
+            }
             .controls {
                 padding: 0 15px;
             }
             .style-name {
-		min-width: 100%;
-        	font-size: 13px;
-	}
+                min-width: 100%;
+                font-size: 13px;
+		height: 140px;
+            }
             .category-tabs {
                 justify-content: flex-start;
                 overflow-x: auto;
                 padding-bottom: 10px;
                 -webkit-overflow-scrolling: touch;
-		flex-direction: row;
-        	flex-wrap: nowrap;
+                flex-direction: row;
+                flex-wrap: nowrap;
             }
             .none {        
-		display: none;}
+                display: none;
+            }
             .category-tab {
                 flex-shrink: 0;
             }
@@ -479,26 +481,30 @@ transition: background-color 0.2s;
             td {
                
             }
-            .translation { display: none;}
+            .translation { 
+                display: none;
+            }
             .prompt-cell {
-        	max-width: 26vw;
-		min-width: auto;
+                max-width: 26vw;
+                min-width: auto;
             }
             
             .prompt-text {
                 font-size: 0.8rem;
-	        padding: 6px;
+                padding: 6px;
+		height: 140px;
             }
             
             .example-image {
                 width: 100%;
+		height: 140px;
             }
             thead {
                 top: 160px; /* 移动设备上controls-container高度增加 */
             }
-   .prompt-text:after {
-        display: none;
-    }
+            .prompt-text:after {
+                display: none;
+            }
             /* 移动端全屏样式调整 */
             #expandedImg {
                 max-width: 95%;
@@ -518,9 +524,8 @@ transition: background-color 0.2s;
         }
     </style>
 </head>
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
-<div id="global-sidebar"></div>
+    <div id="global-sidebar"></div>
     <div class="container">
         <header>
             <h1>SDXL 提示词风格库</h1>
@@ -528,7 +533,6 @@ transition: background-color 0.2s;
             <p style="color: var(--gray); font-size: 0.85rem;">
                 <i class="fas fa-exclamation-circle"></i> 提示：点击提示词可复制到剪贴板，使用分类标签和搜索框可快速筛选风格
             </p>
-            
         </header>
         
         <div class="controls-container">
@@ -581,7 +585,8 @@ transition: background-color 0.2s;
     </button>    
     <div class="notification" id="notification">提示词已复制到剪贴板！</div>
 
-    <script>   
+    <script>
+
         // 分类数据
         const categories = [
             "全部", "SAI官方", "广告", "艺术", "未来", "游戏", "杂项", "纸艺", "照片", "艺术2", "其他", 
@@ -654,71 +659,102 @@ transition: background-color 0.2s;
             });
         }
         
-    // 渲染样式表格
-    function renderStylesTable(stylesToRender, searchTerm = '') {
-        const tableBody = document.getElementById('stylesTable');
-        tableBody.innerHTML = '';
-        
-        if (stylesToRender.length === 0) {
-            const row = document.createElement('tr');
-            row.innerHTML = `<td colspan="5" style="text-align: center; padding: 40px; color: var(--gray);">未找到匹配的风格</td>`;
-            tableBody.appendChild(row);
-            return;
-        }
-        
-        stylesToRender.forEach(style => {
-            const row = document.createElement('tr');
+        // 渲染样式表格
+        function renderStylesTable(stylesToRender, searchTerm = '') {
+            const tableBody = document.getElementById('stylesTable');
+            tableBody.innerHTML = '';
             
-            // 根据风格名称自动生成图片路径
-            const imgPath = `img/style-preview/${style.name}.png`;
+            if (stylesToRender.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="5" style="text-align: center; padding: 40px; color: var(--gray);">未找到匹配的风格</td>`;
+                tableBody.appendChild(row);
+                return;
+            }
             
-            // 高亮处理搜索关键词
-            const highlightSearchTerm = (text) => {
-                if (!searchTerm || searchTerm.trim() === '') return text;
+            stylesToRender.forEach(style => {
+                const row = document.createElement('tr');
                 
-                const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
-                return text.replace(regex, '<span class="highlight">$1</span>');
-            };
+                // 根据风格名称自动生成图片路径
+                const imgPath = `img/style-preview/${style.name}.png`;
+                
+                // 高亮处理搜索关键词
+                const highlightSearchTerm = (text) => {
+                    if (!searchTerm || searchTerm.trim() === '') return text;
+                    
+                    const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+                    return text.replace(regex, '<span class="highlight">$1</span>');
+                };
+                
+                row.innerHTML = `
+                    <td class="style-name">${highlightSearchTerm(style.name)}</td>
+                    <td class="prompt-cell">
+                        <div class="prompt-text" data-prompt="${encodeURIComponent(style.prompt)}">
+                            ${highlightSearchTerm(style.prompt)}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="translation">${highlightSearchTerm(style.translation)}</div>
+                    </td>
+                    <td class="prompt-cell">
+                        <div class="prompt-text negative-prompt" data-prompt="${encodeURIComponent(style.negative_prompt)}">
+                            ${highlightSearchTerm(style.negative_prompt)}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="example-image">
+                            <img src="${imgPath}" alt="${style.name}" title="点击查看大图" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\"></div>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
             
-            row.innerHTML = `
-                <td class="style-name">${highlightSearchTerm(style.name)}</td>
-                <td class="prompt-cell">
-                    <div class="prompt-text" data-prompt="${encodeURIComponent(style.prompt)}">
-                        ${highlightSearchTerm(style.prompt)}
-                    </div>
-                </td>
-                <td>
-                    <div class="translation">${highlightSearchTerm(style.translation)}</div>
-                </td>
-                <td class="prompt-cell">
-                    <div class="prompt-text negative-prompt" data-prompt="${encodeURIComponent(style.negative_prompt)}">
-                        ${highlightSearchTerm(style.negative_prompt)}
-                    </div>
-                </td>
-                <td>
-                    <div class="example-image">
-                        <img src="${imgPath}" alt="${style.name}" title="点击查看大图" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\">
-                    </div>
-                </td>
-            `;
+            // 添加提示词复制功能
+            document.querySelectorAll('.prompt-text').forEach(el => {
+                el.addEventListener('click', copyPromptToClipboard);
+                el.addEventListener('touchend', copyPromptToClipboard);
+            });
             
-            tableBody.appendChild(row);
-        });
-        
-        // 添加提示词复制功能 - 修改点：同时支持click和touchend事件
-        document.querySelectorAll('.prompt-text').forEach(el => {
-            // 同时监听click和touchend事件
-            el.addEventListener('click', copyPromptToClipboard);
-            el.addEventListener('touchend', copyPromptToClipboard);
-        });
-        
-        // 添加图片点击事件 - 修改点：同时支持click和touchend事件
-        document.querySelectorAll('.example-image img').forEach(img => {
-            // 同时监听click和touchend事件
-            img.addEventListener('click', showFullScreenImage);
-            img.addEventListener('touchend', showFullScreenImage);
-        });
-    }
+            // 添加图片点击事件（使用新的防误触处理）
+            document.querySelectorAll('.example-image img').forEach(img => {
+                // 为移动端添加触摸事件处理
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let touchMoved = false;
+                
+                img.addEventListener('touchstart', (e) => {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    touchMoved = false;
+                });
+                
+                img.addEventListener('touchmove', (e) => {
+                    const touchEndX = e.touches[0].clientX;
+                    const touchEndY = e.touches[0].clientY;
+                    
+                    // 计算移动距离
+                    const diffX = Math.abs(touchEndX - touchStartX);
+                    const diffY = Math.abs(touchEndY - touchStartY);
+                    
+                    // 如果移动距离超过阈值，则认为是滑动操作
+                    if (diffX > 10 || diffY > 10) {
+                        touchMoved = true;
+                    }
+                });
+                
+                img.addEventListener('touchend', (e) => {
+                    // 如果是滑动操作，则忽略点击事件
+                    if (!touchMoved) {
+                        e.preventDefault(); // 防止触发默认行为
+                        showFullScreenImage(e);
+                    }
+                });
+                
+                // 桌面端仍然使用click事件
+                img.addEventListener('click', showFullScreenImage);
+            });
+        }
         
         // 设置事件监听器
         function setupEventListeners() {
@@ -765,24 +801,24 @@ transition: background-color 0.2s;
         }
         
         // 复制提示词到剪贴板
-    function copyPromptToClipboard(e) {
-        // 阻止移动端上的默认行为（如滚动）
-        if (e.type === 'touchend') {
-            e.preventDefault();
+        function copyPromptToClipboard(e) {
+            // 阻止移动端上的默认行为（如滚动）
+            if (e.type === 'touchend') {
+                e.preventDefault();
+            }
+            
+            const prompt = decodeURIComponent(e.currentTarget.dataset.prompt);
+            navigator.clipboard.writeText(prompt);
+            
+            // 显示通知
+            const notification = document.getElementById('notification');
+            notification.textContent = "提示词已复制到剪贴板！";
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
         }
-        
-        const prompt = decodeURIComponent(e.currentTarget.dataset.prompt);
-        navigator.clipboard.writeText(prompt);
-        
-        // 显示通知
-        const notification = document.getElementById('notification');
-        notification.textContent = "提示词已复制到剪贴板！";
-        notification.classList.add('show');
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 2000);
-    }
         
         // 显示全屏图片
         function showFullScreenImage(e) {
