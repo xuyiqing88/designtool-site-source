@@ -523,12 +523,18 @@
             }
             
             .preview-panel {
-                min-height: 50vh;
+                height: 45vh;
+	        position: fixed;
+        bottom: 0;
+        width: 100%;
+        left: 0;
             }
-            
+            .preview-content {
+		height: 80%;}
             .preview-header {
                 flex-direction: column;
                 gap: 0.5rem;
+		display: none;
             }
             
             #toggleOriginalBtn {
