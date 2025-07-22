@@ -97,10 +97,12 @@
       const width = img.width;
       const height = img.height;
 
-      const session = await loadModel();
-      const inputTensor = imageToTensor(img);
-      const feeds = { 'input': inputTensor };
-      const results = await session.run(feeds);
+const session = await loadModel();
+const inputTensor = imageToTensor(img);
+const inputName = session.inputNames[0];  // 关键修复！
+const feeds = { [inputName]: inputTensor };
+const results = await session.run(feeds);
+
       const outputData = results[session.outputNames[0]].data;
 
       applyAlphaMask(img, outputData, width, height);
