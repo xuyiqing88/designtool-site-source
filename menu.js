@@ -333,9 +333,10 @@ const menuData = [
         title: "3D工具",
         icon: "fas fa-cube",
         submenu: [
-            { title: "无缝贴图预览工具", link: "map.html" },
-            { title: "法线图转换工具", link: "normal.html" },
-            { title: "ORM贴图生成工具", link: "ORM.html" },
+            { title: "无缝贴图制作", link: "texture.html" },
+            { title: "无缝贴图预览", link: "map.html" },
+            { title: "法线图转换", link: "normal.html" },
+            { title: "ORM贴图生成", link: "ORM.html" },
 	    { title: "颜色转换工具", link: "color.html" },
         ]
     },
