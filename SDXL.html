@@ -257,8 +257,15 @@
             overflow: hidden;
             height: 182px;
             overflow-y: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+transition: background-color 0.2s;
         }
-        
+  .prompt-text:active {
+    background-color: rgba(89, 99, 255, 0.15) !important;
+} 
         .prompt-text::-webkit-scrollbar {
             width: 6px;
         }
@@ -486,7 +493,6 @@
             .example-image {
                 width: 100%;
             }
-            
             thead {
                 top: 160px; /* 移动设备上controls-container高度增加 */
             }
@@ -646,67 +652,71 @@
             });
         }
         
-        // 渲染样式表格
-        function renderStylesTable(stylesToRender, searchTerm = '') {
-            const tableBody = document.getElementById('stylesTable');
-            tableBody.innerHTML = '';
-            
-            if (stylesToRender.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td colspan="5" style="text-align: center; padding: 40px; color: var(--gray);">未找到匹配的风格</td>`;
-                tableBody.appendChild(row);
-                return;
-            }
-            
-            stylesToRender.forEach(style => {
-                const row = document.createElement('tr');
-                
-                // 根据风格名称自动生成图片路径
-                const imgPath = `img/style-preview/${style.name}.png`;
-                
-                // 高亮处理搜索关键词
-                const highlightSearchTerm = (text) => {
-                    if (!searchTerm || searchTerm.trim() === '') return text;
-                    
-                    const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
-                    return text.replace(regex, '<span class="highlight">$1</span>');
-                };
-                
-                row.innerHTML = `
-                    <td class="style-name">${highlightSearchTerm(style.name)}</td>
-                    <td class="prompt-cell">
-                        <div class="prompt-text" data-prompt="${encodeURIComponent(style.prompt)}">
-                            ${highlightSearchTerm(style.prompt)}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="translation">${highlightSearchTerm(style.translation)}</div>
-                    </td>
-                    <td class="prompt-cell">
-                        <div class="prompt-text negative-prompt" data-prompt="${encodeURIComponent(style.negative_prompt)}">
-                            ${highlightSearchTerm(style.negative_prompt)}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="example-image">
-                            <img src="${imgPath}" alt="${style.name}" title="点击查看大图" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\">
-                        </div>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // 添加提示词复制功能
-            document.querySelectorAll('.prompt-text').forEach(el => {
-                el.addEventListener('click', copyPromptToClipboard);
-            });
-            
-            // 添加图片点击事件
-            document.querySelectorAll('.example-image img').forEach(img => {
-                img.addEventListener('click', showFullScreenImage);
-            });
+    // 渲染样式表格
+    function renderStylesTable(stylesToRender, searchTerm = '') {
+        const tableBody = document.getElementById('stylesTable');
+        tableBody.innerHTML = '';
+        
+        if (stylesToRender.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="5" style="text-align: center; padding: 40px; color: var(--gray);">未找到匹配的风格</td>`;
+            tableBody.appendChild(row);
+            return;
         }
+        
+        stylesToRender.forEach(style => {
+            const row = document.createElement('tr');
+            
+            // 根据风格名称自动生成图片路径
+            const imgPath = `img/style-preview/${style.name}.png`;
+            
+            // 高亮处理搜索关键词
+            const highlightSearchTerm = (text) => {
+                if (!searchTerm || searchTerm.trim() === '') return text;
+                
+                const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+                return text.replace(regex, '<span class="highlight">$1</span>');
+            };
+            
+            row.innerHTML = `
+                <td class="style-name">${highlightSearchTerm(style.name)}</td>
+                <td class="prompt-cell">
+                    <div class="prompt-text" data-prompt="${encodeURIComponent(style.prompt)}">
+                        ${highlightSearchTerm(style.prompt)}
+                    </div>
+                </td>
+                <td>
+                    <div class="translation">${highlightSearchTerm(style.translation)}</div>
+                </td>
+                <td class="prompt-cell">
+                    <div class="prompt-text negative-prompt" data-prompt="${encodeURIComponent(style.negative_prompt)}">
+                        ${highlightSearchTerm(style.negative_prompt)}
+                    </div>
+                </td>
+                <td>
+                    <div class="example-image">
+                        <img src="${imgPath}" alt="${style.name}" title="点击查看大图" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\">
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // 添加提示词复制功能 - 修改点：同时支持click和touchend事件
+        document.querySelectorAll('.prompt-text').forEach(el => {
+            // 同时监听click和touchend事件
+            el.addEventListener('click', copyPromptToClipboard);
+            el.addEventListener('touchend', copyPromptToClipboard);
+        });
+        
+        // 添加图片点击事件 - 修改点：同时支持click和touchend事件
+        document.querySelectorAll('.example-image img').forEach(img => {
+            // 同时监听click和touchend事件
+            img.addEventListener('click', showFullScreenImage);
+            img.addEventListener('touchend', showFullScreenImage);
+        });
+    }
         
         // 设置事件监听器
         function setupEventListeners() {
@@ -753,19 +763,24 @@
         }
         
         // 复制提示词到剪贴板
-        function copyPromptToClipboard(e) {
-            const prompt = decodeURIComponent(e.currentTarget.dataset.prompt);
-            navigator.clipboard.writeText(prompt);
-            
-            // 显示通知
-            const notification = document.getElementById('notification');
-            notification.textContent = "提示词已复制到剪贴板！";
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
+    function copyPromptToClipboard(e) {
+        // 阻止移动端上的默认行为（如滚动）
+        if (e.type === 'touchend') {
+            e.preventDefault();
         }
+        
+        const prompt = decodeURIComponent(e.currentTarget.dataset.prompt);
+        navigator.clipboard.writeText(prompt);
+        
+        // 显示通知
+        const notification = document.getElementById('notification');
+        notification.textContent = "提示词已复制到剪贴板！";
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 2000);
+    }
         
         // 显示全屏图片
         function showFullScreenImage(e) {
