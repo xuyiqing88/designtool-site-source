@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>离线一键抠图工具（轻量版）</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <script src="menu.js" defer></script>
-    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+  <script src="menu.js" defer></script>
+  <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
   <style>
     :root {
       --main-color: #5a64ff;
@@ -19,7 +19,7 @@
       --dark: #212529;
       --success: #4cc9f0;
       --danger: #f72585;
-      --border-radius: 12px;
+      --border-radius: 10px;
       --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
       --transition: all 0.3s ease;
     }
@@ -36,14 +36,13 @@
       color: var(--text1);
       line-height: 1.6;
       min-height: 100vh;
-      padding: 20px;
       position: relative;
     }
     
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 20px 0;
     }
     
     header {
@@ -55,7 +54,7 @@
     h1 {
       color: var(--main-color);
       margin-bottom: 10px;
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       background: var(--btcolor);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -75,12 +74,6 @@
       gap: 25px;
     }
     
-    @media (min-width: 992px) {
-      .app-container {
-        grid-template-columns: 40% 60%; /* 调整左右面板比例 */
-        align-items: stretch; /* 确保两列高度同步 */
-      }
-    }
     
     .panel {
       background: white;
@@ -100,9 +93,9 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      color: var(--main-color);
+      color: var(--text1);
       margin-bottom: 20px;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       position: relative;
     }
     
@@ -317,14 +310,22 @@
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 15px;
       margin-top: 15px;
+      min-height: 300px;
+      position: relative;
     }
     
     @media (min-width: 768px) {
       .results-container {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       }
+      .app-container {
+        grid-template-columns: 40% 60%;
+        align-items: stretch;
+      }
+      .panel {
+        padding: 20px;
+      }
     }
-    
     .result-item {
       display: flex;
       flex-direction: column;
@@ -393,10 +394,37 @@
       text-align: center;
     }
     
+    /* 修复对齐问题：使用flex布局确保标题、进度和按钮在同一行 */
+    .panel-header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .panel-title {
+      margin-bottom: 0;
+      flex: 1;
+      min-width: 120px;
+    }
+    
+    .progress-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f0f2f5;
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      color: var(--text2);
+      order: 1;
+      flex: 0 0 auto;
+    }
+    
     .clear-btn {
-      position: absolute;
-      top: 25px;
-      right: 25px;
       background: #f8f9fa;
       color: var(--text2);
       border: none;
@@ -409,11 +437,29 @@
       align-items: center;
       gap: 6px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      flex: 0 0 auto;
+      order: 2;
     }
     
     .clear-btn:hover {
       background: #e9ecef;
       color: var(--text1);
+    }
+    
+    .header-progress {
+      height: 6px;
+      width: 100px;
+      background: #e9ecef;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .header-progress-bar {
+      height: 100%;
+      background: var(--success);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s ease;
     }
     
     .loading {
@@ -486,46 +532,34 @@
       box-shadow: 0 8px 20px rgba(90, 100, 255, 0.5);
     }
     
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    
-    .progress-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #f0f2f5;
-      padding: 8px 15px;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      color: var(--text2);
+    /* 空状态居中样式 */
+    .empty-state {
       position: absolute;
-      right: 90px;
-      top: 25px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 100%;
+      max-width: 300px;
+      padding: 20px;
+      z-index: 1;
     }
     
-    .progress-header span {
-      font-weight: 600;
-      color: var(--main-color);
+    .empty-state i {
+      font-size: 5rem;
+      color: #dee2e6;
+      margin-bottom: 20px;
+      display: block;
     }
     
-    .header-progress {
-      height: 6px;
-      width: 100px;
-      background: #e9ecef;
-      border-radius: 3px;
-      overflow: hidden;
+    .empty-state h3 {
+      color: var(--text2);
+      margin-bottom: 10px;
     }
     
-    .header-progress-bar {
-      height: 100%;
-      background: var(--success);
-      border-radius: 3px;
-      width: 0%;
-      transition: width 0.3s ease;
+    .empty-state p {
+      color: var(--text3);
+      font-size: 0.95rem;
     }
     
     /* Animations */
@@ -609,33 +643,20 @@
     .delete-btn:hover {
       color: var(--danger);
     }
-    
-    /* 新增样式 */
-    .panel-header h2 {
-      margin-bottom: 0;
-    }
-    
-    .panel-header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      position: relative;
-    }
   </style>
 </head>
 <body>
 <div id="global-sidebar"></div>
   <div class="container">
     <header>
-      <h1><i class="fas fa-cut"></i> 离线一键抠图工具</h1>
+      <h1>离线一键抠图工具</h1>
       <p class="subtitle">轻量版（u2netp） - 无需上传云端，在浏览器中直接处理您的图片</p>
     </header>
     
     <div class="app-container">
       <!-- 输入面板 -->
       <div class="panel">
-        <h2 class="panel-title"><i class="fas fa-upload"></i> 上传图片</h2>
+        <h2 class="panel-title"> 上传图片</h2>
         
         <div class="upload-area" id="drop-area">
           <i class="fas fa-cloud-upload-alt"></i>
@@ -656,7 +677,7 @@
       <!-- 输出面板 -->
       <div class="panel">
         <div class="panel-header-container">
-          <h2 class="panel-title"><i class="fas fa-images"></i> 抠图结果</h2>
+          <h2 class="panel-title"> 抠图结果</h2>
           <div class="progress-header">
             <span id="completed-count-header">0</span>/<span id="total-count-header">0</span>
             <div class="header-progress">
@@ -671,9 +692,9 @@
         <div class="results-container" id="results-container">
           <!-- 抠图结果将通过JS动态添加 -->
           <div class="empty-state">
-            <i class="fas fa-image" style="font-size: 5rem; color: #dee2e6; margin: 30px 0 20px;"></i>
+            <i class="fas fa-image"></i>
             <h3>暂无处理结果</h3>
-            <p style="color: var(--text3);">上传图片并点击"开始批量抠图"按钮处理图片</p>
+            <p>上传图片并点击"开始批量抠图"按钮处理图片</p>
           </div>
         </div>
       </div>
@@ -1061,9 +1082,9 @@
     function clearResults() {
       resultsContainer.innerHTML = `
         <div class="empty-state">
-          <i class="fas fa-image" style="font-size: 5rem; color: #dee2e6; margin: 30px 0 20px;"></i>
+          <i class="fas fa-image"></i>
           <h3>暂无处理结果</h3>
-          <p style="color: var(--text3);">上传图片并点击"开始批量抠图"按钮处理图片</p>
+          <p>上传图片并点击"开始批量抠图"按钮处理图片</p>
         </div>
       `;
       processedFiles = [];
