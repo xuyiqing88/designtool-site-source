@@ -201,10 +201,9 @@
     }
     
     .image-card {
-      background: white;
+      background: var(--light);
       border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 100%;
       transition: var(--transition);
@@ -216,8 +215,7 @@
     }
     
     .image-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+	background: #5a64ff1a;
     }
     
     .image-wrapper {
@@ -238,6 +236,7 @@
     
     .image-meta {
       flex-grow: 1;
+	    width: 70%
     }
     
     .image-name {
