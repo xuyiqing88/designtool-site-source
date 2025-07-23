@@ -296,7 +296,7 @@ const menuData = [
     },
     {
         title: "设计工具",
-        icon: "fas fa-paint-brush",
+        icon: "fa-solid fa-compass-drafting",
         submenu: [
             { title: "AI一键抠图", link: "rembg.html" },
             { title: "图片对比工具", link: "diff.html" },
@@ -310,7 +310,7 @@ const menuData = [
 
     {
         title: "AI工具",
-        icon: "fas fa-robot",
+        icon: "fa-solid fa-microchip",
         submenu: [
 	    { title: "AI数字人（免费版）", link: "freeAI.html" },
 	    { title: "AI绘画", link: "draw.html" },
@@ -322,7 +322,7 @@ const menuData = [
 
     {
         title: "3D工具",
-        icon: "fas fa-cube",
+        icon: "fa-brands fa-codepen",
         submenu: [
             { title: "无缝贴图制作", link: "texture.html" },
             { title: "无缝贴图预览", link: "map.html" },
@@ -333,7 +333,7 @@ const menuData = [
     },
     {
         title: "实用工具",
-        icon: "fas fa-wrench",
+        icon: "fa-solid fa-swatchbook",
         submenu: [
             { title: "朋友圈九宫格裁剪", link: "9img.html" },
             { title: "本地翻译工具", link: "translation.html" },
