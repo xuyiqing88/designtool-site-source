@@ -11,7 +11,7 @@
   <style>
     :root {
       --main-color: #5a64ff;
-      --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
+      --btcolor: linear-gradient(113deg, #6472ff, #8352ff);
       --text1: #1a1d2e;
       --text2: #4a4e6d;
       --text3: #8d8fa3;
@@ -38,6 +38,8 @@
       position: relative;
 	background-color: #f5f7ff;
     }
+.fas fa-spinner fa-spin {
+	font-size: 22px;}
     .download-all-container {
 	text-align: center;
     padding: 10px;
@@ -67,10 +69,6 @@
       color: var(--main-color);
       margin-bottom: 10px;
       font-size: 1.8rem;
-      background: var(--btcolor);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: inline-block;
     }
     
     .subtitle {
@@ -920,8 +918,7 @@
       if (files.length === 0) return;
       
       processBtn.disabled = true;
-      processBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 22px;
-"></i> 处理中...';
+      processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
       
       // 加载模型（如果尚未加载）
       if (!session) {
