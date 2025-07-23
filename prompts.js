@@ -1337,6 +1337,13 @@ const styles = [
         category: "其他"
     },
     {
+        name: "2.5D半写实肖像",
+        prompt: "Semi-realistic 3D portrait of {prompt}, rendered in Blender 3D style, with exquisite anime-style features. Soft light, cinematic, sub-surface scattering skin.",
+        translation: "半写实3D肖像{prompt}，Blender 3D渲染风格，具有动漫风格的精致五官。柔和的光线，电影感，次表面散射效果的皮肤，",
+        negative_prompt: "photo, deformed, monochrome, black and white, realism, disfigured",
+        category: "其他"
+    },
+    {
         name: "吉卜力工作室",
         prompt: "Studio Ghibli, {prompt} . Asian, Ghibli style, the Art of Hayao Miyazaki, key visual, vibrant, studio anime, highly detailed",
         translation: "吉卜力工作室，{提示}。亚洲，吉卜力风格，宫崎骏艺术，重点视觉，充满活力，工作室动画，高度细致",
@@ -1361,7 +1368,7 @@ const styles = [
         name: "卡通3D图标",
         prompt: "Cartoon 3D icon, {prompt} . UI icon, 3D rendering, smooth and shiny! realistic use of light and color, soft gradient, best details, high definition, high resolution",
         translation: "卡通3D图标，{提示}。UI图标，3D渲染，平滑发亮！现实使用的光和颜色，柔和的渐变，最好的细节，高清，高分辨率",
-        negative_prompt: "photo, deformed, monochrome, black and white, realism, disfigured,",
+        negative_prompt: "photo, deformed, monochrome, black and white, realism, disfigured",
         category: "其他"
     },
     {
