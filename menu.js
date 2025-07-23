@@ -321,16 +321,6 @@ const menuData = [
     },
 
     {
-        title: "实用工具",
-        icon: "fas fa-wrench",
-        submenu: [
-            { title: "朋友圈九宫格裁剪", link: "9img.html" },
-            { title: "本地翻译工具", link: "translation.html" },
-            { title: "BASE64图片转换器", link: "BASE64.html" },
-        ]
-    },
-
-    {
         title: "3D工具",
         icon: "fas fa-cube",
         submenu: [
@@ -339,6 +329,15 @@ const menuData = [
             { title: "法线图转换", link: "normal.html" },
             { title: "ORM贴图生成", link: "ORM.html" },
 	    { title: "颜色转换工具", link: "color.html" },
+        ]
+    },
+    {
+        title: "实用工具",
+        icon: "fas fa-wrench",
+        submenu: [
+            { title: "朋友圈九宫格裁剪", link: "9img.html" },
+            { title: "本地翻译工具", link: "translation.html" },
+            { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
     },
 
