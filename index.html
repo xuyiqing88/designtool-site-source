@@ -714,14 +714,15 @@
                     <i class="fas fa-robot"></i>
                     <span>AI工具</span>
                 </button>
-                <button class="category-btn" data-category="utility">
-                    <i class="fas fa-wrench"></i>
-                    <span>实用工具</span>
-                </button>
                 <button class="category-btn" data-category="3D">
                     <i class="fas fa-cube"></i>
                     <span>3D工具</span>
                 </button>
+                <button class="category-btn" data-category="utility">
+                    <i class="fas fa-wrench"></i>
+                    <span>实用工具</span>
+                </button>
+
 
             </div>
 
@@ -791,6 +792,38 @@
         // Tool data - 确保每个工具都有badge属性
         const tools = [
             {
+                title: "AI一键抠图",
+                description: "支持批量一键抠图、一键打包下载。",
+                category: "design",
+                link: "rembg.html",
+                icon: "img/rembg.png",
+                badge: "NEW"
+            },
+            {
+                title: "图片对比工具",
+                description: "滑动分割线对比两张图片差异。",
+                category: "design",
+                link: "diff.html",
+                icon: "img/diff.png",
+                badge: "NEW"
+            },
+            {
+                title: "图片压缩工具",
+                description: "支持jpg、png图片压缩，不限尺寸、不限数量。",
+                category: "design",
+                link: "comp.html",
+                icon: "img/comp.png",
+                badge: "NEW"
+            },
+            {
+                title: "UI设计数据生成器",
+                description: "快速生成各类测试数据，用于表单填充和UI设计验证。",
+                category: "design",
+                link: "data.html",
+                icon: "img/数据模拟.png",
+                badge: ""
+            }, 
+            {
                 title: "在线PS",
                 description: "免费的在线版Photoshop，无惧版权风险问题。",
                 category: "design",
@@ -814,14 +847,7 @@
                 icon: "img/city.png",
                 badge: ""
             },   
-            {
-                title: "UI设计数据生成器",
-                description: "快速生成各类测试数据，用于表单填充和UI设计验证。",
-                category: "design",
-                link: "data.html",
-                icon: "img/数据模拟.png",
-                badge: ""
-            }, 
+
             {
                 title: "AI数字人(免费版)",
                 description: "无需API，可进行AI对话（支持图片上传）、提示词扩写、图像识别、文本转语音等功能。",
@@ -902,14 +928,7 @@
                 icon: "img/颜色.png",
                 badge: ""
             },
-            {
-                title: "AI一键抠图",
-                description: "支持批量一键抠图、一键打包下载。",
-                category: "utility",
-                link: "rembg.html",
-                icon: "img/rembg.png",
-                badge: "NEW"
-            },
+
             {
                 title: "朋友圈九宫格裁剪",
                 description: "上传图片裁剪成九宫格，按照9张图顺序进行排列。",
@@ -918,22 +937,7 @@
                 icon: "img/9img.png",
                 badge: "NEW"
             },
-            {
-                title: "图片对比工具",
-                description: "滑动分割线对比两张图片差异。",
-                category: "utility",
-                link: "diff.html",
-                icon: "img/diff.png",
-                badge: "NEW"
-            },
-            {
-                title: "图片压缩工具",
-                description: "支持jpg、png图片压缩，不限尺寸、不限数量。",
-                category: "utility",
-                link: "comp.html",
-                icon: "img/comp.png",
-                badge: "NEW"
-            },
+
             {
                 title: "高级翻译工具",
                 description: "支持30多种语言互译，根据文本匹配度提供其他建议。",
@@ -957,8 +961,8 @@
         const categoryMap = {
             'design': { name: '设计工具', icon: 'fas fa-paint-brush' },
             'dev': { name: 'AI工具', icon: 'fas fa-robot' },
-            'utility': { name: '实用工具', icon: 'fas fa-wrench' },
             '3D': { name: '3D工具', icon: 'fas fa-cube' },
+            'utility': { name: '实用工具', icon: 'fas fa-wrench' },
 
         };
 
