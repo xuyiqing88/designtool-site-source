@@ -63,6 +63,7 @@ body {
     font-size: 24px;
     color: var(--sidebar-active-icon);
     margin-right: 15px;
+	display: flex;
 }
 
 .logo-text {
@@ -295,7 +296,7 @@ const menuData = [
         active: true
     },
     {
-        title: "设计工具",
+        title: "轻易设计",
         icon: "fa-solid fa-compass-drafting",
         submenu: [
             { title: "AI一键抠图", link: "rembg.html" },
@@ -309,7 +310,7 @@ const menuData = [
     },
 
     {
-        title: "AI工具",
+        title: "轻易AI",
         icon: "fa-solid fa-microchip",
         submenu: [
 	    { title: "AI数字人（免费版）", link: "freeAI.html" },
@@ -321,7 +322,7 @@ const menuData = [
     },
 
     {
-        title: "3D工具",
+        title: "轻易3D",
         icon: "fa-brands fa-codepen",
         submenu: [
             { title: "无缝贴图制作", link: "texture.html" },
@@ -332,7 +333,7 @@ const menuData = [
         ]
     },
     {
-        title: "实用工具",
+        title: "轻易实用",
         icon: "fa-solid fa-swatchbook",
         submenu: [
             { title: "朋友圈九宫格裁剪", link: "9img.html" },
@@ -364,7 +365,7 @@ function initMenu() {
     let menuHTML = `
         <div class="sidebar-header">
             <div class="logo-icon">
-                <i class="fas fa-toolbox"></i>
+                <img src="img/gongjuxiang.svg" alt="logo" style="width: 30px;">
             </div>
             <div class="logo-text">青艺设计</div>
         </div>
