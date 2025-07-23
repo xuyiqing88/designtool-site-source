@@ -366,7 +366,7 @@ function initMenu() {
             <div class="logo-icon">
                 <i class="fas fa-toolbox"></i>
             </div>
-            <div class="logo-text">帮帮设计</div>
+            <div class="logo-text">青艺设计</div>
         </div>
         <ul class="sidebar-menu">`;
     
