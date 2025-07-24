@@ -349,8 +349,8 @@
         .tool-link {
             display: inline-block;
             padding: 5px 16px;
-            background: linear-gradient(113deg, #6472ff, #8352ff);
-            color: white;
+            background: none;
+            color: var(--dark);
             text-decoration: none;
             border-radius: 20px;
             transition: all 0.3s ease;
@@ -358,13 +358,15 @@
             margin-top: auto;
             width: fit-content;
             font-size: 14px;
-            font-weight: 500;
+	    border: 1px solid var(--gray);
         }
         
         .tool-link:hover {
-            background: linear-gradient(113deg, #4c73ffd1, #6a52ffdb);
+            background: linear-gradient(113deg, #6472ff, #8352ff);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(89, 99, 255, 0.3);
+		color: #fff;
+	border: 1px solid var(--primary);
         }
         
         /* 状态标签样式 - 统一为红色 */
