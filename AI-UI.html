@@ -269,6 +269,9 @@
         }
 
         .preview-area {
+	    display: flex;
+    justify-content: center;
+    align-items: center;
             flex: 1;
             background-color: var(--bg);
             border-radius: 12px;
@@ -286,15 +289,14 @@
             overflow: auto;
             max-width: 100%;
             max-height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* min-width: 0; min-height: 0; */ /* Ensure content can shrink */
+    height: 100%; 
         }
 
         .mobile-view {
             width: 375px;
             height: 667px;
+	    max-width: 100%; /* 添加最大宽度限制 */
+    	max-height: 80vh;
         }
 
         .pc-view {
@@ -390,10 +392,14 @@
             }
 
             .preview-content {
-                width: 100%; /* Ensure preview content uses full width on mobile */
-                height: auto; /* Allow height to adjust */
+                width: 100% !important; /* Ensure preview content uses full width on mobile */
+                height: auto !important; /* Allow height to adjust */
             }
-
+    .mobile-view {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 9/16; /* 保持移动端比例 */
+    }
             .download-btn {
                 margin-top: 10px;
             }
@@ -596,26 +602,23 @@
         }
 
         // 更新预览尺寸和SVG内部尺寸
-        function updatePreviewSize() {
-            const previewWrapper = svgPreview.querySelector('div'); // This is the svgWrapper div
-            const svgElement = previewWrapper ? previewWrapper.querySelector('svg') : null;
+function updatePreviewSize() {
+    const previewWrapper = svgPreview.querySelector('div');
+    if (previewWrapper) {
+        // 移除所有设备类
+        previewWrapper.classList.remove('pc-view', 'mobile-view');
+        
+        // 添加当前设备类
+        previewWrapper.classList.add(currentDevice === 'mobile' ? 'mobile-view' : 'pc-view');
+    }
 
-            if (previewWrapper) {
-                // Apply device-specific classes
-                previewWrapper.classList.remove('pc-view', 'mobile-view');
-                if (currentDevice === 'mobile') {
-                    previewWrapper.classList.add('mobile-view');
-                } else {
-                    previewWrapper.classList.add('pc-view'); // pc-view handles 100% width/height
-                }
-            }
-
-            // Ensure SVG fills its container
-            if (svgElement) {
-                svgElement.setAttribute('width', '100%');
-                svgElement.setAttribute('height', '100%');
-            }
-        }
+    // 确保SVG填充容器
+    const svgElement = previewWrapper ? previewWrapper.querySelector('svg') : null;
+    if (svgElement) {
+        svgElement.setAttribute('width', '100%');
+        svgElement.setAttribute('height', '100%');
+    }
+}
 
 
         // 生成SVG
