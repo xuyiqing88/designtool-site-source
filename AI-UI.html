@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI生成UI界面</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
   <script src="menu.js" defer></script>
   <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
@@ -474,7 +475,7 @@
 
             <div class="interface-settings">
                 <div class="settings-title">
-                    <i data-lucide="palette" style="width: 16px; height: 16px;"></i>
+                    <i class="fa-solid fa-gear"></i>
                     界面设置
                 </div>
                 <div class="settings-row">
@@ -509,7 +510,7 @@
                 <textarea id="promptInput" class="prompt-input" placeholder="请输入您想要生成的SVG界面描述，例如：一个用户端登录界面。" rows="8"></textarea>
                 <div class="action-buttons">
                     <button class="btn generate-btn" id="generateBtn">
-                        <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
                         生成
                     </button>
                     <button class="btn regenerate-btn" id="regenerateBtn" style="display: none;">
@@ -546,7 +547,7 @@
                         <div class="loading-text">生成中，请稍候...</div>
                     </div>
                     <div class="default-preview" id="defaultPreview">
-                        <i data-lucide="image-plus"></i>
+                        <i class="fas fa-image" style="font-size: 5rem; color: #d7d9e5;"></i>
                         <p>在这里预览您生成的UI界面</p>
                     </div>
                     <div id="svgPreview" class="preview-content"></div>
