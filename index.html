@@ -49,7 +49,36 @@
 	.logobt {
 	display: flex;
 	align-items: center;
-    gap: 10px;}
+    gap: 10px;
+	}
+	/* 返回顶部按钮样式 */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(113deg, #6472ff, #8352ff);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(89, 99, 255, 0.3);
+    z-index: 999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.back-to-top:hover {
+    opacity: 1;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(89, 99, 255, 0.4);
+}
+
         .footer-bottom {
 	    border-top: 1px solid rgba(0, 0, 0, 0.1);
     	padding: 20px;
@@ -623,58 +652,64 @@
     transform: translate(-50%, 0);
   }
 }
-        @media (max-width: 768px) {
-            .tools-grid {
+@media (max-width: 768px) {
+	.tools-grid {
                 grid-template-columns: 1fr 1fr;
 	        gap: 10px;
             }
-           .logobt {
+	.logobt {
 	flex-direction: column;}
             h1 {
                 font-size: 1.8rem;
             }
-            .logo {
+	.logo {
 		width: 160px; }
-            .controls {
+	.back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+	.controls {
                 flex-direction: column;
                 align-items: center;
         	position: relative;
 		padding: 20px 0	;
             }
 
-            .container {	
+	.container {	
 		padding: 0;}	
 	header {
 	padding: 0 10px 10px;
 	margin-bottom: 30px;}
-            /* 移动端评论区优化 */
 
-            .tool-content {
+	.tool-content {
 	    	padding: 10px;}
-            .comments-container {
+	.comments-container {
                 border-radius: 12px;
             }
-            .tool-cover img {
+	.tool-cover img {
             width: 80%;
             height: auto;
 	}
-            .giscus-loading {
+	.giscus-loading {
                 padding: 30px 0;
             }
             
-            .giscus-error {
+	.giscus-error {
                 padding: 30px 15px;
             }
 
-  .add-to-home-screen {
-    display: flex;
-  }
+ 	.add-to-home-screen {
+    		display: flex;
+  	}
             
-            .tool-card {
+	.tool-card {
                 flex-direction: column;
 	        height: 190px;
             }
-            .h3 {
+	.h3 {
 	    display: -webkit-box;
     	-webkit-box-orient: vertical;
     	-webkit-line-clamp: 1;
@@ -684,18 +719,18 @@
 	}
 	.tool-link {
 		display: none;}
-            .tool-cover {
+	.tool-cover {
                 width: 100%;
                 height: 80px;
                 border-right: none;
             }
             
             /* 移动端评论区优化 */
-            .comments-title {
+	.comments-title {
                 font-size: 1.2rem;
             }
             
-            .comments-icon {
+	.comments-icon {
                 font-size: 1.1rem;
             }
         }
@@ -703,11 +738,13 @@
 </head>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
+<button id="backToTop" class="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+</button>
 <div class="controls">
 		<div class="bgt">
 		<div class="shape shape-2"></div><div class="shape shape-4"></div><div class="shape shape-5"></div> 
 		</div>
-	<span></span>
 	<div class="logobt">
 	<img src="img/logo2.svg" alt="logo" class="logo">
 	<div class="category-filter">
@@ -725,8 +762,12 @@
                 </button>
             </div>
 	</div>
-	<span><i class="fa-classic fa-solid fa-bone" style="color: #fff;"></i>
-	<a class="donate-link" id="donateBtn">向我投喂</a></span>
+	<span>
+		<i class="fa-classic fa-solid fa-comment-dots" style="color: #fff;"></i>
+		<a class="donate-link" id="commentsBtn" style="margin-right: 25px;">评论反馈</a>
+		<i class="fa-classic fa-solid fa-bone" style="color: #fff;"></i>
+		<a class="donate-link" id="donateBtn">向我投喂</a>
+	</span>
      </div>
         <header>
 
@@ -742,14 +783,14 @@
         </div>
         
         <!-- 评论区域 -->
-        <section class="comments-section">
-            <div class="comments-header">
-                <div class="comments-icon">
-		<h2 class="comments-title">评论/反馈</h2>
-                </div>
-            </div>
-            <div class="giscus"></div>
-        </section>
+<section class="comments-section" id="comments-section">  <!-- 添加id -->
+    <div class="comments-header">
+        <div class="comments-icon">
+            <h2 class="comments-title">评论/反馈</h2>
+        </div>
+    </div>
+    <div class="giscus"></div>
+</section>
 
     </div>
     
@@ -991,7 +1032,8 @@
 // 添加到桌面提示功能
 const addToHomeElement = document.getElementById('addToHomeScreen');
 const closeAddToHomeBtn = document.getElementById('closeAddToHome');
-
+// 返回顶部功能
+const backToTopBtn = document.getElementById('backToTop');
 // 检查是否已经显示过提示
 const isAddToHomeShown = localStorage.getItem('addToHomeShown');
 
@@ -1229,7 +1271,36 @@ window.addEventListener('resize', showAddToHomePrompt);
                 document.body.style.overflow = 'auto';
             }
         });
+// 在现有的JavaScript代码中添加（放在文件底部）
+document.getElementById('commentsBtn').addEventListener('click', function() {
+    const commentsSection = document.getElementById('comments-section');
+    if (commentsSection) {
+        // 平滑滚动到评论区
+        commentsSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // 添加高亮效果（可选）
+        commentsSection.style.backgroundColor = '#f0f5ff';
+        setTimeout(() => {
+            commentsSection.style.backgroundColor = '';
+        }, 1000);
+    }
+});
+// 滚动时显示/隐藏按钮
+window.addEventListener('scroll', function() {
+    if (window.pageYOffset > 300) {
+        backToTopBtn.style.display = 'flex';
+    } else {
+        backToTopBtn.style.display = 'none';
+    }
+});
 
+// 点击按钮平滑滚动到顶部
+backToTopBtn.addEventListener('click', function() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
     </script>
     <script>
         if ('serviceWorker' in navigator) {
