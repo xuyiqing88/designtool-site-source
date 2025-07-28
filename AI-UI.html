@@ -55,7 +55,6 @@
             font-size: 1rem;
             font-weight: 600;
             color: var(--main-color);
-            margin-bottom: 8px;
         }
 
         .container {
@@ -416,15 +415,13 @@
 
         .error-message {
             color: #ff4d4f;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 16px;
             display: none;
         }
 
         .success-message {
             color: #52c41a;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 16px;
             display: none;
         }
 
@@ -529,15 +526,16 @@
                     </button>
                 </div>
                 <div class="api-status" id="apiStatus">API服务当前不可用，请稍后再试</div>
-                <div id="errorMessage" class="error-message"></div>
-                <div id="successMessage" class="success-message"></div>
             </div>
         </div>
 
         <div class="right-panel">
             <div class="preview-container">
                 <div class="preview-header">
-                    <div id="previewDeviceName">PC端预览</div>
+                    <div style="display: flex; align-items: center; gap: 10px;flex-wrap: wrap; justify-content: center;"><div id="previewDeviceName">PC端预览</div>
+                <div id="errorMessage" class="error-message"></div>
+                <div id="successMessage" class="success-message"></div>
+		</div>
                     <div class="preview-header-buttons">
                         <button class="header-btn" id="clearBtn" style="display: none;">
                             <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>清空
