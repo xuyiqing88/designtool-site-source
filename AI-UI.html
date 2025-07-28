@@ -32,8 +32,8 @@
             background-color: var(--bg);
             color: var(--text1);
             transition: background-color 0.3s, color 0.3s;
-            min-height: 100vh; /* Use min-height to allow scrolling */
-            overflow-y: auto; /* Allow vertical scrolling */
+            min-height: 100vh;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
@@ -41,16 +41,22 @@
         .main-title {
             text-align: center;
             margin-bottom: 20px;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: var(--main-color);
+        }
+        
+        .modification-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--main-color);
+            margin-bottom: 8px;
         }
 
         .container {
             display: flex;
-            flex: 1; /* Make container take remaining height */
+            flex: 1;
             padding: 20px 20px 20px 80px;
             gap: 20px;
-            /* overflow: hidden; Removed to allow internal scrolling on mobile */
         }
 
         .left-panel {
@@ -61,7 +67,7 @@
             box-shadow: 0 8px 24px var(--shadow);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Keep internal overflow hidden for consistency */
+            overflow: hidden;
         }
 
         .right-panel {
@@ -72,7 +78,7 @@
             box-shadow: 0 8px 24px var(--shadow);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Keep internal overflow hidden for consistency */
+            overflow: hidden;
         }
 
         .panel-header {
@@ -162,7 +168,7 @@
             cursor: pointer;
         }
 
-        .color-hex-input { /* Added style for hex input */
+        .color-hex-input {
             width: 100%;
             padding: 6px 8px;
             border: 1px solid var(--line);
@@ -214,8 +220,9 @@
             outline: none;
             transition: border-color 0.3s;
         }
- .api-status {
-	color: #33b763;}
+        .api-status {
+	        color: #33b763;
+        }
         .prompt-input:focus {
             border-color: var(--main-color);
         }
@@ -250,7 +257,16 @@
             transform: translateY(-2px);
         }
 
-        /* Removed .regenerate-btn styles */
+        .regenerate-btn {
+            background-color: var(--card-bg);
+            color: var(--text2);
+            border: 1px solid var(--line);
+        }
+
+        .regenerate-btn:hover {
+            background-color: var(--bg);
+            transform: translateY(-2px);
+        }
 
         .preview-container {
             flex: 1;
@@ -262,49 +278,86 @@
         .preview-header {
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Align items in header */
+            align-items: center;
             margin-bottom: 16px;
-	font-size: 18px;
-    font-weight: 600;
-    color: var(--text1);
+	        font-size: 18px;
+            font-weight: 600;
+            color: var(--text1);
+        }
+
+        .preview-header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-btn {
+            padding: 10px 15px;
+            background: var(--card-bg);
+            color: var(--text2);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .header-btn:hover {
+            background-color: var(--bg);
+            color: var(--text1);
         }
 
         .preview-area {
-	    display: flex;
-    justify-content: center;
-    align-items: center;
+	        display: flex;
+            justify-content: center;
+            align-items: center;
             flex: 1;
             background-color: var(--bg);
             border-radius: 12px;
             overflow: auto;
+            padding: 10px;
+        }
+        
+        .default-preview {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            border: 1px solid var(--line);
+            gap: 16px;
+            color: var(--text3);
+            text-align: center;
+        }
+
+        /* [修复] 将选择器从 i 改为 svg，确保能正确选中并设置lucide.js生成的图标大小 */
+        .default-preview svg {
+            width: 80px;
+            height: 80px;
         }
 
         .preview-content {
             overflow: auto;
             max-width: 100%;
             max-height: 100%;
-    height: 100%; 
+            height: 100%; 
         }
 
         .mobile-view {
             width: 375px;
             height: 812px;
-	    max-width: 100%; /* 添加最大宽度限制 */
-    	max-height: 80vh;
-	    border: 10px solid;
-    border-radius: 35px;
+	        max-width: 100%;
+    	    max-height: 80vh;
+	        border: 10px solid;
+            border-radius: 35px;
         }
 
         .pc-view {
             width: 100%;
             height: 100%;
-	border: 8px solid;
-    border-radius: 14px;
+	        border: 8px solid;
+            border-radius: 14px;
         }
 
         .download-btn {
@@ -368,7 +421,6 @@
             display: none;
         }
 
-        /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
             .main-title {
                 font-size: 24px;
@@ -376,7 +428,7 @@
             }
             .container {
                 flex-direction: column;
-                padding: 0 15px 15px; /* Adjust padding for mobile */
+                padding: 0 15px 15px;
                 gap: 15px;
             }
 
@@ -387,22 +439,22 @@
             }
 
             .prompt-input {
-                max-height: 120px; /* Give more space to prompt input on mobile */
+                max-height: 120px;
             }
 
             .preview-area {
-                padding: 10px; /* Adjust preview area padding for mobile */
+                padding: 10px;
             }
 
             .preview-content {
-                width: 100% !important; /* Ensure preview content uses full width on mobile */
-                height: auto !important; /* Allow height to adjust */
+                width: 100% !important;
+                height: auto !important;
             }
-    .mobile-view {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 9/16; /* 保持移动端比例 */
-    }
+            .mobile-view {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 9/16;
+            }
             .download-btn {
                 margin-top: 10px;
             }
@@ -414,7 +466,7 @@
 
     <div class="container">
         <div class="left-panel">
-    <h1 class="main-title">AI生成UI界面</h1>
+            <h1 class="main-title">AI生成UI界面</h1>
             <div class="device-toggle">
                 <div class="device-option active" data-device="pc">PC端</div>
                 <div class="device-option" data-device="mobile">移动端</div>
@@ -433,7 +485,6 @@
                             <input type="text" id="primaryColorHex" class="color-hex-input" value="#5a64ff" maxlength="7">
                         </div>
                     </div>
-
                 </div>
                 <div class="settings-row">
                     <div class="setting-group">
@@ -454,13 +505,18 @@
             </div>
 
             <div class="input-area">
+                <h3 id="modificationTitle" class="modification-title" style="display: none;">输入修改要求</h3>
                 <textarea id="promptInput" class="prompt-input" placeholder="请输入您想要生成的SVG界面描述，例如：一个用户端登录界面。" rows="8"></textarea>
                 <div class="action-buttons">
                     <button class="btn generate-btn" id="generateBtn">
                         <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i>
                         生成
                     </button>
-                    </div>
+                    <button class="btn regenerate-btn" id="regenerateBtn" style="display: none;">
+                        <i data-lucide="rotate-cw" style="width: 20px; height: 20px;"></i>
+                        重新生成
+                    </button>
+                </div>
                 <div class="api-status" id="apiStatus">API服务当前不可用，请稍后再试</div>
                 <div id="errorMessage" class="error-message"></div>
                 <div id="successMessage" class="success-message"></div>
@@ -471,34 +527,46 @@
             <div class="preview-container">
                 <div class="preview-header">
                     <div id="previewDeviceName">PC端预览</div>
-                    <button class="download-btn" id="downloadBtn">
-                        <i data-lucide="download" style="width: 20px; height: 20px;"></i>
-                        下载SVG
-                    </button>
+                    <div class="preview-header-buttons">
+                        <button class="header-btn" id="clearBtn" style="display: none;">
+                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>清空
+                        </button>
+                        <button class="header-btn" id="modifyBtn" style="display: none;">
+                             <i data-lucide="edit" style="width: 16px; height: 16px;"></i>修改
+                        </button>
+                        <button class="download-btn" id="downloadBtn" disabled>
+                            <i data-lucide="download" style="width: 20px; height: 20px;"></i>
+                            下载SVG
+                        </button>
+                    </div>
                 </div>
                 <div class="preview-area" id="previewArea">
                     <div class="loading" id="loadingIndicator">
                         <div class="spinner"></div>
                         <div class="loading-text">生成中，请稍候...</div>
                     </div>
-                    <div id="svgPreview" class="preview-content">
-                        </div>
+                    <div class="default-preview" id="defaultPreview">
+                        <i data-lucide="image-plus"></i>
+                        <p>在这里预览您生成的UI界面</p>
+                    </div>
+                    <div id="svgPreview" class="preview-content"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 初始化 Lucide Icons
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
         });
 
         // DOM元素引用
         const generateBtn = document.getElementById('generateBtn');
+        const regenerateBtn = document.getElementById('regenerateBtn');
         const promptInput = document.getElementById('promptInput');
         const svgPreview = document.getElementById('svgPreview');
         const loadingIndicator = document.getElementById('loadingIndicator');
+        const defaultPreview = document.getElementById('defaultPreview');
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -506,14 +574,18 @@
         const deviceOptions = document.querySelectorAll('.device-toggle .device-option');
         const previewDeviceName = document.getElementById('previewDeviceName');
         const primaryColorInput = document.getElementById('primaryColor');
-        const primaryColorHexInput = document.getElementById('primaryColorHex'); // Added hex input
-        const secondaryColorInput = document.getElementById('secondaryColor');
-        const secondaryColorHexInput = document.getElementById('secondaryColorHex'); // Added hex input
+        const primaryColorHexInput = document.getElementById('primaryColorHex');
         const interfaceModeOptions = document.querySelectorAll('.interface-mode-toggle .mode-option[data-mode]');
         const layoutStyleOptions = document.querySelectorAll('.interface-mode-toggle .mode-option[data-layout]');
-        // Removed svgWidthInput and svgHeightInput
+        // 新增DOM引用
+        const modifyBtn = document.getElementById('modifyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const modificationTitle = document.getElementById('modificationTitle');
 
+        // 状态变量
         let generatedSVG = '';
+        let lastSuccessfulPrompt = ''; // 存储上次成功的prompt
+        let isModificationMode = false; // 是否处于修改模式
         let currentDevice = 'pc';
         let currentInterfaceMode = 'light';
         let currentLayoutStyle = 'default';
@@ -523,10 +595,13 @@
         function init() {
             hideMessages();
             updateApiStatus(true);
-
+            
             // 事件监听器
-            generateBtn.addEventListener('click', generateSVG);
+            generateBtn.addEventListener('click', () => generateSVG());
+            regenerateBtn.addEventListener('click', () => generateSVG(lastSuccessfulPrompt)); // 传入上次的prompt
             downloadBtn.addEventListener('click', downloadSVG);
+            modifyBtn.addEventListener('click', enterModificationMode);
+            clearBtn.addEventListener('click', resetInterface);
 
             deviceOptions.forEach(option => {
                 option.addEventListener('click', () => {
@@ -534,156 +609,186 @@
                     option.classList.add('active');
                     currentDevice = option.dataset.device;
                     previewDeviceName.textContent = `${option.textContent}预览`;
-                    updatePreviewSize(); // Update preview when device changes
+                    updatePreviewSize();
                 });
             });
 
             primaryColorInput.addEventListener('input', (e) => {
                 currentPrimaryColor = e.target.value;
-                primaryColorHexInput.value = currentPrimaryColor; // Update hex input
+                primaryColorHexInput.value = currentPrimaryColor;
             });
 
-            primaryColorHexInput.addEventListener('input', (e) => { // Listen to hex input
+            primaryColorHexInput.addEventListener('input', (e) => {
                 let value = e.target.value.trim();
-                if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(value)) { // Basic hex validation
+                if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(value)) {
                     currentPrimaryColor = value;
-                    primaryColorInput.value = currentPrimaryColor; // Update color picker
+                    primaryColorInput.value = currentPrimaryColor;
                 }
             });
 
-            interfaceModeOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    interfaceModeOptions.forEach(opt => opt.classList.remove('active'));
-                    option.classList.add('active');
-                    currentInterfaceMode = option.dataset.mode;
-                });
-            });
+            interfaceModeOptions.forEach(option => option.addEventListener('click', () => {
+                interfaceModeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                currentInterfaceMode = option.dataset.mode;
+            }));
 
-            layoutStyleOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    layoutStyleOptions.forEach(opt => opt.classList.remove('active'));
-                    option.classList.add('active');
-                    currentLayoutStyle = option.dataset.layout;
-                });
-            });
+            layoutStyleOptions.forEach(option => option.addEventListener('click', () => {
+                layoutStyleOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                currentLayoutStyle = option.dataset.layout;
+            }));
 
-            // Set initial hex values based on color picker
             primaryColorHexInput.value = primaryColorInput.value;
         }
+        
+        // 重置整个界面
+        function resetInterface() {
+            svgPreview.innerHTML = '';
+            defaultPreview.style.display = 'flex';
+            
+            promptInput.value = '';
+            promptInput.placeholder = '请输入您想要生成的SVG界面描述，例如：一个用户端登录界面。';
+            
+            hideMessages();
+            downloadBtn.disabled = true;
+            modifyBtn.style.display = 'none';
+            clearBtn.style.display = 'none';
+            regenerateBtn.style.display = 'none';
+            modificationTitle.style.display = 'none';
 
-        // 更新API状态显示
+            isModificationMode = false;
+            generatedSVG = '';
+            lastSuccessfulPrompt = '';
+        }
+
+        // 进入修改模式
+        function enterModificationMode() {
+            isModificationMode = true;
+            modificationTitle.style.display = 'block';
+            promptInput.value = '';
+            promptInput.placeholder = '例如：把所有按钮都变成圆形，背景换成深蓝色。';
+            promptInput.focus();
+        }
+
         function updateApiStatus(isActive) {
             if (isActive) {
                 apiStatus.textContent = 'API服务可用';
-                apiStatus.classList.remove('inactive');
-                apiStatus.classList.add('active');
+                apiStatus.style.color = '#33b763';
             } else {
                 apiStatus.textContent = 'API服务当前不可用，请稍后再试';
-                apiStatus.classList.remove('active');
-                apiStatus.classList.add('inactive');
+                apiStatus.style.color = '#ff4d4f';
             }
         }
 
-        // 更新预览尺寸和SVG内部尺寸
-function updatePreviewSize() {
-    const previewWrapper = svgPreview.querySelector('div');
-    if (previewWrapper) {
-        // 移除所有设备类
-        previewWrapper.classList.remove('pc-view', 'mobile-view');
-        
-        // 添加当前设备类
-        previewWrapper.classList.add(currentDevice === 'mobile' ? 'mobile-view' : 'pc-view');
-    }
+        function updatePreviewSize() {
+            const previewWrapper = svgPreview.querySelector('div');
+            if (previewWrapper) {
+                previewWrapper.classList.remove('pc-view', 'mobile-view');
+                previewWrapper.classList.add(currentDevice === 'mobile' ? 'mobile-view' : 'pc-view');
+            }
+            const svgElement = previewWrapper ? previewWrapper.querySelector('svg') : null;
+            if (svgElement) {
+                svgElement.setAttribute('width', '100%');
+                svgElement.setAttribute('height', '100%');
+            }
+        }
 
-    // 确保SVG填充容器
-    const svgElement = previewWrapper ? previewWrapper.querySelector('svg') : null;
-    if (svgElement) {
-        svgElement.setAttribute('width', '100%');
-        svgElement.setAttribute('height', '100%');
-    }
-}
-
-
-        // 生成SVG
-        async function generateSVG() {
-            const prompt = promptInput.value.trim();
+        async function generateSVG(promptOverride = null) {
+            // [修复] 通过判断是否存在promptOverride来确定这是否是一次“重新生成”操作
+            const isRegeneration = promptOverride !== null;
+            const prompt = promptOverride ?? promptInput.value.trim();
+            
             if (!prompt) {
-                showError('请输入SVG界面描述。');
+                showError(isModificationMode ? '请输入修改要求。' : '请输入SVG界面描述。');
                 return;
             }
 
             hideMessages();
             loadingIndicator.style.display = 'flex';
+            defaultPreview.style.display = 'none';
+            regenerateBtn.style.display = 'none';
+            modifyBtn.style.display = 'none';
+            clearBtn.style.display = 'none';
             downloadBtn.disabled = true;
-            svgPreview.innerHTML = ''; // 清空之前的SVG
+            svgPreview.innerHTML = '';
 
             try {
                 const POLLINATIONS_API_URL = 'https://text.pollinations.ai/';
-                const fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。设备：${currentDevice}，主色调：${currentPrimaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}，引入开源图片库https://picsum.photos进行随机填充, 使用Lucide图标库进行填充。`;
+                let fullPrompt;
+
+                if (isModificationMode) {
+                    fullPrompt = `请基于以下现有的SVG代码，并根据用户的修改要求，生成一个新的完整、有效、可预览的SVG代码。请仅返回SVG代码本身，不要包含任何其他说明文字或Markdown代码块标记。\n\n【现有SVG代码】:\n${generatedSVG}\n\n【修改要求】:\n${prompt}\n\n【其他设计参数】:\n设备: ${currentDevice}, 主色调: ${currentPrimaryColor}, 界面模式: ${currentInterfaceMode}, 布局风格: ${currentLayoutStyle}。请继续使用Lucide图标库和picsum.photos图片库。`;
+                } else {
+                    // [修复] 如果是重新生成，在prompt中加入额外指令以确保API返回新的、不同的结果
+                    const regenerationHint = isRegeneration ? '请为我生成一个不同于上一个的、全新的、有创意的版本。' : '';
+                    fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。${regenerationHint}设备：${currentDevice}，主色调：${currentPrimaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}，引入开源图片库picsum.photos进行随机填充, 使用Lucide图标库进行填充。`;
+                }
                 
                 const response = await fetch(`${POLLINATIONS_API_URL}${encodeURIComponent(fullPrompt)}`);
                 
-                if (!response.ok) {
-                    throw new Error(`API请求失败，状态码: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`API请求失败，状态码: ${response.status}`);
 
                 let text = await response.text();
-                
-                // 尝试从返回的文本中提取SVG代码
-                // 匹配从<svg开始到</svg>结束（包括多行内容）
                 const svgMatch = text.match(/<svg.*?>[\s\S]*?<\/svg>/i);
-                if (svgMatch && svgMatch[0]) {
-                    generatedSVG = svgMatch[0].trim();
-                } else {
-                    // 如果没有匹配到，则假设返回的文本就是SVG代码
-                    generatedSVG = text.trim();
-                }
+                
+                const newSVG = svgMatch ? svgMatch[0].trim() : text.trim();
 
-                if (generatedSVG && generatedSVG.startsWith('<svg')) {
-                    // 创建一个div作为SVG的容器
+                if (newSVG && newSVG.startsWith('<svg')) {
+                    generatedSVG = newSVG; // 更新当前SVG
                     const svgWrapper = document.createElement('div');
                     svgWrapper.style.display = 'flex';
                     svgWrapper.style.justifyContent = 'center';
                     svgWrapper.style.alignItems = 'center';
                     svgWrapper.style.overflow = 'auto';
                     svgPreview.appendChild(svgWrapper);
-
-                    // 直接插入SVG字符串
                     svgWrapper.innerHTML = generatedSVG;
 
-                    // 确保 SVG 元素有正确的尺寸属性来填充容器
                     const svgElement = svgWrapper.querySelector('svg');
                     if (svgElement) {
                         svgElement.setAttribute('width', '100%');
                         svgElement.setAttribute('height', '100%');
-                        // Apply device-specific classes immediately after SVG is rendered
                         updatePreviewSize();
                     }
 
-                    showSuccess('SVG生成成功！');
+                    showSuccess('生成成功！');
                     downloadBtn.disabled = false;
+                    regenerateBtn.style.display = 'flex';
+                    modifyBtn.style.display = 'flex';
+                    clearBtn.style.display = 'flex';
                     updateApiStatus(true);
+
+                    // 成功后退出修改模式，并记录成功的prompt
+                    if (isModificationMode) {
+                        isModificationMode = false;
+                        modificationTitle.style.display = 'none';
+                        promptInput.value = ''; // 清空修改指令
+                        promptInput.placeholder = '请输入您想要生成的SVG界面描述，例如：一个用户端登录界面。';
+                    }
+                    // 只在不是修改模式（即初始生成或重新生成）时更新lastSuccessfulPrompt
+                    if (!isModificationMode) {
+                        lastSuccessfulPrompt = prompt;
+                    }
+
                 } else {
                     showError('API返回了空或无效的SVG内容。请尝试更具体的描述。');
+                    defaultPreview.style.display = 'flex';
                     updateApiStatus(false);
                 }
 
             } catch (error) {
                 console.error('生成SVG时发生错误:', error);
                 showError(`生成失败: ${error.message}`);
+                defaultPreview.style.display = 'flex';
                 updateApiStatus(false);
             } finally {
                 loadingIndicator.style.display = 'none';
             }
         }
         
-        // 下载SVG
         function downloadSVG() {
             if (!generatedSVG) return;
-            
             const blob = new Blob([generatedSVG], { type: 'image/svg+xml' });
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
             a.href = url;
             a.download = `ai-interface-${new Date().getTime()}.svg`;
@@ -693,27 +798,23 @@ function updatePreviewSize() {
             URL.revokeObjectURL(url);
         }
         
-        // 显示错误消息
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
             successMessage.style.display = 'none';
         }
         
-        // 显示成功消息
         function showSuccess(message) {
             successMessage.textContent = message;
             successMessage.style.display = 'block';
             errorMessage.style.display = 'none';
         }
         
-        // 隐藏所有消息
         function hideMessages() {
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
         }
         
-        // 初始化应用
         init();
     </script>
 </body>
