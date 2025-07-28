@@ -44,8 +44,8 @@
             line-height: 1.6;
         }
 	.logo {
-		width: 180px; 
-		margin-bottom: 20px;}
+		width: 130px; 
+	}
         .footer-bottom {
 	    border-top: 1px solid rgba(0, 0, 0, 0.1);
     	padding: 20px;
@@ -139,8 +139,10 @@
         
         header {
             text-align: center;
-            padding: 40px 0 10px;
+            padding: 0 0 10px;
             position: relative;
+	background: linear-gradient(113deg, #6472ff, #8352ff);
+	margin-bottom: 40px;
         }
         
         h1 {
@@ -163,31 +165,29 @@
             display: flex;
             justify-content: center;
             gap: 14px;
-            margin-bottom: 20px;
             flex-wrap: wrap;
-            position: sticky;
             top: 0;
             z-index: 100;
-            background: radial-gradient(215% 105% at 100% 0%, #e6008100, #f1f1fb), linear-gradient(90deg, #118aff, #8180ff, #db7dff);
-            padding: 10px 20px 20px;
-            border-radius: 12px;
+            padding: 20px;
 		overflow: hidden;
+	    background: linear-gradient(113deg, #6472ff, #8352ff);
         }
         
         .search-box {
             position: relative;
-            width: 100%;
+	    margin-bottom: -30px;
         }
         
         .search-box input {
-            width: 100%;
-            padding: 10px 20px 10px 45px;
+            padding: 14px 20px 14px 45px;
             border-radius: 50px;
-            border: 1px solid var(--card-bg);
-            background: linear-gradient(0deg, #ffffff, #ffffff69);
+            border: 1px solid var(--border);
+            background: #fff;
             color: var(--dark);
             font-size: 1rem;
             transition: all 0.3s ease;
+	    width: 90%;
+	margin-left: -10px;
         }
         
         .search-box input:focus {
@@ -197,10 +197,9 @@
         }
         
         .search-box i {
-            position: absolute;
-            left: 18px;
+            position: relative;
+            left: 35px;
             top: 50%;
-            transform: translateY(-50%);
             color: var(--gray);
             z-index: 999;
         }
@@ -213,10 +212,10 @@
         }
         
         .category-btn {
-            padding: 8px 18px;
+            padding: 8px 12px;
             border-radius: 50px;
             background: none;
-            color: var(--light);
+            color: #fff;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -228,7 +227,7 @@
         
         .category-btn:hover, .category-btn.active {
             background: var(--primary-light);
-            color: var(--primary);
+            color: #fff;
             border-color: var(--primary);
         }
         
@@ -509,7 +508,7 @@
     	left: 0;
     	width: 100%;
     	height: 100%;
-    	z-index: -1;
+    	z-index: 0;
 }
 /* 形状样式 */
 .shape {
@@ -632,9 +631,7 @@
             .controls {
                 flex-direction: column;
                 align-items: center;
-		margin: 0 16px 16px;
         	position: relative;
-	        padding: 0 10px 10px;
             }
 
             
@@ -694,45 +691,35 @@
 </head>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
-    <div class="container">
-        <header>
-	<img src="img/logo.svg" alt="logo" class="logo">
-
-        </header>
-        
-        <div class="controls">
-<div class="bgt">
-	<div class="shape shape-2"></div>
-	<div class="shape shape-4"></div><div class="shape shape-5"></div> 
-</div>
+<div class="controls">
+		<div class="bgt">
+		<div class="shape shape-2"></div><div class="shape shape-4"></div><div class="shape shape-5"></div> 
+		</div>
+	<img src="img/logo2.svg" alt="logo" class="logo">
 	<div class="category-filter">
                 <button class="category-btn" data-category="design">
-                    <i class="fa-solid fa-compass-drafting"></i>
                     <span>轻易设计</span>
                 </button>
                 <button class="category-btn" data-category="dev">
-                    <i class="fa-solid fa-microchip"></i>
                     <span>轻易AI</span>
                 </button>
                 <button class="category-btn" data-category="3D">
-                    <i class="fa-brands fa-codepen"></i>
                     <span>轻易3D</span>
                 </button>
                 <button class="category-btn" data-category="utility">
-                    <i class="fa-solid fa-swatchbook"></i>
                     <span>轻易实用</span>
                 </button>
-
-
-            </div>
+            </div>      
+        </div>
+        <header>
 
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" id="searchInput" placeholder="搜索工具...">
-            </div>
-                   
-        </div>
-        
+            </div>  
+        </header>
+
+    <div class="container">       
         <div id="toolsContainer" style="padding: 8px 20px; background: #fff; border-radius: 10px;">
             <!-- 分类区域将由JS动态生成 -->
         </div>
