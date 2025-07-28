@@ -26,10 +26,7 @@
             height: 100vh;
             overflow: hidden;
         }
-/* 防止触摸拖动 */
-input[type="range"] {
-    touch-action: none;
-}
+
         /* 头部样式 */
         .header {
             background: linear-gradient(135deg, #1e293b, #334155);
@@ -800,30 +797,12 @@ input[type="range"] {
         let rotatedCanvas = document.createElement('canvas'); // 用于旋转后的图像
         let rotatedCtx = rotatedCanvas.getContext('2d');
 
-document.addEventListener('DOMContentLoaded', function() {
-    initializeEventListeners();
-    initializeSliders();
-    preventTouchBehavior(); // 添加这行代码
-});
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventListeners();
             initializeSliders();
         });
-// 阻止触摸事件默认行为（防止拖动滑块时触发页面返回）
-function preventTouchBehavior() {
-    document.querySelectorAll('input[type="range"]').forEach(slider => {
-        slider.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }, { passive: false });
-        
-        slider.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }, { passive: false });
-    });
-}
+
         function initializeEventListeners() {
             // 文件上传
             const uploadArea = document.getElementById('uploadArea');
