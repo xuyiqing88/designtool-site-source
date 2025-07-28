@@ -303,10 +303,10 @@ const menuData = [
             { title: "AI一键抠图", link: "rembg.html" },
             { title: "图片对比工具", link: "diff.html" },
             { title: "图片压缩工具", link: "comp.html" },
+            { title: "UI设计数据生成器", link: "data.html"},
             { title: "在线版Photoshop", link: "PS.html" },
             { title: "矢量花朵生成器", link: "flower.html" },
             { title: "城市天际线生成器", link: "city.html" },
-            { title: "UI设计数据生成器", link: "data.html", active: true },
         ]
     },
 

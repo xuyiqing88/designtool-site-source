@@ -133,13 +133,13 @@
         }
         
         .container {
-            max-width: 1500px;
+                padding: 0 200px;
             margin: 0 auto;
         }
         
         header {
             text-align: center;
-            padding: 0 0 10px;
+            padding: 0 200px 10px;
             position: relative;
 	background: linear-gradient(113deg, #6472ff, #8352ff);
 	margin-bottom: 40px;
@@ -187,8 +187,8 @@
             color: var(--dark);
             font-size: 1rem;
             transition: all 0.3s ease;
-	    width: 90%;
-	margin-left: -10px;
+	    width: 99%;
+	margin-left: -20px;
         }
         
         .search-box input:focus {
@@ -199,7 +199,7 @@
         
         .search-box i {
             position: relative;
-            left: 35px;
+            left: 25px;
             top: 50%;
             color: var(--gray);
             z-index: 999;
@@ -268,7 +268,7 @@
         
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 16px;
         }
         
@@ -635,7 +635,11 @@
         	position: relative;
             }
 
-            
+            .container {	
+		padding: 0;}	
+	header {
+	padding: 0 10px 10px;
+	margin-bottom: 30px;}
             /* 移动端评论区优化 */
 
             .tool-content {
