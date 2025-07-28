@@ -41,11 +41,14 @@
 
         .main-title {
             text-align: center;
-            margin-bottom: 20px;
             font-size: 1.6rem;
             color: var(--main-color);
         }
-        
+        p {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+	}
         .modification-title {
             font-size: 1rem;
             font-weight: 600;
@@ -63,7 +66,7 @@
         .left-panel {
             width: 35%;
             background-color: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 10px;
             padding: 24px;
             box-shadow: 0 8px 24px var(--shadow);
             display: flex;
@@ -74,7 +77,7 @@
         .right-panel {
             width: 65%;
             background-color: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 10px;
             padding: 24px;
             box-shadow: 0 8px 24px var(--shadow);
             display: flex;
@@ -100,7 +103,7 @@
         .device-toggle {
             display: flex;
             background-color: var(--line);
-            border-radius: 12px;
+            border-radius: 30px;
             padding: 4px;
             margin-bottom: 20px;
         }
@@ -109,7 +112,7 @@
             flex: 1;
             padding: 8px 12px;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
@@ -123,7 +126,7 @@
         
         .interface-settings {
             background-color: var(--bg);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 16px;
             margin-bottom: 20px;
         }
@@ -182,7 +185,7 @@
         .interface-mode-toggle {
             display: flex;
             background-color: var(--line);
-            border-radius: 12px;
+            border-radius: 30px;
             padding: 4px;
         }
         
@@ -190,7 +193,7 @@
             flex: 1;
             padding: 6px 10px;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 500;
@@ -212,7 +215,7 @@
         .prompt-input {
             flex: 1;
             padding: 16px;
-            border-radius: 12px;
+            border-radius: 8px;
             border: 1px solid var(--line);
             background-color: var(--bg);
             color: var(--text1);
@@ -237,7 +240,7 @@
             flex: 1;
             padding: 14px 20px;
             border: none;
-            border-radius: 12px;
+            border-radius: 30px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -297,7 +300,7 @@
             background: var(--card-bg);
             color: var(--text2);
             border: 1px solid var(--line);
-            border-radius: 12px;
+            border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -317,7 +320,7 @@
             align-items: center;
             flex: 1;
             background-color: var(--bg);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: auto;
             padding: 10px;
         }
@@ -366,7 +369,7 @@
             background: var(--btcolor);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -427,6 +430,8 @@
                 font-size: 24px;
                 margin: 15px 0;
             }
+	.preview-header {
+	flex-direction: column;}
             .container {
                 flex-direction: column;
                 padding: 0 15px 15px;
@@ -445,6 +450,7 @@
 
             .preview-area {
                 padding: 10px;
+	        flex-wrap: wrap;
             }
 
             .preview-content {
@@ -456,8 +462,8 @@
                 height: auto;
                 aspect-ratio: 9/16;
             }
-            .download-btn {
-                margin-top: 10px;
+            .preview-header-buttons {
+	    margin-top: 10px;
             }
         }
     </style>
@@ -468,6 +474,7 @@
     <div class="container">
         <div class="left-panel">
             <h1 class="main-title">AI生成UI界面</h1>
+	<p>下载后的源文件可拖入sketch使用</p>
             <div class="device-toggle">
                 <div class="device-option active" data-device="pc">PC端</div>
                 <div class="device-option" data-device="mobile">移动端</div>
