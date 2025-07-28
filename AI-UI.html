@@ -40,7 +40,7 @@
 
         .main-title {
             text-align: center;
-            margin: 20px 0;
+            margin-bottom: 20px;
             font-size: 1.8rem;
             color: var(--main-color);
         }
@@ -48,7 +48,7 @@
         .container {
             display: flex;
             flex: 1; /* Make container take remaining height */
-            padding: 0 20px 20px 80px;
+            padding: 20px 20px 20px 80px;
             gap: 20px;
             /* overflow: hidden; Removed to allow internal scrolling on mobile */
         }
@@ -285,8 +285,6 @@
         }
 
         .preview-content {
-            background: white;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             overflow: auto;
             max-width: 100%;
             max-height: 100%;
@@ -295,14 +293,18 @@
 
         .mobile-view {
             width: 375px;
-            height: 667px;
+            height: 812px;
 	    max-width: 100%; /* 添加最大宽度限制 */
     	max-height: 80vh;
+	    border: 10px solid;
+    border-radius: 35px;
         }
 
         .pc-view {
             width: 100%;
             height: 100%;
+	border: 8px solid;
+    border-radius: 14px;
         }
 
         .download-btn {
@@ -385,7 +387,7 @@
             }
 
             .prompt-input {
-                min-height: 120px; /* Give more space to prompt input on mobile */
+                max-height: 120px; /* Give more space to prompt input on mobile */
             }
 
             .preview-area {
@@ -409,9 +411,10 @@
 </head>
 <body>
 <div id="global-sidebar"></div>
-    <h1 class="main-title">AI生成UI界面</h1>
+
     <div class="container">
         <div class="left-panel">
+    <h1 class="main-title">AI生成UI界面</h1>
             <div class="device-toggle">
                 <div class="device-option active" data-device="pc">PC端</div>
                 <div class="device-option" data-device="mobile">移动端</div>
@@ -430,13 +433,7 @@
                             <input type="text" id="primaryColorHex" class="color-hex-input" value="#5a64ff" maxlength="7">
                         </div>
                     </div>
-                    <div class="setting-group">
-                        <label for="secondaryColor" class="setting-label">辅助色调</label>
-                        <div class="interface-color">
-                            <input type="color" id="secondaryColor" class="interface-color-input" value="#4c73ff">
-                            <input type="text" id="secondaryColorHex" class="color-hex-input" value="#4c73ff" maxlength="7">
-                        </div>
-                    </div>
+
                 </div>
                 <div class="settings-row">
                     <div class="setting-group">
@@ -521,7 +518,6 @@
         let currentInterfaceMode = 'light';
         let currentLayoutStyle = 'default';
         let currentPrimaryColor = '#5a64ff';
-        let currentSecondaryColor = '#4c73ff';
 
         // 初始化
         function init() {
@@ -555,19 +551,6 @@
                 }
             });
 
-            secondaryColorInput.addEventListener('input', (e) => {
-                currentSecondaryColor = e.target.value;
-                secondaryColorHexInput.value = currentSecondaryColor; // Update hex input
-            });
-
-            secondaryColorHexInput.addEventListener('input', (e) => { // Listen to hex input
-                let value = e.target.value.trim();
-                if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(value)) { // Basic hex validation
-                    currentSecondaryColor = value;
-                    secondaryColorInput.value = currentSecondaryColor; // Update color picker
-                }
-            });
-
             interfaceModeOptions.forEach(option => {
                 option.addEventListener('click', () => {
                     interfaceModeOptions.forEach(opt => opt.classList.remove('active'));
@@ -586,7 +569,6 @@
 
             // Set initial hex values based on color picker
             primaryColorHexInput.value = primaryColorInput.value;
-            secondaryColorHexInput.value = secondaryColorInput.value;
         }
 
         // 更新API状态显示
@@ -637,7 +619,7 @@ function updatePreviewSize() {
 
             try {
                 const POLLINATIONS_API_URL = 'https://text.pollinations.ai/';
-                const fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。设备：${currentDevice}，主色调：${currentPrimaryColor}，辅助色调：${currentSecondaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}。`;
+                const fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。设备：${currentDevice}，主色调：${currentPrimaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}，引入开源图片库https://picsum.photos进行随机填充, 使用Lucide图标库进行填充。`;
                 
                 const response = await fetch(`${POLLINATIONS_API_URL}${encodeURIComponent(fullPrompt)}`);
                 
