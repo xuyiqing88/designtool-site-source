@@ -46,6 +46,10 @@
 	.logo {
 		width: 130px; 
 	}
+	.logobt {
+	display: flex;
+	align-items: center;
+    gap: 10px;}
         .footer-bottom {
 	    border-top: 1px solid rgba(0, 0, 0, 0.1);
     	padding: 20px;
@@ -112,18 +116,17 @@
         }
         
         .donate-link {
-            color: var(--primary);
+            color: #fff;
             cursor: pointer;
             text-decoration: none;
-            margin-left: 10px;
-            font-weight: 500;
+            margin-left: 2px;
             transition: all 0.3s;
-            position: relative;
+            position: relative;	
+		font-size: 14px;
         }
         
         .donate-link:hover {
             text-decoration: underline;
-            color: var(--primary-dark);
         }
         
         
@@ -163,7 +166,7 @@
         
         .controls {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             gap: 14px;
             flex-wrap: wrap;
             top: 0;
@@ -171,7 +174,9 @@
             padding: 20px;
 		overflow: hidden;
 	    background: linear-gradient(113deg, #6472ff, #8352ff);
-    	position: relative;
+    	position: relative;	
+	align-items: center;
+	    padding: 20px 10%;
         }
         
         .search-box {
@@ -623,7 +628,8 @@
                 grid-template-columns: 1fr 1fr;
 	        gap: 10px;
             }
-            
+           .logobt {
+	flex-direction: column;}
             h1 {
                 font-size: 1.8rem;
             }
@@ -633,6 +639,7 @@
                 flex-direction: column;
                 align-items: center;
         	position: relative;
+		padding: 20px 0	;
             }
 
             .container {	
@@ -700,6 +707,7 @@
 		<div class="bgt">
 		<div class="shape shape-2"></div><div class="shape shape-4"></div><div class="shape shape-5"></div> 
 		</div>
+	<div class="logobt">
 	<img src="img/logo2.svg" alt="logo" class="logo">
 	<div class="category-filter">
                 <button class="category-btn" data-category="design">
@@ -714,8 +722,11 @@
                 <button class="category-btn" data-category="utility">
                     <span>轻易实用</span>
                 </button>
-            </div>      
-        </div>
+            </div>
+	</div>
+	<span><i class="fa-classic fa-solid fa-bone" style="color: #fff;"></i>
+	<a class="donate-link" id="donateBtn">向我投喂</a></span>
+     </div>
         <header>
 
             <div class="search-box">
@@ -735,7 +746,6 @@
                 <div class="comments-icon">
 		<h2 class="comments-title">评论/反馈</h2>
                 </div>
-                <span>🦴<a class="donate-link" id="donateBtn">向我投喂（自愿）</a></span>
             </div>
             <div class="giscus"></div>
         </section>
