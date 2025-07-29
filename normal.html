@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高级法线图转换器 - GPU加速版 + 3D预览</title>
+    <title>PBR贴图生成器 - 法线/置换/AO/反射/光泽度 - GPU加速版 + 3D预览</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -241,36 +241,19 @@
         }
         
         button:hover {
-            transform: translateY(-3px);
             box-shadow: 0px 8px 10px var(--bg-background);
-        }
-        
-        button::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -70%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(40deg, rgba(255, 255, 255, 0.3), transparent 60%);
-            transform: rotate(40deg);
-            transition: all 0.6s ease;
-        }
-        
-        button:hover::after {
-            left: 120%;
         }
         
         button:active {
             transform: translateY(1px);
         }
         
-        #downloadBtn {
+        #downloadMapBtn {
             background: var(--btcolor);
             color: #fff;
         }
         
-        #downloadBtn:hover {
+        #downloadMapBtn:hover {
             box-shadow: 0 10px 16px -6px var(--shadow);
         }
         
@@ -648,7 +631,6 @@
             font-size: 0.9rem;
         }
         
-        /* 新增的样式 */
         .value-input {
             background: var(--bg-background);
             border: 1px solid #454559;
@@ -677,7 +659,6 @@
             font-size: 0.8rem;
         }
         
-        /* 3D预览容器样式 */
         #preview3dContainer {
             position: relative;
             width: 100%;
@@ -721,15 +702,52 @@
             max-width: 80%;
         }
 
-        /* 新增 - 修复3D预览加载问题 */
         .preview-ready {
             display: block !important;
         }
         
-        /* 进度条动画 */
         .progress-fill {
             transition: width 0.3s ease-out;
         }
+
+        /* 新增样式 for tabs */
+        .map-type-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            background-color: var(--bg-background);
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .tab-btn {
+            flex-grow: 1;
+            padding: 10px 5px;
+            cursor: pointer;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--text2);
+            font-size: 0.9rem;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+        }
+        .tab-btn:hover {
+            background-color: var(--lightbg);
+        }
+        .tab-btn.active {
+            background-color: var(--main-color);
+            color: white;
+            font-weight: bold;
+        }
+        .param-panel {
+            display: none; /* Hide all panels by default */
+        }
+        .param-panel.active {
+            display: block; /* Show active panel */
+        }
+        /* End of new styles */
+
+
         @media (max-width: 768px) {
 	.progress-container {
 		width: 80%;}
@@ -771,6 +789,11 @@
         }
 	.algorithm-option {
 	    padding: 8px 14px;}
+        .map-type-tabs {
+        }
+        .tab-btn {
+            font-size: 0.8rem;
+        }
         }
     </style>
 </head>
@@ -779,8 +802,8 @@
 <div id="global-sidebar"></div>
     <div class="container">
         <header>
-            <h1>高级法线图转换器 <span class="format-badge">GPU加速版 + 3D预览</span></h1>
-            <p class="header-subtitle">利用GPU加速处理，实现超快法线贴图生成（支持TIFF格式），新增3D模型预览功能</p>
+            <h1>高级PBR贴图生成器 <span class="format-badge">法线/置换/AO等</span></h1>
+            <p class="header-subtitle">上传灰度图，一键生成多种PBR贴图。法线模式支持GPU加速处理和3D模型预览</p>
         </header>
         
         <div class="content-n">
@@ -795,13 +818,15 @@
             </div>
 
             <div class="panel">
-                <div class="mode-toggle">
-                    <div class="toggle-btn active" style="border-radius: 30px 0 0 30px;" id="cpuModeBtn">CPU模式 (高精)</div>
-                    <div class="toggle-btn" style="border-radius: 0 30px 30px 0;" id="gpuModeBtn">GPU模式 (超快)</div>
-                </div>
-                <div class="perf-info" id="perfInfo">
-                    <i class="fas fa-info-circle"></i> 
-                    <span>当前模式：<span id="currentMode">CPU模式</span> | 处理时间：<span id="processingTime">0</span>ms</span>
+                <div id="cpuGpuToggleContainer">
+                    <div class="mode-toggle">
+                        <div class="toggle-btn active" style="border-radius: 30px 0 0 30px;" id="cpuModeBtn">CPU模式 (高精)</div>
+                        <div class="toggle-btn" style="border-radius: 0 30px 30px 0;" id="gpuModeBtn">GPU模式 (超快)</div>
+                    </div>
+                    <div class="perf-info" id="perfInfo">
+                        <i class="fas fa-info-circle"></i> 
+                        <span>当前模式：<span id="currentMode">CPU模式</span> | 处理时间：<span id="processingTime">0</span>ms</span>
+                    </div>
                 </div>
                 <div class="panel-title">
                     <h2>输入图像<span class="scrib">上传灰度度图像</span></h2>               
@@ -849,7 +874,6 @@
                     </div>
                 </div>
 
-                <!-- 下载灰度图按钮 -->
                 <div style="display: flex; justify-content: center; margin-top: 15px;">
                     <button id="downloadGrayBtn" class="button" style="background: var(--btcolor);">
                         <i class="fas fa-download"></i> 下载灰度图
@@ -858,69 +882,156 @@
             </div>
             
             <div class="panel">
-                <div class="panel-title" style="margin-top: 0;">
-                    <h2>参数设置<span class="scrib">法线强度和方向调节</span></h2>
+                <div class="map-type-tabs">
+                    <button class="tab-btn active" data-map-type="normal">法线</button>
+                    <button class="tab-btn" data-map-type="displacement">置换</button>
+                    <button class="tab-btn" data-map-type="ao">AO</button>
+                    <button class="tab-btn" data-map-type="reflection">反射</button>
+                    <button class="tab-btn" data-map-type="glossiness">光泽度</button>
+                </div>
+
+                <div id="normalParams" class="param-panel active">
+                    <div class="panel-title" style="margin-top: 0;">
+                        <h2>法线参数设置<span class="scrib">强度和方向调节</span></h2>
+                    </div>
+                    <div class="kuang">
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="strengthSlider">法线强度: 
+                                    <input type="text" id="strengthValue" class="value-input" value="0.10">
+                                </label>
+                                <input type="range" id="strengthSlider" min="0.01" max="0.5" step="0.01" value="0.10">
+                                <div class="param-info">
+                                    <span class="canshu">柔和</span>
+                                    <span class="canshu">强烈</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="blurSlider">模糊程度: 
+                                    <input type="text" id="blurValue" class="value-input" value="0.0">
+                                </label>
+                                <input type="range" id="blurSlider" min="0" max="5" step="0.1" value="0">
+                                <div class="param-info">
+                                    <span class="canshu">锐利</span>
+                                    <span class="canshu">模糊</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="controls" style="display: flex;">
+                            <div class="control-group"><label for="invertX"><input type="checkbox" id="invertX"> 反转X方向</label></div>
+                            <div class="control-group"><label for="invertY"><input type="checkbox" id="invertY" checked> 反转Y方向</label></div>
+                            <div class="control-group"><label for="highQuality"><input type="checkbox" id="highQuality" checked> 高质量模式</label></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="displacementParams" class="param-panel">
+                     <div class="panel-title" style="margin-top: 0;">
+                        <h2>置换参数设置<span class="scrib">控制高度和细节</span></h2>
+                    </div>
+                    <div class="kuang">
+                        <div class="controls">
+                            <div class="control-group">
+                                <label>强度: <input type="text" id="dispStrengthValue" class="value-input" value="1.0"></label>
+                                <input type="range" id="dispStrengthSlider" min="0" max="2" step="0.05" value="1.0">
+                                <div class="param-info"><span>弱</span><span>强</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label>细节层次: <input type="text" id="dispLevelValue" class="value-input" value="0.5"></label>
+                                <input type="range" id="dispLevelSlider" min="0" max="1" step="0.05" value="0.5">
+                                <div class="param-info"><span>低</span><span>高</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="aoParams" class="param-panel">
+                    <div class="panel-title" style="margin-top: 0;">
+                        <h2>AO参数设置<span class="scrib">控制遮蔽效果</span></h2>
+                    </div>
+                    <div class="kuang">
+                        <div class="controls">
+                            <div class="control-group">
+                                <label>强度: <input type="text" id="aoStrengthValue" class="value-input" value="1.0"></label>
+                                <input type="range" id="aoStrengthSlider" min="0" max="5" step="0.1" value="1.0">
+                                <div class="param-info"><span>弱</span><span>强</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label>范围: <input type="text" id="aoSpreadValue" class="value-input" value="10"></label>
+                                <input type="range" id="aoSpreadSlider" min="1" max="50" step="1" value="10">
+                                <div class="param-info"><span>小</span><span>大</span></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="kuang">
-                    <div class="controls">
-                        <div class="control-group">
-                            <label for="strengthSlider">法线强度: 
-                                <input type="text" id="strengthValue" class="value-input" value="0.10">
-                            </label>
-                            <input type="range" id="strengthSlider" min="0.01" max="0.5" step="0.01" value="0.10">
-                            <div class="param-info">
-                                <span class="canshu">柔和</span>
-                                <span class="canshu">强烈</span>
-                            </div>
-                        </div>
-                        
-                        <div class="control-group">
-                            <label for="blurSlider">模糊程度: 
-                                <input type="text" id="blurValue" class="value-input" value="0.0">
-                            </label>
-                            <input type="range" id="blurSlider" min="0" max="5" step="0.1" value="0">
-                            <div class="param-info">
-                                <span class="canshu">锐利</span>
-                                <span class="canshu">模糊</span>
-                            </div>
-                        </div>
+                <div id="reflectionParams" class="param-panel">
+                    <div class="panel-title" style="margin-top: 0;">
+                        <h2>反射参数设置<span class="scrib">控制反射强度</span></h2>
                     </div>
-                    <div class="line"></div>
-                    <div class="controls" style="display: flex;">
-                        <div class="control-group">
-                            <label for="invertX"><input type="checkbox" id="invertX"> 反转X方向</label>        
+                    <div class="kuang">
+                        <div class="controls">
+                            <div class="control-group">
+                                <label>强度: <input type="text" id="reflectStrengthValue" class="value-input" value="1.0"></label>
+                                <input type="range" id="reflectStrengthSlider" min="0" max="2" step="0.05" value="1.0">
+                                 <div class="param-info"><span>弱</span><span>强</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label>对比度: <input type="text" id="reflectContrastValue" class="value-input" value="1.0"></label>
+                                <input type="range" id="reflectContrastSlider" min="0" max="3" step="0.05" value="1.0">
+                                <div class="param-info"><span>低</span><span>高</span></div>
+                            </div>
                         </div>
-                        
-                        <div class="control-group">
-                            <label for="invertY"><input type="checkbox" id="invertY" checked> 反转Y方向</label>                       
-                        </div>
-                        
-                        <div class="control-group">
-                            <label for="highQuality"><input type="checkbox" id="highQuality" checked> 高质量模式</label>                       
+                         <div class="line"></div>
+                        <div class="controls" style="display: flex;">
+                             <div class="control-group"><label><input type="checkbox" id="reflectInvert"> 反相</label></div>
                         </div>
                     </div>
                 </div>
+                
+                <div id="glossinessParams" class="param-panel">
+                     <div class="panel-title" style="margin-top: 0;">
+                        <h2>光泽度参数设置<span class="scrib">控制表面光滑度</span></h2>
+                    </div>
+                    <div class="kuang">
+                         <div class="controls">
+                            <div class="control-group">
+                                <label>强度: <input type="text" id="glossStrengthValue" class="value-input" value="1.0"></label>
+                                <input type="range" id="glossStrengthSlider" min="0" max="2" step="0.05" value="1.0">
+                                <div class="param-info"><span>弱</span><span>强</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label>对比度: <input type="text" id="glossContrastValue" class="value-input" value="1.0"></label>
+                                <input type="range" id="glossContrastSlider" min="0" max="3" step="0.05" value="1.0">
+                                <div class="param-info"><span>低</span><span>高</span></div>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="controls" style="display: flex;">
+                           <div class="control-group"><label><input type="checkbox" id="glossInvert" checked> 反相</label></div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="btn-group">
                     <button id="resetParamsBtn" class="toggle-btn">
                         <i class="fas fa-redo"></i> 重置参数
                     </button>
 
-                    <button id="downloadBtn">
-                        <i class="fas fa-download"></i> 下载法线图
+                    <button id="downloadMapBtn">
+                        <i class="fas fa-download"></i> <span>下载法线图</span>
                     </button>
                 </div>
                 
-                <!-- 预览模式切换 -->
-                <div class="mode-toggle" style="width: 100%;">
-                    <div class="toggle-btn active" id="normalPreviewBtn" style="width: 50%; border-radius: 30px 0 0 30px;">法线图预览</div>
+                <div class="mode-toggle" style="width: 100%;" id="previewModeToggle">
+                    <div class="toggle-btn active" id="normalPreviewBtn" style="width: 50%; border-radius: 30px 0 0 30px;">2D预览</div>
                     <div class="toggle-btn" id="modelPreviewBtn" style="width: 50%; border-radius: 0 30px 30px 0;">3D模型预览</div>
                 </div>
                 
-                <!-- 法线图预览 -->
-                <div class="panel-title" style="justify-content: space-between;" id="normalPreviewTitle"> 
-                    <h2>法线图预览<span class="scrib">支持大小图切换</span></h2>
+                <div class="panel-title" style="justify-content: space-between;" id="outputPreviewTitleContainer"> 
+                    <h2 id="previewTitle">法线图预览<span class="scrib">支持大小图切换</span></h2>
                     
                    <div class="size-toggle">
                         <div class="toggle-btn active" id="smallSizeBtn">小图</div>
@@ -931,11 +1042,10 @@
                 <div class="canvas-container" id="outputCanvasContainer">
                     <canvas id="outputCanvas"></canvas>
                     <div id="outputPlaceholder" class="placeholder">
-                        法线图将显示在这里
+                        生成的贴图将显示在这里
                     </div>
                 </div>
                 
-                <!-- 3D模型预览 -->
                 <div id="preview3dContainer">
                     <div class="preview-hint" id="previewHint">
                         <i class="fas fa-cube"></i>
@@ -949,29 +1059,30 @@
                     </div>
                 </div>
                 
-                <div class="panel-title">
-                    <h2>反推灰度图<span class="scrib">拖拽法线图上传反推出灰度图</span></h2>
-                    <button id="reverseBtn" class="toggle-btn" style="font-size: 14px; height: 38px; width: 120px;">
-                        一键反推
-                    </button>
-                </div>
-
-                <div class="kuang" style="display: flex; align-items: center; padding-left: 20px;">反推算法
-                    <div class="algorithm-option">
-                        <input type="radio" id="poissonAlgorithm" name="algorithm" value="poisson" checked>
-                        <label for="poissonAlgorithm">Poisson重建算法 (推荐)</label>
+                <div id="reverseSection">
+                    <div class="panel-title">
+                        <h2>反推灰度图<span class="scrib">拖拽法线图上传反推出灰度图</span></h2>
+                        <button id="reverseBtn" class="toggle-btn" style="font-size: 14px; height: 38px; width: 120px;">
+                            一键反推
+                        </button>
                     </div>
-                    
-                    <div class="algorithm-option">
-                        <input type="radio" id="simpleAlgorithm" name="algorithm" value="simple">
-                        <label for="simpleAlgorithm">简单累加算法 (旧版)</label>
+
+                    <div class="kuang" style="display: flex; align-items: center; padding-left: 20px;">反推算法
+                        <div class="algorithm-option">
+                            <input type="radio" id="poissonAlgorithm" name="algorithm" value="poisson" checked>
+                            <label for="poissonAlgorithm">Poisson重建算法 (推荐)</label>
+                        </div>
+                        
+                        <div class="algorithm-option">
+                            <input type="radio" id="simpleAlgorithm" name="algorithm" value="simple">
+                            <label for="simpleAlgorithm">简单累加算法 (旧版)</label>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Modal for zoomed images -->
     <div id="inputModal" class="modal">
         <span class="close">&times;</span>
         <img class="modal-content" id="inputModalImg">
@@ -990,16 +1101,10 @@
             const outputCanvas = document.getElementById('outputCanvas');
             const inputPlaceholder = document.getElementById('inputPlaceholder');
             const outputPlaceholder = document.getElementById('outputPlaceholder');
-            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadMapBtn = document.getElementById('downloadMapBtn');
+            const downloadMapBtnText = downloadMapBtn.querySelector('span');
             const resetParamsBtn = document.getElementById('resetParamsBtn');
             const reverseBtn = document.getElementById('reverseBtn');
-            const strengthSlider = document.getElementById('strengthSlider');
-            const blurSlider = document.getElementById('blurSlider');
-            const strengthValueInput = document.getElementById('strengthValue');
-            const blurValueInput = document.getElementById('blurValue');
-            const invertX = document.getElementById('invertX');
-            const invertY = document.getElementById('invertY');
-            const highQuality = document.getElementById('highQuality');
             const exampleImages = document.querySelectorAll('.example-image');
             const progressContainer = document.getElementById('progressContainer');
             const progressFill = document.getElementById('progressFill');
@@ -1015,7 +1120,13 @@
             const smallSizeBtn = document.getElementById('smallSizeBtn');
             const largeSizeBtn = document.getElementById('largeSizeBtn');
             const outputCanvasContainer = document.getElementById('outputCanvasContainer');
-            
+            const previewTitle = document.getElementById('previewTitle');
+            const cpuGpuToggleContainer = document.getElementById('cpuGpuToggleContainer');
+            const reverseSection = document.getElementById('reverseSection');
+            const previewModeToggle = document.getElementById('previewModeToggle');
+            const outputPreviewTitleContainer = document.getElementById('outputPreviewTitleContainer');
+
+
             // 新增3D预览相关元素
             const normalPreviewBtn = document.getElementById('normalPreviewBtn');
             const modelPreviewBtn = document.getElementById('modelPreviewBtn');
@@ -1032,7 +1143,47 @@
             
             // Canvas容器元素
             const inputCanvasContainer = document.getElementById('inputCanvasContainer');
+
+            // --- 新增：Tab和参数面板元素 ---
+            const mapTypeTabs = document.querySelectorAll('.tab-btn');
+            const paramPanels = document.querySelectorAll('.param-panel');
             
+            // 法线参数
+            const strengthSlider = document.getElementById('strengthSlider');
+            const blurSlider = document.getElementById('blurSlider');
+            const strengthValueInput = document.getElementById('strengthValue');
+            const blurValueInput = document.getElementById('blurValue');
+            const invertX = document.getElementById('invertX');
+            const invertY = document.getElementById('invertY');
+            const highQuality = document.getElementById('highQuality');
+            
+            // 置换参数
+            const dispStrengthSlider = document.getElementById('dispStrengthSlider');
+            const dispLevelSlider = document.getElementById('dispLevelSlider');
+            const dispStrengthValue = document.getElementById('dispStrengthValue');
+            const dispLevelValue = document.getElementById('dispLevelValue');
+
+            // AO参数
+            const aoStrengthSlider = document.getElementById('aoStrengthSlider');
+            const aoSpreadSlider = document.getElementById('aoSpreadSlider');
+            const aoStrengthValue = document.getElementById('aoStrengthValue');
+            const aoSpreadValue = document.getElementById('aoSpreadValue');
+
+            // 反射参数
+            const reflectStrengthSlider = document.getElementById('reflectStrengthSlider');
+            const reflectContrastSlider = document.getElementById('reflectContrastSlider');
+            const reflectInvert = document.getElementById('reflectInvert');
+            const reflectStrengthValue = document.getElementById('reflectStrengthValue');
+            const reflectContrastValue = document.getElementById('reflectContrastValue');
+
+            // 光泽度参数
+            const glossStrengthSlider = document.getElementById('glossStrengthSlider');
+            const glossContrastSlider = document.getElementById('glossContrastSlider');
+            const glossInvert = document.getElementById('glossInvert');
+            const glossStrengthValue = document.getElementById('glossStrengthValue');
+            const glossContrastValue = document.getElementById('glossContrastValue');
+
+            let currentMapType = 'normal'; // 'normal', 'displacement', 'ao', etc.
             let originalWidth = 0;
             let originalHeight = 0;
             let currentImageData = null;
@@ -1050,6 +1201,140 @@
             let is3dPreviewActive = false;
             let isThreeInitialized = false; // 标记Three.js是否已初始化
             let animationId = null;
+
+            // --- 核心逻辑 ---
+
+            function scheduleMapUpdate() {
+                if (updateTimeout) {
+                    clearTimeout(updateTimeout);
+                }
+                
+                updateTimeout = setTimeout(() => {
+                    if (currentImageData) {
+                        generateMap();
+                    }
+                }, 300);
+            }
+
+            // 总的生成函数
+            function generateMap() {
+                 if (!currentImageData) return;
+                
+                progressContainer.style.display = 'block';
+                progressFill.style.width = '0%';
+                progressPercent.textContent = '0%';
+                
+                const startTime = performance.now();
+
+                // 模糊预处理（仅用于法线贴图）
+                if (currentMapType === 'normal') {
+                    const blurLevel = parseFloat(blurSlider.value);
+                    if (blurLevel > 0) {
+                        blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                        applyBlur(blurredImageData, originalWidth, originalHeight, blurLevel);
+                    } else {
+                        blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                    }
+                } else {
+                     blurredImageData = new Uint8ClampedArray(currentImageData.data);
+                }
+
+
+                let processFunction;
+                switch(currentMapType) {
+                    case 'normal':
+                        processFunction = useGPU ? convertWithGPU : convertWithCPU;
+                        break;
+                    case 'displacement':
+                        processFunction = convertToDisplacementMap;
+                        break;
+                    case 'ao':
+                        processFunction = convertToAOMap;
+                        break;
+                    case 'reflection':
+                        processFunction = convertToReflectionMap;
+                        break;
+                    case 'glossiness':
+                        processFunction = convertToGlossinessMap;
+                        break;
+                }
+                
+                // 执行生成
+                if(processFunction) {
+                   processFunction();
+                }
+
+                const endTime = performance.now();
+                const elapsed = endTime - startTime;
+                
+                // 更新UI
+                if (currentMapType !== 'normal' || !useGPU) {
+                    processingTimeSpan.textContent = elapsed.toFixed(2);
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                    }, 500);
+                }
+
+                outputPlaceholder.style.display = 'none';
+                outputCanvas.style.display = 'block';
+
+                 // 更新3D预览（如果激活且是法线模式）
+                if (is3dPreviewActive && currentMapType === 'normal') {
+                    update3dPreview();
+                }
+            }
+            
+            // --- UI 更新与模式切换 ---
+            
+            function updateUIAfterTabSwitch() {
+                let mapName = "法线";
+                switch(currentMapType) {
+                    case 'displacement': mapName = '置换'; break;
+                    case 'ao': mapName = 'AO'; break;
+                    case 'reflection': mapName = '反射'; break;
+                    case 'glossiness': mapName = '光泽度'; break;
+                }
+
+                previewTitle.childNodes[0].nodeValue = `${mapName}图预览`;
+                downloadMapBtnText.textContent = `下载${mapName}图`;
+                
+                // 控制法线模式专属UI的可见性
+                const isNormalMode = currentMapType === 'normal';
+                cpuGpuToggleContainer.style.display = isNormalMode ? 'block' : 'none';
+                reverseSection.style.display = isNormalMode ? 'block' : 'none';
+                previewModeToggle.style.display = isNormalMode ? 'flex' : 'none';
+
+                // 如果不是法线模式，强制切换回2D预览
+                if (!isNormalMode && is3dPreviewActive) {
+                    normalPreviewBtn.click();
+                }
+
+                // 如果不是法线模式，主标题和下载按钮总是可见
+                if (!isNormalMode) {
+                    outputPreviewTitleContainer.style.display = 'flex';
+                    outputCanvasContainer.style.display = 'flex';
+                }
+
+                scheduleMapUpdate();
+            }
+
+            mapTypeTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 移除所有 active class
+                    mapTypeTabs.forEach(t => t.classList.remove('active'));
+                    paramPanels.forEach(p => p.classList.remove('active'));
+                    
+                    // 添加 active class 到点击的tab和对应的panel
+                    tab.classList.add('active');
+                    currentMapType = tab.dataset.mapType;
+                    const activePanel = document.getElementById(`${currentMapType}Params`);
+                    if (activePanel) {
+                        activePanel.classList.add('active');
+                    }
+                    
+                    updateUIAfterTabSwitch();
+                });
+            });
 
             // 初始化Three.js场景
             function initThreeScene() {
@@ -1210,6 +1495,7 @@
                     cpuModeBtn.classList.add('active');
                     currentModeSpan.textContent = "CPU模式";
                 }
+                scheduleMapUpdate();
             }
             
             // 初始化WebGL
@@ -1342,93 +1628,71 @@
                 outputCanvas.style.maxHeight = '600px';
             });
             
-            // 更新强度值显示
-            strengthSlider.addEventListener('input', () => {
-                strengthValueInput.value = strengthSlider.value;
-                scheduleNormalMapUpdate();
+            // ---  通用参数绑定 ---
+            function bindSliderToInput(slider, input, scheduleUpdate, isFloat=true) {
+                slider.addEventListener('input', () => {
+                    input.value = slider.value;
+                    scheduleUpdate();
+                });
+                input.addEventListener('input', () => {
+                     let value = isFloat ? parseFloat(input.value) : parseInt(input.value);
+                    if (isNaN(value)) return;
+                    slider.value = value;
+                    const min = parseFloat(slider.min);
+                    const max = parseFloat(slider.max);
+                    if (value < min) slider.min = value;
+                    if (value > max) slider.max = value;
+                    scheduleUpdate();
+                });
+            }
+
+            // 绑定所有参数
+            bindSliderToInput(strengthSlider, strengthValueInput, scheduleMapUpdate);
+            bindSliderToInput(blurSlider, blurValueInput, scheduleMapUpdate);
+            bindSliderToInput(dispStrengthSlider, dispStrengthValue, scheduleMapUpdate);
+            bindSliderToInput(dispLevelSlider, dispLevelValue, scheduleMapUpdate);
+            bindSliderToInput(aoStrengthSlider, aoStrengthValue, scheduleMapUpdate);
+            bindSliderToInput(aoSpreadSlider, aoSpreadValue, scheduleMapUpdate, false);
+            bindSliderToInput(reflectStrengthSlider, reflectStrengthValue, scheduleMapUpdate);
+            bindSliderToInput(reflectContrastSlider, reflectContrastValue, scheduleMapUpdate);
+            bindSliderToInput(glossStrengthSlider, glossStrengthValue, scheduleMapUpdate);
+            bindSliderToInput(glossContrastSlider, glossContrastValue, scheduleMapUpdate);
+
+            // Checkboxes
+            [invertX, invertY, highQuality, reflectInvert, glossInvert].forEach(checkbox => {
+                checkbox.addEventListener('change', scheduleMapUpdate);
             });
-            
-            // 更新模糊值显示
-            blurSlider.addEventListener('input', () => {
-                blurValueInput.value = blurSlider.value;
-                scheduleNormalMapUpdate();
-            });
-            
-            // 输入框事件监听
-            strengthValueInput.addEventListener('input', () => {
-                let value = parseFloat(strengthValueInput.value);
-                
-                // 验证输入值
-                if (isNaN(value) || value <= 0) {
-                    // 恢复为之前的值
-                    strengthValueInput.value = strengthSlider.value;
-                    return;
-                }
-                
-                // 更新滑块值
-                strengthSlider.value = value;
-                
-                // 调整滑块范围
-                const min = parseFloat(strengthSlider.min);
-                const max = parseFloat(strengthSlider.max);
-                if (value < min) {
-                    strengthSlider.min = value;
-                } else if (value > max) {
-                    strengthSlider.max = value;
-                }
-                
-                scheduleNormalMapUpdate();
-            });
-            
-            blurValueInput.addEventListener('input', () => {
-                let value = parseFloat(blurValueInput.value);
-                
-                // 验证输入值
-                if (isNaN(value) || value < 0) {
-                    // 恢复为之前的值
-                    blurValueInput.value = blurSlider.value;
-                    return;
-                }
-                
-                // 更新滑块值
-                blurSlider.value = value;
-                
-                // 调整滑块范围
-                const min = parseFloat(blurSlider.min);
-                const max = parseFloat(blurSlider.max);
-                if (value < min) {
-                    blurSlider.min = value;
-                } else if (value > max) {
-                    blurSlider.max = value;
-                }
-                
-                scheduleNormalMapUpdate();
-            });
-            
-            // 反转方向事件
-            invertX.addEventListener('change', scheduleNormalMapUpdate);
-            invertY.addEventListener('change', scheduleNormalMapUpdate);
-            highQuality.addEventListener('change', scheduleNormalMapUpdate);
             
             // 示例图像点击事件
             exampleImages.forEach(img => {
                 img.addEventListener('click', () => {
                     const imgType = img.dataset.img;
                     generateExampleImage(imgType);
-                    scheduleNormalMapUpdate();
+                    scheduleMapUpdate();
                 });
             });
             
             // 重置参数按钮
             resetParamsBtn.addEventListener('click', () => {
-                strengthSlider.value = 0.10;
-                blurSlider.value = 0;
-                strengthValueInput.value = '0.10';
-                blurValueInput.value = '0.0';
+                // 重置法线参数
+                strengthSlider.value = 0.10; strengthValueInput.value = '0.10';
+                blurSlider.value = 0; blurValueInput.value = '0.0';
                 invertX.checked = false;
                 invertY.checked = true;
                 highQuality.checked = true;
-                scheduleNormalMapUpdate();
+                // 重置其他参数...
+                dispStrengthSlider.value = 1.0; dispStrengthValue.value = '1.0';
+                dispLevelSlider.value = 0.5; dispLevelValue.value = '0.5';
+                aoStrengthSlider.value = 1.0; aoStrengthValue.value = '1.0';
+                aoSpreadSlider.value = 10; aoSpreadValue.value = '10';
+                reflectStrengthSlider.value = 1.0; reflectStrengthValue.value = '1.0';
+                reflectContrastSlider.value = 1.0; reflectContrastValue.value = '1.0';
+                reflectInvert.checked = false;
+                glossStrengthSlider.value = 1.0; glossStrengthValue.value = '1.0';
+                glossContrastSlider.value = 1.0; glossContrastValue.value = '1.0';
+                glossInvert.checked = true;
+                
+                scheduleMapUpdate();
             });
             
             // 文件上传处理
@@ -1480,7 +1744,7 @@
                             blurredImageData = new Uint8ClampedArray(currentImageData.data);
                             
                             // 立即更新法线图
-                            scheduleNormalMapUpdate();
+                            scheduleMapUpdate();
                         } catch (error) {
                             console.error('TIFF处理错误:', error);
                             alert('无法处理此TIFF文件，请尝试其他文件');
@@ -1514,7 +1778,7 @@
                             blurredImageData = new Uint8ClampedArray(currentImageData.data);
                             
                             // 立即更新法线图
-                            scheduleNormalMapUpdate();
+                            scheduleMapUpdate();
                         };
                         img.onerror = () => {
                             alert('图片加载失败，请重试');
@@ -1531,14 +1795,14 @@
             }
             
             // 下载按钮事件
-            downloadBtn.addEventListener('click', () => {
+            downloadMapBtn.addEventListener('click', () => {
                 if (outputCanvas.style.display === 'none') {
-                    alert('请先生成法线图');
+                    alert('请先生成贴图');
                     return;
                 }
                 
                 const link = document.createElement('a');
-                link.download = 'normal-map.png';
+                link.download = `${currentMapType}-map.png`;
                 link.href = outputCanvas.toDataURL('image/png');
                 link.click();
             });
@@ -1584,19 +1848,6 @@
                 if (e.target === inputModal) inputModal.style.display = 'none';
                 if (e.target === outputModal) outputModal.style.display = 'none';
             });
-            
-            // 防抖处理
-            function scheduleNormalMapUpdate() {
-                if (updateTimeout) {
-                    clearTimeout(updateTimeout);
-                }
-                
-                updateTimeout = setTimeout(() => {
-                    if (currentImageData) {
-                        convertToNormalMap();
-                    }
-                }, 300);
-            }
             
             // 生成示例图像
             function generateExampleImage(type) {
@@ -1839,14 +2090,6 @@
                 outputImageData.data.set(pixels);
                 outputCtx.putImageData(outputImageData, 0, 0);
                 
-                outputPlaceholder.style.display = 'none';
-                outputCanvas.style.display = 'block';
-                
-                // 更新3D预览（如果激活）
-                if (is3dPreviewActive) {
-                    update3dPreview();
-                }
-                
                 // 清理
                 gl.deleteTexture(texture);
                 gl.deleteTexture(targetTexture);
@@ -1872,8 +2115,6 @@
             
             // CPU模式生成法线图（使用分块处理）
             function convertWithCPU() {
-                const startTime = performance.now();
-                
                 const strength = parseFloat(strengthSlider.value);
                 const invertXVal = invertX.checked ? -1 : 1;
                 const invertYVal = invertY.checked ? -1 : 1;
@@ -1972,49 +2213,151 @@
                     
                     // 如果还有行要处理
                     if (y < originalHeight) {
-                        // 检查处理时间是否过长
-                        const chunkElapsed = performance.now() - chunkStartTime;
-                        if (chunkElapsed > 50) {
-                            // 如果处理时间超过50ms，使用setTimeout让出UI线程
-                            setTimeout(processChunk, 0);
-                        } else {
-                            // 否则立即处理下一块
-                            processChunk();
-                        }
+                        setTimeout(processChunk, 0); // 让出UI线程
                     } else {
-                        // 处理完成，进行后处理模糊
-                        applyBlur(outputData, originalWidth, originalHeight, 0.7);
-                        
-                        // 将结果绘制到输出Canvas
+                        // 处理完成
                         outputCtx.putImageData(outputImageData, 0, 0);
-                        outputPlaceholder.style.display = 'none';
-                        outputCanvas.style.display = 'block';
-                        
-                        // 更新3D预览（如果激活）
-                        if (is3dPreviewActive) {
-                            update3dPreview();
-                        }
-                        
-                        const endTime = performance.now();
-                        const elapsed = endTime - startTime;
-                        processingTimeSpan.textContent = elapsed.toFixed(2);
-                        
-                        console.log(`CPU处理完成，耗时: ${elapsed.toFixed(2)}ms`);
-                        
-                        // 隐藏进度条
-                        setTimeout(() => {
-                            progressContainer.style.display = 'none';
-                        }, 500);
+                        progressFill.style.width = `100%`;
+                        progressPercent.textContent = `100%`;
                     }
                 }
-                
-                // 开始处理第一块
                 processChunk();
+            }
+
+            // --- 其他贴图生成函数 ---
+
+            function convertToDisplacementMap() {
+                const strength = parseFloat(dispStrengthSlider.value);
+                const level = parseFloat(dispLevelSlider.value);
+                const inputData = currentImageData.data;
+                
+                outputCanvas.width = originalWidth;
+                outputCanvas.height = originalHeight;
+                const outputCtx = outputCanvas.getContext('2d');
+                const outputImageData = outputCtx.createImageData(originalWidth, originalHeight);
+                const outputData = outputImageData.data;
+
+                const midLevel = 128 * (1 - level);
+
+                for (let i = 0; i < inputData.length; i += 4) {
+                    const gray = (inputData[i] + inputData[i+1] + inputData[i+2]) / 3;
+                    let value = 128 + (gray - midLevel) * strength;
+                    value = Math.max(0, Math.min(255, value)); // Clamp
+                    
+                    outputData[i] = value;
+                    outputData[i+1] = value;
+                    outputData[i+2] = value;
+                    outputData[i+3] = 255;
+                }
+                outputCtx.putImageData(outputImageData, 0, 0);
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+            }
+
+            function convertToAOMap() {
+                const strength = parseFloat(aoStrengthSlider.value);
+                const spread = parseInt(aoSpreadSlider.value);
+                const inputData = currentImageData.data;
+                const heightMap = new Float32Array(originalWidth * originalHeight);
+
+                for(let i=0; i<heightMap.length; i++) {
+                    heightMap[i] = (inputData[i*4] + inputData[i*4+1] + inputData[i*4+2]) / 3;
+                }
+
+                outputCanvas.width = originalWidth;
+                outputCanvas.height = originalHeight;
+                const outputCtx = outputCanvas.getContext('2d');
+                const outputImageData = outputCtx.createImageData(originalWidth, originalHeight);
+                const outputData = outputImageData.data;
+
+                let y = 0;
+                const chunkSize = 10;
+
+                function processChunk() {
+                    const endY = Math.min(y + chunkSize, originalHeight);
+                     for (; y < endY; y++) {
+                        for (let x = 0; x < originalWidth; x++) {
+                            const centerIdx = y * originalWidth + x;
+                            const centerHeight = heightMap[centerIdx];
+                            let occlusion = 0;
+
+                            for (let j = -spread; j <= spread; j++) {
+                                for (let i = -spread; i <= spread; i++) {
+                                    if (i === 0 && j === 0) continue;
+                                    
+                                    const sampleX = Math.max(0, Math.min(originalWidth - 1, x + i));
+                                    const sampleY = Math.max(0, Math.min(originalHeight - 1, y + j));
+                                    const sampleIdx = sampleY * originalWidth + sampleX;
+                                    const sampleHeight = heightMap[sampleIdx];
+                                    
+                                    const heightDiff = sampleHeight - centerHeight;
+                                    if (heightDiff > 0) {
+                                        const dist = Math.sqrt(i*i + j*j);
+                                        occlusion += heightDiff / (dist * dist + 1);
+                                    }
+                                }
+                            }
+                            const aoValue = 255 - Math.min(255, occlusion * strength);
+                            const outIdx = centerIdx * 4;
+                            outputData[outIdx] = aoValue;
+                            outputData[outIdx+1] = aoValue;
+                            outputData[outIdx+2] = aoValue;
+                            outputData[outIdx+3] = 255;
+                        }
+                    }
+                    const percent = Math.round((y / originalHeight) * 100);
+                    progressFill.style.width = `${percent}%`;
+                    progressPercent.textContent = `${percent}%`;
+                    if (y < originalHeight) {
+                        setTimeout(processChunk, 0);
+                    } else {
+                        outputCtx.putImageData(outputImageData, 0, 0);
+                    }
+                }
+                processChunk();
+            }
+
+            function convertToSimpleTextureMap(type) {
+                const strength = parseFloat(document.getElementById(`${type}StrengthSlider`).value);
+                const contrast = parseFloat(document.getElementById(`${type}ContrastSlider`).value);
+                const invert = document.getElementById(`${type}Invert`).checked;
+
+                const inputData = currentImageData.data;
+                outputCanvas.width = originalWidth;
+                outputCanvas.height = originalHeight;
+                const outputCtx = outputCanvas.getContext('2d');
+                const outputImageData = outputCtx.createImageData(originalWidth, originalHeight);
+                const outputData = outputImageData.data;
+
+                for (let i = 0; i < inputData.length; i += 4) {
+                    let gray = (inputData[i] + inputData[i+1] + inputData[i+2]) / 3;
+                    if (invert) gray = 255 - gray;
+
+                    let value = 128 + (gray - 128) * contrast;
+                    value = value * strength;
+                    value = Math.max(0, Math.min(255, value)); // Clamp
+                    
+                    outputData[i] = value;
+                    outputData[i+1] = value;
+                    outputData[i+2] = value;
+                    outputData[i+3] = 255;
+                }
+                outputCtx.putImageData(outputImageData, 0, 0);
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+            }
+            
+            function convertToReflectionMap() {
+                convertToSimpleTextureMap('reflect');
+            }
+
+            function convertToGlossinessMap() {
+                 convertToSimpleTextureMap('gloss');
             }
             
             // 更新3D预览
             function update3dPreview() {
-                if (!outputCanvas.style.display || outputCanvas.style.display === 'none') return;
+                if (!outputCanvas.style.display || outputCanvas.style.display === 'none' || currentMapType !== 'normal') return;
                 
                 // 创建Three.js纹理
                 const texture = new THREE.CanvasTexture(outputCanvas);
@@ -2026,35 +2369,8 @@
                 // 显示提示信息
                 previewHint.style.display = 'block';
             }
-            
-            // 优化的法线图转换函数
-            function convertToNormalMap() {
-                if (!currentImageData) return;
-                
-                // 显示进度条并重置
-                progressContainer.style.display = 'block';
-                progressFill.style.width = '0%';
-                progressPercent.textContent = '0%';
-                
-                // 应用模糊到灰度图
-                const blurLevel = parseFloat(blurSlider.value);
-                if (blurLevel > 0) {
-                    blurredImageData = new Uint8ClampedArray(currentImageData.data);
-                    applyBlur(blurredImageData, originalWidth, originalHeight, blurLevel);
-                } else {
-                    // 如果不模糊，直接使用原始数据
-                    blurredImageData = new Uint8ClampedArray(currentImageData.data);
-                }
-                
-                // 根据模式选择处理方法
-                if (useGPU) {
-                    convertWithGPU();
-                } else {
-                    convertWithCPU();
-                }
-            }           
-            
-            // 优化的高斯模糊函数
+                                  
+            // 优化的的高斯模糊函数
             function applyBlur(data, width, height, radius) {
                 if (radius <= 0) return;
                 
@@ -2066,7 +2382,8 @@
                 // 水平模糊
                 for (let y = 0; y < height; y++) {
                     for (let x = 0; x < width; x++) {
-                        let rVal = 0, gVal = 0, bVal = 0, weightSum = 0;
+                        let rVal = 0, gVal = 0, bVal = 0;
+                        let weightSum = 0;
                         
                         for (let kx = -r; kx <= r; kx++) {
                             const px = Math.max(0, Math.min(width - 1, x + kx));
@@ -2090,7 +2407,8 @@
                 // 垂直模糊
                 for (let x = 0; x < width; x++) {
                     for (let y = 0; y < height; y++) {
-                        let rVal = 0, gVal = 0, bVal = 0, weightSum = 0;
+                        let rVal = 0, gVal = 0, bVal = 0;
+                        let weightSum = 0;
                         
                         for (let ky = -r; ky <= r; ky++) {
                             const py = Math.max(0, Math.min(height - 1, y + ky));
@@ -2215,7 +2533,7 @@
             generateExampleImage('bricks');
             // 初始生成法线图
             setTimeout(() => {
-                scheduleNormalMapUpdate();
+                scheduleMapUpdate();
             }, 500);
             
             // 初始化拖放功能
@@ -2242,15 +2560,18 @@
                 // 输出区域拖放事件（反推功能）
                 outputCanvasContainer.addEventListener('dragover', (e) => {
                     e.preventDefault();
+                    if (currentMapType !== 'normal') return;
                     outputCanvasContainer.classList.add('drag-over');
                 });
                 
                 outputCanvasContainer.addEventListener('dragleave', () => {
+                     if (currentMapType !== 'normal') return;
                     outputCanvasContainer.classList.remove('drag-over');
                 });
                 
                 outputCanvasContainer.addEventListener('drop', (e) => {
                     e.preventDefault();
+                    if (currentMapType !== 'normal') return;
                     outputCanvasContainer.classList.remove('drag-over');
                     
                     if (e.dataTransfer.files.length) {
@@ -2320,8 +2641,9 @@
                             blurredImageData = new Uint8ClampedArray(currentImageData.data);
                             
                             // 更新UI
-                            outputPlaceholder.style.display = 'none';
-                            outputCanvas.style.display = 'block';
+                            outputPlaceholder.style.display = 'block';
+                            outputCanvas.style.display = 'none';
+                            scheduleMapUpdate(); // Re-generate normal map
                             
                             // 提示用户
                             alert('法线图已成功反推为高度图！您可以在左侧查看并进一步调整参数生成新的法线图。');
@@ -2340,18 +2662,20 @@
                             originalWidth = img.width;
                             originalHeight = img.height;
                             
-                            // 在输出canvas临时绘制
-                            outputCanvas.width = originalWidth;
-                            outputCanvas.height = originalHeight;
-                            const outputCtx = outputCanvas.getContext('2d');
-                            outputCtx.drawImage(img, 0, 0);
+                            // 在临时canvas绘制
+                            const tempCanvas = document.createElement('canvas');
+                            tempCanvas.width = originalWidth;
+                            tempCanvas.height = originalHeight;
+                            const tempCtx = tempCanvas.getContext('2d');
+                            tempCtx.drawImage(img, 0, 0);
+
                             
                             // 获取图像数据
-                            const normalImageData = outputCtx.getImageData(0, 0, originalWidth, originalHeight);
+                            const normalImageData = tempCtx.getImageData(0, 0, originalWidth, originalHeight);
                             const normalData = normalImageData.data;
                             
                             // 创建高度图数据
-                            const heightImageData = outputCtx.createImageData(originalWidth, originalHeight);
+                            const heightImageData = tempCtx.createImageData(originalWidth, originalHeight);
                             const heightData = heightImageData.data;
                             
                             // 选择算法
@@ -2379,9 +2703,10 @@
                             blurredImageData = new Uint8ClampedArray(currentImageData.data);
                             
                             // 更新UI
-                            outputPlaceholder.style.display = 'none';
-                            outputCanvas.style.display = 'block';
-                            
+                            outputPlaceholder.style.display = 'block';
+                            outputCanvas.style.display = 'none';
+                            scheduleMapUpdate(); // Re-generate normal map
+
                             // 提示用户
                             alert('法线图已成功反推为高度图！您可以在左侧查看并进一步调整参数生成新的法线图。');
                         };
@@ -2436,7 +2761,7 @@
                 
                 // 转换为灰度图像
                 for (let i = 0; i < heightMap.length; i++) {
-                    const heightValue = Math.round(((heightMap[i] - min) / range) * 255);
+                    const heightValue = range > 0 ? Math.round(((heightMap[i] - min) / range) * 255) : 0;
                     const idx = i * 4;
                     heightData[idx] = heightValue;
                     heightData[idx + 1] = heightValue;
@@ -2529,7 +2854,7 @@
                 
                 // 转换为灰度图像
                 for (let i = 0; i < heightMap.length; i++) {
-                    const heightValue = Math.round(((heightMap[i] - min) / range) * 255);
+                     const heightValue = range > 0 ? Math.round(((heightMap[i] - min) / range) * 255) : 0;
                     const idx = i * 4;
                     heightData[idx] = heightValue;
                     heightData[idx + 1] = heightValue;
@@ -2583,7 +2908,8 @@
                 blurredImageData = new Uint8ClampedArray(currentImageData.data);
                 
                 // 提示用户
-                alert('法线图已成功反推为高度图！');
+                alert('法线图已成功反推为高度图！将根据新的灰度图重新生成法线图。');
+                scheduleMapUpdate();
             });
             
             // 初始化拖放功能
@@ -2592,22 +2918,24 @@
             // 默认使用GPU模式
             setGPUMode(true);
             
-            // 修改normalPreviewBtn事件监听器 - 只暂停动画而不取消
+            // 修改normalPreviewBtn事件监听器
             normalPreviewBtn.addEventListener('click', () => {
                 normalPreviewBtn.classList.add('active');
                 modelPreviewBtn.classList.remove('active');
                 outputCanvasContainer.style.display = 'flex';
-                normalPreviewTitle.style.display = 'flex';
+                outputPreviewTitleContainer.style.display = 'flex';
                 preview3dContainer.style.display = 'none';
-                is3dPreviewActive = false; // 暂停动画
+                is3dPreviewActive = false;
             });
 
-            // 修改modelPreviewBtn事件监听器 - 确保动画循环总是重新启动
+            // 修改modelPreviewBtn事件监听器
             modelPreviewBtn.addEventListener('click', () => {
+                if(currentMapType !== 'normal') return;
+
                 modelPreviewBtn.classList.add('active');
                 normalPreviewBtn.classList.remove('active');
                 outputCanvasContainer.style.display = 'none';
-                normalPreviewTitle.style.display = 'none';
+                outputPreviewTitleContainer.style.display = 'none';
                 preview3dContainer.style.display = 'block';
                 is3dPreviewActive = true;
                 
@@ -2645,6 +2973,8 @@
             
             // 初始化3D预览容器
             preview3dContainer.style.display = 'none';
+            // 初始化时更新一次UI
+            updateUIAfterTabSwitch();
         });
     </script>
 </body>
