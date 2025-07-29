@@ -326,9 +326,9 @@ const menuData = [
         title: "轻易3D",
         icon: "fa-brands fa-codepen",
         submenu: [
+            { title: "PBR贴图生成", link: "normal.html" },
             { title: "无缝贴图制作", link: "texture.html" },
             { title: "无缝贴图预览", link: "map.html" },
-            { title: "法线图转换", link: "normal.html" },
             { title: "ORM贴图生成", link: "ORM.html" },
 	    { title: "颜色转换工具", link: "color.html" },
         ]
