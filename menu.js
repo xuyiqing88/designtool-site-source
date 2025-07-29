@@ -291,7 +291,7 @@ document.head.appendChild(fontAwesomeLink);
 const menuData = [
     {
         title: "首页",
-        icon: "fas fa-home",
+        icon: "fa-solid fa-house-chimney",
         link: "index.html",
         active: true
     },
