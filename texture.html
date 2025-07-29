@@ -30,7 +30,7 @@
         /* 头部样式 */
         .header {
             background: linear-gradient(135deg, #1e293b, #334155);
-            padding: 0.5rem 1.5rem;
+            padding: 0.9rem 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             position: relative;
 	margin-left: 60px;
@@ -51,7 +51,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-size: 1.8rem;
+            font-size: 1.65rem;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -358,11 +358,11 @@
 
         /* 切换按钮样式 */
         .toggle-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem;
             border-radius: 6px;
             font-size: 0.85rem;
-            background: #1e293b;
-            border: 1px solid #475569;
+            background: none;
+            border: none;
             color: #e2e8f0;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -376,10 +376,6 @@
             border-color: #64748b;
         }
 
-        .toggle-btn.active {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            border-color: #2563eb;
-        }
 
         /* 滚动条样式 */
         .sidebar::-webkit-scrollbar {
@@ -492,6 +488,7 @@
 		margin-bottom: 330px;}
             .header {
 		margin-left: 0;
+	        padding: 1.5rem;
 		}
             .container {
                 flex-direction: column;
@@ -580,7 +577,6 @@
         }
         
         .fa-icon {
-            margin-right: 8px;
         }
     </style>
 </head>
@@ -619,11 +615,10 @@
         <div class="sidebar">
             <div class="upload-area" id="uploadArea">
                 <div class="upload-icon">
-                    <i class="fas fa-file-upload icon-large"></i>
+                    <i class="fa-solid fa-cloud-arrow-up  icon-large"></i>
                 </div>
-                <h3>拖拽图像文件到此处</h3>
-                <p>或点击选择文件</p>
-                <small>支持 PNG, JPG, BMP, WebP, TIFF 格式</small>
+                <h3>拖拽或点击图像上传</h3>
+                <small>支持 PNG, JPG, BMP, WebP, TIFF</small>
             </div>
             <input type="file" id="fileInput" accept="image/*,.tiff,.tif">
 
@@ -1384,8 +1379,8 @@
                 processedCtx.drawImage(rotatedCanvas, 0, 0);
                 btn.classList.add('active');
                 btn.innerHTML = `
-                    <i class="fas fa-eye fa-icon"></i>
-                    显示处理结果
+                    <i class="fa-solid fa-eye-slash"></i>
+                    显示修改
                 `;
             } else {
                 // 显示处理结果，重新应用无缝处理
