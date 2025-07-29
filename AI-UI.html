@@ -51,6 +51,14 @@
     margin-bottom: 20px;
 	color: var(--text2);
 	}
+	.set {
+		color: var(--text3); 
+		display: flex; 
+		justify-content: flex-end;
+		font-size: 18px;
+		cursor: pointer;}
+	.set:hover {
+		color: var(--main-color);}
         .modification-title {
             font-size: 1rem;
             font-weight: 600;
@@ -425,6 +433,146 @@
             display: none;
         }
 
+        /* 模型设置弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text1);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text3);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--text1);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text1);
+        }
+
+        .model-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text1);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+
+        .model-select:focus {
+            border-color: var(--main-color);
+        }
+
+        .api-key-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background-color: var(--bg);
+            color: var(--text1);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .api-key-input:focus {
+            border-color: var(--main-color);
+        }
+
+        .api-key-container {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cancel-btn {
+            background-color: transparent;
+            color: var(--text2);
+            border: 1px solid var(--line);
+        }
+
+        .cancel-btn:hover {
+            background-color: var(--bg);
+        }
+
+        .save-btn {
+            background: var(--btcolor);
+            color: white;
+            border: none;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
         @media (max-width: 768px) {
             .main-title {
                 font-size: 24px;
@@ -465,14 +613,53 @@
             .preview-header-buttons {
 	    margin-top: 10px;
             }
+            .modal-content {
+                width: 90%;
+                max-width: none;
+            }
         }
     </style>
 </head>
 <body>
 <div id="global-sidebar"></div>
 
+    <!-- 模型设置弹窗 -->
+    <div class="modal" id="modelSettingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">模型设置</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">选择模型</label>
+                    <select id="modelSelect" class="model-select">
+                        <option value="free">免费无api版</option>
+                        <option value="deepseek">DeepSeek API版</option>
+                    </select>
+                </div>
+                
+                <div id="apiKeyContainer" class="api-key-container">
+                    <label class="form-label">DeepSeek API Key</label>
+                    <input type="password" id="apiKeyInput" class="api-key-input" 
+                           placeholder="请输入您的DeepSeek API密钥" autocomplete="off">
+                    <p style="font-size: 14px; color: var(--text3); margin-top: 8px;">
+                        DeepDeek比默认效果好，需自行申请和购买DeepSeek API。您的API密钥仅存储在本地浏览器中，不会上传到任何服务器
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="cancelBtn">取消</button>
+                <button class="modal-btn save-btn" id="saveBtn">保存</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="left-panel">
+            <div class="set" id="settingsBtn">	
+		<i class="fa-solid fa-gear"></i>
+	</div>
             <h1 class="main-title">AI生成UI界面</h1>
 	<p>下载后的矢量文件可拖入sketch使用</p>
             <div class="device-toggle">
@@ -481,10 +668,6 @@
             </div>
 
             <div class="interface-settings">
-                <div class="settings-title">
-                    <i class="fa-solid fa-gear"></i>
-                    界面设置
-                </div>
                 <div class="settings-row">
                     <div class="setting-group">
                         <label for="primaryColor" class="setting-label">主色调</label>
@@ -590,6 +773,14 @@
         const modifyBtn = document.getElementById('modifyBtn');
         const clearBtn = document.getElementById('clearBtn');
         const modificationTitle = document.getElementById('modificationTitle');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const modelSettingsModal = document.getElementById('modelSettingsModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const modelSelect = document.getElementById('modelSelect');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const apiKeyContainer = document.getElementById('apiKeyContainer');
 
         // 状态变量
         let generatedSVG = '';
@@ -599,11 +790,16 @@
         let currentInterfaceMode = 'light';
         let currentLayoutStyle = 'default';
         let currentPrimaryColor = '#5a64ff';
+        let currentModel = 'free'; // 当前选择的模型
+        let apiKey = ''; // 存储DeepSeek API密钥
 
         // 初始化
         function init() {
             hideMessages();
             updateApiStatus(true);
+            
+            // 从本地存储加载设置
+            loadSettings();
             
             // 事件监听器
             generateBtn.addEventListener('click', () => generateSVG());
@@ -611,6 +807,19 @@
             downloadBtn.addEventListener('click', downloadSVG);
             modifyBtn.addEventListener('click', enterModificationMode);
             clearBtn.addEventListener('click', resetInterface);
+            settingsBtn.addEventListener('click', openSettingsModal);
+            closeModalBtn.addEventListener('click', closeSettingsModal);
+            cancelBtn.addEventListener('click', closeSettingsModal);
+            saveBtn.addEventListener('click', saveSettings);
+            
+            // 模型选择变化事件
+            modelSelect.addEventListener('change', () => {
+                if (modelSelect.value === 'deepseek') {
+                    apiKeyContainer.style.display = 'block';
+                } else {
+                    apiKeyContainer.style.display = 'none';
+                }
+            });
 
             deviceOptions.forEach(option => {
                 option.addEventListener('click', () => {
@@ -646,8 +855,63 @@
                 option.classList.add('active');
                 currentLayoutStyle = option.dataset.layout;
             }));
-
+            
             primaryColorHexInput.value = primaryColorInput.value;
+        }
+        
+        // 从本地存储加载设置
+        function loadSettings() {
+            const savedModel = localStorage.getItem('aiModel');
+            const savedApiKey = localStorage.getItem('deepseekApiKey');
+            
+            if (savedModel) {
+                currentModel = savedModel;
+                modelSelect.value = savedModel;
+                
+                if (savedModel === 'deepseek') {
+                    apiKeyContainer.style.display = 'block';
+                    if (savedApiKey) {
+                        apiKey = savedApiKey;
+                        apiKeyInput.value = savedApiKey;
+                    }
+                }
+            }
+        }
+        
+        // 保存设置到本地存储
+        function saveSettings() {
+            currentModel = modelSelect.value;
+            
+            if (currentModel === 'deepseek') {
+                apiKey = apiKeyInput.value.trim();
+                if (!apiKey) {
+                    alert('请输入DeepSeek API密钥');
+                    return;
+                }
+                localStorage.setItem('deepseekApiKey', apiKey);
+            }
+            
+            localStorage.setItem('aiModel', currentModel);
+            closeSettingsModal();
+            alert('设置已保存！');
+        }
+        
+        // 打开设置弹窗
+        function openSettingsModal() {
+            modelSettingsModal.style.display = 'flex';
+        }
+        
+        // 关闭设置弹窗
+        function closeSettingsModal() {
+            modelSettingsModal.style.display = 'none';
+            // 重置表单到当前设置
+            modelSelect.value = currentModel;
+            if (currentModel === 'deepseek') {
+                apiKeyContainer.style.display = 'block';
+                apiKeyInput.value = apiKey;
+            } else {
+                apiKeyContainer.style.display = 'none';
+            }
         }
         
         // 重置整个界面
@@ -656,7 +920,7 @@
             defaultPreview.style.display = 'flex';
             
             promptInput.value = '';
-            promptInput.placeholder = '请输入您想要生成的SVG界面描述，例如：一个用户端登录界面。';
+            promptInput.placeholder = '请输入您想要生成的UI界面描述，例如：一个用户端登录界面。';
             
             hideMessages();
             downloadBtn.disabled = true;
@@ -703,12 +967,12 @@
         }
 
         async function generateSVG(promptOverride = null) {
-            // [修复] 通过判断是否存在promptOverride来确定这是否是一次“重新生成”操作
+            // 通过判断是否存在promptOverride来确定这是否是一次"重新生成"操作
             const isRegeneration = promptOverride !== null;
             const prompt = promptOverride ?? promptInput.value.trim();
             
             if (!prompt) {
-                showError(isModificationMode ? '请输入修改要求。' : '请输入SVG界面描述。');
+                showError(isModificationMode ? '请输入修改要求。' : '请输入UI界面描述。');
                 return;
             }
 
@@ -722,22 +986,58 @@
             svgPreview.innerHTML = '';
 
             try {
-                const POLLINATIONS_API_URL = 'https://text.pollinations.ai/';
                 let fullPrompt;
 
                 if (isModificationMode) {
                     fullPrompt = `请基于以下现有的SVG代码，并根据用户的修改要求，生成一个新的完整、有效、可预览的SVG代码。请仅返回SVG代码本身，不要包含任何其他说明文字或Markdown代码块标记。\n\n【现有SVG代码】:\n${generatedSVG}\n\n【修改要求】:\n${prompt}\n\n【其他设计参数】:\n设备: ${currentDevice}, 主色调: ${currentPrimaryColor}, 界面模式: ${currentInterfaceMode}, 布局风格: ${currentLayoutStyle}。请继续使用Lucide图标库和picsum.photos图片库。`;
                 } else {
-                    // [修复] 如果是重新生成，在prompt中加入额外指令以确保API返回新的、不同的结果
+                    // 如果是重新生成，在prompt中加入额外指令以确保API返回新的、不同的结果
                     const regenerationHint = isRegeneration ? '请为我生成一个不同于上一个的、全新的、有创意的版本。' : '';
                     fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。${regenerationHint}设备：${currentDevice}，主色调：${currentPrimaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}，引入开源图片库picsum.photos进行随机填充, 使用Lucide图标库进行填充。`;
                 }
                 
-                const response = await fetch(`${POLLINATIONS_API_URL}${encodeURIComponent(fullPrompt)}`);
+                let response;
+                let text;
                 
-                if (!response.ok) throw new Error(`API请求失败，状态码: ${response.status}`);
-
-                let text = await response.text();
+                // 根据选择的模型使用不同的API
+                if (currentModel === 'free') {
+                    const POLLINATIONS_API_URL = 'https://text.pollinations.ai/';
+                    response = await fetch(`${POLLINATIONS_API_URL}${encodeURIComponent(fullPrompt)}`);
+                    
+                    if (!response.ok) throw new Error(`免费API请求失败，状态码: ${response.status}`);
+                    
+                    text = await response.text();
+                } else if (currentModel === 'deepseek') {
+                    if (!apiKey) {
+                        throw new Error('请先在设置中配置DeepSeek API密钥');
+                    }
+                    
+                    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+                    response = await fetch(DEEPSEEK_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: "deepseek-chat",
+                            messages: [
+                                { role: "user", content: fullPrompt }
+                            ],
+                            temperature: 0.7,
+                            max_tokens: 2000
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`DeepSeek API请求失败: ${errorData.error?.message || '未知错误'}`);
+                    }
+                    
+                    const data = await response.json();
+                    text = data.choices[0]?.message?.content || '';
+                }
+                
                 const svgMatch = text.match(/<svg.*?>[\s\S]*?<\/svg>/i);
                 
                 const newSVG = svgMatch ? svgMatch[0].trim() : text.trim();
@@ -771,7 +1071,7 @@
                         isModificationMode = false;
                         modificationTitle.style.display = 'none';
                         promptInput.value = ''; // 清空修改指令
-                        promptInput.placeholder = '请输入您想要生成的SVG界面描述，例如：一个用户端登录界面。';
+                        promptInput.placeholder = '请输入您想要生成的UI界面描述，例如：一个用户端登录界面。';
                     }
                     // 只在不是修改模式（即初始生成或重新生成）时更新lastSuccessfulPrompt
                     if (!isModificationMode) {
