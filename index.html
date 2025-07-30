@@ -43,6 +43,97 @@
             min-height: 100vh;
             line-height: 1.6;
         }
+        /* 新增介绍弹窗样式 */
+        .intro-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .intro-content {
+            background: radial-gradient(185% 25% at 100% 0%, #e6008100, #f9f9fe), linear-gradient(90deg, #D0EFFF, #d4dcff, #ffd9f2);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 90%;
+            max-height: 90vh;
+            width: 540px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: popup 0.5s ease-out;
+            overflow-y: auto;
+        }
+        
+        .intro-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.3s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .intro-close:hover {
+            color: #333;
+            border-radius: 50%;
+        }
+        
+        .intro-title {
+            font-size: 1.45rem;
+            margin-bottom: 20px;
+            color: var(--darker);
+            font-weight: bold;
+	    text-decoration: 4px #5963ffc2 underline
+        }
+        
+        .intro-text {
+            line-height: 1.6;
+            color: var(--dark);
+            margin-bottom: 25px;
+            font-size: 1.0rem;
+        }
+        
+        .intro-text li {
+            margin-bottom: 10px;
+            position: relative;
+            margin-left: 20px;
+        }
+        
+        .intro-btn {
+            display: block;
+            padding: 10px 40px;
+            background: linear-gradient(113deg, #6472ff, #8352ff);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.0rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+                margin: 0 auto;
+        }
+        
+        .intro-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(89, 99, 255, 0.4);
+        }
+        
+        @keyframes popup {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 	.logo {
 		width: 130px; 
 	}
@@ -653,6 +744,22 @@
   }
 }
 @media (max-width: 768px) {
+            .intro-content {
+                padding: 25px 20px;
+                width: 90%;
+            }
+            
+            .intro-title {
+                font-size: 1.5rem;
+            }
+            
+            .intro-text {
+                font-size: 0.95rem;
+            }
+            
+            .intro-btn {
+                font-size: 1rem;
+            }
 	.tools-grid {
                 grid-template-columns: 1fr 1fr;
 	        gap: 10px;
@@ -742,6 +849,20 @@
 </head>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
+    <div class="intro-modal" id="introModal">
+        <div class="intro-content">
+            <span class="intro-close" id="introClose">&times;</span>
+            <h2 class="intro-title">网站说明</h2>
+            <div class="intro-text">
+                <ul>
+		<li><strong>浏览器推荐：</strong>推荐使用Chrome浏览器，功能适配更好，性能更佳（一些功能需要加载大量图片）。</li>
+		<li><strong>操作记录：</strong>本站没有后台，不保存用户操作信息，图片内容和工具的设置信息都临时保存到浏览器缓存里，清除缓存后记录也会被清理。</li>
+		<li><strong>访问速度：</strong>由于服务器在海外，故加载速度会慢些，有条件的可以开科学上网进行加速。</li>
+                </ul>
+            </div>
+            <button class="intro-btn" id="introConfirm">我知道了</button>
+        </div>
+    </div>
 <button id="backToTop" class="back-to-top">
     <i class="fas fa-arrow-up"></i>
 </button>
@@ -1059,7 +1180,46 @@ closeAddToHomeBtn.addEventListener('click', () => {
 
 // 初始化
 showAddToHomePrompt();
-
+        // 新增介绍弹窗控制逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            const introModal = document.getElementById('introModal');
+            const introClose = document.getElementById('introClose');
+            const introConfirm = document.getElementById('introConfirm');
+            
+            // 检查是否已经显示过弹窗
+            const isIntroShown = localStorage.getItem('introShown');
+            
+            // 如果没有显示过，显示弹窗
+            if (!isIntroShown) {
+                introModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                localStorage.setItem('introShown', 'true');
+            }
+            
+            // 关闭弹窗函数
+            function closeIntroModal() {
+                introModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // 绑定关闭事件
+            introClose.addEventListener('click', closeIntroModal);
+            introConfirm.addEventListener('click', closeIntroModal);
+            
+            // 点击模态框外部关闭
+            introModal.addEventListener('click', function(event) {
+                if (event.target === introModal) {
+                    closeIntroModal();
+                }
+            });
+            
+            // 按ESC键关闭
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && introModal.style.display === 'flex') {
+                    closeIntroModal();
+                }
+            });
+        });
 // 监听窗口大小变化
 window.addEventListener('resize', showAddToHomePrompt);
         // 渲染分类区域
