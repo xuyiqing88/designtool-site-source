@@ -39,6 +39,10 @@
             overflow-x: hidden;
             color: var(--text2);
         }
+	.under {
+		display: grid; 
+		grid-template-columns: 1fr 1fr;
+	}
         .topgroup {
             gap: 10px;
             display: flex;
@@ -754,6 +758,9 @@
 		    display: flex;
 	    	flex-direction: column;
 		    padding: 0;}
+	.under {
+		grid-template-columns: 1fr;
+	}
 	.container {
 		    padding: 20px 0;
 		}
@@ -1082,7 +1089,7 @@
         </div>
     <div class="panel">
 <h2>通道贴图对应关系</h2>
-	<div style=" display: grid; grid-template-columns: 1fr 1fr;">
+	<div class="under">
 	<li>diff-漫反射（COL）</li>
 	<li>nor-法线（NRM）</li>
 	<li>disp-置换（DIS）</li>
