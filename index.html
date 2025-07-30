@@ -855,14 +855,15 @@
             <h2 class="intro-title">网站说明</h2>
             <div class="intro-text">
                 <ul>
-		<li><strong>浏览器推荐：</strong>推荐使用Chrome浏览器，功能适配更好，性能更佳（一些功能需要加载大量图片）。</li>
-		<li><strong>操作记录：</strong>本站没有后台，不保存用户操作信息，图片内容和工具的设置信息都临时保存到浏览器缓存里，清除缓存后记录也会被清理。</li>
-		<li><strong>访问速度：</strong>由于服务器在海外，故加载速度会慢些，有条件的可以开科学上网进行加速。</li>
+                    <li><strong>浏览器推荐：</strong>推荐使用Chrome浏览器，功能适配更好，性能更佳（一些功能需要加载大量图片）。</li>
+                    <li><strong>操作记录：</strong>本站没有后台，不保存用户操作信息，图片内容和工具的设置信息都临时保存到浏览器缓存里，清除缓存后记录也会被清理。</li>
+                    <li><strong>访问速度：</strong>由于服务器在海外，故加载速度会慢些，有条件的可以开科学上网进行加速。</li>
                 </ul>
             </div>
             <button class="intro-btn" id="introConfirm">我知道了</button>
         </div>
     </div>
+
 <button id="backToTop" class="back-to-top">
     <i class="fas fa-arrow-up"></i>
 </button>
@@ -1193,20 +1194,22 @@ showAddToHomePrompt();
             const introClose = document.getElementById('introClose');
             const introConfirm = document.getElementById('introConfirm');
             
-            // 检查是否已经显示过弹窗
-            const isIntroShown = localStorage.getItem('introShown');
+            // 检查是否已经显示过弹窗 - 使用sessionStorage确保只显示一次
+            const isIntroShown = sessionStorage.getItem('introShown');
             
             // 如果没有显示过，显示弹窗
             if (!isIntroShown) {
                 introModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
-                localStorage.setItem('introShown', 'true');
             }
             
             // 关闭弹窗函数
             function closeIntroModal() {
                 introModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
+                
+                // 设置sessionStorage标志，表示已经显示过
+                sessionStorage.setItem('introShown', 'true');
             }
             
             // 绑定关闭事件
