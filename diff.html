@@ -211,16 +211,16 @@
             pointer-events: none;
         }
 
-        .resizer::after {
-            content: '↔';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-        }
+.resizer i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px;
+    z-index: 101;
+    pointer-events: none;
+}
 
         .drop-zone {
             position: absolute;
@@ -392,6 +392,9 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+    .resizer i {
+        font-size: 22px; /* 加大移动端图标尺寸 */
+    }
             .menu-item2 {
                 width: 100%;
             }
@@ -490,7 +493,9 @@
             <img id="image-after" src="" alt="对比图">
         </div>
 
-        <div class="resizer" id="resizer"></div>
+        <div class="resizer" id="resizer">
+    <i class="fa-solid fa-arrows-left-right"></i>
+</div>
 
         <div class="drop-zone left" id="drop-zone-left">
             <i class="fas fa-cloud-upload-alt"></i>
