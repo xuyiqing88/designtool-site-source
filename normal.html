@@ -93,9 +93,12 @@
             background: #0a0a14b3;
         }
         .container {
-            max-width: 1400px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 20px;
+	display: flex;
+    flex-direction: column;
+    gap: 20px;
         }
         
         header {
@@ -103,7 +106,6 @@
             position: relative;
             overflow: hidden;
             padding: 0 20px;
-            margin-bottom: 30px;
         }
         
         h1 {
@@ -129,8 +131,7 @@
         .content-n {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 0 20px;
+            gap: 20px;
         }
 
         
@@ -138,13 +139,11 @@
             background: var(--mainbg);
             border-radius: 10px;
             padding: 25px;
-            backdrop-filter: blur(12px);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
             height: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            min-width: 640px;
         }
         
         .panel h2 {
@@ -829,7 +828,7 @@
                     </div>
                 </div>
                 <div class="panel-title">
-                    <h2>输入图像<span class="scrib">上传灰度度图像</span></h2>               
+                    <h2>输入图像<span class="scrib">上传灰度或彩色图像</span></h2>               
                 </div>
                 
                 <div class="file-upload-area" id="inputUploadArea">
@@ -883,11 +882,11 @@
             
             <div class="panel">
                 <div class="map-type-tabs">
-                    <button class="tab-btn active" data-map-type="normal">法线</button>
-                    <button class="tab-btn" data-map-type="displacement">置换/凹凸</button>
-                    <button class="tab-btn" data-map-type="ao">AO</button>
-                    <button class="tab-btn" data-map-type="reflection">反射</button>
-                    <button class="tab-btn" data-map-type="glossiness">光泽度</button>
+                    <button class="tab-btn active" data-map-type="normal">nor法线</button>
+                    <button class="tab-btn" data-map-type="displacement">disp置换/凹凸</button>
+                    <button class="tab-btn" data-map-type="ao">AO(OCC)</button>
+                    <button class="tab-btn" data-map-type="reflection">ref反射</button>
+                    <button class="tab-btn" data-map-type="glossiness">gloss光泽度</button>
                 </div>
 
                 <div id="normalParams" class="param-panel active">
@@ -1081,8 +1080,24 @@
                 </div>
             </div>
         </div>
+    <div class="panel">
+<h2>通道贴图对应关系</h2>
+	<div style=" display: grid; grid-template-columns: 1fr 1fr;">
+	<li>diff-漫反射（COL）</li>
+	<li>nor-法线（NRM）</li>
+	<li>disp-置换（DIS）</li>
+	<li>AO-环境吸收（OCC）</li>
+	<li>reflection/specular-反射/高光（REF）</li>
+	<li>glossiness-光泽度</li>
+	<li>bump/height-黑白凹凸、高度图</li>
+	<li>metalness-金属度（Metallic）</li>
+	<li>roungh-粗糙度（金属度的粗糙度）</li>
+	<li>curvature-曲率</li>
+	</div>
+</div>
+	
     </div>
-    
+
     <div id="inputModal" class="modal">
         <span class="close">&times;</span>
         <img class="modal-content" id="inputModalImg">
