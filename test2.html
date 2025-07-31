@@ -12,9 +12,9 @@
     <meta name="apple-mobile-web-app-title" content="设计工具">
     <link rel="apple-touch-icon" href="img/app-icon-180x180.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
-    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+<link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
      crossorigin="anonymous"></script>
     <style>
         :root {
@@ -97,7 +97,7 @@
             margin-bottom: 20px;
             color: var(--darker);
             font-weight: bold;
-            text-decoration: 4px #5963ffc2 underline
+	    text-decoration: 4px #5963ffc2 underline
         }
         
         .intro-text {
@@ -124,7 +124,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 0 auto;
+                margin: 0 auto;
         }
         
         .intro-btn:hover {
@@ -132,71 +132,58 @@
             box-shadow: 0 7px 20px rgba(89, 99, 255, 0.4);
         }
         
-        .dont-show {
-            display: flex;
-            align-items: center;
-            margin-top: 15px;
-            justify-content: center;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-        
-        .dont-show input {
-            margin-right: 8px;
-        }
-        
         @keyframes popup {
             0% { transform: scale(0.9); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        .logo {
-            width: 130px; 
-        }
-        .logobt {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        /* 返回顶部按钮样式 */
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(113deg, #6472ff, #8352ff);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(89, 99, 255, 0.3);
-            z-index: 999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            opacity: 0.9;
-            transition: all 0.3s ease;
-        }
+	.logo {
+		width: 130px; 
+	}
+	.logobt {
+	display: flex;
+	align-items: center;
+    gap: 10px;
+	}
+	/* 返回顶部按钮样式 */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(113deg, #6472ff, #8352ff);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(89, 99, 255, 0.3);
+    z-index: 999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
 
-        .back-to-top:hover {
-            opacity: 1;
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(89, 99, 255, 0.4);
-        }
+.back-to-top:hover {
+    opacity: 1;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(89, 99, 255, 0.4);
+}
 
         .footer-bottom {
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            color: var(--gray);
-            font-size: 0.9rem;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+	    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    	padding: 20px;
+	    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+	color: var(--gray);
+	font-size: 0.9rem;
+	    gap: 10px;
+	flex-wrap: wrap;
+	}
         /* 二维码弹窗 */
         .modal {
             display: none;
@@ -257,7 +244,7 @@
             margin-left: 2px;
             transition: all 0.3s;
             position: relative;	
-            font-size: 16px;
+		font-size: 16px;
         }
         
         .donate-link:hover {
@@ -271,7 +258,7 @@
         }
         
         .container {
-            padding: 0 10%;
+                padding: 0 10%;
             margin: 0 auto;
         }
         
@@ -279,8 +266,8 @@
             text-align: center;
             padding: 0 10% 10px;
             position: relative;
-            background: linear-gradient(113deg, #6472ff, #8352ff);
-            margin-bottom: 40px;
+	background: linear-gradient(113deg, #6472ff, #8352ff);
+	margin-bottom: 40px;
         }
         
         h1 {
@@ -307,16 +294,16 @@
             top: 0;
             z-index: 100;
             padding: 20px;
-            overflow: hidden;
-            background: linear-gradient(113deg, #6472ff, #8352ff);
-            position: relative;	
-            align-items: center;
-            padding: 20px 10%;
+		overflow: hidden;
+	    background: linear-gradient(113deg, #6472ff, #8352ff);
+    	position: relative;	
+	align-items: center;
+	    padding: 20px 10%;
         }
         
         .search-box {
             position: relative;
-            margin-bottom: -30px;
+	    margin-bottom: -30px;
         }
         
         .search-box input {
@@ -327,8 +314,8 @@
             color: var(--dark);
             font-size: 1rem;
             transition: all 0.3s ease;
-            width: 99%;
-            margin-left: -20px;
+	    width: 99%;
+	margin-left: -20px;
         }
         
         .search-box input:focus {
@@ -363,7 +350,7 @@
             font-weight: 500;
             display: flex;
             align-items: center;
-            font-size: 16px;
+	font-size: 16px;
         }
         
         .category-btn:hover {
@@ -444,12 +431,11 @@
             width: auto;
             height: 100%;
             object-fit: contain;
-            transition: all ease 0.3s;
+	transition: all ease 0.3s;
         }
         .tool-cover img:hover {
-            transform: scale(1.15);
-            transition: all ease 0.3s;
-        }
+		    transform: scale(1.15);
+		transition: all ease 0.3s;}
         .tool-content {
             padding: 16px;
             flex-grow: 1;
@@ -467,19 +453,18 @@
             gap: 8px;
         }
         .h3 {
-            font-size: 1.0rem;
+		font-size: 1.0rem;
             margin-bottom: 8px;
             color: var(--darker);
             position: relative;
             display: flex;
             align-items: flex-start;
             gap: 8px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .h3:hover {
-            color: var(--primary);
-        }
+		text-decoration: none;
+    		font-weight: 600;}
+	.h3:hover {
+		color: var(--primary);
+		}
         .tool-card p {
             color: var(--gray);
             font-size: 13px;
@@ -503,15 +488,15 @@
             margin-top: auto;
             width: fit-content;
             font-size: 14px;
-            border: 1px solid var(--gray);
+	    border: 1px solid var(--gray);
         }
         
         .tool-link:hover {
             background: linear-gradient(113deg, #6472ff, #8352ff);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(89, 99, 255, 0.3);
-            color: #fff;
-            border: 1px solid var(--primary);
+		color: #fff;
+	border: 1px solid var(--primary);
         }
         
         /* 状态标签样式 - 统一为红色 */
@@ -536,8 +521,8 @@
         .comments-section {
             margin: 20px 0;
             padding: 20px;
-            background: #fff;
-            border-radius: 10px;
+    	 background: #fff;
+    	border-radius: 10px;
         }
         
         .comments-header {
@@ -545,10 +530,10 @@
             align-items: center;
             margin-bottom: 25px;
             border-bottom: 1px solid var(--border);
-            justify-content: space-between;
-            flex-wrap: wrap;
-            align-items: baseline;
-            padding-bottom: 10px;
+		justify-content: space-between;
+	flex-wrap: wrap;
+	    align-items: baseline;
+	padding-bottom: 10px;
         }
         
         .comments-icon {
@@ -646,62 +631,53 @@
             color: white;
         }
         .bgt{
-            position: relative;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        /* 形状样式 */
-        .shape {
-            position: absolute;
-            background: #ffffff12; /* 半透明白色 */
-            border-radius: 50%;
-            animation: move 10s infinite ease-in-out;
-            z-index: -2;
-        }
+	position: relative;
+	top: 0;
+    	left: 0;
+    	width: 100%;
+    	height: 100%;
+    	z-index: -1;
+}
+/* 形状样式 */
+.shape {
+	position: absolute;
+	background: #ffffff12; /* 半透明白色 */
+	border-radius: 50%;
+	animation: move 10s infinite ease-in-out;
+	z-index: -2;}
 
-        .shape-2 {
-            width: 200px;
-            height: 200px;
-            top: 50%;
-            left: 70%;
-            animation-duration: 12s;
-        }
+.shape-2 {
+	width: 200px;
+	height: 200px;
+	top: 50%;
+	left: 70%;
+	animation-duration: 12s;}
 
-        .shape-4 {
-            width: 250px;
-            height: 250px;
-            top: 30%;
-            left: 60%;
-            animation-duration: 10s;
-        }
-        .shape-5 {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            left: 10%;
-            animation-duration: 14s;
-        }
-        /* 随机移动动画 */
-        @keyframes move {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(200px, -100px) rotate(90deg);
-            }
-            50% {
-                transform: translate(-150px, 150px) rotate(180deg);
-            }
-            75% {
-                transform: translate(100px, -200px) rotate(270deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
-        }
+.shape-4 {
+	width: 250px;
+	height: 250px;
+	top: 30%;
+	left: 60%;
+	animation-duration: 10s;}
+.shape-5 {
+	width: 120px;
+	height: 120px;
+	top: 60%;
+	left: 10%;
+	animation-duration: 14s;}
+/* 随机移动动画 */
+@keyframes move {
+    0% {
+        transform: translate(0, 0) rotate(0deg);}
+    25% {
+        transform: translate(200px, -100px) rotate(90deg);}
+    50% {
+        transform: translate(-150px, 150px) rotate(180deg);}
+    75% {
+        transform: translate(100px, -200px) rotate(270deg);}
+    100% {
+        transform: translate(0, 0) rotate(360deg);}
+}
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -709,67 +685,67 @@
         
 
         /* 添加到桌面提示 */
-        .add-to-home-screen {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #fff;
-            color: var(--dark);
-            padding: 10px 20px;
-            padding-bottom: 15px; /* 增加底部内边距给箭头空间 */
-            border-radius: 50px;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            display: none;
-            animation: slideUp 0.5s ease-out;
-            max-width: 90%;
-        }
-        /* 三角形指示器 */
-        .bubble-arrow {
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 10px solid white; /* 与气泡背景色匹配 */
-            filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.1)); /* 添加阴影匹配气泡 */
-        }
-        .add-to-home-content {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+.add-to-home-screen {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: var(--dark);
+  padding: 10px 20px;
+  padding-bottom: 15px; /* 增加底部内边距给箭头空间 */
+  border-radius: 50px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: none;
+  animation: slideUp 0.5s ease-out;
+  max-width: 90%;
+}
+/* 三角形指示器 */
+.bubble-arrow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white; /* 与气泡背景色匹配 */
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.1)); /* 添加阴影匹配气泡 */
+}
+.add-to-home-content {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
-        .add-to-home-screen span {
-            font-size: 14px;
-            font-weight: 500;
-        }
+.add-to-home-screen span {
+  font-size: 14px;
+  font-weight: 500;
+}
 
-        #closeAddToHome {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-size: 20px;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
-        }
+#closeAddToHome {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, 20px);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-        @media (max-width: 768px) {
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@media (max-width: 768px) {
             .intro-content {
                 padding: 25px 20px;
                 width: 90%;
@@ -786,96 +762,88 @@
             .intro-btn {
                 font-size: 1rem;
             }
-            .tools-grid {
+	.tools-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 10px;
+	        gap: 10px;
             }
-            .category-btn {
-                font-size: 14px;
-            }
-            .donate-link {
-                font-size: 14px;
-            }
-            .logobt {
-                flex-direction: column;
-            }
+	.category-btn {
+	    font-size: 14px;}
+	.donate-link {
+		font-size: 14px;}
+	.logobt {
+	flex-direction: column;}
             h1 {
                 font-size: 1.8rem;
             }
-            .logo {
-                width: 150px; 
-            }
-            .back-to-top {
-                bottom: 20px;
-                right: 20px;
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
-            }
-            .controls {
+	.logo {
+		width: 150px; }
+	.back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+	.controls {
                 flex-direction: column;
                 align-items: center;
-                position: relative;
-                padding: 20px 0;
+        	position: relative;
+		padding: 20px 0	;
             }
 
-            .container {	
-                padding: 0;
-            }	
-            header {
-                padding: 0 10px 10px;
-                margin-bottom: 30px;
-            }
+	.container {	
+		padding: 0;}	
+	header {
+	padding: 0 10px 10px;
+	margin-bottom: 30px;}
 
-            .tool-content {
-                padding: 10px;
-            }
-            .comments-container {
+	.tool-content {
+	    	padding: 10px;}
+	.comments-container {
                 border-radius: 12px;
             }
-            .tool-cover img {
-                width: 80%;
-                height: auto;
-            }
-            .giscus-loading {
+	.tool-cover img {
+            width: 80%;
+            height: auto;
+	}
+	.giscus-loading {
                 padding: 30px 0;
             }
             
-            .giscus-error {
+	.giscus-error {
                 padding: 30px 15px;
             }
 
-            .add-to-home-screen {
-                display: flex;
-            }
+ 	.add-to-home-screen {
+    		display: flex;
+  	}
             
-            .tool-card {
+	.tool-card {
                 flex-direction: column;
-                height: 190px;
+	        height: 190px;
             }
-            .h3 {
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                -webkit-line-clamp: 1;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 14px;
-            }
-            .tool-link {
-                display: none;
-            }
-            .tool-cover {
+	.h3 {
+	    display: -webkit-box;
+    	-webkit-box-orient: vertical;
+    	-webkit-line-clamp: 1;
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+	        font-size: 14px;
+	}
+	.tool-link {
+		display: none;}
+	.tool-cover {
                 width: 100%;
                 height: 80px;
                 border-right: none;
             }
             
             /* 移动端评论区优化 */
-            .comments-title {
+	.comments-title {
                 font-size: 1.2rem;
             }
             
-            .comments-icon {
+	.comments-icon {
                 font-size: 1.1rem;
             }
         }
@@ -895,10 +863,6 @@
                 </ul>
             </div>
             <button class="intro-btn" id="introConfirm">我知道了</button>
-            <div class="dont-show">
-                <input type="checkbox" id="dontShowAgain">
-                <label for="dontShowAgain">不再显示此消息</label>
-            </div>
         </div>
     </div>
 
@@ -906,77 +870,79 @@
     <i class="fas fa-arrow-up"></i>
 </button>
 <div class="controls">
-    <div class="bgt">
-        <div class="shape shape-2"></div><div class="shape shape-4"></div><div class="shape shape-5"></div> 
-    </div>
-    <div class="logobt">
-        <img src="img/logo2.svg" alt="logo" class="logo">
-        <div class="category-filter">
-            <button class="category-btn" data-category="design">
-                <span>轻易设计</span>
-            </button>
-            <button class="category-btn" data-category="dev">
-                <span>轻易AI</span>
-            </button>
-            <button class="category-btn" data-category="3D">
-                <span>轻易3D</span>
-            </button>
-            <button class="category-btn" data-category="utility">
-                <span>轻易实用</span>
-            </button>
+		<div class="bgt">
+		<div class="shape shape-2"></div><div class="shape shape-4"></div><div class="shape shape-5"></div> 
+		</div>
+	<div class="logobt">
+	<img src="img/logo2.svg" alt="logo" class="logo">
+	<div class="category-filter">
+                <button class="category-btn" data-category="design">
+                    <span>轻易设计</span>
+                </button>
+                <button class="category-btn" data-category="dev">
+                    <span>轻易AI</span>
+                </button>
+                <button class="category-btn" data-category="3D">
+                    <span>轻易3D</span>
+                </button>
+                <button class="category-btn" data-category="utility">
+                    <span>轻易实用</span>
+                </button>
+            </div>
+	</div>
+	<span>
+		<i class="fa-classic fa-solid fa-comment-dots" style="color: #fff;"></i>
+		<a class="donate-link" id="commentsBtn" style="margin-right: 25px;">评论反馈</a>
+		<i class="fa-classic fa-solid fa-bone" style="color: #fff;"></i>
+		<a class="donate-link" id="donateBtn">向我投喂</a>
+	</span>
+     </div>
+        <header>
+
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索工具...">
+            </div>  
+        </header>
+
+    <div class="container">       
+        <div id="toolsContainer" style="padding: 8px 20px; background: #fff; border-radius: 10px;">
+            <!-- 分类区域将由JS动态生成 -->
+        </div>
+        
+        <!-- 评论区域 -->
+<section class="comments-section" id="comments-section">  <!-- 添加id -->
+    <div class="comments-header">
+        <div class="comments-icon">
+            <h2 class="comments-title">评论/反馈</h2>
         </div>
     </div>
-    <span>
-        <i class="fa-classic fa-solid fa-comment-dots" style="color: #fff;"></i>
-        <a class="donate-link" id="commentsBtn" style="margin-right: 25px;">评论反馈</a>
-        <i class="fa-classic fa-solid fa-bone" style="color: #fff;"></i>
-        <a class="donate-link" id="donateBtn">向我投喂</a>
-    </span>
-</div>
-<header>
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="搜索工具...">
-    </div>  
-</header>
+    <div class="giscus"></div>
+</section>
 
-<div class="container">       
-    <div id="toolsContainer" style="padding: 8px 20px; background: #fff; border-radius: 10px;">
-        <!-- 分类区域将由JS动态生成 -->
     </div>
     
-    <!-- 评论区域 -->
-    <section class="comments-section" id="comments-section">  <!-- 添加id -->
-        <div class="comments-header">
-            <div class="comments-icon">
-                <h2 class="comments-title">评论/反馈</h2>
-            </div>
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h3>微信扫一扫！</h3>
+            <img src="img/qrcode.webp" alt="捐赠二维码">
+            <p>您的支持是我持续更新的动力</p>
         </div>
-        <div class="giscus"></div>
-    </section>
-</div>
-
-<div class="modal" id="qrModal">
-    <div class="modal-content">
-        <span class="close-btn" id="closeModal">&times;</span>
-        <h3>微信扫一扫！</h3>
-        <img src="img/qrcode.webp" alt="捐赠二维码">
-        <p>您的支持是我持续更新的动力</p>
     </div>
-</div>
 <div class="footer-bottom">
-    © 2025 designtool.site 保留所有权利 | BY徐艺青 | 
-    <a href="https://cloud.umami.is/share/0HTJCNc5eh5ILEs7/designtool.site" target="_blank" rel="noopener" class="footer-link" style="color: var(--gray);  text-decoration: none;">
-        <i class="fas fa-chart-bar"></i> 网站统计
-    </a>
+© 2025 designtool.site 保留所有权利 | BY徐艺青 | 
+<a href="https://cloud.umami.is/share/0HTJCNc5eh5ILEs7/designtool.site" target="_blank" rel="noopener" class="footer-link" style="color: var(--gray);  text-decoration: none;">
+                            <i class="fas fa-chart-bar"></i> 网站统计
+                        </a>
 </div>
 <!-- 添加到桌面提示气泡 -->
 <div id="addToHomeScreen" class="add-to-home-screen">
-    <div class="add-to-home-content">
-        <span>可添加至桌面图标</span>
-        <button id="closeAddToHome">&times;</button>
-    </div>
-    <div class="bubble-arrow"></div>
+  <div class="add-to-home-content">
+    <span>可添加至桌面图标</span>
+    <button id="closeAddToHome">&times;</button>
+  </div>
+  <div class="bubble-arrow"></div>
 </div>
 
 <script src="https://giscus.app/client.js"
@@ -1199,78 +1165,75 @@
             });
             return grouped;
         }
-        // 添加到桌面提示功能
-        const addToHomeElement = document.getElementById('addToHomeScreen');
-        const closeAddToHomeBtn = document.getElementById('closeAddToHome');
-        // 返回顶部功能
-        const backToTopBtn = document.getElementById('backToTop');
-        // 检查是否已经显示过提示
-        const isAddToHomeShown = localStorage.getItem('addToHomeShown');
+// 添加到桌面提示功能
+const addToHomeElement = document.getElementById('addToHomeScreen');
+const closeAddToHomeBtn = document.getElementById('closeAddToHome');
+// 返回顶部功能
+const backToTopBtn = document.getElementById('backToTop');
+// 检查是否已经显示过提示
+const isAddToHomeShown = localStorage.getItem('addToHomeShown');
 
-        // 显示提示（如果是移动设备且未显示过）
-        function showAddToHomePrompt() {
-            if (!isAddToHomeShown && window.innerWidth <= 768) {
-                setTimeout(() => {
-                    addToHomeElement.style.display = 'flex';
-                    localStorage.setItem('addToHomeShown', 'true');
-                }, 5000); // 5秒后显示
-            }
+// 显示提示（如果是移动设备且未显示过）
+function showAddToHomePrompt() {
+  if (!isAddToHomeShown && window.innerWidth <= 768) {
+    setTimeout(() => {
+      addToHomeElement.style.display = 'flex';
+      localStorage.setItem('addToHomeShown', 'true');
+    }, 5000); // 5秒后显示
+  }
+}
+
+// 关闭提示
+closeAddToHomeBtn.addEventListener('click', () => {
+  addToHomeElement.style.display = 'none';
+});
+
+// 初始化
+showAddToHomePrompt();
+    // 新增介绍弹窗控制逻辑
+    document.addEventListener('DOMContentLoaded', function() {
+        const introModal = document.getElementById('introModal');
+        const introClose = document.getElementById('introClose');
+        const introConfirm = document.getElementById('introConfirm');
+
+        // 检查是否已经显示过弹窗 - 使用localStorage确保只显示一次，即使关闭浏览器也记住
+        const isIntroShown = localStorage.getItem('introShown'); // <-- 修改点
+
+        // 如果没有显示过，显示弹窗
+        if (!isIntroShown) {
+            introModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
 
-        // 关闭提示
-        closeAddToHomeBtn.addEventListener('click', () => {
-            addToHomeElement.style.display = 'none';
+        // 关闭弹窗函数
+        function closeIntroModal() {
+            introModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+
+            // 设置localStorage标志，表示已经显示过
+            localStorage.setItem('introShown', 'true'); // <-- 修改点
+        }
+
+        // 绑定关闭事件
+        introClose.addEventListener('click', closeIntroModal);
+        introConfirm.addEventListener('click', closeIntroModal);
+
+        // 点击模态框外部关闭
+        introModal.addEventListener('click', function(event) {
+            if (event.target === introModal) {
+                closeIntroModal();
+            }
         });
 
-        // 初始化
-        showAddToHomePrompt();
-        // 新增介绍弹窗控制逻辑
-        document.addEventListener('DOMContentLoaded', function() {
-            const introModal = document.getElementById('introModal');
-            const introClose = document.getElementById('introClose');
-            const introConfirm = document.getElementById('introConfirm');
-            const dontShowCheckbox = document.getElementById('dontShowAgain');
-            
-            // 检查是否已经显示过弹窗 - 使用localStorage确保只显示一次
-            const isIntroShown = localStorage.getItem('introShown');
-            
-            // 如果没有显示过，显示弹窗
-            if (!isIntroShown) {
-                introModal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+        // 按ESC键关闭
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && introModal.style.display === 'flex') {
+                closeIntroModal();
             }
-            
-            // 关闭弹窗函数
-            function closeIntroModal() {
-                introModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                
-                // 如果用户勾选了"不再显示"，设置localStorage标志
-                if (dontShowCheckbox.checked) {
-                    localStorage.setItem('introShown', 'true');
-                }
-            }
-            
-            // 绑定关闭事件
-            introClose.addEventListener('click', closeIntroModal);
-            introConfirm.addEventListener('click', closeIntroModal);
-            
-            // 点击模态框外部关闭
-            introModal.addEventListener('click', function(event) {
-                if (event.target === introModal) {
-                    closeIntroModal();
-                }
-            });
-            
-            // 按ESC键关闭
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape' && introModal.style.display === 'flex') {
-                    closeIntroModal();
-                }
-            });
         });
-        // 监听窗口大小变化
-        window.addEventListener('resize', showAddToHomePrompt);
+    });
+// 监听窗口大小变化
+window.addEventListener('resize', showAddToHomePrompt);
         // 渲染分类区域
         function renderCategorySections() {
             const container = document.getElementById('toolsContainer');
@@ -1315,8 +1278,8 @@
                         
                         toolCard.innerHTML = `
                             <a class="tool-cover" href="${tool.link}">
-                                <img src="${tool.icon}" alt="${tool.title}">
-                            </a>
+				<img src="${tool.icon}" alt="${tool.title}">
+				</a>
                             <div class="tool-content">
                                 <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
                                 <p>${tool.description}</p>
@@ -1485,36 +1448,49 @@
                 document.body.style.overflow = 'auto';
             }
         });
-        // 在现有的JavaScript代码中添加（放在文件底部）
-        document.getElementById('commentsBtn').addEventListener('click', function() {
-            const commentsSection = document.getElementById('comments-section');
-            if (commentsSection) {
-                // 平滑滚动到评论区
-                commentsSection.scrollIntoView({ behavior: 'smooth' });
-                
-                // 添加高亮效果（可选）
-                commentsSection.style.backgroundColor = '#f0f5ff';
-                setTimeout(() => {
-                    commentsSection.style.backgroundColor = '';
-                }, 1000);
-            }
-        });
-        // 滚动时显示/隐藏按钮
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.style.display = 'flex';
-            } else {
-                backToTopBtn.style.display = 'none';
-            }
-        });
+// 在现有的JavaScript代码中添加（放在文件底部）
+document.getElementById('commentsBtn').addEventListener('click', function() {
+    const commentsSection = document.getElementById('comments-section');
+    if (commentsSection) {
+        // 平滑滚动到评论区
+        commentsSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // 添加高亮效果（可选）
+        commentsSection.style.backgroundColor = '#f0f5ff';
+        setTimeout(() => {
+            commentsSection.style.backgroundColor = '';
+        }, 1000);
+    }
+});
+// 滚动时显示/隐藏按钮
+window.addEventListener('scroll', function() {
+    if (window.pageYOffset > 300) {
+        backToTopBtn.style.display = 'flex';
+    } else {
+        backToTopBtn.style.display = 'none';
+    }
+});
 
-        // 点击按钮平滑滚动到顶部
-        backToTopBtn.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+// 点击按钮平滑滚动到顶部
+backToTopBtn.addEventListener('click', function() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker 注册成功，作用域为: ', registration.scope);
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker 注册失败: ', err);
+                    });
             });
-        });
+        }
     </script>
 </body>
 </html>
