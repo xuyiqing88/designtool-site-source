@@ -44,7 +44,9 @@
             background-image: radial-gradient(circle at top right, rgba(90, 100, 255, 0.03) 0%, transparent 30%), 
                               radial-gradient(circle at bottom left, rgba(106, 82, 255, 0.03) 0%, transparent 30%);
         }
-
+	.laba {
+		margin-right: 40px;
+	}
         .container {
             width: 100%;
             max-width: 1100px;
@@ -62,11 +64,10 @@
         header {
             background: linear-gradient(113deg, rgba(90,100,255,0.1), rgba(106,82,255,0.1));
             color: var(--text1);
-            padding: 28px 16px;
+            padding: 20px 16px;
             text-align: center;
             position: relative;
             overflow: hidden;
-            border-bottom: 1px solid var(--line);
             z-index: 20; /* 确保 header 在列表之上 */
         }
 
@@ -356,7 +357,6 @@
             align-items: center;
             gap: 12px;
             font-size: 14px;
-            border: 1px solid var(--line);
             width: 100%;
         }
         .status-indicator { width: 12px; height: 12px; border-radius: 50%; background: var(--error); flex-shrink: 0; }
@@ -408,9 +408,8 @@
         /* --- 移动端优化 --- */
         @media (max-width: 768px) {
             body { align-items: flex-start; }
-	.now-playing h3 {
+	.now-playing h3, .laba,  footer {
 		display: none;}
-        footer { display: none;}
             .container {
                 border-radius: 0;
                 max-height: none;
@@ -492,6 +491,9 @@
                             <div class="track-title">电台名称</div>
                             <div class="track-artist">电台分类</div>
                             <div class="track-album">电台描述</div>
+                        </div>
+			<div class="laba">
+                            <img src="img/laba.svg">
                         </div>
                     </div>
                 </div>
