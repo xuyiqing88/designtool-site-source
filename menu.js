@@ -304,7 +304,7 @@ const menuData = [
             { title: "图片对比工具", link: "diff.html" },
             { title: "图片压缩工具", link: "comp.html" },
             { title: "UI设计数据生成器", link: "data.html"},
-            { title: "在线版Photoshop", link: "PS.html" },
+            { title: "在线PS", link: "PS.html" },
             { title: "矢量花朵生成器", link: "flower.html" },
             { title: "城市天际线生成器", link: "city.html" },
         ]
@@ -317,8 +317,8 @@ const menuData = [
 	    { title: "AI数字人（免费版）", link: "freeAI.html" },
 	    { title: "AI绘画", link: "draw.html" },
 	    { title: "AI数字人（API版）", link: "AI.html" },
-            { title: "模型数据集编辑器", link: "model.html" },
-            { title: "SDXL提示词风格大全", link: "SDXL.html" },
+            { title: "lora训练数据集编辑", link: "model.html" },
+            { title: "AI画风提示词大全", link: "SDXL.html" },
         ]
     },
 
@@ -329,17 +329,17 @@ const menuData = [
             { title: "PBR贴图生成", link: "normal.html" },
             { title: "无缝贴图制作", link: "texture.html" },
             { title: "无缝贴图预览", link: "map.html" },
-            { title: "ORM贴图生成", link: "ORM.html" },
-	    { title: "颜色转换工具", link: "color.html" },
+            { title: "ORM游戏贴图生成", link: "ORM.html" },
+	    { title: "线性颜色转换", link: "color.html" },
         ]
     },
     {
         title: "轻易实用",
         icon: "fa-solid fa-swatchbook",
         submenu: [
-            { title: "在线网络收音机", link: "radio.html" },
-            { title: "朋友圈九宫格裁剪", link: "9img.html" },
-            { title: "本地翻译工具", link: "translation.html" },
+            { title: "在线收音机", link: "radio.html" },
+            { title: "朋友圈九宫格制作", link: "9img.html" },
+            { title: "高级翻译工具", link: "translation.html" },
             { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
     },
