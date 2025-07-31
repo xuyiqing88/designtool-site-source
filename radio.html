@@ -441,7 +441,8 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--main-color);
+            /* 修改：背景从蓝色改为半透明黑色 */
+            background: rgba(0, 0, 0, 0.75);
             color: white;
             padding: 14px 28px;
             border-radius: 12px;
@@ -498,8 +499,8 @@
 
         @media (max-width: 768px) {
             .content1 {
-	flex-wrap: nowrap;
-        flex-direction: column-reverse;
+                flex-wrap: nowrap;
+                flex-direction: column-reverse;
             }
             
             .radio-list {
@@ -552,17 +553,7 @@
                     </div>
                 </div>
                 
-                <div class="station active" data-stream="https://stream.zeno.fm/0r0xa792kwzuv" data-name="轻松爵士乐" data-genre="爵士 • 休闲 • 纯音乐" data-icon="music" data-image="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80">
-                    <div class="station-logo">
-                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Jazz">
-                    </div>
-                    <div class="station-info">
-                        <div class="station-name">轻松爵士乐</div>
-                        <div class="station-genre">爵士 • 休闲 • 纯音乐</div>
-                    </div>
-                </div>
-                
-                <div class="station" data-stream="https://stream-164.zeno.fm/nbdgqsc4uwzuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJuYmRncXNjNHV3enV2IiwiaG9zdCI6InN0cmVhbS0xNjQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlRBem1YdFJrUWd1YkozZmtiTkxiSmciLCJpYXQiOjE3NTM4ODc4NTYsImV4cCI6MTc1Mzg4NzkxNn0.iry7HVbIgdfPlgjn93XyyJSvewmdm_18m3pp9UGmFNI&an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=72ce21eb817b1807c6dfcebad240ce89" data-name="流行音乐台" data-genre="流行 • 最新单曲 • 排行榜" data-icon="compact-disc" data-image="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80">
+                <div class="station active" data-stream="https://stream-164.zeno.fm/nbdgqsc4uwzuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJuYmRncXNjNHV3enV2IiwiaG9zdCI6InN0cmVhbS0xNjQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlRBem1YdFJrUWd1YkozZmtiTkxiSmciLCJpYXQiOjE3NTM4ODc4NTYsImV4cCI6MTc1Mzg4NzkxNn0.iry7HVbIgdfPlgjn93XyyJSvewmdm_18m3pp9UGmFNI&an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=72ce21eb817b1807c6dfcebad240ce89" data-name="华语流行音乐台" data-genre="流行 • 最新单曲 • 排行榜" data-icon="compact-disc" data-image="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" data-album="热门单曲放送">
                     <div class="station-logo">
                         <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Pop">
                     </div>
@@ -572,7 +563,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://stream.klassikradio.de/live/mp3-128" data-name="古典音乐频道" data-genre="古典 • 交响乐 • 协奏曲" data-icon="guitar" data-image="https://images.unsplash.com/photo-1507838153414-b4b713384a76?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80">
+                <div class="station" data-stream="https://stream.klassikradio.de/live/mp3-128" data-name="古典音乐频道" data-genre="古典 • 交响乐 • 协奏曲" data-icon="guitar" data-image="https://images.unsplash.com/photo-1507838153414-b4b713384a76?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" data-album="经典交响现场">
                     <div class="station-logo">
                         <img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Classical">
                     </div>
@@ -582,7 +573,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://stream.zeno.fm/cfwn65k0hd0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="FM.1003中文频道" data-genre="音乐 • 中文" data-icon="volume-up" data-image="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80">
+                <div class="station" data-stream="https://stream.zeno.fm/cfwn65k0hd0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="FM.1003中文频道" data-genre="音乐 • 中文" data-icon="volume-up" data-image="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" data-album="全天候中文广播">
                     <div class="station-logo">
                         <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Rock">
                     </div>
@@ -592,7 +583,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://stream.zeno.fm/fcvxu14m7s8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="MandoPop Karaoke" data-genre="音乐 • 华语" data-icon="sliders-h" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/aSthZHpac4mQ_BSZsXzckfCh17oooAM002v-x8p86GM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3dfS3Z2M1FzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d3cldmMmdvTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY1MDkwMzc0MzAwMA.webp">
+                <div class="station" data-stream="https://stream.zeno.fm/fcvxu14m7s8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="MandoPop Karaoke" data-genre="音乐 • 华语" data-icon="sliders-h" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/aSthZHpac4mQ_BSZsXzckfCh17oooAM002v-x8p86GM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3dfS3Z2M1FzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d3cldmMmdvTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY1MDkwMzc0MzAwMA.webp" data-album="华语金曲伴唱">
                     <div class="station-logo">
                         <img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/aSthZHpac4mQ_BSZsXzckfCh17oooAM002v-x8p86GM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3dfS3Z2M1FzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d3cldmMmdvTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY1MDkwMzc0MzAwMA.webp" alt="EDM">
                     </div>
@@ -602,7 +593,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://scdn.nrjaudio.fm/audio1/fr/31187/mp3_128.mp3?origine=tuneinradio?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="TAYLOR SWIFT" data-genre="乡村 • Taylor Swift • 美国风情" data-icon="guitar" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/LDQu9H9mVFRnBCnOV3RAWWfnF96h2iZ27tp9SciEtB8/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvZDc0ODMwOTAtYWY1Yy00MDA5LWJiYzAtZDAyZTczNjViYmM0L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp">
+                <div class="station" data-stream="https://scdn.nrjaudio.fm/audio1/fr/31187/mp3_128.mp3?origine=tuneinradio?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="TAYLOR SWIFT" data-genre="乡村 • Taylor Swift • 美国风情" data-icon="guitar" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/LDQu9H9mVFRnBCnOV3RAWWfnF96h2iZ27tp9SciEtB8/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvZDc0ODMwOTAtYWY1Yy00MDA5LWJiYzAtZDAyZTczNjViYmM0L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp" data-album="Taylor Swift精选">
                     <div class="station-logo">
                         <img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/LDQu9H9mVFRnBCnOV3RAWWfnF96h2iZ27tp9SciEtB8/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvZDc0ODMwOTAtYWY1Yy00MDA5LWJiYzAtZDAyZTczNjViYmM0L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp" alt="Country">
                     </div>
@@ -612,7 +603,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://stream.zeno.fm/rxx6d9fbvv8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="美国乡村流行" data-genre="乡村 • R&B • 美国" data-icon="microphone-alt" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/l-Q0wixmFPPeE5naCek6ALcM7trbLMht0UiMAwOPHAM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3ctcG1RMndrTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d4b1RfLXdzTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5NTgzMTcwNDAwMA.webp">
+                <div class="station" data-stream="https://stream.zeno.fm/rxx6d9fbvv8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="美国乡村流行" data-genre="乡村 • R&B • 美国" data-icon="microphone-alt" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/l-Q0wixmFPPeE5naCek6ALcM7trbLMht0UiMAwOPHAM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3ctcG1RMndrTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d4b1RfLXdzTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5NTgzMTcwNDAwMA.webp" data-album="美国公告牌流行">
                     <div class="station-logo">
                         <img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/l-Q0wixmFPPeE5naCek6ALcM7trbLMht0UiMAwOPHAM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3ctcG1RMndrTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d4b1RfLXdzTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5NTgzMTcwNDAwMA.webp" alt="Hip Hop">
                     </div>
@@ -622,7 +613,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://stream.zeno.fm/2satvbfq4a0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="80年代英语金曲" data-genre="80年代 • 怀旧 • 经典" data-icon="history" data-image="https://images.unsplash.com/photo-1587132137056-bfbf0166836e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80">
+                <div class="station" data-stream="https://stream.zeno.fm/2satvbfq4a0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="80年代英语金曲" data-genre="80年代 • 怀旧 • 经典" data-icon="history" data-image="https://images.unsplash.com/photo-1587132137056-bfbf0166836e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" data-album="重回80年代">
                     <div class="station-logo">
                         <img src="https://images.unsplash.com/photo-1587132137056-bfbf0166836e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="80s">
                     </div>
@@ -632,7 +623,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://stream.zeno.fm/gq7kqcntzwzuv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="英语情歌" data-genre="情歌 • 怀旧 • 经典" data-icon="compact-disc" data-image="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80">
+                <div class="station" data-stream="https://stream.zeno.fm/gq7kqcntzwzuv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="英语情歌" data-genre="情歌 • 怀旧 • 经典" data-icon="compact-disc" data-image="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" data-album="经典英文情歌">
                     <div class="station-logo">
                         <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="90s">
                     </div>
@@ -642,7 +633,7 @@
                     </div>
                 </div>
                 
-                <div class="station" data-stream="https://stream.zeno.fm/advmk81bu68uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=73cc6bb2efb73c1ad85109feaf770231" data-name="tiktok	音乐台" data-genre="拉丁 • 萨尔萨 • 雷鬼" data-icon="music" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/fA-43wjtrcbtfJwGLa4oJtyTGQR8c-UgcJq7T3vGUZU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJRFE4dlQ4cVFzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJRHdnTWo4aEFnTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5MTkyOTU0MDAwMA.webp">
+                <div class="station" data-stream="https://stream.zeno.fm/advmk81bu68uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=73cc6bb2efb73c1ad85109feaf770231" data-name="tiktok	音乐台" data-genre="拉丁 • 萨尔萨 • 雷鬼" data-icon="music" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/fA-43wjtrcbtfJwGLa4oJtyTGQR8c-UgcJq7T3vGUZU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJRFE4dlQ4cVFzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJRHdnTWo4aEFnTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5MTkyOTU0MDAwMA.webp" data-album="抖音热门神曲">
                     <div class="station-logo">
                         <img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/fA-43wjtrcbtfJwGLa4oJtyTGQR8c-UgcJq7T3vGUZU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJRFE4dlQ4cVFzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJRHdnTWo4aEFnTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5MTkyOTU0MDAwMA.webp" alt="Latin">
                     </div>
@@ -651,6 +642,17 @@
                         <div class="station-genre">TIKTOK • 流行 • 雷鬼</div>
                     </div>
                 </div>
+
+                <div class="station" data-stream="https://stream.zeno.fm/0r0xa792kwzuv" data-name="轻松爵士乐" data-genre="爵士 • 休闲 • 纯音乐" data-icon="music" data-image="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" data-album="午后爵士时光">
+                    <div class="station-logo">
+                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Jazz">
+                    </div>
+                    <div class="station-info">
+                        <div class="station-name">轻松爵士乐</div>
+                        <div class="station-genre">爵士 • 休闲 • 纯音乐</div>
+                    </div>
+                </div>
+
             </div>
             
             <div class="player-section">
@@ -662,9 +664,9 @@
                             <i class="fas fa-music"></i>
                         </div>
                         <div class="track-details">
-                            <div class="track-title">Midnight Jazz Session</div>
-                            <div class="track-artist">The Cool Cats Quartet</div>
-                            <div class="track-album">Live at Blue Note • 2023</div>
+                            <div class="track-title">电台名称</div>
+                            <div class="track-artist">电台分类</div>
+                            <div class="track-album">电台描述</div>
                         </div>
                     </div>
                 </div>
@@ -706,90 +708,6 @@
             let currentStation = document.querySelector('.station.active');
             let isPlaying = false;
             
-            // 真实可用的Icecast流媒体URL
-            const stations = [
-                {
-                    name: "轻松爵士乐",
-                    stream: "https://stream.zeno.fm/0r0xa792kwzuv",
-                    genre: "爵士 • 休闲 • 纯音乐",
-                    icon: "music",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "华语流行音乐台",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133773",
-                    genre: "流行 • 最新单曲 • 排行榜",
-                    icon: "compact-disc",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "古典音乐频道",
-                    stream: "https://stream.klassikradio.de/live/mp3-128",
-                    genre: "古典 • 交响乐 • 协奏曲",
-                    icon: "guitar",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1507838153414-b4b713384a76?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "FM.1003中文频道",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133771",
-                    genre: "音乐 • 中文",
-                    icon: "volume-up",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "MandoPop Karaoke",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133775",
-                    genre: "音乐 • 华语",
-                    icon: "sliders-h",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "TAYLOR SWIFT",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133769",
-                    genre: "乡村 • Taylor Swift • 美国风情",
-                    icon: "guitar",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1606220588911-4561c0e4d5a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "美国乡村流行",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133777",
-                    genre: "乡村 • R&B • 美国",
-                    icon: "microphone-alt",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1619983081563-430f63602b5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "80年代英语金曲",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133779",
-                    genre: "80年代 • 怀旧 • 经典",
-                    icon: "history",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1587132137056-bfbf0166836e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "英语情歌",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133781",
-                    genre: "情歌 • 怀旧 • 经典",
-                    icon: "compact-disc",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                    name: "TIKTOK音乐台",
-                    stream: "http://stream.radiotime.com/listen.mp3?streamId=3133783",
-                    genre: "TIKTOK • 流行 • 雷鬼",
-                    icon: "music",
-                    bitrate: "128kbps",
-                    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                }
-            ];
-            
             // 初始化音频源
             if(currentStation) {
                 audio.src = currentStation.getAttribute('data-stream');
@@ -801,23 +719,18 @@
             
             // 切换电台
             const stationElements = document.querySelectorAll('.station');
-            stationElements.forEach((station, index) => {
+            stationElements.forEach(station => {
                 station.addEventListener('click', function() {
                     stationElements.forEach(s => s.classList.remove('active'));
                     this.classList.add('active');
                     currentStation = this;
                     
-                    // 切换到新电台
                     audio.src = this.getAttribute('data-stream');
+                    document.querySelector('.status-text').innerHTML = `当前状态: <strong>正在连接</strong> | 比特率: <strong>128kbps</strong> | 格式: <strong>MP3</strong>`;
                     
-                    // 更新状态显示
-                    document.querySelector('.status-text').innerHTML = `当前状态: <strong>正在连接</strong> | 比特率: <strong>${stations[index].bitrate}</strong> | 格式: <strong>MP3</strong>`;
+                    // 更新封面图片和播放器信息
+                    updatePlayerInfo(this);
                     
-                    // 更新封面图片
-                    const imageUrl = this.getAttribute('data-image');
-                    document.querySelector('.album-art img').src = imageUrl;
-                    
-                    // 如果正在播放，继续播放新电台
                     if(isPlaying) {
                         audio.play().catch(e => {
                             console.error('播放失败:', e);
@@ -825,11 +738,8 @@
                         });
                     }
                     
-                    // 更新曲目信息（模拟）
-                    updateTrackInfo(stations[index].name);
-                    
-                    // 显示通知
-                    showNotification(`正在播放: ${stations[index].name}`);
+                    const stationName = this.getAttribute('data-name');
+                    showNotification(`正在播放: ${stationName}`);
                 });
             });
             
@@ -837,7 +747,6 @@
             const volumeSlider = document.getElementById('volume-slider');
             volumeSlider.addEventListener('input', function() {
                 audio.volume = this.value;
-                // 更新音量图标
                 const volumeIcon = document.querySelector('.volume-icon');
                 if (this.value == 0) {
                     volumeIcon.className = 'fas fa-volume-mute volume-icon';
@@ -902,63 +811,23 @@
                 }
             }
             
-            // 更新曲目信息（模拟）
-            function updateTrackInfo(stationName) {
-                const titles = {
-                    "轻松爵士乐": ["Midnight Jazz Session", "Smooth Grooves", "Blue Notes", "Jazz Lounge"],
-                    "流行音乐台": ["Summer Hits 2023", "Dance All Night", "Top of the Charts", "Pop Revolution"],
-                    "古典音乐频道": ["Moonlight Sonata", "Symphony No.5", "Four Seasons", "Air on G String"],
-                    "摇滚音乐台": ["Rock Anthem", "Guitar Solo", "Thunderstruck", "Highway to Rock"],
-                    "电子音乐频道": ["Digital Dreams", "Synthesized", "Beats & Bass", "Neon Nights"],
-                    "乡村音乐台": ["Country Roads", "Wild Horses", "Southern Nights", "Backwoods"],
-                    "嘻哈音乐台": ["Urban Legends", "Rhyme Scheme", "Street Poetry", "Flow State"],
-                    "80年代金曲": ["Take On Me", "Sweet Dreams", "Billie Jean", "Like a Virgin"],
-                    "90年代经典": ["Smells Like Teen Spirit", "Wonderwall", "No Scrubs", "I Want It That Way"],
-                    "拉丁音乐台": ["Bailando", "Despacito", "Vivir Mi Vida", "Danza Kuduro"]
-                };
+            // 更新播放器信息函数
+            function updatePlayerInfo(stationElement) {
+                const name = stationElement.getAttribute('data-name');
+                const genre = stationElement.getAttribute('data-genre');
+                const image = stationElement.getAttribute('data-image');
+                // 修改：读取 data-album 属性
+                const album = stationElement.getAttribute('data-album');
                 
-                const artists = {
-                    "轻松爵士乐": ["The Cool Cats Quartet", "Smooth Jazz Ensemble", "Midnight Players", "Blue Note Band"],
-                    "流行音乐台": ["Global Pop Stars", "Top 40 Collective", "Hit Makers", "Radio Pop"],
-                    "古典音乐频道": ["Beethoven", "Mozart", "Vivaldi", "Bach"],
-                    "摇滚音乐台": ["Rock Legends", "Guitar Heroes", "Metal Masters", "Indie Rockers"],
-                    "电子音乐频道": ["Digital Waves", "Synth Masters", "EDM Producers", "Techno Wizards"],
-                    "乡村音乐台": ["Country Legends", "Southern Harmony", "Wild West Band", "Nashville Stars"],
-                    "嘻哈音乐台": ["Urban Poets", "Rhyme Masters", "Street Legends", "Flow Kings"],
-                    "80年代金曲": ["A-Ha", "Eurythmics", "Michael Jackson", "Madonna"],
-                    "90年代经典": ["Nirvana", "Oasis", "TLC", "Backstreet Boys"],
-                    "拉丁音乐台": ["Enrique Iglesias", "Luis Fonsi", "Marc Anthony", "Don Omar"]
-                };
-                
-                const albums = {
-                    "轻松爵士乐": ["Live at Blue Note • 2023", "Smooth Jazz Collection • 2022", "Midnight Sessions • 2023", "Jazz Classics"],
-                    "流行音乐台": ["Summer Collection • 2023", "Dance Hits • 2023", "Top 100 • 2023", "Pop Revolution • 2022"],
-                    "古典音乐频道": ["Masterpieces • 2021", "Classical Favorites • 2020", "Baroque Collection • 2022", "Romantic Era"],
-                    "摇滚音乐台": ["Greatest Rock Hits • 2023", "Guitar Legends • 2022", "Rock Classics • 2021", "Metal Anthology"],
-                    "电子音乐频道": ["Electronic Dreams • 2023", "Synthesized • 2023", "Dancefloor Anthems • 2022", "Techno Evolution"],
-                    "乡村音乐台": ["Country Roads • 2023", "Southern Charm • 2022", "Backwoods Ballads • 2021", "Nashville Nights"],
-                    "嘻哈音乐台": ["Urban Legends • 2023", "Rhyme Scheme • 2022", "Street Poetry • 2021", "Flow State • 2020"],
-                    "80年代金曲": ["80s Greatest Hits • 2023", "New Wave Classics • 2022", "Pop Icons • 2021", "Decade of Decadence"],
-                    "90年代经典": ["90s Anthems • 2023", "Grunge Revolution • 2022", "Pop Princesses • 2021", "Boy Band Era"],
-                    "拉丁音乐台": ["Latin Heat • 2023", "Salsa Sensations • 2022", "Reggaeton Revolution • 2021", "Bachata Nights"]
-                };
-                
-                const stationTracks = titles[stationName];
-                const stationArtists = artists[stationName];
-                const stationAlbums = albums[stationName];
-                
-                if (stationTracks && stationArtists && stationAlbums) {
-                    const randomIndex = Math.floor(Math.random() * stationTracks.length);
-                    
-                    document.querySelector('.track-title').textContent = stationTracks[randomIndex];
-                    document.querySelector('.track-artist').textContent = stationArtists[randomIndex];
-                    document.querySelector('.track-album').textContent = stationAlbums[randomIndex];
-                }
+                document.querySelector('.album-art img').src = image;
+                document.querySelector('.track-title').textContent = name;
+                document.querySelector('.track-artist').textContent = genre;
+                // 修改：将读取到的 album 信息更新到界面
+                document.querySelector('.track-album').textContent = album;
             }
             
             // 显示通知
             function showNotification(message) {
-                // 移除现有通知
                 const existing = document.querySelector('.notification');
                 if (existing) existing.remove();
                 
@@ -967,7 +836,6 @@
                 notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
                 document.body.appendChild(notification);
                 
-                // 动画显示
                 setTimeout(() => {
                     notification.style.opacity = '1';
                 }, 10);
@@ -997,13 +865,13 @@
                 });
             });
             
-            // 初始音量设置
+            // ---- 初始化 ----
             audio.volume = volumeSlider.value;
             
-            // 初始曲目信息
-            updateTrackInfo(currentStation.getAttribute('data-name'));
+            if (currentStation) {
+                updatePlayerInfo(currentStation);
+            }
             
-            // 初始状态
             document.querySelector('.status-text').innerHTML = `当前状态: <strong>准备就绪</strong> | 比特率: <strong>128kbps</strong> | 格式: <strong>MP3</strong>`;
         });
     </script>
