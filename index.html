@@ -47,7 +47,7 @@
         }
         /* 新增介绍弹窗样式 */
         .intro-modal {
-            display: flex;
+            display: none; /* 默认隐藏 */
             position: fixed;
             top: 0;
             left: 0;
@@ -145,7 +145,7 @@
     gap: 10px;
 	}
 	/* 返回顶部按钮样式 */
-.back-to-top {
+.back-to-top, .info-btn {
     position: fixed;
     bottom: 30px;
     right: 30px;
@@ -168,7 +168,34 @@
 
 .back-to-top:hover {
     opacity: 1;
-    transform: translateY(-5px);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(89, 99, 255, 0.4);
+}
+
+/* 新增说明按钮样式 */
+.info-btn {
+    bottom: 90px; /* 在返回顶部按钮上方 */
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(113deg, #6472ff, #8352ff);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(89, 99, 255, 0.3);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.info-btn:hover {
+    opacity: 1;
+    transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(89, 99, 255, 0.4);
 }
 
@@ -784,6 +811,13 @@
         height: 45px;
         font-size: 18px;
     }
+	.info-btn {
+        bottom: 80px; /* 在移动端调整位置 */
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
 	.controls {
                 flex-direction: column;
                 align-items: center;
@@ -865,6 +899,11 @@
             <button class="intro-btn" id="introConfirm">我知道了</button>
         </div>
     </div>
+    
+    <!-- 新增说明按钮 -->
+    <button id="infoBtn" class="info-btn">
+        <i class="fas fa-info"></i>
+    </button>
 
 <button id="backToTop" class="back-to-top">
     <i class="fas fa-arrow-up"></i>
@@ -1195,12 +1234,10 @@ showAddToHomePrompt();
             const introModal = document.getElementById('introModal');
             const introClose = document.getElementById('introClose');
             const introConfirm = document.getElementById('introConfirm');
+            const infoBtn = document.getElementById('infoBtn');
             
-            // 检查是否已经显示过弹窗 - 使用sessionStorage确保只显示一次
-            const isIntroShown = sessionStorage.getItem('introShown');
-            
-            // 如果没有显示过，显示弹窗
-            if (!isIntroShown) {
+            // 显示弹窗函数
+            function showIntroModal() {
                 introModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             }
@@ -1209,12 +1246,10 @@ showAddToHomePrompt();
             function closeIntroModal() {
                 introModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
-                
-                // 设置sessionStorage标志，表示已经显示过
-                sessionStorage.setItem('introShown', 'true');
             }
             
-            // 绑定关闭事件
+            // 绑定事件
+            infoBtn.addEventListener('click', showIntroModal);
             introClose.addEventListener('click', closeIntroModal);
             introConfirm.addEventListener('click', closeIntroModal);
             
@@ -1479,18 +1514,6 @@ backToTopBtn.addEventListener('click', function() {
     });
 });
     </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker 注册成功，作用域为: ', registration.scope);
-                    })
-                    .catch(function(err) {
-                        console.log('ServiceWorker 注册失败: ', err);
-                    });
-            });
-        }
-    </script>
+
 </body>
 </html>
