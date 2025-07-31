@@ -139,7 +139,20 @@
 	    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
         }
-
+        .radio-list-scroll-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .radio-list-scroll-area::-webkit-scrollbar-track {
+            background: var(--transition-speed);
+            border-radius: 3px;
+        }
+        
+        .radio-list-scroll-area::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 3px;
+        }
+        
         .radio-list h2 {
             padding: 20px 24px 16px;
             color: var(--text1);
@@ -391,8 +404,8 @@
         }
         .notification i { font-size: 18px; }
 
-        .search-container { padding: 0 24px 16px; background: var(--card-bg); border-bottom: 1px solid var(--line); }
-        .search-box { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 2px 16px; border: 1px solid var(--line); }
+        .search-container { padding: 0 24px 16px; background: var(--card-bg);  }
+        .search-box { display: flex; align-items: center; background: var(--background); border-radius: 12px; padding: 2px 16px; }
         .search-box i { color: var(--text3); margin-right: 8px; }
         .search-box input {
             flex: 1;
