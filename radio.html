@@ -59,6 +59,7 @@
             flex-direction: column;
             position: relative;
             z-index: 10;
+	    border-top: 1px solid #fff;
         }
 
         header {
@@ -99,11 +100,16 @@
             margin-bottom: 8px;
             position: relative;
             z-index: 2;
-            color: var(--main-color);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+	    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    width: fit-content;
+    margin: 0 auto 8px;
         }
 
         header p {
@@ -252,29 +258,53 @@
             align-items: center;
             margin-bottom: 24px;
         }
-
+	.rotate1 {
+	        background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
+    	padding: 20px;
+    	animation: spin 10s linear infinite;
+	}
+	.rotate2 {
+	    width: 116px;
+    		height: 116px;
+    		border-radius: 50%;
+    		overflow: hidden;
+	}
         .album-art {
-            width: 140px;
-            height: 140px;
-            border-radius: 16px;
-            margin-right: 24px;
+            border-radius: 50%;
+            margin-right: 30px;
             flex-shrink: 0;
             overflow: hidden;
             position: relative;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+	    border: 2px solid;
         }
-
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
         .album-art img { width: 100%; height: 100%; object-fit: cover; }
 
         .album-art i {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 40px;
-            color: rgba(255, 255, 255, 0.8);
-            z-index: 2;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 25px;
+    color: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: #000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
         }
 
         .track-details { flex: 1; min-width: 0; }
@@ -447,7 +477,7 @@
 	        margin-bottom: 0;
 		margin-top: -50px;
             }
-            .album-art { margin-right: 0; margin-bottom: 20px; width: 160px; height: 160px; }
+            .album-art { margin-right: 0; margin-bottom: 20px; }
             header h1 { font-size: 26px; }
             .track-title { font-size: 22px; }
             .track-artist { font-size: 17px; }
@@ -503,8 +533,9 @@
                     <h3><i class="fas fa-play-circle"></i> 正在播放</h3>
                     <div class="track-info">
                         <div class="album-art">
-                            <img src="" alt="Album Art">
-                            <i class="fas fa-music"></i>
+                            <div class="rotate1">
+				<div class="rotate2"><img src="" alt="Album Art"></div>
+			    </div>
                         </div>
                         <div class="track-details">
                             <div class="track-title">电台名称</div>
