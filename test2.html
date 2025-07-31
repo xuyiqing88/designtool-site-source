@@ -936,21 +936,6 @@
   <div class="bubble-arrow"></div>
 </div>
 
-<script src="https://giscus.app/client.js"
-        data-repo="xuyiqing88/design-tools-comments"
-        data-repo-id="R_kgDOPIJQug"
-        data-category="General"
-        data-category-id="DIC_kwDOPIJQus4CslI9"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="0"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="light"
-        data-lang="zh-CN"
-        crossorigin="anonymous"
-        async>
-</script>    
     <script>
         // Tool data - 确保每个工具都有badge属性
         const tools = [
@@ -1470,18 +1455,6 @@ backToTopBtn.addEventListener('click', function() {
     });
 });
     </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker 注册成功，作用域为: ', registration.scope);
-                    })
-                    .catch(function(err) {
-                        console.log('ServiceWorker 注册失败: ', err);
-                    });
-            });
-        }
-    </script>
+
 </body>
 </html>
