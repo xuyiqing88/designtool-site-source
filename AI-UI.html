@@ -37,7 +37,15 @@
             display: flex;
             flex-direction: column;
         }
-
+.device-icon {
+    color: var(--main-color); /* 使用主色调 */
+    font-size: 1.2em;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
         .main-title {
             text-align: center;
             font-size: 1.6rem;
@@ -715,7 +723,11 @@
         <div class="right-panel">
             <div class="preview-container">
                 <div class="preview-header">
-                    <div style="display: flex; align-items: center; gap: 10px;flex-wrap: wrap; justify-content: center;"><div id="previewDeviceName">PC端预览</div>
+                    <div style="display: flex; align-items: center; gap: 10px;flex-wrap: wrap; justify-content: center;">
+        <div id="deviceIcon" class="device-icon">
+            <i class="fa-solid fa-desktop"></i>
+        </div>
+        <div id="previewDeviceName">PC端预览</div>
                 <div id="errorMessage" class="error-message"></div>
                 <div id="successMessage" class="success-message"></div>
 		</div>
@@ -827,10 +839,21 @@
                     option.classList.add('active');
                     currentDevice = option.dataset.device;
                     previewDeviceName.textContent = `${option.textContent}预览`;
+			updateDeviceIcon();
                     updatePreviewSize();
                 });
             });
-
+// 新增：设备图标更新函数
+function updateDeviceIcon() {
+    const deviceIcon = document.getElementById('deviceIcon');
+    if (currentDevice === 'pc') {
+        deviceIcon.innerHTML = '<i class="fa-solid fa-desktop"></i>';
+    } else {
+        deviceIcon.innerHTML = '<i class="fa-solid fa-mobile-screen"></i>';
+    }
+}
+// 在 init() 函数末尾添加初始图标设置
+updateDeviceIcon(); // 确保初始状态正确
             primaryColorInput.addEventListener('input', (e) => {
                 currentPrimaryColor = e.target.value;
                 primaryColorHexInput.value = currentPrimaryColor;
