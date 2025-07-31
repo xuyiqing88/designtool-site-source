@@ -1,4 +1,12 @@
 User-agent: *
-Sitemap: https://designtool.site/sitemap.xml
 Allow: /
 Disallow: /private/
+Disallow: /temp/
+Disallow: /admin/
+Disallow: /cgi-bin/
+
+# 爬取延迟设置（每秒最多1个请求）
+Crawl-delay: 1
+
+# 指定站点地图位置
+Sitemap: https://designtool.site/sitemap.xml
