@@ -104,7 +104,7 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-	    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+	    background: linear-gradient(135deg, #5a64ff, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -239,8 +239,8 @@
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 24px;
-    box-shadow: 0 0 20px rgb(38 20 119 / 8%);
-    border: 1px solid #f4f4f5;
+            box-shadow: 0 0 20px rgb(38 20 119 / 8%);
+            border: 1px solid #f4f4f5;
         }
 
         .now-playing h3 {
@@ -258,17 +258,22 @@
             align-items: center;
             margin-bottom: 24px;
         }
-	.rotate1 {
+
+        .rotate1 {
 	        background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
-    	padding: 20px;
-    	animation: spin 10s linear infinite;
-	}
-	.rotate2 {
-	    width: 116px;
+            padding: 20px;
+        }
+        /* --- MODIFICATION: Added .is-playing class for conditional rotation --- */
+        .rotate1.is-playing {
+    	    animation: spin 10s linear infinite;
+        }
+
+	    .rotate2 {
+	        width: 116px;
     		height: 116px;
     		border-radius: 50%;
     		overflow: hidden;
-	}
+	    }
         .album-art {
             border-radius: 50%;
             margin-right: 30px;
@@ -276,36 +281,71 @@
             overflow: hidden;
             position: relative;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-	    border: 2px solid;
+	        border: 2px solid;
+            /* --- MODIFICATION: Added position relative for note container --- */
+            position: relative;
         }
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
         .album-art img { width: 100%; height: 100%; object-fit: cover; }
 
         .album-art i {
             position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 25px;
-    color: rgba(255, 255, 255, 0.8);
-    z-index: 2;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    background: #000;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 2;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            background: #000;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
         }
+
+        /* --- MODIFICATION: Added styles for music note animation --- */
+        .music-notes-container {
+            position: absolute;
+            top: 25px;
+    	left: 60px;
+    	width: 60%;
+    	height: 60%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .music-note {
+            position: absolute;
+            top: 25%;
+            right: 25%;
+            color: var(--main-color);
+            opacity: 0;
+            animation: float-up 2.5s ease-out forwards;
+            font-size: 18px;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translate(0, 0) scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(40px, -80px) scale(1.2);
+                opacity: 0;
+            }
+        }
+        /* --- End of modification --- */
 
         .track-details { flex: 1; min-width: 0; }
 
@@ -317,7 +357,7 @@
         }
 
         .track-artist { font-size: 18px; color: var(--text2); margin-bottom: 16px; }
-        .track-album { font-size: 15px; color: var(--text3); font-weight: 500; }
+        .track-album { font-size: 15px; color: var(--text3); }
         .track-title, .track-artist, .track-album {
             white-space: nowrap;
             overflow: hidden;
@@ -343,7 +383,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: #fff;
-            color: var(--main-color);
+            color: var(--text3);
             border: 2px solid var(--line);
             font-size: 20px;
             box-shadow: 0 4px 12px rgba(90, 100, 255, 0.1);
@@ -352,6 +392,7 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(90, 100, 255, 0.2);
             border-color: var(--main-color);
+	    color: var(--main-color);
         }
         .btn:active { transform: translateY(1px); }
 
@@ -359,14 +400,15 @@
             width: 70px;
             height: 70px;
             font-size: 28px;
-            background: var(--main-color);
+            background: linear-gradient(135deg, #5a64ff, #8b5cf6);
             color: white;
             border: none;
             box-shadow: 0 6px 16px rgba(90, 100, 255, 0.3);
         }
         .btn-play:hover {
-            background: #4755e6;
             box-shadow: 0 8px 20px rgba(90, 100, 255, 0.4);
+	    opacity: 0.9;
+	color: #fff;
         }
 
         .volume-control { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 300px; margin-top: 16px; }
@@ -404,7 +446,7 @@
         }
         .status-indicator { width: 12px; height: 12px; border-radius: 50%; background: var(--error); flex-shrink: 0; }
         .status-text { color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
-        .status-text strong { color: var(--main-color); }
+        .status-text strong { var(--text1); }
 
         footer { 
 	    text-align: center;
@@ -453,6 +495,9 @@
             body { align-items: flex-start; }
 	.now-playing h3, .laba,  footer {
 		display: none;}
+	.music-notes-container {
+		left: 110px;
+    		top: 0;}
 	.radio-status {
 		padding: 10px 24px;}
             .container {
@@ -532,10 +577,11 @@
                 <div class="now-playing">
                     <h3><i class="fas fa-play-circle"></i> 正在播放</h3>
                     <div class="track-info">
+                             <div class="music-notes-container"></div>
                         <div class="album-art">
                             <div class="rotate1">
-				<div class="rotate2"><img src="" alt="Album Art"></div>
-			    </div>
+				                <div class="rotate2"><img src="" alt="Album Art"></div>
+			                </div>
                         </div>
                         <div class="track-details">
                             <div class="track-title">电台名称</div>
@@ -629,6 +675,8 @@
             const audio = new Audio();
             let currentStation = document.querySelector('.station.active');
             let isPlaying = false;
+            // --- MODIFICATION: Added variable for note interval ---
+            let noteInterval;
             
             if(currentStation) {
                 audio.src = currentStation.getAttribute('data-stream');
@@ -655,10 +703,15 @@
                     audio.pause();
                 } else {
                     if (audio.src) {
-                        audio.play().catch(e => {
-                            console.error('播放失败:', e);
-                            showNotification('播放失败: ' + e.message);
-                        });
+                        // 使用 a.play() 返回的 Promise 来处理自动播放策略
+                        const playPromise = audio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                // 自动播放失败通常是因为用户没有与页面交互
+                                isPlaying = false;
+                                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            });
+                        }
                     }
                 }
             }
@@ -674,15 +727,9 @@
                     
                     updatePlayerInfo(this);
                     
-                    if(isPlaying) {
-                        audio.play().catch(e => {
-                            console.error('播放失败:', e);
-                            showNotification('无法连接电台，请稍后再试');
-                        });
-                    } else {
-                        // 如果之前是暂停状态，点击新电台后也应该自动播放
-                        togglePlay();
-                    }
+                    // 设置为true，让togglePlay函数执行播放操作
+                    isPlaying = false; 
+                    togglePlay();
                     
                     const stationName = this.getAttribute('data-name');
                     showNotification(`正在播放: ${stationName}`);
@@ -706,19 +753,81 @@
             });
             
             document.getElementById('prev-btn').addEventListener('click', function() {
-                const activeIndex = Array.from(stationElements).findIndex(el => el.classList.contains('active'));
-                const prevIndex = (activeIndex - 1 + stationElements.length) % stationElements.length;
-                stationElements[prevIndex].click();
+                const stations = Array.from(document.querySelectorAll('.station')).filter(s => s.style.display !== 'none');
+                if(stations.length === 0) return;
+                const activeIndex = stations.findIndex(el => el.classList.contains('active'));
+                const prevIndex = (activeIndex - 1 + stations.length) % stations.length;
+                stations[prevIndex].click();
             });
             
             document.getElementById('next-btn').addEventListener('click', function() {
-                const activeIndex = Array.from(stationElements).findIndex(el => el.classList.contains('active'));
-                const nextIndex = (activeIndex + 1) % stationElements.length;
-                stationElements[nextIndex].click();
+                const stations = Array.from(document.querySelectorAll('.station')).filter(s => s.style.display !== 'none');
+                if(stations.length === 0) return;
+                const activeIndex = stations.findIndex(el => el.classList.contains('active'));
+                const nextIndex = (activeIndex + 1) % stations.length;
+                stations[nextIndex].click();
             });
+
+// 替换原来的音符动画代码
+audio.addEventListener('play', () => { 
+    isPlaying = true; 
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>'; 
+    document.querySelector('.status-indicator').style.background = 'var(--success)'; 
+    document.querySelector('.status-text strong').textContent = '正在播放';
+    document.querySelector('.rotate1').classList.add('is-playing');
+
+    // 更新后的音符动画代码
+    const notesContainer = document.querySelector('.music-notes-container');
+    if (noteInterval) clearInterval(noteInterval);
+    
+    // 每次创建2-4个音符
+    noteInterval = setInterval(() => {
+        const noteCount = Math.floor(Math.random() * 2); // 每次2-4个音符
+        const noteTypes = [
+            'fas fa-music', 
+            'fas fa-compact-disc',
+		'fa-solid fa-guitar',
+            'fas fa-music',
+        ];
+        const colors = ['#8d8fa3'];
+        
+        for (let i = 0; i < noteCount; i++) {
+            const note = document.createElement('i');
+            const typeIndex = Math.floor(Math.random() * noteTypes.length);
+            note.className = 'music-note ' + noteTypes[typeIndex];
             
-            audio.addEventListener('play', () => { isPlaying = true; playBtn.innerHTML = '<i class="fas fa-pause"></i>'; document.querySelector('.status-indicator').style.background = 'var(--success)'; document.querySelector('.status-text strong').textContent = '正在播放'; });
-            audio.addEventListener('pause', () => { isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; document.querySelector('.status-indicator').style.background = 'var(--error)'; document.querySelector('.status-text strong').textContent = '已暂停'; });
+            // 随机位置 (15-35%之间)
+            note.style.right = (15 + Math.random() * 20) + '%';
+            note.style.top = (15 + Math.random() * 20) + '%';
+            
+            // 随机动画参数
+            note.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+            note.style.color = colors[Math.floor(Math.random() * colors.length)];
+            note.style.fontSize = (14 + Math.random() * 10) + 'px';
+            
+            notesContainer.appendChild(note);
+            
+            // 自动清理
+            setTimeout(() => {
+                if (note.parentNode) {
+                    note.parentNode.removeChild(note);
+                }
+            }, 3000);
+        }
+    }, 600); // 每600ms创建一批音符
+});
+            audio.addEventListener('pause', () => { 
+                isPlaying = false; 
+                playBtn.innerHTML = '<i class="fas fa-play"></i>'; 
+                document.querySelector('.status-indicator').style.background = 'var(--error)'; 
+                document.querySelector('.status-text strong').textContent = '已暂停';
+                // Remove class to stop rotation
+                document.querySelector('.rotate1').classList.remove('is-playing');
+                // Stop music note animation
+                clearInterval(noteInterval);
+            });
+            // --- End of modification ---
+
             audio.addEventListener('error', () => { showNotification('播放错误: 无法连接音频流'); document.querySelector('.status-indicator').style.background = 'var(--error)'; document.querySelector('.status-text strong').textContent = '连接错误'; });
             audio.addEventListener('waiting', () => { document.querySelector('.status-text strong').textContent = '正在缓冲...'; });
             audio.addEventListener('playing', () => { document.querySelector('.status-text strong').textContent = '正在播放'; });
@@ -780,6 +889,12 @@
             audio.volume = volumeSlider.value;
             updatePlayerInfo(currentStation);
             document.querySelector('.status-text').innerHTML = `当前状态: <strong>准备就绪</strong> | 比特率: <strong>128kbps</strong>`;
+
+            // --- MODIFICATION: Autoplay on load ---
+            // 延迟一小段时间以确保所有元素都已加载完毕
+            setTimeout(() => {
+                togglePlay();
+            }, 500);
         });
     </script>
 </body>
