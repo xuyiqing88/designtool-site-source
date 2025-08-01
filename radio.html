@@ -459,7 +459,7 @@
 
         .notification {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
             background: rgba(0, 0, 0, 0.75);
             color: white;
@@ -473,6 +473,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+	    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
         }
         .notification i { font-size: 18px; }
 
