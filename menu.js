@@ -337,7 +337,8 @@ const menuData = [
         title: "轻易实用",
         icon: "fa-solid fa-swatchbook",
         submenu: [
-            { title: "在线收音机", link: "radio.html" },
+            { title: "在线ikun小游戏", link: "jntm.html" },
+            { title: "青艺云广播", link: "radio.html" },
             { title: "朋友圈九宫格制作", link: "9img.html" },
             { title: "高级翻译工具", link: "translation.html" },
             { title: "BASE64图片转换器", link: "BASE64.html" },
