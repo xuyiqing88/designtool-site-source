@@ -6,378 +6,470 @@
     <title>鸡你太美 - ikun躲避球</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <script src="menu.js" defer></script>
-  <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
+        /* 保持原有的CSS样式 */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-        
-        body {
-            background: #f5f7ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            color: white;
-            padding: 20px;
-        }
-        
-        .game-container {
-            position: relative;
-            width: 100%;
-            max-width: 1200px;
-            border-radius: 20px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-        
-        .game-header {
-            text-align: center;
-	    margin-bottom: 20px;
-        }
-        
-        .game-title {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-            font-weight: 700;
-            letter-spacing: 2px;
-            background: linear-gradient(113deg, #6472ff, #8352ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: title-pulse 2s infinite alternate;
-	    margin-top: 10px;
-        }
-        
-        @keyframes title-pulse {
-            0% { text-shadow: 0 0 10px #6472ff06; }
-            100% { text-shadow: 0 0 20px #6472ff87, 0 0 30px #8352ff87; }
-        }
-        
-        .game-stats {
-            display: none;
-            justify-content: space-between;
-            font-size: 1.2rem;
-            margin-top: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px 20px;
-            border-radius: 10px;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	user-select: none;
+}
+
+body {
+	background: #f5f7ff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	overflow: hidden;
+	color: white;
+	padding: 20px;
+}
+
+.game-container {
+	position: relative;
+	width: 100%;
+	max-width: 1200px;
+	border-radius: 20px;
+	overflow: hidden;
+	backdrop-filter: blur(10px);
+}
+
+.game-header {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.game-title {
+	font-size: 1.8rem;
 	margin-bottom: 10px;
-        }
-        
-        #score {
-            color: #fff;
-            font-weight: bold;
-            font-size: 1.4rem;
-        }
-        
-        #speed {
-            color: #5a64ff;
-            font-weight: bold;
-            font-size: 1.4rem;
-        }
-        
-        .canvas-container {
-            position: relative;
-            width: 100%;
-            height: 72vh;
-            overflow: hidden;	
-    	border-radius: 10px;
-	    border: 4px solid #5a64ff7a;
-        }
-        
-        canvas {
-            display: block;
-        }
-        
-        .game-controls {
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            gap: 20px;
-        }
-        
-        .btn {
-            padding: 12px 30px;
+	color: #fff;
+	text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+	font-weight: 700;
+	letter-spacing: 2px;
+	background: linear-gradient(113deg, #6472ff, #8352ff);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	animation: title-pulse 2s infinite alternate;
+	margin-top: 10px;
+}
+
+@keyframes title-pulse {
+	0% {
+		text-shadow: 0 0 10px #6472ff06;
+	}
+
+	100% {
+		text-shadow: 0 0 20px #6472ff87, 0 0 30px #8352ff87;
+	}
+}
+
+.game-stats {
+	display: none;
+	justify-content: space-between;
+	font-size: 1.2rem;
+	margin-top: 10px;
+	background: rgba(0, 0, 0, 0.3);
+	padding: 10px 20px;
+	border-radius: 10px;
+	margin-bottom: 10px;
+}
+
+#score {
+	color: #fff;
+	font-weight: bold;
+	font-size: 1.4rem;
+}
+
+#speed {
+	color: #5a64ff;
+	font-weight: bold;
+	font-size: 1.4rem;
+}
+
+.canvas-container {
+	position: relative;
+	width: 100%;
+	height: 72vh;
+	overflow: hidden;
+	border-radius: 10px;
+	border: 4px solid #5a64ff7a;
+}
+
+canvas {
+	display: block;
+}
+
+.game-controls {
+	display: flex;
+	justify-content: center;
+	padding: 10px;
+	gap: 20px;
+}
+
+.btn {
+	padding: 12px 30px;
+	font-size: 1.2rem;
+	border: none;
+	border-radius: 50px;
+	cursor: pointer;
+	transition: all 0.3s;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	position: relative;
+	margin-top: 10px;
+}
+
+.btn:active {
+	transform: translateY(5px);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#toggle-btn {
+	background: linear-gradient(113deg, #6472ff, #8352ff);
+	color: white;
+	font-size: 1rem;
+}
+
+#reset-btn {
+	background: #6db9db;
+	color: white;
+}
+
+.screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.65);
+	z-index: 10;
+	text-align: center;
+	padding: 20px;
+}
+
+#start-screen h2 {
+	font-size: 3rem;
+	margin-bottom: 30px;
+	color: #fff;
+	text-shadow: 0 0 15px #6472ff87;
+	animation: title-bounce 1s infinite alternate;
+}
+
+@keyframes title-bounce {
+	0% {
+		transform: translateY(-5px);
+	}
+
+	100% {
+		transform: translateY(5px);
+	}
+}
+
+#start-screen p {
+	font-size: 1.1rem;
+	max-width: 600px;
+	margin-bottom: 30px;
+	line-height: 1.6;
+	color: #e0e0ff;
+	text-shadow: 0 0 5px rgba(0, 0, 255, 0.5);
+}
+
+.instructions {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 15px;
+	padding: 20px;
+	margin: 20px 0;
+	max-width: 500px;
+}
+
+.instructions h3 {
+	color: #fff;
+	margin-bottom: 15px;
+	text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.instructions ul {
+	text-align: left;
+	padding-left: 20px;
+}
+
+.instructions li {
+	margin-bottom: 10px;
+	line-height: 1.5;
+	font-size: 0.9rem;
+}
+
+#game-over-screen {
+	display: none;
+}
+
+#game-over-screen h2 {
+	font-size: 2.5rem;
+	color: #FF6B6B;
+	margin-bottom: 20px;
+	text-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
+	animation: game-over-pulse 0.5s infinite alternate;
+}
+
+@keyframes game-over-pulse {
+	0% {
+		transform: scale(1);
+	}
+
+	100% {
+		transform: scale(1.05);
+	}
+}
+
+#final-score {
+	font-size: 2.5rem;
+	color: #fff;
+	margin: 20px 0;
+	text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.character-display {
+	width: 120px;
+	height: 120px;
+	margin: 20px auto;
+	border-radius: 50%;
+	overflow: hidden;
+	border: 5px solid #fff;
+	box-shadow: 0 0 20px 6472ff;
+	position: relative;
+	background: #fff;
+}
+
+.character {
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: center;
+}
+
+.mobile-controls {
+	display: none;
+	position: absolute;
+	bottom: 20px;
+	left: 0;
+	right: 0;
+	justify-content: space-between;
+	padding: 0 20px;
+	z-index: 5;
+}
+
+.mobile-btn {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.2);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2rem;
+	color: white;
+	border: 3px solid rgba(255, 255, 255, 0.3);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+	transition: all 0.2s;
+}
+
+.mobile-btn:active {
+	transform: scale(0.9);
+	background: rgba(255, 255, 255, 0.3);
+}
+
+.loader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.9);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	transition: opacity 0.5s;
+}
+
+.spinner {
+	width: 80px;
+	height: 80px;
+	border: 8px solid #5a64ff;
+	border-top: 8px solid #fff;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	margin-bottom: 20px;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loader-text {
+	color: #fff;
+	font-size: 1.5rem;
+	text-align: center;
+	text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes character-animation {
+	0% {
+		background-position: 0 0;
+	}
+
+	33% {
+		background-position: -120px 0;
+	}
+
+	66% {
+		background-position: -240px 0;
+	}
+
+	100% {
+		background-position: 0 0;
+	}
+}
+
+.character-animate {
+	animation: character-animation 0.8s steps(3) infinite;
+}
+
+@media (max-width: 768px) {
+	.game-title {
+		font-size: 1.8rem;
+	}
+
+	.canvas-container {
+		height: 68vh;
+	}
+
+	.mobile-controls {
+		display: flex;
+	}
+
+	.mobile-btn {
+		width: 70px;
+		height: 70px;
+		font-size: 1.5rem;
+	}
+
+	.game-controls {
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.btn {
+		width: 100%;
+		max-width: 300px;
+		justify-content: center;
+		font-size: 0.9rem;
+		padding: 10px 20px;
+	}
+}
+
+@media (max-width: 480px) {
+	.game-title {
+		font-size: 1.5rem;
+	}
+
+	#start-screen h2 {
+		font-size: 1.8rem;
+	}
+
+	.mobile-btn {
+		width: 60px;
+		height: 60px;
+		font-size: 1.2rem;
+	}
+
+	.instructions {
+		padding: 15px;
+		font-size: 0.8rem;
+	}
+}
+
+        /* 最高记录和烟花效果样式 */
+        .high-score-info {
             font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
+            color: #ffd700;
+            margin-top: 10px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
         }
-        .btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-        
-        #toggle-btn {
-            background: linear-gradient(113deg, #6472ff, #8352ff);
-            color: white;
-            font-size: 1rem;
-        }
-        
-        #reset-btn {
-            background: #6db9db;
-            color: white;
-        }
-        
-        .screen {
+        .fireworks-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.65);
-            z-index: 10;
-            text-align: center;
-            padding: 20px;
+            pointer-events: none;
+            z-index: 20;
+            display: none; /* 默认隐藏 */
         }
-        
-        #start-screen h2 {
-            font-size: 3rem;
-            margin-bottom: 30px;
-            color: #fff;
-            text-shadow: 0 0 15px #6472ff87;
-            animation: title-bounce 1s infinite alternate;
-        }
-        
-        @keyframes title-bounce {
-            0% { transform: translateY(-5px); }
-            100% { transform: translateY(5px); }
-        }
-        
-        #start-screen p {
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            color: #e0e0ff;
-            text-shadow: 0 0 5px rgba(0, 0, 255, 0.5);
-        }
-        
-        .instructions {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            max-width: 500px;	
-        }
-        
-        .instructions h3 {
-            color: #fff;
-            margin-bottom: 15px;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-        }
-        
-        .instructions ul {
-            text-align: left;
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-            font-size: 0.9rem;
-        }
-        
-        #game-over-screen {
-            display: none;
-        }
-        
-        #game-over-screen h2 {
-            font-size: 2.5rem;
-            color: #FF6B6B;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
-            animation: game-over-pulse 0.5s infinite alternate;
-        }
-        
-        @keyframes game-over-pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
-        }
-        
-        #final-score {
-            font-size: 2.5rem;
-            color: #fff;
-            margin: 20px 0;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-        
-        .character-display {
-            width: 120px;
-            height: 120px;
-            margin: 20px auto;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 5px solid #fff;
-            box-shadow: 0 0 20px 6472ff;
-            position: relative;
-            background: #fff;
-        }
-        
-        .character {
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .mobile-controls {
-            display: none;
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 5;
-        }
-        
-        .mobile-btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            color: white;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.2s;
-        }
-        
-        .mobile-btn:active {
-            transform: scale(0.9);
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        /* 加载动画 */
-        .loader {
+        /* 分享弹窗样式 */
+        .share-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            flex-direction: column;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            transition: opacity 0.5s;
         }
-        
-        .spinner {
-            width: 80px;
-            height: 80px;
-            border: 8px solid #5a64ff;
-            border-top: 8px solid #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .loader-text {
-            color: #fff;
-            font-size: 1.5rem;
+        .share-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            max-width: 90%;
         }
-        
-        /* 序列帧动画 */
-        @keyframes character-animation {
-            0% { background-position: 0 0; }
-            33% { background-position: -120px 0; }
-            66% { background-position: -240px 0; }
-            100% { background-position: 0 0; }
+        .share-content h3 {
+            color: #333;
+            margin-bottom: 10px;
         }
-        
-        .character-animate {
-            animation: character-animation 0.8s steps(3) infinite;
+        #share-image-container {
+            border: 2px solid #ccc;
+            margin-bottom: 15px;
+            display: inline-block;
         }
-        
-        @media (max-width: 768px) {
-            .game-title {
-                font-size: 1.8rem;
-            }
-            
-            .canvas-container {
-            height: 68vh;
-            }
-            
-            .mobile-controls {
-                display: flex;
-            }
-                .mobile-btn {
-        width: 70px;
-        height: 70px;
-        font-size: 1.5rem;
-    }
-            .game-controls {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
-                font-size: 0.9rem;
-                padding: 10px 20px;
-            }
+        .share-buttons button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0 5px;
         }
-        
-        @media (max-width: 480px) {
-            .game-title {
-                font-size: 1.5rem;
-            }
-            
-            #start-screen h2 {
-                font-size: 1.8rem;
-            }
-            
-            .mobile-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 1.2rem;
-            }
-            
-            .instructions {
-                padding: 15px;
-                font-size: 0.8rem;
-            }
-        }
+        #download-btn { background-color: #4CAF50; color: white; }
+        #close-share-btn { background-color: #f44336; color: white; }
     </style>
 </head>
 <body>
-<div id="global-sidebar"></div>
-    <!-- 加载动画 -->
+    <div id="global-sidebar"></div>
+
     <div class="loader" id="loader">
         <div class="spinner"></div>
         <div class="loader-text">加载中... 请稍候</div>
@@ -386,8 +478,8 @@
     <div class="game-container">
         <div class="game-header">
             <h1 class="game-title">鸡你太美 - ikun躲避球</h1>
-	        <p style="color: #4a4e6d;">左右移动坤坤躲避砸下来的篮球</p>
-            <div class="game-stats">
+            <p style="color: #4a4e6d;">左右移动坤坤躲避砸下来的篮球</p>
+            <div class="game-stats" >
                 <div>得分: <span id="score">0</span></div>
                 <div>速度: <span id="speed">1.0x</span></div>
             </div>
@@ -401,7 +493,8 @@
                 <div class="mobile-btn" id="right-btn"><i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <!-- 开始屏幕 -->
+            <div class="fireworks-container" id="fireworks-container"></div>
+            
             <div class="screen" id="start-screen">
                 <h2>鸡你太美</h2>
                 <div class="character-display" style="display :none;">
@@ -423,7 +516,6 @@
                 </button>
             </div>
             
-            <!-- 游戏结束屏幕 -->
             <div class="screen" id="game-over-screen">
                 <h2>游戏结束!</h2>
                 <div class="character-display">
@@ -431,8 +523,12 @@
                 </div>
                 <p>最终得分</p>
                 <div id="final-score">0</div>
+                <p class="high-score-info">最高记录: <span id="high-score">0</span></p>
                 <button id="restart-btn" class="btn">
                     <i class="fas fa-redo"></i> 重新开始
+                </button>
+                <button id="share-btn" class="btn">
+                    <i class="fas fa-share-alt"></i> 分享成绩
                 </button>
             </div>
         </div>
@@ -447,35 +543,44 @@
         </div>
     </div>
 
-    <!-- 音效将动态创建 -->
+    <div class="share-modal" id="share-modal">
+        <div class="share-content">
+            <h3>我的游戏成绩</h3>
+            <div id="share-image-container">
+                </div>
+            <div class="share-buttons">
+                <button id="download-btn"><i class="fas fa-download"></i> 下载图片</button>
+                <button id="close-share-btn"><i class="fas fa-times"></i> 关闭</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 游戏配置
-const config = {
-    playerWidth: 80,
-    playerHeight: 100,
-    // 移除固定ballSize，改为动态获取
-    speedIncreasePerPoint: 0.05,
-    // 添加设备检测
-    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-    
-    // 动态属性
-    get ballSize() {
-        return this.isMobile ? 30 : 60;
-    },
-    get initialBallSpeed() {
-        return this.isMobile ? 1.5 : 2;
-    },
-    get ballSpawnRate() {
-        return this.isMobile ? 80 : 60;
-    },
-    get maxBalls() {
-        return this.isMobile ? 8 : 10;
-    }
-};
+        const config = {
+            playerWidth: 80,
+            playerHeight: 100,
+            speedIncreasePerPoint: 0.05,
+            isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+            
+            get ballSize() {
+                return this.isMobile ? 30 : 60;
+            },
+            get initialBallSpeed() {
+                return this.isMobile ? 1.5 : 2;
+            },
+            get ballSpawnRate() {
+                return this.isMobile ? 80 : 60;
+            },
+            get maxBalls() {
+                return this.isMobile ? 8 : 10;
+            }
+        };
         
         // 游戏状态
         const gameState = {
             score: 0,
+            highScore: 0,
             speed: 1.0,
             gameRunning: false,
             gameOver: false,
@@ -507,6 +612,11 @@ const config = {
         const loader = document.getElementById('loader');
         const startCharacter = document.getElementById('start-character');
         const endCharacter = document.getElementById('end-character');
+        const highScoreElement = document.getElementById('high-score');
+        const fireworksContainer = document.getElementById('fireworks-container');
+        const shareModal = document.getElementById('share-modal');
+        const shareImageContainer = document.getElementById('share-image-container');
+        const shareCanvas = document.createElement('canvas'); // 用于生成分享图片的画布
         
         // 按钮
         const startGameBtn = document.getElementById('start-game-btn');
@@ -515,6 +625,9 @@ const config = {
         const restartBtn = document.getElementById('restart-btn');
         const leftBtn = document.getElementById('left-btn');
         const rightBtn = document.getElementById('right-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const closeShareBtn = document.getElementById('close-share-btn');
         
         // 音频对象
         let hitSound, missSound;
@@ -524,8 +637,8 @@ const config = {
             background: 'img/game/crtl.png',
             ball: 'img/game/ball.png',
             sounds: {
-                hit: 'img/game/ji.mp3',
-                miss: 'img/game/ngm.mp3'
+                hit: 'img/game/ji.MP3',
+                miss: 'img/game/ngm.MP3'
             },
             playerFrames: [
                 'img/game/tsk1.png',
@@ -536,7 +649,7 @@ const config = {
                 'img/game/ngm1.png',
                 'img/game/ngm2.png',
             ],
-            gameOverPlayer: 'img/game/bixin.png' // 新增游戏结束形象
+            gameOverPlayer: 'img/game/bixin.png'
         };
         
         // 加载图片资源
@@ -555,31 +668,23 @@ const config = {
         // 预加载资源
         async function loadResources() {
             try {
-                // 加载背景图片
                 gameState.backgroundImage = await loadImage(resources.background);
-                
-                // 加载篮球图片
                 gameState.ballImage = await loadImage(resources.ball);
-                
-                // 加载游戏结束图片
                 gameState.gameOverPlayerImage = await loadImage(resources.gameOverPlayer);
                 endCharacter.style.backgroundImage = `url('${resources.gameOverPlayer}')`;
                 
-                // 加载玩家帧
                 gameState.player.frames = [];
                 for (const src of resources.playerFrames) {
                     const img = await loadImage(src);
                     gameState.player.frames.push(img);
                 }
                 
-                // 加载被击中帧
                 gameState.hitFrames = [];
                 for (const src of resources.hitFrames) {
                     const img = await loadImage(src);
                     gameState.hitFrames.push(img);
                 }
                 
-                // 设置开始屏幕的角色图像
                 startCharacter.style.backgroundImage = `url('${resources.playerFrames[0]}')`;
                 
                 return true;
@@ -594,11 +699,9 @@ const config = {
             if (gameState.audioInitialized) return;
             
             try {
-                // 创建音频元素
                 hitSound = new Audio(resources.sounds.hit);
                 missSound = new Audio(resources.sounds.miss);
                 
-                // 尝试播放静音音频解锁音频上下文
                 const silence = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA");
                 silence.volume = 0;
                 silence.play().then(() => {
@@ -617,18 +720,16 @@ const config = {
         
         // 初始化游戏
         function initGame() {
-if (config.isMobile) {
-    gameState.player.width = 60;
-    gameState.player.height = 75;
-} else {
-    gameState.player.width = 80;
-    gameState.player.height = 100;
-}
-            // 设置玩家初始位置
-            gameState.player.x = canvas.width / 2 - config.playerWidth / 2;
-            gameState.player.y = canvas.height - config.playerHeight - 20;
+            if (config.isMobile) {
+                gameState.player.width = 60;
+                gameState.player.height = 75;
+            } else {
+                gameState.player.width = 80;
+                gameState.player.height = 100;
+            }
+            gameState.player.x = canvas.width / 2 - gameState.player.width / 2;
+            gameState.player.y = canvas.height - gameState.player.height - 20;
             
-            // 重置游戏状态
             gameState.score = 0;
             gameState.speed = 1.0;
             gameState.balls = [];
@@ -636,14 +737,13 @@ if (config.isMobile) {
             gameState.gameOver = false;
             gameState.playerHit = false;
             
-            // 更新UI
             scoreElement.textContent = gameState.score;
             speedElement.textContent = gameState.speed.toFixed(1) + 'x';
+            highScoreElement.textContent = localStorage.getItem('highScore') || 0;
             
-            // 隐藏游戏结束屏幕（开始屏幕在按钮点击时隐藏）
             gameOverScreen.style.display = 'none';
+            fireworksContainer.style.display = 'none';
             
-            // 绘制初始状态
             drawGame();
         }
         
@@ -690,7 +790,16 @@ if (config.isMobile) {
             finalScoreElement.textContent = gameState.score;
             updateToggleButton();
             
-            // 播放被击中的声音
+            // 检查并更新最高记录
+            const currentHighScore = parseInt(localStorage.getItem('highScore') || 0);
+            if (gameState.score > currentHighScore) {
+                localStorage.setItem('highScore', gameState.score);
+                highScoreElement.textContent = gameState.score + ' (新纪录!)';
+                triggerFireworks(); // 触发烟花
+            } else {
+                highScoreElement.textContent = currentHighScore;
+            }
+            
             if (gameState.audioInitialized) {
                 try {
                     missSound.currentTime = 0;
@@ -731,38 +840,29 @@ if (config.isMobile) {
         function updateBalls() {
             for (let i = gameState.balls.length - 1; i >= 0; i--) {
                 const ball = gameState.balls[i];
-                
-                // 更新位置
                 ball.y += ball.speed;
                 
-                // 检测是否击中玩家
+                // 碰撞检测，移动端增加距离容差
+                const collisionPadding = config.isMobile ? 15 : 0; // 移动端碰撞容差
                 if (!gameState.playerHit && 
-                    ball.x + ball.width > gameState.player.x && 
-                    ball.x < gameState.player.x + gameState.player.width &&
-                    ball.y + ball.height > gameState.player.y && 
-                    ball.y < gameState.player.y + gameState.player.height) {
+                    ball.x + ball.width - collisionPadding > gameState.player.x && 
+                    ball.x + collisionPadding < gameState.player.x + gameState.player.width &&
+                    ball.y + ball.height - collisionPadding > gameState.player.y && 
+                    ball.y + collisionPadding < gameState.player.y + gameState.player.height) {
                     
-                    // 玩家被击中
                     gameState.playerHit = true;
                     setTimeout(endGame, 500);
                 }
                 
-                // 移除超出屏幕的篮球
                 if (ball.y > canvas.height) {
                     gameState.balls.splice(i, 1);
                     
-                    // 增加分数
                     if (!gameState.playerHit) {
                         gameState.score++;
-                        
-                        // 更新速度
                         gameState.speed = 1 + gameState.score * config.speedIncreasePerPoint;
                         speedElement.textContent = gameState.speed.toFixed(1) + 'x';
-                        
-                        // 更新分数显示
                         scoreElement.textContent = gameState.score;
                         
-                        // 播放得分声音
                         if (gameState.audioInitialized) {
                             try {
                                 hitSound.currentTime = 0;
@@ -778,31 +878,25 @@ if (config.isMobile) {
         
         // 绘制游戏
         function drawGame() {
-            // 清除画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 绘制背景
             if (gameState.backgroundImage) {
                 ctx.drawImage(gameState.backgroundImage, 0, 0, canvas.width, canvas.height);
             } else {
-                // 回退背景
                 ctx.fillStyle = '#1a1a2e';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
             
-            // 绘制篮球
             gameState.balls.forEach(ball => {
                 if (gameState.ballImage) {
                     ctx.drawImage(gameState.ballImage, ball.x, ball.y, ball.width, ball.height);
                 } else {
-                    // 回退篮球
                     ctx.fillStyle = '#FF8C00';
                     ctx.beginPath();
                     ctx.arc(ball.x + ball.width/2, ball.y + ball.height/2, ball.width/2, 0, Math.PI * 2);
                     ctx.fill();
                 }
                 
-                // 篮球阴影
                 ctx.beginPath();
                 ctx.ellipse(
                     ball.x + ball.width/2, 
@@ -815,7 +909,6 @@ if (config.isMobile) {
                 ctx.fill();
             });
             
-            // 绘制玩家
             if (!gameState.playerHit && gameState.player.frames.length > 0) {
                 const frame = gameState.player.frames[gameState.player.currentFrame];
                 if (frame) {
@@ -828,7 +921,6 @@ if (config.isMobile) {
                     );
                 }
             } else if (gameState.hitFrames.length > 0) {
-                // 绘制被击中的玩家
                 const frame = gameState.hitFrames[gameState.player.currentFrame];
                 if (frame) {
                     ctx.drawImage(
@@ -841,7 +933,6 @@ if (config.isMobile) {
                 }
             }
             
-            // 绘制玩家阴影
             ctx.beginPath();
             ctx.ellipse(
                 gameState.player.x + gameState.player.width / 2,
@@ -853,7 +944,6 @@ if (config.isMobile) {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
             ctx.fill();
             
-            // 绘制分数
             ctx.fillStyle = '#4a4e6d';
             ctx.font = '20px "Press Start 2P", cursive';
             ctx.textAlign = 'left';
@@ -866,40 +956,24 @@ if (config.isMobile) {
         function gameLoop() {
             if (!gameState.gameRunning) return;
             
-            // 更新游戏状态
             gameState.frameCount++;
             
-            // 生成新篮球
             if (gameState.frameCount % config.ballSpawnRate === 0) {
                 spawnBall();
             }
             
-            // 更新玩家动画
             updatePlayerAnimation();
-            
-            // 更新篮球位置
             updateBalls();
-            
-            // 绘制游戏
             drawGame();
             
-            // 继续游戏循环
             requestAnimationFrame(gameLoop);
         }
         
         // 事件监听
         function setupEventListeners() {
-            // 按钮事件
             startGameBtn.addEventListener('click', () => {
-                // 初始化音频
-                if (!gameState.audioInitialized) {
-                    initAudio();
-                }
-                
-                // 隐藏开始屏幕
+                if (!gameState.audioInitialized) initAudio();
                 startScreen.style.display = 'none';
-                
-                // 开始游戏
                 gameState.gameRunning = true;
                 updateToggleButton();
                 gameLoop();
@@ -913,32 +987,35 @@ if (config.isMobile) {
                 updateToggleButton();
                 gameLoop();
             });
-            
-            // 玩家控制
+
+            shareBtn.addEventListener('click', generateShareImage);
+            downloadBtn.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = `鸡你太美-成绩_${gameState.score}.png`;
+                link.href = shareCanvas.toDataURL("image/png");
+                link.click();
+            });
+            closeShareBtn.addEventListener('click', () => {
+                shareModal.style.display = 'none';
+                shareImageContainer.innerHTML = '';
+            });
+
             canvas.addEventListener('mousemove', (e) => {
                 if (!gameState.gameRunning || gameState.playerHit) return;
-                
                 const rect = canvas.getBoundingClientRect();
-                gameState.player.x = e.clientX - rect.left - config.playerWidth / 2;
-                
-                // 限制在画布范围内
-                gameState.player.x = Math.max(0, Math.min(canvas.width - config.playerWidth, gameState.player.x));
+                gameState.player.x = e.clientX - rect.left - gameState.player.width / 2;
+                gameState.player.x = Math.max(0, Math.min(canvas.width - gameState.player.width, gameState.player.x));
             });
             
-            // 触摸控制
             canvas.addEventListener('touchmove', (e) => {
                 if (!gameState.gameRunning || gameState.playerHit) return;
                 e.preventDefault();
-                
                 const rect = canvas.getBoundingClientRect();
                 const touch = e.touches[0];
-                gameState.player.x = touch.clientX - rect.left - config.playerWidth / 2;
-                
-                // 限制在画布范围内
-                gameState.player.x = Math.max(0, Math.min(canvas.width - config.playerWidth, gameState.player.x));
+                gameState.player.x = touch.clientX - rect.left - gameState.player.width / 2;
+                gameState.player.x = Math.max(0, Math.min(canvas.width - gameState.player.width, gameState.player.x));
             });
             
-            // 移动端按钮控制
             leftBtn.addEventListener('touchstart', () => {
                 if (!gameState.gameRunning || gameState.playerHit) return;
                 gameState.player.x = Math.max(0, gameState.player.x - 30);
@@ -946,10 +1023,9 @@ if (config.isMobile) {
             
             rightBtn.addEventListener('touchstart', () => {
                 if (!gameState.gameRunning || gameState.playerHit) return;
-                gameState.player.x = Math.min(canvas.width - config.playerWidth, gameState.player.x + 30);
+                gameState.player.x = Math.min(canvas.width - gameState.player.width, gameState.player.x + 30);
             });
             
-            // 窗口大小调整
             window.addEventListener('resize', resizeCanvas);
         }
         
@@ -959,50 +1035,130 @@ if (config.isMobile) {
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
             
-            // 更新玩家位置
             if (gameState.player) {
-                gameState.player.y = canvas.height - config.playerHeight - 20;
+                gameState.player.y = canvas.height - gameState.player.height - 20;
                 gameState.player.x = Math.min(
                     Math.max(0, gameState.player.x),
-                    canvas.width - config.playerWidth
+                    canvas.width - gameState.player.width
                 );
             }
+        }
+        
+        // 生成分享图片
+        function generateShareImage() {
+            const shareContext = shareCanvas.getContext('2d');
+            const QR_CODE_URL = 'https://designtool.site/jntm.html';
+            const FONT = '"Press Start 2P", cursive';
+
+            // 设置分享画布尺寸
+            const width = 600;
+            const height = 800;
+            shareCanvas.width = width;
+            shareCanvas.height = height;
+
+            // 绘制背景
+            shareContext.fillStyle = '#1a1a2e';
+            shareContext.fillRect(0, 0, width, height);
+
+            // 绘制标题
+            shareContext.fillStyle = '#ffd700';
+            shareContext.font = `bold 40px ${FONT}`;
+            shareContext.textAlign = 'center';
+            shareContext.fillText('鸡你太美', width / 2, 80);
+            shareContext.fillText('ikun躲避球', width / 2, 130);
+
+            // 绘制成绩
+            shareContext.fillStyle = '#fff';
+            shareContext.font = `30px ${FONT}`;
+            shareContext.fillText('我的最终得分', width / 2, 250);
+            shareContext.font = `bold 80px ${FONT}`;
+            shareContext.fillText(gameState.score, width / 2, 350);
+
+            // 绘制最高记录
+            shareContext.font = `20px ${FONT}`;
+            const currentHighScore = localStorage.getItem('highScore') || 0;
+            shareContext.fillStyle = '#8352ff';
+            if (gameState.score > currentHighScore) {
+                 shareContext.fillText('恭喜！打破最高记录！', width / 2, 420);
+            }
+            shareContext.fillText(`最高记录: ${currentHighScore}`, width / 2, 460);
+
+            // 绘制坤坤头像
+            if (gameState.gameOverPlayerImage) {
+                const imgSize = 150;
+                const imgX = (width - imgSize) / 2;
+                const imgY = 500;
+                shareContext.drawImage(gameState.gameOverPlayerImage, imgX, imgY, imgSize, imgSize);
+            }
+            
+            // 绘制二维码
+            const qrSize = 150;
+            const qrX = (width - qrSize) / 2;
+            const qrY = 680;
+            const qrCodeDiv = document.createElement('div');
+            new QRCode(qrCodeDiv, {
+                text: QR_CODE_URL,
+                width: qrSize,
+                height: qrSize,
+            });
+            const qrImage = qrCodeDiv.querySelector('img');
+            
+            qrImage.onload = () => {
+                shareContext.drawImage(qrImage, qrX, qrY);
+                // 将生成的图片显示在弹窗中
+                shareImageContainer.innerHTML = '';
+                const img = new Image();
+                img.src = shareCanvas.toDataURL("image/png");
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                shareImageContainer.appendChild(img);
+                shareModal.style.display = 'flex';
+            };
+        }
+
+        // 烟花效果
+        function triggerFireworks() {
+            fireworksContainer.style.display = 'block';
+            const numParticles = 50;
+            const colors = ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#ff00ff'];
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '10px';
+                particle.style.height = '10px';
+                particle.style.borderRadius = '50%';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animation = `firework-blast ${Math.random() * 1 + 1}s ease-out forwards`;
+                fireworksContainer.appendChild(particle);
+            }
+            setTimeout(() => {
+                fireworksContainer.innerHTML = ''; // 清除烟花
+                fireworksContainer.style.display = 'none';
+            }, 3000); // 3秒后清除
         }
         
         // 初始化
         async function init() {
             loader.style.display = 'flex';
-            
             try {
-                // 加载资源
                 const success = await loadResources();
-                
                 if (success) {
-                    // 隐藏加载动画
                     loader.style.opacity = '0';
                     setTimeout(() => {
                         loader.style.display = 'none';
                         resizeCanvas();
                         setupEventListeners();
                         
-                        // 初始化游戏但不隐藏开始屏幕
-                        gameState.player.x = canvas.width / 2 - config.playerWidth / 2;
-                        gameState.player.y = canvas.height - config.playerHeight - 20;
-                        gameState.score = 0;
-                        gameState.speed = 1.0;
-                        gameState.balls = [];
-                        gameState.frameCount = 0;
-                        gameState.gameOver = false;
-                        gameState.playerHit = false;
+                        // 从localStorage读取最高分
+                        gameState.highScore = parseInt(localStorage.getItem('highScore') || 0);
+                        highScoreElement.textContent = gameState.highScore;
+
+                        // 初始化游戏
+                        initGame();
                         
-                        // 更新UI
-                        scoreElement.textContent = gameState.score;
-                        speedElement.textContent = gameState.speed.toFixed(1) + 'x';
-                        
-                        // 显示开始屏幕
                         startScreen.style.display = 'flex';
-                        
-                        // 绘制初始状态
                         drawGame();
                     }, 500);
                 } else {
