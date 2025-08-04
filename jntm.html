@@ -535,10 +535,10 @@ canvas {
         
         <div class="game-controls">
             <button id="toggle-btn" class="btn">
-                <i class="fas fa-play"></i> 开始
+                <i class="fas fa-play"></i> 开始游戏
             </button>
             <button id="reset-btn" class="btn">
-                <i class="fas fa-sync-alt"></i> 重置
+                <i class="fas fa-sync-alt"></i> 重新开始
             </button>
         </div>
     </div>
@@ -768,9 +768,9 @@ canvas {
         // 更新切换按钮状态
         function updateToggleButton() {
             if (gameState.gameRunning) {
-                toggleBtn.innerHTML = '<i class="fas fa-pause"></i> 暂停';
+                toggleBtn.innerHTML = '<i class="fas fa-pause"></i> 暂停游戏';
             } else {
-                toggleBtn.innerHTML = '<i class="fas fa-play"></i> 开始';
+                toggleBtn.innerHTML = '<i class="fas fa-play"></i> 开始游戏';
             }
         }
         
