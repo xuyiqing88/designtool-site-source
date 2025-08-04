@@ -449,14 +449,13 @@ canvas {
             margin-bottom: 10px;
         }
         #share-image-container {
-            border: 2px solid #ccc;
             margin-bottom: 15px;
             display: inline-block;
         }
         .share-buttons button {
             padding: 8px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 1rem;
             margin: 0 5px;
@@ -522,12 +521,14 @@ canvas {
                 <p>最终得分</p>
                 <div id="final-score">0</div>
                 <p class="high-score-info">最高记录: <span id="high-score">0</span></p>
-                <button id="restart-btn" class="btn">
+            <div style="display: flex; gap: 14px;">
+		<button id="restart-btn" class="btn" style="width: auto;">
                     <i class="fas fa-redo"></i> 重新开始
                 </button>
-                <button id="share-btn" class="btn">
+                <button id="share-btn" class="btn" style="width: auto;">
                     <i class="fas fa-share-alt"></i> 分享成绩
                 </button>
+	   </div>
             </div>
         </div>
         
