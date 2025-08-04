@@ -454,14 +454,14 @@ canvas {
             display: inline-block;
         }
         .share-buttons button {
-            padding: 8px 15px;
+            padding: 8px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
             margin: 0 5px;
         }
-        #download-btn { background-color: #4CAF50; color: white; }
+        #download-btn { background-color: #6472ff; color: white; }
         #close-share-btn { background-color: #f44336; color: white; }
     </style>
 </head>
@@ -966,7 +966,7 @@ canvas {
             ctx.fill();
             
             ctx.fillStyle = '#4a4e6d';
-            ctx.font = '20px "Press Start 2P", cursive';
+            ctx.font = '20px "Press Start 2P"';
             ctx.textAlign = 'left';
             ctx.fillText('得分: ' + gameState.score, 10, 30);
             
@@ -1069,7 +1069,7 @@ canvas {
         // 生成分享图片, 现在使用预加载的静态二维码
         function generateShareImage() {
             const shareContext = shareCanvas.getContext('2d');
-            const FONT = '"Press Start 2P", cursive';
+            const FONT = '"Press Start 2P", "Segoe UI", "Microsoft YaHei", sans-serif';
 
             // 设置分享画布尺寸
             const width = 600;
