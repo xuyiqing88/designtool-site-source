@@ -9,7 +9,6 @@
     <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         /* 保持原有的CSS样式 */
         * {
@@ -632,10 +631,12 @@ canvas {
         // 音频对象
         let hitSound, missSound;
         
-        // 资源路径
+        // ---- [修改] ----
+        // 资源路径, 新增了二维码图片
         const resources = {
             background: 'img/game/crtl.png',
             ball: 'img/game/ball.png',
+            qrCode: 'img/game/qrcode.png', // <-- 新增
             sounds: {
                 hit: 'img/game/ji.MP3',
                 miss: 'img/game/ngm.MP3'
@@ -651,6 +652,7 @@ canvas {
             ],
             gameOverPlayer: 'img/game/bixin.png'
         };
+        // ---- [修改结束] ----
         
         // 加载图片资源
         function loadImage(src) {
@@ -659,40 +661,56 @@ canvas {
                 img.onload = () => resolve(img);
                 img.onerror = () => {
                     console.error(`无法加载图像: ${src}`);
-                    resolve(null);
+                    resolve(null); // 返回null而不是reject，让游戏可以继续
                 };
                 img.src = src;
             });
         }
         
-        // 预加载资源
+        // ---- [修改] ----
+        // 预加载资源, 新增了对二维码图片的加载
         async function loadResources() {
             try {
-                gameState.backgroundImage = await loadImage(resources.background);
-                gameState.ballImage = await loadImage(resources.ball);
-                gameState.gameOverPlayerImage = await loadImage(resources.gameOverPlayer);
+                // 并行加载所有图片
+                const [
+                    bg, ball, qr, gameOverPlayer, 
+                    pFrame1, pFrame2, pFrame3, 
+                    hFrame1, hFrame2
+                ] = await Promise.all([
+                    loadImage(resources.background),
+                    loadImage(resources.ball),
+                    loadImage(resources.qrCode), // <-- 新增加载
+                    loadImage(resources.gameOverPlayer),
+                    loadImage(resources.playerFrames[0]),
+                    loadImage(resources.playerFrames[1]),
+                    loadImage(resources.playerFrames[2]),
+                    loadImage(resources.hitFrames[0]),
+                    loadImage(resources.hitFrames[1])
+                ]);
+
+                gameState.backgroundImage = bg;
+                gameState.ballImage = ball;
+                gameState.qrCodeImage = qr; // <-- 新增存储
+                gameState.gameOverPlayerImage = gameOverPlayer;
+                
                 endCharacter.style.backgroundImage = `url('${resources.gameOverPlayer}')`;
                 
-                gameState.player.frames = [];
-                for (const src of resources.playerFrames) {
-                    const img = await loadImage(src);
-                    gameState.player.frames.push(img);
-                }
-                
-                gameState.hitFrames = [];
-                for (const src of resources.hitFrames) {
-                    const img = await loadImage(src);
-                    gameState.hitFrames.push(img);
-                }
+                gameState.player.frames = [pFrame1, pFrame2, pFrame3];
+                gameState.hitFrames = [hFrame1, hFrame2];
                 
                 startCharacter.style.backgroundImage = `url('${resources.playerFrames[0]}')`;
                 
+                // 确认所有必要的图片都加载成功
+                if (!bg || !ball || !gameOverPlayer || !pFrame1) {
+                    return false;
+                }
                 return true;
             } catch (error) {
                 console.error("资源加载失败: ", error);
                 return false;
             }
         }
+        // ---- [修改结束] ----
         
         // 初始化音频
         function initAudio() {
@@ -790,19 +808,17 @@ canvas {
             finalScoreElement.textContent = gameState.score;
             updateToggleButton();
 
-            // 根据设备类型显示或隐藏分享按钮
             if (config.isMobile) {
                 shareBtn.style.display = 'flex';
             } else {
                 shareBtn.style.display = 'none';
             }
             
-            // 检查并更新最高记录
             const currentHighScore = parseInt(localStorage.getItem('highScore') || 0);
             if (gameState.score > currentHighScore) {
                 localStorage.setItem('highScore', gameState.score);
                 highScoreElement.textContent = gameState.score + ' (新纪录!)';
-                triggerFireworks(); // 触发烟花
+                triggerFireworks();
             } else {
                 highScoreElement.textContent = currentHighScore;
             }
@@ -849,8 +865,7 @@ canvas {
                 const ball = gameState.balls[i];
                 ball.y += ball.speed;
                 
-                // 碰撞检测，移动端增加距离容差
-                const collisionPadding = config.isMobile ? 15 : 0; // 移动端碰撞容差
+                const collisionPadding = config.isMobile ? 15 : 0;
                 if (!gameState.playerHit && 
                     ball.x + ball.width - collisionPadding > gameState.player.x && 
                     ball.x + collisionPadding < gameState.player.x + gameState.player.width &&
@@ -1052,10 +1067,9 @@ canvas {
         }
         
         // ---- [修改] ----
-        // 生成分享图片
+        // 生成分享图片, 现在使用预加载的静态二维码
         function generateShareImage() {
             const shareContext = shareCanvas.getContext('2d');
-            const QR_CODE_URL = 'https://designtool.site/jntm.html';
             const FONT = '"Press Start 2P", cursive';
 
             // 设置分享画布尺寸
@@ -1099,54 +1113,24 @@ canvas {
                 shareContext.drawImage(gameState.gameOverPlayerImage, imgX, imgY, imgSize, imgSize);
             }
             
-            // 在隐藏的div中生成二维码
-            const qrSize = 120;
-            const qrX = (width - qrSize) / 2;
-            const qrY = 660;
-            const qrCodeDiv = document.createElement('div');
-            new QRCode(qrCodeDiv, {
-                text: QR_CODE_URL,
-                width: qrSize,
-                height: qrSize,
-            });
+            // 绘制预加载好的二维码
+            if (gameState.qrCodeImage) {
+                const qrSize = 120;
+                const qrX = (width - qrSize) / 2;
+                const qrY = 660;
+                shareContext.drawImage(gameState.qrCodeImage, qrX, qrY, qrSize, qrSize);
+            } else {
+                console.warn("二维码图片未加载，无法在分享图中显示。");
+            }
             
-            // 延时以确保二维码库有时间创建img元素
-            setTimeout(() => {
-                const qrImageFromDOM = qrCodeDiv.querySelector('img');
-                if (!qrImageFromDOM || !qrImageFromDOM.src) {
-                    console.error("二维码图片源未找到。");
-                    alert("抱歉，无法生成分享图片，请稍后重试。");
-                    return;
-                }
-
-                // 创建一个新的内存图像对象，以确保在绘制前完全加载
-                const qrImageInMemory = new Image();
-                
-                // 当内存图像加载完成后，执行绘制和显示操作
-                qrImageInMemory.onload = () => {
-                    // 将已完全加载的二维码绘制到分享图的Canvas上
-                    shareContext.drawImage(qrImageInMemory, qrX, qrY, qrSize, qrSize);
-                    
-                    // 从Canvas生成最终的图片并显示在弹窗中
-                    const finalImage = new Image();
-                    finalImage.src = shareCanvas.toDataURL("image/png");
-                    finalImage.style.maxWidth = '100%';
-                    finalImage.style.height = 'auto';
-
-                    shareImageContainer.innerHTML = ''; // 清空旧图
-                    shareImageContainer.appendChild(finalImage);
-                    shareModal.style.display = 'flex';
-                };
-                
-                qrImageInMemory.onerror = () => {
-                    console.error("加载二维码数据时出错。");
-                    alert("抱歉，无法加载二维码，分享图片生成失败。");
-                };
-
-                // 设置内存图像的源，触发加载
-                qrImageInMemory.src = qrImageFromDOM.src;
-
-            }, 250); // 稍微增加延时以提高稳定性
+            // 将生成的图片显示在弹窗中
+            shareImageContainer.innerHTML = '';
+            const img = new Image();
+            img.src = shareCanvas.toDataURL("image/png");
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            shareImageContainer.appendChild(img);
+            shareModal.style.display = 'flex';
         }
         // ---- [修改结束] ----
 
@@ -1196,7 +1180,7 @@ canvas {
                         drawGame();
                     }, 500);
                 } else {
-                    throw new Error("资源加载失败");
+                    throw new Error("关键资源加载失败，无法启动游戏。");
                 }
             } catch (error) {
                 console.error("初始化失败: ", error);
