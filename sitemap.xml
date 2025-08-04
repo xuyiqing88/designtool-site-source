@@ -5,7 +5,7 @@
         <loc>https://designtool.site/</loc>
         <lastmod>2025-07-19</lastmod>
         <changefreq>daily</changefreq>
-        <priority>1.0</priority> <!-- 修正：优先级范围0.0-1.0 -->
+        <priority>1.0</priority> 
     </url>
     
     <!-- 核心工具页面 -->
@@ -22,9 +22,7 @@
         <priority>0.9</priority>
     </url>
     
-    <!-- 移除了分类锚点页面（无效） -->
-    
-    <!-- 其他工具页面（已去重） -->
+
     <url>
         <loc>https://designtool.site/rembg.html</loc>
         <lastmod>2025-07-12</lastmod>
@@ -92,7 +90,7 @@
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://designtool.site/radio.html</loc> <!-- 保留一个 -->
+        <loc>https://designtool.site/radio.html</loc> 
         <lastmod>2025-07-12</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -122,7 +120,7 @@
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://designtool.site/BASE64.html</loc> <!-- 保留一个 -->
+        <loc>https://designtool.site/BASE64.html</loc>
         <lastmod>2025-07-12</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -146,5 +144,5 @@
         <priority>0.8</priority>
     </url>
 
-    <!-- 移除了评论锚点页面（无效） -->
+
 </urlset>
