@@ -124,7 +124,7 @@ canvas {
 	align-items: center;
 	gap: 10px;
 	position: relative;
-	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
 .btn:active {
@@ -413,7 +413,7 @@ canvas {
         .high-score-info {
             font-size: 1.2rem;
             color: #ffd700;
-            margin-bottom: 10px;
+            margin-top: 10px;
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
         }
         .fireworks-container {
@@ -535,10 +535,10 @@ canvas {
         
         <div class="game-controls">
             <button id="toggle-btn" class="btn">
-                <i class="fas fa-play"></i> 开始游戏
+                <i class="fas fa-play"></i> 开始
             </button>
             <button id="reset-btn" class="btn">
-                <i class="fas fa-sync-alt"></i> 重新开始
+                <i class="fas fa-sync-alt"></i> 重置
             </button>
         </div>
     </div>
@@ -768,9 +768,9 @@ canvas {
         // 更新切换按钮状态
         function updateToggleButton() {
             if (gameState.gameRunning) {
-                toggleBtn.innerHTML = '<i class="fas fa-pause"></i> 暂停游戏';
+                toggleBtn.innerHTML = '<i class="fas fa-pause"></i> 暂停';
             } else {
-                toggleBtn.innerHTML = '<i class="fas fa-play"></i> 开始游戏';
+                toggleBtn.innerHTML = '<i class="fas fa-play"></i> 开始';
             }
         }
         
@@ -790,14 +790,12 @@ canvas {
             finalScoreElement.textContent = gameState.score;
             updateToggleButton();
 
-            // ---- [修改] ----
             // 根据设备类型显示或隐藏分享按钮
             if (config.isMobile) {
                 shareBtn.style.display = 'flex';
             } else {
                 shareBtn.style.display = 'none';
             }
-            // ---- [修改结束] ----
             
             // 检查并更新最高记录
             const currentHighScore = parseInt(localStorage.getItem('highScore') || 0);
@@ -1101,7 +1099,7 @@ canvas {
                 shareContext.drawImage(gameState.gameOverPlayerImage, imgX, imgY, imgSize, imgSize);
             }
             
-            // 绘制二维码
+            // 在隐藏的div中生成二维码
             const qrSize = 120;
             const qrX = (width - qrSize) / 2;
             const qrY = 660;
@@ -1112,36 +1110,43 @@ canvas {
                 height: qrSize,
             });
             
-            // 延时以确保二维码图片生成
+            // 延时以确保二维码库有时间创建img元素
             setTimeout(() => {
-                const qrImage = qrCodeDiv.querySelector('img');
-
-                if (!qrImage) {
-                    console.error("二维码图片生成失败。");
+                const qrImageFromDOM = qrCodeDiv.querySelector('img');
+                if (!qrImageFromDOM || !qrImageFromDOM.src) {
+                    console.error("二维码图片源未找到。");
                     alert("抱歉，无法生成分享图片，请稍后重试。");
                     return;
                 }
 
-                const drawAndDisplay = () => {
-                    shareContext.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+                // 创建一个新的内存图像对象，以确保在绘制前完全加载
+                const qrImageInMemory = new Image();
+                
+                // 当内存图像加载完成后，执行绘制和显示操作
+                qrImageInMemory.onload = () => {
+                    // 将已完全加载的二维码绘制到分享图的Canvas上
+                    shareContext.drawImage(qrImageInMemory, qrX, qrY, qrSize, qrSize);
                     
-                    // 将生成的图片显示在弹窗中
-                    shareImageContainer.innerHTML = '';
-                    const img = new Image();
-                    img.src = shareCanvas.toDataURL("image/png");
-                    img.style.maxWidth = '100%';
-                    img.style.height = 'auto';
-                    shareImageContainer.appendChild(img);
+                    // 从Canvas生成最终的图片并显示在弹窗中
+                    const finalImage = new Image();
+                    finalImage.src = shareCanvas.toDataURL("image/png");
+                    finalImage.style.maxWidth = '100%';
+                    finalImage.style.height = 'auto';
+
+                    shareImageContainer.innerHTML = ''; // 清空旧图
+                    shareImageContainer.appendChild(finalImage);
                     shareModal.style.display = 'flex';
                 };
+                
+                qrImageInMemory.onerror = () => {
+                    console.error("加载二维码数据时出错。");
+                    alert("抱歉，无法加载二维码，分享图片生成失败。");
+                };
 
-                // 如果图片已加载（例如来自缓存），立即执行；否则，等待加载完成
-                if (qrImage.complete) {
-                    drawAndDisplay();
-                } else {
-                    qrImage.onload = drawAndDisplay;
-                }
-            }, 200);
+                // 设置内存图像的源，触发加载
+                qrImageInMemory.src = qrImageFromDOM.src;
+
+            }, 250); // 稍微增加延时以提高稳定性
         }
         // ---- [修改结束] ----
 
