@@ -789,6 +789,15 @@ canvas {
             gameOverScreen.style.display = 'flex';
             finalScoreElement.textContent = gameState.score;
             updateToggleButton();
+
+            // ---- [修改] ----
+            // 根据设备类型显示或隐藏分享按钮
+            if (config.isMobile) {
+                shareBtn.style.display = 'flex';
+            } else {
+                shareBtn.style.display = 'none';
+            }
+            // ---- [修改结束] ----
             
             // 检查并更新最高记录
             const currentHighScore = parseInt(localStorage.getItem('highScore') || 0);
@@ -1044,6 +1053,7 @@ canvas {
             }
         }
         
+        // ---- [修改] ----
         // 生成分享图片
         function generateShareImage() {
             const shareContext = shareCanvas.getContext('2d');
@@ -1092,29 +1102,48 @@ canvas {
             }
             
             // 绘制二维码
-            const qrSize = 150;
+            const qrSize = 120;
             const qrX = (width - qrSize) / 2;
-            const qrY = 680;
+            const qrY = 660;
             const qrCodeDiv = document.createElement('div');
             new QRCode(qrCodeDiv, {
                 text: QR_CODE_URL,
                 width: qrSize,
                 height: qrSize,
             });
-            const qrImage = qrCodeDiv.querySelector('img');
             
-            qrImage.onload = () => {
-                shareContext.drawImage(qrImage, qrX, qrY);
-                // 将生成的图片显示在弹窗中
-                shareImageContainer.innerHTML = '';
-                const img = new Image();
-                img.src = shareCanvas.toDataURL("image/png");
-                img.style.maxWidth = '100%';
-                img.style.height = 'auto';
-                shareImageContainer.appendChild(img);
-                shareModal.style.display = 'flex';
-            };
+            // 延时以确保二维码图片生成
+            setTimeout(() => {
+                const qrImage = qrCodeDiv.querySelector('img');
+
+                if (!qrImage) {
+                    console.error("二维码图片生成失败。");
+                    alert("抱歉，无法生成分享图片，请稍后重试。");
+                    return;
+                }
+
+                const drawAndDisplay = () => {
+                    shareContext.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+                    
+                    // 将生成的图片显示在弹窗中
+                    shareImageContainer.innerHTML = '';
+                    const img = new Image();
+                    img.src = shareCanvas.toDataURL("image/png");
+                    img.style.maxWidth = '100%';
+                    img.style.height = 'auto';
+                    shareImageContainer.appendChild(img);
+                    shareModal.style.display = 'flex';
+                };
+
+                // 如果图片已加载（例如来自缓存），立即执行；否则，等待加载完成
+                if (qrImage.complete) {
+                    drawAndDisplay();
+                } else {
+                    qrImage.onload = drawAndDisplay;
+                }
+            }, 200);
         }
+        // ---- [修改结束] ----
 
         // 烟花效果
         function triggerFireworks() {
