@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HDRI 编辑器 Pro (已修复)</title>
+    <title>HDRI 编辑器 Pro (增强版)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <style>
         :root {
             --main-color: #8080FF;
@@ -12,55 +15,106 @@
             --main-bg: #222228;
             --panel-bg: #2E2E33;
             --bt-gradient: linear-gradient(to left, #6450ff, #8f56fa);
-            --add-gradient: linear-gradient(to left, #50c878, #56fa8f); /* 新增添加按钮渐变 */
+            --add-gradient: linear-gradient(to left, #50c878, #56fa8f);
+            --octagon-gradient: linear-gradient(to left, #ff7e5f, #feb47b);
             --text1: #ffffff;
             --text2: #c7d1e2;
             --text3: #969dbb;
             --input-bg: #3a3a42;
+            --scrollbar-thumb: #4a4a5a;
+            --scrollbar-track: #2a2a33;
         }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            overflow: hidden; /* 防止整个页面滚动 */
+        * {
+            box-sizing: border-box;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
             padding: 20px;
             background-color: var(--main-bg);
             color: var(--text2);
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
         .editor-container {
             display: flex;
             gap: 20px;
             width: 100%;
-            max-width: 1800px;
-            height: calc(100vh - 40px); /* 占据全部视口高度并减去padding */
+            height: calc(100vh - 40px);
+            position: relative;
+	margin-left: 60px;
         }
 
         .controls-panel {
-            width: 320px;
+            width: 400px;
             background-color: var(--panel-bg);
             border: 1px solid var(--line);
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             flex-shrink: 0;
-            overflow-y: auto; /* 当内容超出时，面板内部滚动 */
-            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .controls-header {
+            position: sticky;
+            top: 0;
+            background-color: var(--panel-bg);
+            z-index: 10;
+        }
+
+        .controls-content {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-top: 10px;
+        }
+
+        /* 自定义滚动条 */
+        .controls-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .controls-content::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 4px;
+        }
+        .controls-content::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+        .controls-content::-webkit-scrollbar-thumb:hover {
+            background: #5a5a6a;
         }
 
         .preview-panel {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             height: 100%;
+            position: relative;
+        }
+
+        .resize-handle {
+            position: static;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: none;
+            cursor: ns-resize;
+            z-index: 10;
+            transform: translateY(-2px);
+        }
+        .resize-handle:hover {
+            background: var(--main-color);
         }
 
         .preview-box {
@@ -69,31 +123,18 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             padding: 15px;
-            display: flex;
-            flex-direction: column;
-            min-height: 50px; /* 拖拽时的最小高度 */
+            overflow: hidden;
+            position: relative;
         }
-
-        #topPreviewBox {
-            flex-basis: 50%; /* 初始占据50% */
+        
+        .top-preview {
+            height: 50%;
         }
-
-        #bottomPreviewBox {
-            flex-basis: 50%; /* 初始占据50% */
+        
+        .bottom-preview {
+            height: 50%;
         }
-
-        #resizer {
-            background-color: var(--input-bg);
-            height: 10px;
-            cursor: ns-resize;
-            border-radius: 5px;
-            flex-shrink: 0;
-            transition: background-color 0.2s;
-        }
-        #resizer:hover {
-            background-color: var(--main-color);
-        }
-
+        
         .preview-header {
             display: flex;
             justify-content: space-between;
@@ -101,7 +142,6 @@
             margin-bottom: 10px;
             font-size: 14px;
             color: var(--text3);
-            flex-shrink: 0;
         }
 
         .preview-header h3 {
@@ -114,36 +154,32 @@
             display: block;
             background-color: #000;
             border-radius: 4px;
+            height: calc(100% - 30px);
+            margin: 0 auto;
         }
 
         #hdrCanvas {
-            width: 100%;
-            aspect-ratio: 2 / 1;
             cursor: default;
-            border: 1px solid #202025;;
         }
-        #hdrCanvas:hover { border: 1px solid #8080ff96; }
-        
-        #sceneCanvas {
-            width: 100%;
-            height: 100%; /* 占满父容器剩余空间 */
+         #hdrCanvas:hover {
+            border: 1px solid #8080ff94;
         }
-
         h2.main-title {
             margin-top: 0;
             border-bottom: 1px solid var(--line);
             padding-bottom: 15px;
             font-size: 22px;
-            color: var(--text1);
+            color: var(--main-color);
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
+	    justify-content: space-between;
         }
         
         .button-group {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -152,7 +188,6 @@
             padding: 10px 12px;
             border: none;
             border-radius: 25px;
-            background: var(--line);
             color: var(--text1);
             cursor: pointer;
             transition: all 0.2s ease-in-out;
@@ -161,20 +196,29 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            border: 1px solid var(--text1);
+            background: none;
+            border: 1px solid var(--text3);
         }
         
         .button-group button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border: 1px solid var(--main-color);
+            color: var(--main-color);
+            background: #8080ff30;
+        }
+        
+        #addCircleLight {
+        }
+        
+        #addRectLight {
+        }
+        
+        #addOctagonLight {
         }
 
         .export-button {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px 12px;
+            padding: 10px 22px;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             background: var(--bt-gradient);
             color: var(--text1);
             cursor: pointer;
@@ -199,8 +243,12 @@
             margin-top: 20px;
         }
 
-        .control-group { margin-bottom: 16px; }
-        .control-group:last-child { margin-bottom: 0; }
+        .control-group {
+            margin-bottom: 16px;
+        }
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
 
         .control-group label {
             display: block;
@@ -269,8 +317,13 @@
             gap: 10px;
         }
         
-        .control-group .value-display input[type="number"] { width: 80px; }
-        #resolutionSelector { width: 100%; }
+        .control-group .value-display input[type="number"] {
+            width: 80px;
+        }
+        
+        #resolutionSelector {
+            width: 100%;
+        }
 
         .control-header {
             display: flex;
@@ -284,7 +337,7 @@
         .control-header h3 {
             margin: 0;
             font-size: 16px;
-            color: var(--text1);
+            color: #f59e0b;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -294,11 +347,13 @@
         .delete-button {
             background: none;
             border: none;
-            color: #ff6b6b;
+            color: #fff;
             cursor: pointer;
             font-size: 14px;
         }
-        .delete-button:hover { color: #ff4757; }
+        .delete-button:hover {
+            color: #ff4757;
+        }
 
         .tab-buttons {
             display: flex;
@@ -318,8 +373,8 @@
             transition: all 0.2s ease;
         }
         .tab-button.active {
-            background: var(--main-color);
-            color: var(--text1);
+                background: var(--main-color);
+    		color: var(--text1);
             font-weight: 600;
         }
         .tab-content { display: none; }
@@ -334,102 +389,191 @@
              border-radius: 4px;
              cursor: pointer;
         }
-         #imageUploadLabel:hover { background-color: #44444c; }
+         #imageUploadLabel:hover {
+            background-color: #44444c;
+         }
         #imageUpload { display: none; }
         
+        /* 添加灯光形状区分 */
+        .light-shape-circle {
+            border-radius: 50%;
+        }
+        .light-shape-rect {
+            border-radius: 4px;
+        }
+        .light-shape-octagon {
+            border-radius: 4px;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 992px) {
+            .editor-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .controls-panel {
+                width: 100%;
+                height: auto;
+	        max-height: 74vh;
+            }
+            
+            .preview-panel {
+                width: 100%;
+                height: 50vh;
+            }
+            
+            .button-group {
+            }
+            
+            .preview-header h3 {
+                font-size: 14px;
+            }
+            
+            .main-title {
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .editor-container {
+                gap: 10px;
+	margin-left: 0;
+            }
+            
+            .controls-panel {
+                padding: 15px;
+            }
+            
+            .preview-box {
+                padding: 10px;
+            }
+            
+            .control-section {
+                padding: 12px;
+            }
+            
+            .control-group .value-display {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .control-group .value-display input[type="number"] {
+                width: 100%;
+            }
+            
+            .button-group button {
+                font-size: 13px;
+                padding: 8px;
+            }
+            
+            .export-button {
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 <body>
-
+    <div id="global-sidebar"></div>
     <div class="editor-container">
         <div class="controls-panel">
-            <h2 class="main-title"><i class="fa-solid fa-wand-magic-sparkles"></i> HDRI 编辑器</h2>
-            
-            <div class="control-group">
-                <label for="resolutionSelector"><i class="fa-solid fa-ruler-combined"></i> 尺寸选择</label>
-                <select id="resolutionSelector">
-                    <option value="1024x512">1024 × 512</option>
-                    <option value="2048x1024" selected>2048 × 1024</option>
-                    <option value="4096x2048">4096 × 2048</option>
-                </select>
-            </div>
-
-            <div class="button-group">
-                <button id="addCircleLight"><i class="fa-solid fa-circle"></i> 添加圆形灯</button>
-                <button id="addRectLight"><i class="fa-solid fa-square"></i> 添加矩形灯</button>
-            </div>
-            
-            <button class="export-button" id="exportHdri"><i class="fa-solid fa-download"></i> 导出 HDRI</button>
-
-            <div id="lightControls"></div>
-
-            <div class="control-section" id="backgroundControlsContainer">
-                <div class="control-header">
-                    <h3><i class="fa-solid fa-layer-group"></i> 背景调节</h3>
-                </div>
-                <div class="tab-buttons">
-                    <button class="tab-button active" data-tab="solid">纯色</button>
-                    <button class="tab-button" data-tab="gradient">渐变</button>
-                    <button class="tab-button" data-tab="image">图片</button>
-                </div>
+            <div class="controls-header">
+                <h2 class="main-title"><span><i class="fa-solid fa-wand-magic-sparkles"></i> HDRI 编辑器</span>
+		<button class="export-button" id="exportHdri"><i class="fa-solid fa-download"></i> 导出 HDRI</button>
+		</h2>
                 
-                <div id="solidTab" class="tab-content active">
-                    <div class="control-group">
-                        <label for="bgColor">颜色</label>
-                        <div class="color-input-wrapper">
-                            <input type="color" id="bgColor" value="#202025">
-                        </div>
-                    </div>
+                <div class="control-group">
+                    <label for="resolutionSelector"><i class="fa-solid fa-ruler-combined"></i> 尺寸选择</label>
+                    <select id="resolutionSelector">
+                        <option value="1024x512">1024 × 512</option>
+                        <option value="2048x1024" selected>2048 × 1024</option>
+                        <option value="4096x2048">4096 × 2048</option>
+                    </select>
                 </div>
 
-                <div id="gradientTab" class="tab-content">
-                    <div class="control-group">
-                        <label for="gradientColor1">颜色 1</label>
-                        <input type="color" id="gradientColor1" value="#1a2a6c">
+                <div class="button-group">
+                    <button id="addCircleLight"><i class="fa-regular fa-lightbulb"></i> 圆形灯</button>
+                    <button id="addRectLight"><i class="fa-regular fa-square"></i> 矩形灯</button>
+                    <button id="addOctagonLight"><i class="fa-solid fa-sun"></i> 八边形灯</button>
+                </div>  
+            </div>
+            
+            <div class="controls-content">
+                <div id="lightControls"></div>
+
+                <div class="control-section" id="backgroundControlsContainer">
+                    <div class="control-header">
+                        <h3><i class="fa-solid fa-layer-group"></i> 背景调节</h3>
                     </div>
-                    <div class="control-group">
-                        <label for="gradientColor2">颜色 2</label>
-                        <input type="color" id="gradientColor2" value="#b21f1f">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="solid">纯色</button>
+                        <button class="tab-button" data-tab="gradient">渐变</button>
+                        <button class="tab-button" data-tab="image">图片</button>
                     </div>
-                    <div class="control-group">
-                        <label for="gradientAngle">角度</label>
+                    
+                    <div id="solidTab" class="tab-content active">
+                        <div class="control-group">
+                            <label for="bgColor">颜色</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="bgColor" value="#202025">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="gradientTab" class="tab-content">
+                        <div class="control-group">
+                            <label for="gradientColor1">颜色 1 (天空)</label>
+                            <input type="color" id="gradientColor1" value="#1a73e8">
+                        </div>
+                        <div class="control-group">
+                            <label for="gradientColor2">颜色 2 (地面)</label>
+                            <input type="color" id="gradientColor2" value="#aaaaa1">
+                        </div>
+                        <div class="control-group">
+                            <label for="gradientAngle">角度</label>
+                            <div class="value-display">
+                                <input type="range" id="gradientAngle" min="0" max="360" value="90" step="1">
+                                <input type="number" id="gradientAngleValue" min="0" max="360" value="90" step="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="imageTab" class="tab-content">
+                        <div class="control-group">
+                            <input type="file" id="imageUpload" accept="image/*">
+                            <label for="imageUpload" id="imageUploadLabel"><i class="fa-solid fa-upload"></i> 点击上传图片</label>
+                        </div>
+                    </div>
+
+                    <div class="control-group" style="margin-top: 20px;">
+                        <label for="bgBrightness">亮度</label>
                         <div class="value-display">
-                            <input type="range" id="gradientAngle" min="0" max="360" value="90" step="1">
-                            <input type="number" id="gradientAngleValue" min="0" max="360" value="90" step="1">
+                            <input type="range" id="bgBrightness" min="0" max="5" value="1" step="0.01">
+                            <input type="number" id="bgBrightnessValue" min="0" max="5" value="1" step="0.01">
                         </div>
-                    </div>
-                </div>
-
-                <div id="imageTab" class="tab-content">
-                    <div class="control-group">
-                        <input type="file" id="imageUpload" accept="image/*">
-                        <label for="imageUpload" id="imageUploadLabel"><i class="fa-solid fa-upload"></i> 点击上传图片</label>
-                    </div>
-                </div>
-
-                <div class="control-group" style="margin-top: 20px;">
-                    <label for="bgBrightness">亮度</label>
-                    <div class="value-display">
-                        <input type="range" id="bgBrightness" min="0" max="5" value="1" step="0.01">
-                        <input type="number" id="bgBrightnessValue" min="0" max="5" value="1" step="0.01">
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="preview-panel">
-            <div class="preview-box" id="topPreviewBox">
+            <div class="preview-box top-preview">
                 <div class="preview-header">
                     <h3><i class="fa-solid fa-globe"></i> 展开图预览 (Equirectangular)</h3>
                 </div>
                 <canvas id="hdrCanvas"></canvas>
             </div>
-            <div id="resizer"></div>
-            <div class="preview-box" id="bottomPreviewBox">
+            <div class="resize-handle" id="resizeHandle"></div>
+            <div class="preview-box bottom-preview">
                 <div class="preview-header">
                     <h3><i class="fa-solid fa-cube"></i> 3D环境预览</h3>
                 </div>
-                <canvas id="sceneCanvas"></canvas>
+                <canvas id="sceneCanvas" style="width: 100%;"></canvas>
             </div>
         </div>
     </div>
@@ -450,6 +594,7 @@
         const hdrCanvas = document.getElementById('hdrCanvas');
         const hdrCtx = hdrCanvas.getContext('2d', { willReadFrequently: true });
         const sceneCanvas = document.getElementById('sceneCanvas');
+        const resizeHandle = document.getElementById('resizeHandle');
         const PI = Math.PI;
         const TWO_PI = 2 * PI;
         const HALF_PI = PI / 2;
@@ -460,17 +605,22 @@
         let selectedLight = null;
         let addingLightType = null;
         let draggingLight = null;
+        let isResizing = false;
+        let startY = 0;
+        let startTopHeight = 0;
+        let startBottomHeight = 0;
 
         let background = {
             type: 'solid',
             color: '#202025',
-            gradient: { color1: '#1a2a6c', color2: '#b21f1f', angle: 90 },
+            gradient: { color1: '#1a73e8', color2: '#aaaaa1', angle: 90 },
             image: null,
             brightness: 1.0,
         };
 
         // --- 3D Scene ---
         let scene, camera, renderer, sphere, controls, envTexture;
+        let pointLight, directionalLight;
 
         function init3DScene() {
             scene = new THREE.Scene();
@@ -478,11 +628,12 @@
             renderer = new THREE.WebGLRenderer({ 
                 canvas: sceneCanvas, 
                 antialias: true, 
-                alpha: true
+                alpha: true,
+                logarithmicDepthBuffer: true
             });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.8; // 修复 #3: 提高曝光度以增强HDRI照明效果
+            renderer.toneMappingExposure = 0.6; // 降低曝光值，使颜色变深
 
             camera = new THREE.PerspectiveCamera(75, sceneCanvas.clientWidth / sceneCanvas.clientHeight, 0.1, 1000);
             camera.position.z = 2.5;
@@ -496,33 +647,44 @@
 
             const geometry = new THREE.SphereGeometry(1, 128, 64);
             const material = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                metalness: 1.0,
-                roughness: 0.05,
+                color: 0xffffff, // 使用更深的颜色
+                metalness: 0.8,
+                roughness: 0.1,
+                side: THREE.DoubleSide
             });
             sphere = new THREE.Mesh(geometry, material);
             scene.add(sphere);
 
-            // 修复 #3: 移除额外的光源，让照明完全来自HDRI环境贴图
-            // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            // scene.add(ambientLight);
-            // const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            // directionalLight.position.set(1, 1, 1);
-            // scene.add(directionalLight);
+            // 添加环境光
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // 降低环境光强度
+            scene.add(ambientLight);
 
+            // 添加点光源
+            pointLight = new THREE.PointLight(0xffffff, 0.8, 100); // 降低点光源强度
+            pointLight.position.set(0, 2, 0);
+            scene.add(pointLight);
+
+            // 添加方向光
+            directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // 降低方向光强度
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            // 添加网格辅助
+            const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+            scene.add(gridHelper);
+
+            // 添加坐标轴辅助
+            const axesHelper = new THREE.AxesHelper(1.5);
+            scene.add(axesHelper);
+
+            // 创建环境纹理
             envTexture = new THREE.CanvasTexture(hdrCanvas);
             envTexture.mapping = THREE.EquirectangularReflectionMapping;
             scene.environment = envTexture;
             scene.background = envTexture;
 
-            // 修复 #3: 移除辅助线，使预览更干净
-            // const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
-            // scene.add(gridHelper);
-            // const axesHelper = new THREE.AxesHelper(1.5);
-            // scene.add(axesHelper);
-
             animate();
-            resize3DCanvas(); 
+            resize3DCanvas();
         }
 
         function animate() {
@@ -533,17 +695,16 @@
 
         function update3DScene() {
             if (!envTexture) return;
-            envTexture.needsUpdate = true;
-            if (scene.background) scene.background.needsUpdate = true;
+            envTexture.dispose();
+            envTexture = new THREE.CanvasTexture(hdrCanvas);
+            envTexture.mapping = THREE.EquirectangularReflectionMapping;
+            scene.environment = envTexture;
+            scene.background = envTexture;
         }
         
         function resize3DCanvas() {
-            if(!renderer || !sceneCanvas.parentElement) return;
-            const parent = sceneCanvas.parentElement;
-            const { clientWidth, clientHeight } = parent;
-            
-            if (clientWidth === 0 || clientHeight === 0) return;
-
+            if(!renderer) return;
+            const { clientWidth, clientHeight } = sceneCanvas;
             renderer.setSize(clientWidth, clientHeight, false);
             camera.aspect = clientWidth / clientHeight;
             camera.updateProjectionMatrix();
@@ -556,8 +717,8 @@
             return { lon, lat };
         }
 
+        // 圆形灯光路径
         function createCirclePath(ctx, light) {
-            // 圆形灯光使用原始的投影算法以获得在球面上更准确的形变
             const { lon: centerLon, lat: centerLat } = unproject(light.x, light.y);
             const angularRadius = (light.size / HDR_WIDTH) * PI;
 
@@ -577,55 +738,98 @@
             ctx.closePath();
         }
         
-        // 修复 #2: 重写矩形绘制函数，直接在2D画布上绘制圆角矩形
+        // 矩形灯光路径（带圆角和旋转）
         function createRectPath(ctx, light) {
-            const x = light.x - light.width / 2;
-            const y = light.y - light.height / 2;
-            const w = light.width;
-            const h = light.height;
-            // 确保圆角半径不超过矩形宽高的一半
-            const r = Math.min(light.cornerRadius, w / 2, h / 2);
+            const centerX = light.x;
+            const centerY = light.y;
+            const width = light.width;
+            const height = light.height;
+            const cornerRadius = light.cornerRadius || 0;
+            const rotation = light.rotation || 0;
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation * Math.PI / 180);
+            
+            const halfWidth = width / 2;
+            const halfHeight = height / 2;
             
             ctx.beginPath();
-            if (r <= 0) { // 如果圆角为0，绘制普通矩形
-                ctx.rect(x, y, w, h);
-            } else { // 否则绘制圆角矩形路径
-                ctx.moveTo(x + r, y);
-                ctx.arcTo(x + w, y, x + w, y + h, r);
-                ctx.arcTo(x + w, y + h, x, y + h, r);
-                ctx.arcTo(x, y + h, x, y, r);
-                ctx.arcTo(x, y, x + w, y, r);
+            ctx.moveTo(-halfWidth + cornerRadius, -halfHeight);
+            
+            // 绘制顶部边
+            ctx.lineTo(halfWidth - cornerRadius, -halfHeight);
+            // 右上角
+            ctx.arcTo(halfWidth, -halfHeight, halfWidth, -halfHeight + cornerRadius, cornerRadius);
+            
+            // 绘制右边
+            ctx.lineTo(halfWidth, halfHeight - cornerRadius);
+            // 右下角
+            ctx.arcTo(halfWidth, halfHeight, halfWidth - cornerRadius, halfHeight, cornerRadius);
+            
+            // 绘制底部边
+            ctx.lineTo(-halfWidth + cornerRadius, halfHeight);
+            // 左下角
+            ctx.arcTo(-halfWidth, halfHeight, -halfWidth, halfHeight - cornerRadius, cornerRadius);
+            
+            // 绘制左边
+            ctx.lineTo(-halfWidth, -halfHeight + cornerRadius);
+            // 左上角
+            ctx.arcTo(-halfWidth, -halfHeight, -halfWidth + cornerRadius, -halfHeight, cornerRadius);
+            
+            ctx.closePath();
+            ctx.restore();
+        }
+        
+        // 八边形灯光路径（带旋转）
+        function createOctagonPath(ctx, light) {
+            const centerX = light.x;
+            const centerY = light.y;
+            const radius = light.size;
+            const rotation = light.rotation || 0;
+            const points = 8;
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation * Math.PI / 180);
+            
+            ctx.beginPath();
+            for (let i = 0; i < points; i++) {
+                const angle = (i * 2 * Math.PI) / points - Math.PI/8;
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
             }
             ctx.closePath();
+            ctx.restore();
         }
 
         function drawHdrPreview() {
-            // 保存当前画布状态的快照，包括滤镜等
-            hdrCtx.save();
+            hdrCtx.globalCompositeOperation = 'source-over';
             
             // 1. Draw Background
-            hdrCtx.globalCompositeOperation = 'source-over';
             switch (background.type) {
                 case 'image':
                     if (background.image) {
-                        hdrCtx.fillStyle = background.color;
-                        hdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
-                        
                         const imgRatio = background.image.width / background.image.height;
                         const canvasRatio = HDR_WIDTH / HDR_HEIGHT;
                         
                         let drawWidth, drawHeight, offsetX, offsetY;
                         
-                        if (imgRatio > canvasRatio) { // 图片更宽
-                            drawWidth = HDR_WIDTH;
-                            drawHeight = background.image.height * (HDR_WIDTH / background.image.width);
-                            offsetX = 0;
-                            offsetY = (HDR_HEIGHT - drawHeight) / 2;
-                        } else { // 图片更高或比例相同
+                        if (imgRatio > canvasRatio) {
                             drawHeight = HDR_HEIGHT;
                             drawWidth = background.image.width * (HDR_HEIGHT / background.image.height);
                             offsetX = (HDR_WIDTH - drawWidth) / 2;
                             offsetY = 0;
+                        } else {
+                            drawWidth = HDR_WIDTH;
+                            drawHeight = background.image.height * (HDR_WIDTH / background.image.width);
+                            offsetX = 0;
+                            offsetY = (HDR_HEIGHT - drawHeight) / 2;
                         }
                         
                         hdrCtx.drawImage(background.image, offsetX, offsetY, drawWidth, drawHeight);
@@ -650,102 +854,49 @@
                     hdrCtx.fillStyle = background.color;
                     hdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
             }
-
-            // 应用背景亮度滤镜
             hdrCtx.filter = `brightness(${background.brightness})`;
-            // 为了让滤镜生效，需要将当前内容绘制到一个临时画布再画回来
-            hdrCtx.drawImage(hdrCanvas, 0, 0);
-            hdrCtx.filter = 'none'; // 清除滤镜，以免影响后续灯光绘制
-
 
             // 2. Draw Lights (Additive Blending)
             hdrCtx.globalCompositeOperation = 'add';
             lights.forEach(light => {
                 hdrCtx.save();
                 
+                // 根据灯光类型绘制不同形状
                 if (light.type === 'circle') {
                     createCirclePath(hdrCtx, light);
-                } else {
+                } else if (light.type === 'rect') {
                     createRectPath(hdrCtx, light);
+                } else if (light.type === 'octagon') {
+                    createOctagonPath(hdrCtx, light);
                 }
 
                 const color = hexToRgb(light.color);
-                // 修复 #3: 去除亮度预览的钳制，让高强度灯光能正确地“过曝”
-                const displayIntensity = light.intensity / 10;
+                const displayIntensity = Math.min(light.intensity / 10, 1.0);
                 
-                // 使用阴影来模拟羽化/衰减效果
-                const glowColor = `rgba(${color.r}, ${color.g}, ${color.b}, 0.7)`;
-                hdrCtx.shadowColor = glowColor;
+                hdrCtx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${displayIntensity})`;
+                hdrCtx.shadowColor = `rgba(${color.r}, ${color.g}, ${color.b}, ${displayIntensity})`;
                 hdrCtx.shadowBlur = light.falloff;
 
-                // 填充灯光主体颜色，强度越高，颜色越亮（在 add 模式下会叠加）
-                // 简单的模拟：强度越高，填充越不透明，使得叠加效果更强
-                const centerOpacity = Math.min(displayIntensity, 1.0);
-                hdrCtx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${centerOpacity})`;
-
+                // Fill the path
                 hdrCtx.fill();
-                
-                // 为了增强高光效果，可以多次填充
-                if(light.intensity > 20) {
-                    hdrCtx.shadowBlur = light.falloff * 0.5;
-                    hdrCtx.fill();
-                }
-                if(light.intensity > 50) {
-                    hdrCtx.shadowBlur = light.falloff * 0.25;
-                    hdrCtx.fill();
-                }
 
                 hdrCtx.restore();
             });
+            hdrCtx.filter = 'none';
             
-            // 恢复画布到绘制前的状态（不含灯光）
-            hdrCtx.restore(); // 对应最开始的 hdrCtx.save()
-
-            // ---- 正式将背景和灯光合并 ----
-            // 重新绘制已应用亮度的背景
-            const tempBGCanvas = document.createElement('canvas');
-            tempBGCanvas.width = HDR_WIDTH;
-            tempBGCanvas.height = HDR_HEIGHT;
-            const tempBGCtx = tempBGCanvas.getContext('2d');
-            tempBGCtx.drawImage(hdrCanvas, 0, 0); // 将上面已绘制的背景(带亮度)保存到临时画布
-
-            // 清空主画布
-            hdrCtx.globalCompositeOperation = 'source-over';
-            hdrCtx.fillStyle = background.color;
-            hdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
-            // 绘制背景
-            hdrCtx.drawImage(tempBGCanvas, 0, 0);
-            
-            // 重新绘制灯光（逻辑和上面一样）
-            hdrCtx.globalCompositeOperation = 'add';
-            lights.forEach(light => {
-                hdrCtx.save();
-                if (light.type === 'circle') { createCirclePath(hdrCtx, light); } 
-                else { createRectPath(hdrCtx, light); }
-                const color = hexToRgb(light.color);
-                const displayIntensity = light.intensity / 10;
-                hdrCtx.shadowColor = `rgba(${color.r}, ${color.g}, ${color.b}, 0.7)`;
-                hdrCtx.shadowBlur = light.falloff;
-                const centerOpacity = Math.min(displayIntensity, 1.0);
-                hdrCtx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${centerOpacity})`;
-                hdrCtx.fill();
-                if(light.intensity > 20) { hdrCtx.shadowBlur = light.falloff * 0.5; hdrCtx.fill(); }
-                if(light.intensity > 50) { hdrCtx.shadowBlur = light.falloff * 0.25; hdrCtx.fill(); }
-                hdrCtx.restore();
-            });
-
-
             // 3. Draw Selection Outline
             if (selectedLight) {
                 hdrCtx.globalCompositeOperation = 'source-over';
                 hdrCtx.strokeStyle = 'rgba(128, 128, 255, 0.9)';
-                hdrCtx.lineWidth = 2 * (HDR_WIDTH / 2048);
+                hdrCtx.lineWidth = 2;
                 hdrCtx.setLineDash([8, 4]);
                 
                 if (selectedLight.type === 'circle') {
                     createCirclePath(hdrCtx, selectedLight);
-                } else {
+                } else if (selectedLight.type === 'rect') {
                     createRectPath(hdrCtx, selectedLight);
+                } else if (selectedLight.type === 'octagon') {
+                    createOctagonPath(hdrCtx, selectedLight);
                 }
                 hdrCtx.stroke();
                 
@@ -761,27 +912,29 @@
             container.innerHTML = '';
             
             if (selectedLight) {
-                const isCircle = selectedLight.type === 'circle';
-                const typeName = isCircle ? '圆形灯光' : '矩形灯光';
-                const icon = isCircle ? 'fa-circle' : 'fa-square';
+                const icon = selectedLight.type === 'circle' ? 'fa-circle' : 
+                             selectedLight.type === 'rect' ? 'fa-square' : 'fa-stop';
+                const typeName = selectedLight.type === 'circle' ? '圆形灯光' : 
+                                 selectedLight.type === 'rect' ? '矩形灯光' : '八边形灯光';
                 
                 let html = `<div class="control-section">
-                    <div class="control-header"><h3><i class="fa-solid ${icon}"></i> ${typeName}</h3><button class="delete-button" id="deleteLightBtn"><i class="fa-solid fa-trash"></i></button></div>`;
+                    <div class="control-header"><h3> ${typeName}</h3><button class="delete-button" id="deleteLightBtn"><i class="fa-solid fa-trash-can"></i></button></div>`;
 
-                if (isCircle) {
+                if (selectedLight.type === 'circle') {
                     html += createSlider('size', '大小', 10, 500, 1, selectedLight.size);
-                } else {
+                } else if (selectedLight.type === 'rect') {
                     html += createSlider('width', '宽度', 10, 500, 1, selectedLight.width);
                     html += createSlider('height', '高度', 10, 500, 1, selectedLight.height);
+                    html += createSlider('cornerRadius', '圆角半径', 0, 100, 1, selectedLight.cornerRadius || 0);
+                    html += createSlider('rotation', '旋转角度', 0, 360, 1, selectedLight.rotation || 0);
+                } else if (selectedLight.type === 'octagon') {
+                    html += createSlider('size', '大小', 10, 500, 1, selectedLight.size);
+                    html += createSlider('rotation', '旋转角度', 0, 360, 1, selectedLight.rotation || 0);
                 }
                 
                 html += createColorInput('color', '颜色', selectedLight.color);
                 html += createSlider('intensity', '亮度 (HDR)', 0.1, 100, 0.1, selectedLight.intensity);
                 html += createSlider('falloff', '衰减 (羽化)', 0, 100, 1, selectedLight.falloff);
-
-                if (!isCircle) {
-                    html += createSlider('cornerRadius', '圆角', 0, 100, 1, selectedLight.cornerRadius);
-                }
 
                 html += `</div>`;
                 container.innerHTML = html;
@@ -808,57 +961,12 @@
                         </div>
                     </div>`;
         }
-        
-        // --- 修复 #1: UI拖拽调节功能 ---
-        function initResizer() {
-            const resizer = document.getElementById('resizer');
-            const topPanel = document.getElementById('topPreviewBox');
-            const bottomPanel = document.getElementById('bottomPreviewBox');
-            const previewPanel = document.querySelector('.preview-panel');
-
-            let isResizing = false;
-
-            resizer.addEventListener('mousedown', (e) => {
-                isResizing = true;
-                document.body.style.cursor = 'ns-resize';
-                document.body.style.userSelect = 'none';
-            });
-            
-            window.addEventListener('mouseup', () => {
-                if (isResizing) {
-                    isResizing = false;
-                    document.body.style.cursor = 'default';
-                    document.body.style.userSelect = 'auto';
-                    // 拖拽结束后，重新计算并设置3D canvas大小
-                    resize3DCanvas();
-                }
-            });
-            
-            window.addEventListener('mousemove', (e) => {
-                if (!isResizing) return;
-                
-                const containerRect = previewPanel.getBoundingClientRect();
-                // 计算鼠标在容器内的Y坐标百分比
-                let newTopHeight = e.clientY - containerRect.top;
-                
-                // 限制最小/最大高度
-                if (newTopHeight < 50) newTopHeight = 50;
-                if (newTopHeight > containerRect.height - 50) newTopHeight = containerRect.height - 50;
-                
-                const topFlexBasis = (newTopHeight / containerRect.height) * 100;
-                const bottomFlexBasis = 100 - topFlexBasis;
-
-                topPanel.style.flexBasis = `${topFlexBasis}%`;
-                bottomPanel.style.flexBasis = `${bottomFlexBasis}%`;
-
-                // 实时调整3D canvas大小
-                resize3DCanvas();
-            });
-        }
-
 
         // --- Event Handlers & Core Logic ---
         function initApp() {
+            // 初始化画布尺寸
+            resetCanvas(HDR_WIDTH, HDR_HEIGHT);
+            
             document.getElementById('resolutionSelector').addEventListener('change', (e) => {
                 const [w, h] = e.target.value.split('x').map(Number);
                 resetCanvas(w, h);
@@ -866,11 +974,17 @@
 
             document.getElementById('addCircleLight').addEventListener('click', () => setAddingMode('circle'));
             document.getElementById('addRectLight').addEventListener('click', () => setAddingMode('rect'));
+            document.getElementById('addOctagonLight').addEventListener('click', () => setAddingMode('octagon'));
             
             hdrCanvas.addEventListener('mousedown', handleCanvasMouseDown);
             hdrCanvas.addEventListener('mousemove', handleCanvasMouseMove);
             window.addEventListener('mouseup', handleMouseUp);
             hdrCanvas.addEventListener('mouseleave', handleMouseUp);
+            
+            // 添加拖拽调整功能
+            resizeHandle.addEventListener('mousedown', startResize);
+            window.addEventListener('mousemove', handleResize);
+            window.addEventListener('mouseup', stopResize);
             
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -899,6 +1013,7 @@
                 drawHdrPreview(); 
             });
             
+            // 渐变角度滑块和数值输入框同步
             const gradientAngleSlider = document.getElementById('gradientAngle');
             const gradientAngleValue = document.getElementById('gradientAngleValue');
             gradientAngleSlider.addEventListener('input', e => { 
@@ -912,6 +1027,7 @@
                 drawHdrPreview(); 
             });
             
+            // 亮度滑块和数值输入框同步
             const bgBrightnessSlider = document.getElementById('bgBrightness');
             const bgBrightnessValue = document.getElementById('bgBrightnessValue');
             bgBrightnessSlider.addEventListener('input', e => { 
@@ -925,28 +1041,53 @@
                 drawHdrPreview(); 
             });
             
+            // 图片上传
             document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+            
+            // 导出HDRI
             document.getElementById('exportHdri').addEventListener('click', generateHdrFile);
 
             // 添加默认灯光
             lights.push({
                 id: Date.now(),
                 type: 'circle',
-                x: HDR_WIDTH * 0.3, y: HDR_HEIGHT * 0.4,
-                size: 120, color: '#ffffff', intensity: 25.0, falloff: 30,
+                x: HDR_WIDTH * 0.3,
+                y: HDR_HEIGHT * 0.4,
+                size: 120,
+                color: '#ffffff',
+                intensity: 25.0,
+                falloff: 30,
             });
+            
             lights.push({
-                id: Date.now() + 1, type: 'rect',
-                x: HDR_WIDTH * 0.7, y: HDR_HEIGHT * 0.6,
-                width: 180, height: 90, color: '#ff9900',
-                intensity: 15.0, falloff: 20, cornerRadius: 20,
+                id: Date.now() + 1,
+                type: 'rect',
+                x: HDR_WIDTH * 0.7,
+                y: HDR_HEIGHT * 0.6,
+                width: 100,
+                height: 120,
+                cornerRadius: 20,
+                rotation: 0,
+                color: '#fff700',
+                intensity: 15.0,
+                falloff: 20,
+            });
+
+            lights.push({
+                id: Date.now() + 2,
+                type: 'octagon',
+                x: HDR_WIDTH * 0.5,
+                y: HDR_HEIGHT * 0.7,
+                size: 100,
+                rotation: 0,
+                color: '#ffffff',
+                intensity: 20.0,
+                falloff: 25,
             });
 
             init3DScene();
-            initResizer(); // 修复 #1: 初始化拖拽调节器
-            resetCanvas(HDR_WIDTH, HDR_HEIGHT);
-            // 监听3D场景父级容器的大小变化
-            new ResizeObserver(resize3DCanvas).observe(document.getElementById('bottomPreviewBox'));
+            updateControlsUI();
+            drawHdrPreview();
         }
 
         function resetCanvas(width, height) {
@@ -954,6 +1095,17 @@
             HDR_HEIGHT = height;
             hdrCanvas.width = width;
             hdrCanvas.height = height;
+            lights.forEach(light => {
+                // 缩放灯光位置和尺寸
+                light.x *= (width / 2048);
+                light.y *= (height / 1024);
+                if (light.type === 'circle' || light.type === 'octagon') {
+                    light.size *= (width / 2048);
+                } else if (light.type === 'rect') {
+                    light.width *= (width / 2048);
+                    light.height *= (height / 1024);
+                }
+            });
             drawHdrPreview();
         }
 
@@ -967,16 +1119,25 @@
             
             if (addingLightType) {
                 const newLight = {
-                    id: Date.now(), type: addingLightType, x, y,
-                    color: '#ffffff', intensity: 15.0, falloff: 30,
+                    id: Date.now(),
+                    type: addingLightType,
+                    x, y,
+                    color: '#ffffff',
+                    intensity: 15.0,
+                    falloff: 30,
                 };
                 
-                if (addingLightType === 'circle') {
-                    newLight.size = 80;
+                if (addingLightType === 'circle' || addingLightType === 'octagon') {
+                    newLight.size = 80 * (HDR_WIDTH / 2048);
                 } else {
-                    newLight.width = 120;
-                    newLight.height = 60;
-                    newLight.cornerRadius = 20;
+                    newLight.width = 120 * (HDR_WIDTH / 2048);
+                    newLight.height = 60 * (HDR_HEIGHT / 1024);
+                    newLight.cornerRadius = 10;
+                    newLight.rotation = 0;
+                }
+                
+                if (addingLightType === 'octagon') {
+                    newLight.rotation = 0;
                 }
                 
                 lights.push(newLight);
@@ -985,20 +1146,24 @@
                 hdrCanvas.style.cursor = 'default';
             } else {
                 let clickedLight = null;
-                // 从最上层的灯光开始检查点击
                 for (let i = lights.length - 1; i >= 0; i--) {
                     const light = lights[i];
                     let hit = false;
                     
-                    // 使用临时画布进行精确的像素级点击检测
-                    const tempCtx = document.createElement('canvas').getContext('2d');
                     if (light.type === 'circle') {
-                        createCirclePath(tempCtx, light);
-                    } else {
-                        createRectPath(tempCtx, light);
+                        const dist = Math.sqrt((x - light.x) ** 2 + (y - light.y) ** 2);
+                        hit = dist < light.size;
+                    } else if (light.type === 'rect') {
+                        hit = (x > light.x - light.width/2 && 
+                               x < light.x + light.width/2 && 
+                               y > light.y - light.height/2 && 
+                               y < light.y + light.height/2);
+                    } else if (light.type === 'octagon') {
+                        const dist = Math.sqrt((x - light.x) ** 2 + (y - light.y) ** 2);
+                        hit = dist < light.size;
                     }
                     
-                    if (tempCtx.isPointInPath(x, y)) {
+                    if (hit) {
                         clickedLight = light;
                         break;
                     }
@@ -1039,21 +1204,67 @@
                 img.onload = () => {
                     background.image = img;
                     document.querySelector('.tab-button[data-tab="image"]').click();
+                    drawHdrPreview();
                 };
                 img.src = event.target.result;
             };
             reader.readAsDataURL(file);
         }
 
+        function startResize(e) {
+            isResizing = true;
+            startY = e.clientY;
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            startTopHeight = parseFloat(getComputedStyle(topPreview).height);
+            startBottomHeight = parseFloat(getComputedStyle(bottomPreview).height);
+            document.body.style.cursor = 'ns-resize';
+            e.preventDefault();
+        }
+        
+        function handleResize(e) {
+            if (!isResizing) return;
+            
+            const previewPanel = document.querySelector('.preview-panel');
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            
+            const deltaY = e.clientY - startY;
+            const newTopHeight = startTopHeight + deltaY;
+            const newBottomHeight = startBottomHeight - deltaY;
+            
+            // 设置最小高度
+            if (newTopHeight > 150 && newBottomHeight > 150) {
+                topPreview.style.height = `${newTopHeight}px`;
+                bottomPreview.style.height = `${newBottomHeight}px`;
+                
+                // 更新分割线位置
+                const topRect = topPreview.getBoundingClientRect();
+                const panelRect = previewPanel.getBoundingClientRect();
+                const relativeTop = topRect.bottom - panelRect.top;
+                resizeHandle.style.top = `${relativeTop - 2}px`; // 减去2px使分割线居中
+                
+                // 更新canvas尺寸
+                resize3DCanvas();
+            }
+        }
+        
+        function stopResize() {
+            isResizing = false;
+            document.body.style.cursor = '';
+        }
+
         function addControlListeners() {
             if (!selectedLight) return;
             document.getElementById('deleteLightBtn').addEventListener('click', deleteSelectedLight);
             
+            // 为所有滑块添加数值同步功能
             const sliders = document.querySelectorAll('.control-group input[type="range"]');
             sliders.forEach(slider => {
                 const inputId = slider.id;
                 const valueInput = document.getElementById(inputId + 'Value');
                 
+                // 滑块变化时更新数值输入框
                 slider.addEventListener('input', e => {
                     valueInput.value = e.target.value;
                     if (selectedLight) {
@@ -1062,6 +1273,7 @@
                     }
                 });
                 
+                // 数值输入框变化时更新滑块
                 valueInput.addEventListener('input', e => {
                     slider.value = e.target.value;
                     if (selectedLight) {
@@ -1071,6 +1283,7 @@
                 });
             });
 
+            // 颜色选择器和颜色文本输入框同步
             const colorPicker = document.getElementById('color');
             const colorText = document.getElementById('colorText');
             if (colorPicker && colorText) {
@@ -1080,12 +1293,9 @@
                     drawHdrPreview();
                 });
                 colorText.addEventListener('input', e => {
-                    // 基本的 hex 格式验证
-                    if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
-                       selectedLight.color = e.target.value;
-                       colorPicker.value = e.target.value;
-                       drawHdrPreview();
-                    }
+                    selectedLight.color = e.target.value;
+                    colorPicker.value = e.target.value;
+                    drawHdrPreview();
                 });
             }
         }
@@ -1105,7 +1315,7 @@
                 r: parseInt(result[1], 16), 
                 g: parseInt(result[2], 16), 
                 b: parseInt(result[3], 16) 
-            } : {r:0, g:0, b:0};
+            } : null;
         }
 
         // --- HDR Export ---
@@ -1133,23 +1343,18 @@
             return [ Math.floor(r * m), Math.floor(g * m), Math.floor(b * m), e + 128 ];
         }
 
-        // 导出逻辑需要重大修改才能真正导出HDR数据，目前它只是导出了LDR预览图
-        // 真正的导出需要基于灯光参数重新计算浮点数纹理，这是一个复杂的过程
-        // 当前暂时保持原有的导出逻辑，它会导出一个'.hdr'文件，但内容是LDR的
         async function generateHdrFile() {
-            console.log("Generating LDR data for HDR export...");
-            // 注意：此处的导出逻辑是基于2D画布的LDR（低动态范围）数据，
-            // 并非真正的HDR数据。要生成真正的HDR，需要一个离屏的浮点数渲染管线。
-            const ldrData = hdrCtx.getImageData(0, 0, HDR_WIDTH, HDR_HEIGHT).data;
+            console.log("Generating HDR data...");
             const floatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
-
-            for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
-                // 将 0-255 的颜色值转换为 0.0-1.0 的浮点数
-                floatData[i*3 + 0] = ldrData[i*4 + 0] / 255.0;
-                floatData[i*3 + 1] = ldrData[i*4 + 1] / 255.0;
-                floatData[i*3 + 2] = ldrData[i*4 + 2] / 255.0;
+            
+            // Generate background data by drawing to a temp canvas
+            const bgImgData = hdrCtx.getImageData(0, 0, HDR_WIDTH, HDR_HEIGHT);
+            for (let i = 0; i < floatData.length / 3; i++) {
+                floatData[i*3 + 0] = bgImgData.data[i*4 + 0] / 255;
+                floatData[i*3 + 1] = bgImgData.data[i*4 + 1] / 255;
+                floatData[i*3 + 2] = bgImgData.data[i*4 + 2] / 255;
             }
-
+            
             const rgbeData = new Uint8Array(HDR_WIDTH * HDR_HEIGHT * 4);
             for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
                 const r = floatData[i*3], g = floatData[i*3+1], b = floatData[i*3+2];
