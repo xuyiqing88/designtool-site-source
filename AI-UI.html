@@ -172,7 +172,7 @@
         .setting-label {
             font-size: 16px;
             color: var(--text1);
-            margin-bottom: 6px;
+            margin-bottom: 10px;
             display: block;
 	    font-weight: 600;
         }
@@ -204,7 +204,6 @@
         .interface-mode-toggle {
             display: flex;
             border-radius: 30px;
-            padding: 4px;
 	    gap: 8px;
         }
         
@@ -218,11 +217,13 @@
             transition: all 0.2s;
 	border: 1px solid var(--line);
     		background: #fff;
+	color: var(--text2);
         }
         
         .mode-option.active {
             background-color: var(--card-bg);
             border: 1px solid var(--main-color);
+	    color: var(--main-color);
         }
 
         .input-area {
@@ -589,6 +590,7 @@
                 font-size: 24px;
                 margin: 15px 0;
             }
+	.settings-row { flex-direction: column;}
 	.action-buttons {
 	flex-direction: column;}
 	.preview-header {
@@ -697,15 +699,15 @@
                     <div class="setting-group">
                         <label for="interfaceMode" class="setting-label">界面模式</label>
                         <div class="interface-mode-toggle">
-                            <div class="mode-option active" data-mode="light">亮色</div>
-                            <div class="mode-option" data-mode="dark">暗色</div>
+                            <div class="mode-option active" data-mode="light"><i class="fa-regular fa-sun" style="    margin-right: 5px;"></i>亮色</div>
+                            <div class="mode-option" data-mode="dark"><i class="fa-regular fa-moon" style="margin-right: 5px;"></i>暗色</div>
                         </div>
                     </div>
                     <div class="setting-group">
                         <label for="layoutStyle" class="setting-label">布局风格</label>
                         <div class="interface-mode-toggle">
-                            <div class="mode-option active" data-layout="default">默认</div>
-                            <div class="mode-option" data-layout="compact">紧凑</div>
+                            <div class="mode-option active" data-layout="default"><i class="fa-solid fa-table-columns" style="margin-right: 5px;"></i>默认</div>
+                            <div class="mode-option" data-layout="compact"><i class="fa-solid fa-arrows-to-dot"  style=" margin-right: 5px;"></i>紧凑</div>
                         </div>
                     </div>
                 </div>
