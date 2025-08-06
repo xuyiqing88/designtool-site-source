@@ -326,7 +326,7 @@ const menuData = [
         title: "轻易3D",
         icon: "fa-brands fa-codepen",
         submenu: [
-            /*{ title: "HDR studio编辑器", link: "hdr.html" },*/
+            { title: "HDR编辑器", link: "hdr.html" },
             { title: "PBR贴图生成", link: "normal.html" },
             { title: "无缝贴图制作", link: "texture.html" },
             { title: "无缝贴图预览", link: "map.html" },
