@@ -26,8 +26,10 @@
             --success: #50c878;
             --warning: #ff7e5f;
         }
-        * { box-sizing: border-box; }
-        body {
+* { 
+box-sizing: border-box;
+}
+body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0; 
 		background-color: var(--main-bg); 
@@ -36,8 +38,8 @@
 		justify-content: center; 
 		align-items: flex-start; 
 		min-height: 100vh; overflow-x: hidden;
-        }
-        #resizeHandle {
+ 	}
+#resizeHandle {
             position: static;
             left: 0;
             right: 0;
@@ -48,16 +50,16 @@
             border-radius: 3px;
             transition: background .2s;
         }
-        #resizeHandle:hover {
+#resizeHandle:hover {
             background: rgba(128, 128, 255, 0.25);
         }
-        .editor-container { 
+.editor-container { 
 		display: flex; 
 		gap: 20px; 
 		width: 100%; height: calc(100vh - 40px); 
 		position: relative; 
 		margin: 20px 20px 20px 60px;}
-        .controls-panel {
+.controls-panel {
             width: 400px; 
 		background-color: var(--panel-bg); 
 		border: 1px solid var(--line); 
@@ -69,15 +71,61 @@
 		flex-direction: column; 
 		overflow: hidden;
         }
-        .controls-header { position: sticky; top: 0; background-color: var(--panel-bg); z-index: 10; }
-        .controls-content { overflow-y: auto; flex-grow:1;  margin-top: 15px;}
-        .preview-panel { flex-grow:1; display:flex; flex-direction:column; gap:6px; height:100%; position:relative; }
-        .preview-box { background-color: var(--panel-bg); border:1px solid var(--line); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.2); padding:15px; overflow:hidden; position:relative; }
-        .top-preview { height:50%; }
-        .bottom-preview { height:50%; }
-        .preview-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:14px; color: var(--text3); }
-        .preview-header h3 { margin:0; color: var(--text2); font-weight:500; }
-        canvas { 
+.controls-header {
+	position: sticky;
+	top: 0;
+	background-color: var(--panel-bg);
+	z-index: 10;
+}
+
+.controls-content {
+	overflow-y: auto;
+	flex-grow: 1;
+	margin-top: 15px;
+}
+
+.preview-panel {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	height: 100%;
+	position: relative;
+}
+
+.preview-box {
+	background-color: var(--panel-bg);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+	padding: 15px;
+	overflow: hidden;
+	position: relative;
+}
+
+.top-preview {
+	height: 50%;
+}
+
+.bottom-preview {
+	height: 50%;
+}
+
+.preview-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+	font-size: 14px;
+	color: var(--text3);
+}
+
+.preview-header h3 {
+	margin: 0;
+	color: var(--text2);
+	font-weight: 500;
+}
+canvas { 
 		display:block; 
 		background-color:#000; 
 		border-radius:4px; 
@@ -85,9 +133,9 @@
 		margin:0 auto; 
 		width:100%; 
 		border: 1px solid var(--main-bg);}
-	canvas:hover {
+canvas:hover {
 		border: 1px solid #8080ff75;} 
-        h2.main-title { 
+h2.main-title { 
 		margin-top:0; 
 		border-bottom:1px solid var(--line); 
 		padding-bottom:15px; 
@@ -98,8 +146,12 @@
 		align-items:center; 
 		gap:10px; 
 		justify-content:space-between; }
-        .button-group { display:grid; grid-template-columns: repeat(4,1fr); gap:10px; }
-        .button-group button {
+.button-group {
+	display: grid;
+	grid-template-columns: repeat(4,1fr);
+	gap: 10px;
+}
+.button-group button {
             	padding:10px 12px; 
 		border:none; 
 		border-radius:5px; 
@@ -115,53 +167,184 @@
 		border:1px solid #969dbb00;
 	        flex-direction: column;
         }
-        .button-group button.active {
+.button-group button.active {
             border:1px solid var(--main-color); 
             color: var(--main-color); 
             background:#8080ff30;
             box-shadow: 0 0 10px rgba(128, 128, 255, 0.5);
         }
-        .button-group button:hover { border:1px solid var(--main-color); color: var(--main-color); background:#8080ff30; }
-        .export-button { padding:10px 22px; border:none; border-radius:25px; background: var(--bt-gradient); color: var(--text1); cursor:pointer; transition:all .2s ease-in-out; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px; }
-        .export-button:hover { 
+.button-group button:hover {
+	border: 1px solid var(--main-color);
+	color: var(--main-color);
+	background: #8080ff30;
+}
+
+.export-button {
+	padding: 10px 22px;
+	border: none;
+	border-radius: 25px;
+	background: var(--bt-gradient);
+	color: var(--text1);
+	cursor: pointer;
+	transition: all .2s ease-in-out;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.export-button:hover {
 	transform: scale(1.05);
-    	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    	opacity: 0.86; }
-        .control-section { background-color: rgba(0,0,0,0.1); border:1px solid var(--line); border-radius:6px; padding:15px; margin-top:20px; }
-        .control-group { 
-	margin:16px 0; 
-	    display: flex;
-    	align-items: center;
-    	justify-content: space-between;}
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	opacity: 0.86;
+}
+
+.control-section {
+	background-color: rgba(0,0,0,0.1);
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	padding: 15px;
+	margin-top: 20px;
+}
+
+.control-group {
+	margin: 16px 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
         .control-group label { 
 		display:block;  
 		font-size:14px; 
 		color: var(--text2); 
 		width: 100px;}
-        .control-group input[type="range"] { -webkit-appearance:none; width:100%; height:4px; background: var(--input-bg); border-radius:2px; outline:none; }
-        .control-group input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance:none; appearance:none; width:16px; height:16px; border-radius:50%; background: var(--main-color); cursor:pointer; border:2px solid var(--panel-bg);
-        }
-        .control-group input[type="range"]::-moz-range-thumb {
-            width:14px; height:14px; border-radius:50%; background: var(--main-color); cursor:pointer; border:2px solid var(--panel-bg);
-        }
-        .color-input-wrapper { display:flex; align-items:center; gap:10px; }
-        .control-group input[type="color"] { min-width:40px; height:30px; border:1px solid var(--line); border-radius:4px; padding:2px; cursor:pointer; background:none; }
-        .control-group input[type="text"], .control-group input[type="number"], #resolutionSelector {
-            flex-grow:1; background-color: var(--input-bg); color: var(--text1); border:1px solid var(--line); border-radius:4px; padding:6px 8px;
+.control-group input[type="range"] {
+	-webkit-appearance: none;
+	width: 100%;
+	height: 4px;
+	background: var(--input-bg);
+	border-radius: 2px;
+	outline: none;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--main-color);
+	cursor: pointer;
+	border: 2px solid var(--panel-bg);
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: var(--main-color);
+	cursor: pointer;
+	border: 2px solid var(--panel-bg);
+}
+
+.color-input-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.control-group input[type="color"] {
+	min-width: 40px;
+	height: 30px;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	padding: 2px;
+	cursor: pointer;
+	background: none;
+}
+
+.control-group input[type="text"], .control-group input[type="number"], #resolutionSelector {
+	flex-grow: 1;
+	background-color: var(--main-bg);
+	color: var(--text1);
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	padding: 6px 8px;
 	min-width: 70px;
-        }
-        .value-display { display:flex; align-items:center; gap:10px;    flex: 1; }
-        .control-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--line); }
-        .control-header h3 { margin:0; font-size:16px; color:#f59e0b; font-weight:500; display:flex; align-items:center; gap:8px; }
-        .delete-button { background:none; border:none; color:#fff; cursor:pointer; font-size:14px; }
-        .delete-button:hover { color:#ff4757; }
-        .tab-buttons { display:flex; background-color: var(--input-bg); border-radius:6px; padding:4px; margin-bottom:15px; }
-        .tab-button { flex:1; padding:6px 0; background:none; border:none; color: var(--text3); cursor:pointer; border-radius:4px; transition:all .2s ease; }
-        .tab-button.active { background: var(--main-color); color: var(--text1); font-weight:600; }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
-        #imageUploadLabel { 
+}
+
+.value-display {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex: 1;
+}
+
+.control-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--line);
+}
+
+.control-header h3 {
+	margin: 0;
+	font-size: 16px;
+	color: #f59e0b;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.delete-button {
+	background: none;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.delete-button:hover {
+	color: #ff4757;
+}
+
+.tab-buttons {
+	display: flex;
+	background-color: var(--input-bg);
+	border-radius: 6px;
+	padding: 4px;
+	margin-bottom: 15px;
+}
+
+.tab-button {
+	flex: 1;
+	padding: 6px 0;
+	background: none;
+	border: none;
+	color: var(--text1);
+	cursor: pointer;
+	border-radius: 4px;
+	transition: all .2s ease;
+}
+
+.tab-button.active {
+	background: var(--main-color);
+	color: var(--text1);
+	font-weight: 600;
+}
+
+.tab-content {
+	display: none;
+}
+
+.tab-content.active {
+	display: block;
+}
+#imageUploadLabel { 
 		display:block; 
 		padding:10px; 
 		text-align:center; 
@@ -170,35 +353,64 @@
 		border-radius:4px; 
 		cursor:pointer;    
 		flex: 1;}
-        #imageUploadLabel:hover { background-color:#44444c; }
-        #imageUpload { display:none; }
-        .status-indicator { position:absolute; top:15px; right:15px; padding:5px 10px; border-radius:4px; font-size:12px; z-index:100; background: rgba(0,0,0,0.7); }
-        .status-ok { color: var(--success); border:1px solid var(--success); }
-        .status-error { color: var(--warning); border:1px solid var(--warning); }
-        .cursor-dashed { 
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto; 
-        }
-        .cursor-ring { 
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto; 
-        }
-        .cursor-square { 
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto; 
-        }
-        .cursor-octagon { 
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="8.5,4 15.5,4 20,8.5 20,15.5 15.5,20 8.5,20 4,15.5 4,8.5" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto; 
-        }
+#imageUploadLabel:hover {
+	background-color: #44444c;
+}
+
+#imageUpload {
+	display: none;
+}
+
+.status-indicator {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	padding: 5px 10px;
+	border-radius: 4px;
+	font-size: 12px;
+	z-index: 100;
+	background: rgba(0,0,0,0.7);
+}
+
+.status-ok {
+	color: var(--success);
+	border: 1px solid var(--success);
+}
+
+.status-error {
+	color: var(--warning);
+	border: 1px solid var(--warning);
+}
+
+.cursor-dashed {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
+
+.cursor-ring {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
+
+.cursor-square {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
+
+.cursor-octagon {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="8.5,4 15.5,4 20,8.5 20,15.5 15.5,20 8.5,20 4,15.5 4,8.5" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
         
         /* 自定义滚动条 */
-        .controls-content::-webkit-scrollbar {
-            width: 8px;
-        }
-        .controls-content::-webkit-scrollbar-track {
-            background: var(--scrollbar-track);
-        }
-        .controls-content::-webkit-scrollbar-thumb {
-            background: var(--scrollbar-thumb);
-            border-radius: 4px;
-        }
+.controls-content::-webkit-scrollbar {
+	width: 8px;
+}
+
+.controls-content::-webkit-scrollbar-track {
+	background: var(--scrollbar-track);
+}
+
+.controls-content::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-thumb);
+	border-radius: 4px;
+}
         
         @media (max-width: 768px) {
             .editor-container { flex-direction: column; height: auto; margin: 0;}
