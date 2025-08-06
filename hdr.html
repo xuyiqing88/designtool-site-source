@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HDRI 编辑器 Pro (增强版) - 球面投影修复</title>
+    <title>HDRI Studio 编辑器 - 免费在线HDR编辑器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>">
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <style>
         :root {
             --main-color: #8080FF;
@@ -27,7 +29,7 @@
         * { box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0; padding: 20px; background-color: var(--main-bg); color: var(--text2);
+            margin: 0; background-color: var(--main-bg); color: var(--text2);
             display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-x: hidden;
         }
         #resizeHandle {
@@ -35,7 +37,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: rgba(128, 128, 255, 0);
+            background: var(--scrollbar-track);
             cursor: ns-resize;
             z-index: 50;
             border-radius: 3px;
@@ -44,7 +46,12 @@
         #resizeHandle:hover {
             background: rgba(128, 128, 255, 0.25);
         }
-        .editor-container { display: flex; gap: 20px; width: 100%; height: calc(100vh - 40px); position: relative; }
+        .editor-container { 
+		display: flex; 
+		gap: 20px; 
+		width: 100%; height: calc(100vh - 40px); 
+		position: relative; 
+		margin: 20px 20px 20px 60px;}
         .controls-panel {
             width: 400px; background-color: var(--panel-bg); border: 1px solid var(--line); border-radius: 8px;
             padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden;
@@ -62,7 +69,7 @@
         .button-group { display:grid; grid-template-columns: repeat(4,1fr); gap:10px; }
         .button-group button {
             padding:10px 12px; border:none; border-radius:5px; color: var(--text1); cursor:pointer; transition:all .2s ease;
-            font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px; background:none; border:1px solid var(--text3);
+            font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--input-bg); border:1px solid #969dbb00;
 	        flex-direction: column;
         }
         .button-group button.active {
@@ -73,10 +80,21 @@
         }
         .button-group button:hover { border:1px solid var(--main-color); color: var(--main-color); background:#8080ff30; }
         .export-button { padding:10px 22px; border:none; border-radius:25px; background: var(--bt-gradient); color: var(--text1); cursor:pointer; transition:all .2s ease-in-out; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px; }
-        .export-button:hover { transform: translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,0.3); }
+        .export-button:hover { 
+	transform: scale(1.05);
+    	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    	opacity: 0.86; }
         .control-section { background-color: rgba(0,0,0,0.1); border:1px solid var(--line); border-radius:6px; padding:15px; margin-top:20px; }
-        .control-group { margin:16px 0; }
-        .control-group label { display:block; margin-bottom:8px; font-size:14px; color: var(--text2); }
+        .control-group { 
+	margin:16px 0; 
+	    display: flex;
+    	align-items: center;
+    	justify-content: space-between;}
+        .control-group label { 
+		display:block;  
+		font-size:14px; 
+		color: var(--text2); 
+		width: 100px;}
         .control-group input[type="range"] { -webkit-appearance:none; width:100%; height:4px; background: var(--input-bg); border-radius:2px; outline:none; }
         .control-group input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance:none; appearance:none; width:16px; height:16px; border-radius:50%; background: var(--main-color); cursor:pointer; border:2px solid var(--panel-bg);
@@ -88,8 +106,9 @@
         .control-group input[type="color"] { min-width:40px; height:30px; border:1px solid var(--line); border-radius:4px; padding:2px; cursor:pointer; background:none; }
         .control-group input[type="text"], .control-group input[type="number"], #resolutionSelector {
             flex-grow:1; background-color: var(--input-bg); color: var(--text1); border:1px solid var(--line); border-radius:4px; padding:6px 8px;
+	min-width: 70px;
         }
-        .value-display { display:flex; align-items:center; gap:10px; }
+        .value-display { display:flex; align-items:center; gap:10px;    flex: 1; }
         .control-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--line); }
         .control-header h3 { margin:0; font-size:16px; color:#f59e0b; font-weight:500; display:flex; align-items:center; gap:8px; }
         .delete-button { background:none; border:none; color:#fff; cursor:pointer; font-size:14px; }
@@ -99,7 +118,15 @@
         .tab-button.active { background: var(--main-color); color: var(--text1); font-weight:600; }
         .tab-content { display:none; }
         .tab-content.active { display:block; }
-        #imageUploadLabel { display:block; padding:10px; text-align:center; background-color: var(--input-bg); border:1px dashed var(--line); border-radius:4px; cursor:pointer; }
+        #imageUploadLabel { 
+		display:block; 
+		padding:10px; 
+		text-align:center; 
+		background-color: var(--input-bg); 
+		border:1px dashed var(--line); 
+		border-radius:4px; 
+		cursor:pointer;    
+		flex: 1;}
         #imageUploadLabel:hover { background-color:#44444c; }
         #imageUpload { display:none; }
         .status-indicator { position:absolute; top:15px; right:15px; padding:5px 10px; border-radius:4px; font-size:12px; z-index:100; background: rgba(0,0,0,0.7); }
@@ -131,21 +158,46 @@
         }
         
         @media (max-width: 768px) {
-            .editor-container { flex-direction: column; height: auto; }
-            .controls-panel { width: 100%; }
+            .editor-container { flex-direction: column; height: auto; margin: 0;}
+            .controls-panel { width: 100%; padding: 10px; }
             .button-group { grid-template-columns: repeat(2, 1fr); }
             .button-group button {
                 flex-direction: row;
             }
+	h2.main-title {
+	flex-direction: column;}
+        }
+        
+        /* 新增的色温控制样式 */
+        .temperature-control { 
+            display: none; 
+        }
+        .temperature-control.active {
+            display: block;
+        }
+        .temperature-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .temperature-toggle label {
+            margin-bottom: 0;
+            cursor: pointer;
+	width: auto;
+        }
+        .disabled-color {
+            opacity: 0.6;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
+    <div id="global-sidebar"></div>
     <div class="editor-container">
         <div class="controls-panel">
             <div class="controls-header">
                 <h2 class="main-title">
-                    <span><i class="fa-solid fa-wand-magic-sparkles"></i> HDRI 编辑器 PRO</span>
+                    <span>HDRI Studio 编辑器</span>
                     <button class="export-button" id="exportHdri"><i class="fa-solid fa-download"></i> 导出 HDRI</button>
                 </h2>
                 <div class="control-group">
@@ -219,14 +271,16 @@
         <div class="preview-panel">
             <div class="preview-box top-preview">
                 <div class="preview-header">
-                    <h3><i class="fa-solid fa-globe"></i> 展开图预览 (Equirectangular)</h3>
+                    <h3><i class="fa-solid fa-globe"></i> 二维展开图</h3>
                 </div>
                 <canvas id="hdrCanvas" style="width:auto; max-width:100%;"></canvas>
             </div>
             <div class="resize-handle" id="resizeHandle"></div>
             <div class="preview-box bottom-preview">
                 <div class="preview-header">
-                    <h3><i class="fa-solid fa-cube"></i> 3D环境预览</h3>
+                    <h3><i class="fa-solid fa-cube"></i> 3D环境预览
+		<span style="margin-left: 10px; font-size: 14px; font-weight: 400; color: var(--text3);">模拟效果展示，最终渲染请导出至3D软件中查看<span>
+		</h3>
                 </div>
                 <canvas id="sceneCanvas"></canvas>
             </div>
@@ -595,12 +649,38 @@
                 html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
             }
             html += createColorInput('color', '颜色', selectedLight.color);
+            
+            // 新增色温控制部分
+            const useTemperature = selectedLight.useTemperature || false;
+            const temperature = selectedLight.temperature || 6500;
+            html += `
+                <div class="control-group">
+                    <div class="temperature-toggle">
+                        <input type="checkbox" id="useTemperature" ${useTemperature ? 'checked' : ''}>
+                        <label for="useTemperature">使用色温(K)</label>
+                    </div>
+                    <div class="temperature-control ${useTemperature ? 'active' : ''}">
+                        <label for="temperature"> </label>
+                        <div class="value-display">
+                            <input type="range" id="temperature" min="1000" max="13000" step="100" value="${temperature}">
+                            <input type="number" id="temperatureValue" min="1000" max="13000" step="100" value="${temperature}">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
             html += createSlider('intensity', '亮度 (HDR)', 0.1, 100, 0.1, selectedLight.intensity);
             html += createSlider('falloff', '外侧衰减', 0, 100, 1, selectedLight.falloff);
             html += createSlider('innerShadow', '内侧柔化 (0-1)', 0, 1, 0.01, selectedLight.innerShadow || 0);
             html += `</div>`;
             container.innerHTML = html;
             addControlListeners();
+            
+            // 初始化色温控制状态
+            if (useTemperature) {
+                document.getElementById('color').classList.add('disabled-color');
+                document.getElementById('colorText').classList.add('disabled-color');
+            }
         }
 
         function createSlider(id, label, min, max, step, value) {
@@ -621,6 +701,50 @@
                           <input type="text" id="${id}Text" value="${value}">
                         </div>
                     </div>`;
+        }
+        
+        // 色温转RGB算法
+        function temperatureToRGB(kelvin) {
+            // 限制色温范围
+            kelvin = Math.max(1000, Math.min(40000, kelvin));
+            
+            // 计算色温
+            let temp = kelvin / 100;
+            let r, g, b;
+            
+            // 红色通道
+            if (temp <= 66) {
+                r = 255;
+            } else {
+                r = temp - 60;
+                r = 329.698727446 * Math.pow(r, -0.1332047592);
+                r = Math.max(0, Math.min(255, r));
+            }
+            
+            // 绿色通道
+            if (temp <= 66) {
+                g = temp;
+                g = 99.4708025861 * Math.log(g) - 161.1195681661;
+            } else {
+                g = temp - 60;
+                g = 288.1221695283 * Math.pow(g, -0.0755148492);
+            }
+            g = Math.max(0, Math.min(255, g));
+            
+            // 蓝色通道
+            if (temp >= 66) {
+                b = 255;
+            } else if (temp <= 19) {
+                b = 0;
+            } else {
+                b = temp - 10;
+                b = 138.5177312231 * Math.log(b) - 305.0447927307;
+                b = Math.max(0, Math.min(255, b));
+            }
+            
+            // 转换为16进制颜色
+            const hex = `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+            return hex;
         }
         
         function initApp() {
@@ -697,7 +821,9 @@
                     color: '#ffffff',
                     intensity: 25.0,
                     falloff: 30,
-                    innerShadow: 0
+                    innerShadow: 0,
+                    useTemperature: false,
+                    temperature: 6500
                 });
                 
                 selectedLight = lights[0];
@@ -744,7 +870,9 @@
                     color: '#ffffff',
                     intensity: 15.0,
                     falloff: 30,
-                    innerShadow: 0
+                    innerShadow: 0,
+                    useTemperature: false,
+                    temperature: 6500
                 };
                 if (addingLightType === 'circle' || addingLightType === 'octagon' || addingLightType === 'ring') {
                     newLight.size = 80 * (HDR_WIDTH / 2048);
@@ -900,6 +1028,64 @@
                 };
                 colorPicker.addEventListener('input', e => updateColor(e.target.value));
                 colorText.addEventListener('input', e => updateColor(e.target.value));
+            }
+            
+            // 新增色温控制监听
+            const useTemperatureCheckbox = document.getElementById('useTemperature');
+            const temperatureSlider = document.getElementById('temperature');
+            const temperatureValue = document.getElementById('temperatureValue');
+            
+            if (useTemperatureCheckbox && temperatureSlider && temperatureValue) {
+                // 色温切换
+                useTemperatureCheckbox.addEventListener('change', (e) => {
+                    selectedLight.useTemperature = e.target.checked;
+                    const temperatureControl = document.querySelector('.temperature-control');
+                    const colorInputs = document.querySelectorAll('#color, #colorText');
+                    
+                    if (e.target.checked) {
+                        temperatureControl.classList.add('active');
+                        colorInputs.forEach(el => el.classList.add('disabled-color'));
+                        // 应用当前色温
+                        const temp = selectedLight.temperature || 6500;
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                    } else {
+                        temperatureControl.classList.remove('active');
+                        colorInputs.forEach(el => el.classList.remove('disabled-color'));
+                    }
+                    drawHdrPreview();
+                });
+                
+                // 色温滑块
+                temperatureSlider.addEventListener('input', (e) => {
+                    const temp = parseFloat(e.target.value);
+                    temperatureValue.value = temp;
+                    selectedLight.temperature = temp;
+                    
+                    if (selectedLight.useTemperature) {
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                        drawHdrPreview();
+                    }
+                });
+                
+                temperatureValue.addEventListener('input', (e) => {
+                    const temp = parseFloat(e.target.value) || 6500;
+                    temperatureSlider.value = temp;
+                    selectedLight.temperature = temp;
+                    
+                    if (selectedLight.useTemperature) {
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                        drawHdrPreview();
+                    }
+                });
             }
         }
 
