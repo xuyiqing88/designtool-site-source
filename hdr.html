@@ -318,6 +318,7 @@ h2.main-title {
 	border-radius: 6px;
 	padding: 4px;
 	margin-bottom: 15px;
+	gap: 4px;
 }
 
 .tab-button {
@@ -330,7 +331,10 @@ h2.main-title {
 	border-radius: 4px;
 	transition: all .2s ease;
 }
-
+.tab-button:hover {
+	background: var(--line);
+	box-shadow: 0 2px 4px #27272b3d;
+}
 .tab-button.active {
 	background: #babac5;
 	color: var(--main-bg);
@@ -526,7 +530,9 @@ h2.main-title {
         <div class="preview-panel">
             <div class="preview-box top-preview">
                 <div class="preview-header">
-                    <h3><i class="fa-solid fa-globe"></i> 二维展开图</h3>
+                    <h3><i class="fa-solid fa-globe"></i> 二维展开图
+		<span style="margin-left: 10px; font-size: 14px; font-weight: 400; color: var(--text3);">点击画布中的灯光进行编辑，点击左侧可添加灯光<span>
+		</h3>
                 </div>
                 <canvas id="hdrCanvas" style="width:auto; max-width:100%;"></canvas>
             </div>
