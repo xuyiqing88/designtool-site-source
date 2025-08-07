@@ -1866,13 +1866,6 @@ h2.main-title {
         }
 
         async function generateHdrFile() {
-            // 检查是否有贴图灯光
-            const hasImageLights = lights.some(light => light.type === 'image');
-            if (hasImageLights) {
-                const proceed = confirm("警告：当前版本贴图灯光导出功能有限，可能无法完全呈现效果。继续导出吗？");
-                if (!proceed) return;
-            }
-            
             console.log("Generating true HDR data with corrected logic...");
             const floatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const bgCanvas = document.createElement('canvas');
@@ -1941,9 +1934,12 @@ h2.main-title {
                         const idx = (y * HDR_WIDTH + x) * 3;
                         let attenuation = 0;
                         if (light.type === 'image') {
-                            // 此处需要一个单独的衰减逻辑用于导出，或假定没有额外衰减
-                            // 为了简化，我们暂时只考虑贴图自身的像素值
-                            attenuation = 1.0; // 假设贴图本身已经包含了衰减信息
+                            // 计算贴图灯光在像素点的衰减
+                            const projectedSize = getProjectedSize(light);
+                            const dx = (x + 0.5 - light.x) / projectedSize.width;
+                            const dy = (y + 0.5 - light.y) / projectedSize.height;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            attenuation = 1.0 - Math.min(dist, 1.0); // 简单的线性衰减
                         }
                         else if (light.type === 'circle') attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, light);
                         else if (light.type === 'rect') attenuation = computeRectAttenuation(x + 0.5, y + 0.5, light);
@@ -1951,13 +1947,9 @@ h2.main-title {
                         else if (light.type === 'ring') attenuation = computeRingAttenuation(x + 0.5, y + 0.5, light);
 
                         if (attenuation > 0) {
-                             if(light.type === 'image') {
-                                // 逻辑过于复杂，暂时跳过贴图灯光的导出
-                             } else {
-                                floatData[idx + 0] += lr * attenuation;
-                                floatData[idx + 1] += lg * attenuation;
-                                floatData[idx + 2] += lb * attenuation;
-                            }
+                             floatData[idx + 0] += lr * attenuation;
+                             floatData[idx + 1] += lg * attenuation;
+                             floatData[idx + 2] += lb * attenuation;
                         }
                     }
                 }
