@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDRI Studio 编辑器 - 免费在线HDR编辑器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <style>
+        :root {
+            --main-color: #8080FF;
+            --line: #7878784d;
+            --main-bg: #222228;
+            --panel-bg: #2E2E33;
+            --bt-gradient: linear-gradient(to left, #6450ff, #8f56fa);
+            --add-gradient: linear-gradient(to left, #50c878, #56fa8f);
+            --octagon-gradient: linear-gradient(to left, #ff7e5f, #feb47b);
+            --text1: #ffffff;
+            --text2: #c7d1e2;
+            --text3: #969dbb;
+            --input-bg: #3a3a42;
+            --scrollbar-thumb: #4a4a5a;
+            --scrollbar-track: #2a2a33;
+            --success: #50c878;
+            --warning: #ff7e5f;
+        }
+* { 
+box-sizing: border-box;
+}
+body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0; 
+		background-color: var(--main-bg); 
+		color: var(--text2);
+            display: flex; 
+		justify-content: center; 
+		align-items: flex-start; 
+		min-height: 100vh; overflow-x: hidden;
+ 	}
+#resizeHandle {
+            position: static;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--scrollbar-track);
+            cursor: ns-resize;
+            z-index: 50;
+            border-radius: 3px;
+            transition: background .2s;
+        }
+#resizeHandle:hover {
+            background: rgba(128, 128, 255, 0.25);
+        }
+.editor-container { 
+		display: flex; 
+		gap: 20px; 
+		width: 100%; height: calc(100vh - 40px); 
+		position: relative; 
+		margin: 20px 20px 20px 60px;}
+.controls-panel {
+            width: 400px; 
+		background-color: var(--panel-bg); 
+		border: 1px solid var(--line); 
+		border-radius: 8px;
+            padding: 20px; 
+		box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+		flex-shrink: 0; 
+		display: flex; 
+		flex-direction: column; 
+        }
+.controls-header {
+	position: sticky;
+	top: 0;
+	background-color: var(--panel-bg);
+	z-index: 10;
+}
+
+.controls-content {
+	overflow-y: auto;
+	flex-grow: 1;
+	margin-top: 15px;
+}
+
+.preview-panel {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	height: 100%;
+	position: relative;
+}
+
+.preview-box {
+	background-color: var(--panel-bg);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+	padding: 15px;
+	overflow: hidden;
+	position: relative;
+}
+
+.top-preview {
+	height: 50%;
+}
+
+.bottom-preview {
+	height: 50%;
+}
+
+.preview-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+	font-size: 14px;
+	color: var(--text3);
+}
+
+.preview-header h3 {
+	margin: 0;
+	color: var(--text2);
+	font-weight: 500;
+}
+canvas { 
+		display:block; 
+		background-color:#000; 
+		border-radius:4px; 
+		height:calc(100% - 30px); 
+		margin:0 auto; 
+		width:100%; 
+		border: 1px solid var(--main-bg);}
+canvas:hover {
+		border: 1px solid #8080ff75;} 
+h2.main-title { 
+		margin-top:0; 
+		border-bottom:1px solid var(--line); 
+		padding-bottom:15px; 
+		font-size:22px; 
+		color: var(--main-color); 
+		font-weight:600; 
+		display:flex; 
+		align-items:center; 
+		gap:10px; 
+		justify-content:space-between; }
+.button-group {
+	display: grid;
+	grid-template-columns: repeat(4,1fr);
+	gap: 10px;
+}
+.button-group button {
+            	padding:10px 12px; 
+		border:none; 
+		border-radius:5px; 
+		color: var(--text1); 
+		cursor:pointer; 
+		transition:all .2s ease;
+            font-size:14px; 
+		display:flex; 
+		align-items:center; 
+		justify-content:center; 
+		gap:8px; 
+		background:var(--line); 
+		border:1px solid #969dbb00;
+	        flex-direction: column;
+        }
+.button-group button.active {
+            border:1px solid var(--main-color); 
+            color: var(--main-color); 
+            background:#8080ff30;
+            box-shadow: 0 0 10px rgba(128, 128, 255, 0.5);
+        }
+.button-group button:hover {
+	border: 1px solid var(--main-color);
+	color: var(--main-color);
+	background: #8080ff30;
+}
+
+.export-button {
+	padding: 10px 22px;
+	border: none;
+	border-radius: 25px;
+	background: var(--bt-gradient);
+	color: var(--text1);
+	cursor: pointer;
+	transition: all .2s ease-in-out;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.export-button:hover {
+	transform: scale(1.05);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	opacity: 0.86;
+}
+
+.control-section {
+	background-color: rgba(0,0,0,0.1);
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	padding: 15px;
+	margin-top: 20px;
+}
+
+.control-group {
+	margin: 16px 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+        .control-group label { 
+		display:block;  
+		font-size:14px; 
+		color: var(--text2); 
+		width: 100px;}
+.control-group input[type="range"] {
+	-webkit-appearance: none;
+	width: 100%;
+	height: 4px;
+	background:var(--line);
+	border-radius: 2px;
+	outline: none;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--main-color);
+	cursor: pointer;
+	border: 2px solid var(--panel-bg);
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: var(--main-color);
+	cursor: pointer;
+	border: 2px solid var(--panel-bg);
+}
+
+.color-input-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.control-group input[type="color"] {
+	min-width: 40px;
+	height: 30px;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	padding: 2px;
+	cursor: pointer;
+	background: none;
+}
+
+.control-group input[type="text"], .control-group input[type="number"], #resolutionSelector {
+	flex-grow: 1;
+	background-color: var(--main-bg);
+	color: var(--text1);
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	padding: 6px 8px;
+	min-width: 70px;
+}
+
+.value-display {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex: 1;
+}
+
+.control-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--line);
+}
+
+.control-header h3 {
+	margin: 0;
+	font-size: 16px;
+	color: #f59e0b;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.delete-button {
+	background: none;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.delete-button:hover {
+	color: #ff4757;
+}
+
+.tab-buttons {
+	display: flex;
+	background-color: var(--line);
+	border-radius: 6px;
+	padding: 4px;
+	margin-bottom: 15px;
+	gap: 4px;
+}
+
+.tab-button {
+	flex: 1;
+	padding: 6px 0;
+	background: none;
+	border: none;
+	color: var(--text1);
+	cursor: pointer;
+	border-radius: 4px;
+	transition: all .2s ease;
+}
+.tab-button:hover {
+	background: var(--line);
+	box-shadow: 0 2px 4px #27272b3d;
+}
+.tab-button.active {
+	background: #babac5;
+	color: var(--main-bg);
+	font-weight: 600;
+}
+
+.tab-content {
+	display: none;
+}
+
+.tab-content.active {
+	display: block;
+}
+#imageUploadLabel { 
+		display:block; 
+		padding:10px; 
+		text-align:center; 
+		background-color: var(--input-bg); 
+		border:1px dashed var(--line); 
+		border-radius:4px; 
+		cursor:pointer;    
+		flex: 1;}
+#imageUploadLabel:hover {
+	background-color: #44444c;
+}
+
+#imageUpload {
+	display: none;
+}
+
+.status-indicator {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	padding: 5px 10px;
+	border-radius: 4px;
+	font-size: 12px;
+	z-index: 100;
+	background: rgba(0,0,0,0.7);
+}
+
+.status-ok {
+	color: var(--success);
+	border: 1px solid var(--success);
+}
+
+.status-error {
+	color: var(--warning);
+	border: 1px solid var(--warning);
+}
+
+.cursor-dashed {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
+
+.cursor-ring {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
+
+.cursor-square {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
+
+.cursor-octagon {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="8.5,4 15.5,4 20,8.5 20,15.5 15.5,20 8.5,20 4,15.5 4,8.5" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+}
+        
+        /* 自定义滚动条 */
+.controls-content::-webkit-scrollbar {
+	width: 8px;
+}
+
+.controls-content::-webkit-scrollbar-track {
+	background: var(--scrollbar-track);
+}
+
+.controls-content::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-thumb);
+	border-radius: 4px;
+}
+        
+        /* 新增的色温控制样式 */
+        .temperature-control { 
+            display: none; 
+        }
+        .temperature-control.active {
+            display: block;
+        }
+        .temperature-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .temperature-toggle label {
+            margin-bottom: 0;
+            cursor: pointer;
+	width: auto;
+        }
+        .disabled-color {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* 灯光库样式 */
+        .light-library-panel {
+            width: 250px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .light-library-section {
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 15px;
+        }
+
+        .light-library-section h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--main-color);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .light-library-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .light-library-buttons button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: var(--line);
+            color: var(--text1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .light-library-buttons button:hover {
+            background: #8080ff30;
+            border: 1px solid var(--main-color);
+        }
+
+        .light-library-buttons button.active {
+            border: 1px solid var(--main-color);
+            background: #8080ff30;
+            box-shadow: 0 0 10px rgba(128, 128, 255, 0.5);
+        }
+
+        .light-texture-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .light-texture-item {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background-color: var(--input-bg);
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .light-texture-item:hover {
+            border-color: var(--main-color);
+        }
+
+        .light-texture-item.active {
+            border-color: var(--main-color);
+            box-shadow: 0 0 10px rgba(128, 128, 255, 0.5);
+        }
+
+        .light-texture-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 4px;
+            font-size: 10px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-container { flex-direction: column; height: auto; margin: 0;}
+            .controls-panel { width: 100%; padding: 10px; }
+            .button-group { grid-template-columns: repeat(2, 1fr); }
+            .button-group button {
+                flex-direction: row;
+            }
+	h2.main-title {
+	flex-direction: column;}
+        }
+    </style>
+</head>
+<body>
+    <div id="global-sidebar"></div>
+    <div class="editor-container">
+        <div class="controls-panel">
+            <div class="controls-header">
+                <h2 class="main-title">
+                    <span>HDRI Studio 编辑器</span>
+                    <button class="export-button" id="exportHdri"><i class="fa-solid fa-download"></i> 导出 HDRI</button>
+                </h2>
+                <div class="control-group">
+                    <label for="resolutionSelector"><i class="fa-solid fa-ruler-combined"></i> 尺寸选择</label>
+                    <select id="resolutionSelector">
+                        <option value="1024x512">1024 × 512</option>
+                        <option value="2048x1024" selected>2048 × 1024</option>
+                        <option value="4096x2048">4096 × 2048</option>
+                    </select>
+                </div>
+            </div>
+            <div class="controls-content">
+                <div id="lightControls"></div>
+                <div class="control-section" id="backgroundControlsContainer">
+                    <div class="control-header">
+                        <h3><i class="fa-solid fa-globe"></i> 背景调节</h3>
+                    </div>
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="solid">纯色</button>
+                        <button class="tab-button" data-tab="gradient">渐变</button>
+                        <button class="tab-button" data-tab="image">图片</button>
+                    </div>
+                    <div id="solidTab" class="tab-content active">
+                        <div class="control-group">
+                            <label for="bgColor">颜色</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="bgColor" value="#202025">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gradientTab" class="tab-content">
+                        <div class="control-group">
+                            <label for="gradientColor1">颜色 1 (天空)</label>
+                            <input type="color" id="gradientColor1" value="#1a73e8">
+                        </div>
+                        <div class="control-group">
+                            <label for="gradientColor2">颜色 2 (地面)</label>
+                            <input type="color" id="gradientColor2" value="#aaaaa1">
+                        </div>
+                        <div class="control-group">
+                            <label for="gradientAngle">角度</label>
+                            <div class="value-display">
+                                <input type="range" id="gradientAngle" min="0" max="360" value="90" step="1">
+                                <input type="number" id="gradientAngleValue" min="0" max="360" value="90" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="imageTab" class="tab-content">
+                        <div class="control-group">
+                            <input type="file" id="imageUpload" accept="image/*">
+                            <label for="imageUpload" id="imageUploadLabel"><i class="fa-solid fa-upload"></i> 点击上传图片</label>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:20px;">
+                        <label for="bgBrightness">亮度</label>
+                        <div class="value-display">
+                            <input type="range" id="bgBrightness" min="0" max="5" value="1" step="0.01">
+                            <input type="number" id="bgBrightnessValue" min="0" max="5" value="1" step="0.01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="preview-panel">
+            <div class="preview-box top-preview">
+                <div class="preview-header">
+                    <h3><i class="fa-solid fa-globe"></i> 二维展开图
+		<span style="margin-left: 10px; font-size: 14px; font-weight: 400; color: var(--text3);">点击画布中的灯光进行编辑，点击左侧可添加灯光<span>
+		</h3>
+                </div>
+                <canvas id="hdrCanvas" style="width:auto; max-width:100%;"></canvas>
+            </div>
+            <div class="resize-handle" id="resizeHandle"></div>
+            <div class="preview-box bottom-preview">
+                <div class="preview-header">
+                    <h3><i class="fa-solid fa-cube"></i> 3D环境预览
+		<span style="margin-left: 10px; font-size: 14px; font-weight: 400; color: var(--text3);">模拟效果展示，最终渲染请导出至3D软件中查看（鼠标拖动进行旋转，滑动滚轮可缩放画面）<span>
+		</h3>
+                </div>
+                <canvas id="sceneCanvas"></canvas>
+            </div>
+        </div>
+
+        
+        <div class="light-library-panel">
+            <div class="light-library-section">
+                <h3><i class="fa-solid fa-lightbulb"></i> 程序灯光</h3>
+                <div class="light-library-buttons">
+                    <button id="addCircleLight" title="圆形灯"><i class="fa-regular fa-lightbulb"></i> 圆形灯</button>
+                    <button id="addRectLight" title="矩形灯"><i class="fa-regular fa-square"></i> 矩形灯</button>
+                    <button id="addOctagonLight" title="八边形灯"><i class="fa-solid fa-sun"></i> 八边形灯</button>
+                    <button id="addRingLight" title="环形灯"><i class="fa-solid fa-ring"></i> 环形灯</button>
+                </div>
+            </div>
+            
+            <div class="light-library-section">
+                <h3><i class="fa-solid fa-image"></i> 灯光贴图</h3>
+                <div class="light-texture-grid" id="lightTexturesGrid">
+                    <div class="light-texture-item" data-src="img/hdr/Bounce_Card_Gold_sm.exr" style="background-image: url('img/Thumbnails/Bounce_Card_Gold.jpg')">
+                        <div class="light-texture-name">LED环形灯</div>
+                    </div>
+                    <div class="light-texture-item" data-src="img/hdr/Bounce_Card_Silver_sm.exr" style="background-image: url('img/Thumbnails/Bounce_Card_Silver.jpg')">
+                        <div class="light-texture-name">柔光箱</div>
+                    </div>
+                    <div class="light-texture-item" data-src="img/hdr/Bounce_Card_White_sm.exr" style="background-image: url('img/Thumbnails/Bounce_Card_White.jpg')">
+                        <div class="light-texture-name">霓虹灯条</div>
+                    </div>
+                    <div class="light-texture-item" data-src="img/hdr/Fresnel_sm.exr" style="background-image: url('img/Thumbnails/Fresnel.jpg')">
+                        <div class="light-texture-name">聚光灯</div>
+                    </div>
+                    <div class="light-texture-item" data-src="img/hdr/Kino_Bank_sm.exr" style="background-image: url('img/Thumbnails/Kino_Bank.jpg')">
+                        <div class="light-texture-name">摄影棚灯</div>
+                    </div>
+                    <div class="light-texture-item" data-src="img/hdr/LED_Panel_sm.exr" style="background-image: url('img/Thumbnails/LED_Panel.jpg')">
+                        <div class="light-texture-name">窗户光</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 常量 & 状态
+        const hdrCanvas = document.getElementById('hdrCanvas');
+        const sceneCanvas = document.getElementById('sceneCanvas');
+        const PI = Math.PI;
+        const TWO_PI = 2 * PI;
+
+        let HDR_WIDTH = 2048, HDR_HEIGHT = 1024;
+        let lights = [];
+        let selectedLight = null;
+        let addingLightType = null;
+        let draggingLight = null;
+        let isResizing = false;
+        let startY = 0;
+        let startTopHeight = 0;
+        let startBottomHeight = 0;
+
+        // --- 修复点 1: 新增全局变量用于图片缓存和追踪 ---
+        let textureCache = {};
+        let selectedImageSrc = null;
+
+        let background = {
+            type: 'solid',
+            color: '#202025',
+            gradient: { color1: '#1a73e8', color2: '#aaaaa1', angle: 90 },
+            image: null,
+            brightness: 1.0,
+        };
+
+        // 3D 场景
+        let scene, camera, renderer, sphere, controls, envTexture;
+
+        function init3DScene() {
+            try {
+                scene = new THREE.Scene();
+                renderer = new THREE.WebGLRenderer({
+                    canvas: sceneCanvas,
+                    antialias: true,
+                    alpha: true,
+                    logarithmicDepthBuffer: true
+                });
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 0.6;
+
+                camera = new THREE.PerspectiveCamera(75, sceneCanvas.clientWidth / sceneCanvas.clientHeight, 0.1, 1000);
+                camera.position.z = 2.5;
+
+                controls = new OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.screenSpacePanning = false;
+                controls.minDistance = 1.5;
+                controls.maxDistance = 5;
+
+                const geometry = new THREE.SphereGeometry(1, 128, 64);
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    metalness: 0.8,
+                    roughness: 0.1,
+                    side: THREE.DoubleSide
+                });
+                sphere = new THREE.Mesh(geometry, material);
+                scene.add(sphere);
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+                scene.add(ambientLight);
+                
+                const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+                scene.add(gridHelper);
+                const axesHelper = new THREE.AxesHelper(1.5);
+                scene.add(axesHelper);
+
+                envTexture = new THREE.CanvasTexture(hdrCanvas);
+                envTexture.mapping = THREE.EquirectangularReflectionMapping;
+                scene.environment = envTexture;
+                scene.background = envTexture;
+
+                animate();
+                resize3DCanvas();
+                updateStatus("3D场景初始化成功", true);
+            } catch (e) {
+                console.error("初始化3D失败", e);
+                updateStatus(`3D场景错误: ${e.message}`, false);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (controls) controls.update();
+            if (renderer && scene && camera) renderer.render(scene, camera);
+        }
+
+        function resize3DCanvas() {
+            if (!renderer || !camera) return;
+            const { clientWidth, clientHeight } = sceneCanvas;
+            renderer.setSize(clientWidth, clientHeight, false);
+            camera.aspect = clientWidth / clientHeight;
+            camera.updateProjectionMatrix();
+        }
+
+        /**
+         * 核心修复：模拟球面投影
+         * 根据灯光在Y轴（纬度）的位置，计算其在2D展开图上应有的拉伸和缩放，以模拟球面投影效果。
+         * @param {object} light - 灯光对象
+         * @returns {object} 包含投影后尺寸的对象 { width, height, radius }
+         */
+        function getProjectedSize(light) {
+            // 将Y坐标从 [0, HDR_HEIGHT] 映射到纬度 [-PI/2, PI/2]
+            const latitude = (light.y / HDR_HEIGHT - 0.5) * PI;
+            // 越靠近两极，cos(latitude) 越接近0，导致拉伸系数越大
+            const cosLat = Math.cos(latitude);
+            // 设置一个最小缩放值，防止在极点处无限大
+            const scaleFactor = 1 / Math.max(cosLat, 0.05);
+
+            const result = {};
+            // 根据灯光类型计算投影后的尺寸
+            if (light.type === 'rect') {
+                result.width = light.width * scaleFactor;
+                result.height = light.height * cosLat; // 高度上进行压缩
+            } else if (light.type === 'image') {
+                // --- 修复点 2: 对贴图灯光应用同样的球面投影逻辑 ---
+                const img = light.image;
+                const aspect = (img && img.naturalWidth > 0) ? img.naturalWidth / img.naturalHeight : 1;
+                result.width = light.size * scaleFactor;
+                result.height = (light.size / aspect) * cosLat;
+            } else { // Circle, Octagon, Ring
+                result.radius = light.size * scaleFactor;
+                // 对于圆形等，可以简化为统一缩放或只缩放宽度，这里我们用一个混合方式
+                result.xRadius = light.size * scaleFactor;
+                result.yRadius = light.size * cosLat;
+            }
+            return result;
+        }
+
+        function createCirclePath(ctx, light) {
+            const { xRadius, yRadius } = getProjectedSize(light);
+            ctx.beginPath();
+            // 使用 ellipse 来绘制可能被压扁的圆形
+            ctx.ellipse(light.x, light.y, xRadius, yRadius, 0, 0, TWO_PI);
+            ctx.closePath();
+        }
+
+        function createRectPath(ctx, light) {
+            const { width, height } = getProjectedSize(light); // 使用投影后的尺寸
+            const cornerRadius = Math.min(light.cornerRadius || 0, width / 2, height / 2);
+            const rotation = light.rotation || 0;
+
+            ctx.save();
+            ctx.translate(light.x, light.y);
+            ctx.rotate(rotation * Math.PI / 180);
+            const halfW = width / 2;
+            const halfH = height / 2;
+
+            ctx.beginPath();
+            ctx.moveTo(-halfW + cornerRadius, -halfH);
+            ctx.lineTo(halfW - cornerRadius, -halfH);
+            ctx.arcTo(halfW, -halfH, halfW, -halfH + cornerRadius, cornerRadius);
+            ctx.lineTo(halfW, halfH - cornerRadius);
+            ctx.arcTo(halfW, halfH, halfW - cornerRadius, halfH, cornerRadius);
+            ctx.lineTo(-halfW + cornerRadius, halfH);
+            ctx.arcTo(-halfW, halfH, -halfW, halfH - cornerRadius, cornerRadius);
+            ctx.lineTo(-halfW, -halfH + cornerRadius);
+            ctx.arcTo(-halfW, -halfH, -halfW + cornerRadius, -halfH, cornerRadius);
+            ctx.closePath();
+            ctx.restore();
+        }
+        
+        function createOctagonPath(ctx, light) {
+            const { xRadius, yRadius } = getProjectedSize(light);
+            const rotation = light.rotation || 0;
+            const points = 8;
+
+            ctx.save();
+            ctx.translate(light.x, light.y);
+            ctx.rotate(rotation * Math.PI / 180);
+            ctx.beginPath();
+            for (let i = 0; i < points; i++) {
+                const angle = (i * 2 * Math.PI) / points - Math.PI / 8;
+                // 使用投影后的 xRadius 和 yRadius
+                const x = xRadius * Math.cos(angle);
+                const y = yRadius * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.restore();
+        }
+
+        function createRingPath(ctx, light) {
+            const { xRadius, yRadius } = getProjectedSize(light);
+            const thicknessRatio = (light.thickness || (light.size * 0.3)) / light.size;
+            
+            ctx.save();
+            ctx.translate(light.x, light.y);
+            // 外圈
+            ctx.beginPath();
+            ctx.ellipse(0, 0, xRadius, yRadius, 0, 0, TWO_PI);
+            // 内圈
+            const innerXRadius = Math.max(1, xRadius * (1 - thicknessRatio));
+            const innerYRadius = Math.max(1, yRadius * (1 - thicknessRatio));
+            ctx.moveTo(innerXRadius, 0); // 移动到内圈起始点
+            ctx.ellipse(0, 0, innerXRadius, innerYRadius, 0, 0, TWO_PI, true); // 逆时针
+            ctx.closePath();
+            ctx.restore();
+        }
+        
+        function createImagePath(ctx, light) {
+            const { width, height } = getProjectedSize(light);
+            ctx.save();
+            ctx.translate(light.x, light.y);
+            if (light.rotation) ctx.rotate(light.rotation * Math.PI / 180);
+            ctx.rect(-width/2, -height/2, width, height);
+            ctx.restore();
+        }
+
+        function drawHdrPreview() {
+            const ctx = hdrCanvas.getContext('2d');
+            if (!ctx) { console.error("无法获取2D上下文"); return; }
+            
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = background.color;
+            ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+
+            switch (background.type) {
+                case 'image':
+                    if (background.image) {
+                        const imgRatio = background.image.width / background.image.height;
+                        const canvasRatio = HDR_WIDTH / HDR_HEIGHT;
+                        let drawWidth, drawHeight, offsetX, offsetY;
+                        if (imgRatio > canvasRatio) {
+                            drawHeight = HDR_HEIGHT;
+                            drawWidth = background.image.width * (HDR_HEIGHT / background.image.height);
+                            offsetX = (HDR_WIDTH - drawWidth) / 2; offsetY = 0;
+                        } else {
+                            drawWidth = HDR_WIDTH;
+                            drawHeight = background.image.height * (HDR_WIDTH / background.image.width);
+                            offsetX = 0; offsetY = (HDR_HEIGHT - drawHeight) / 2;
+                        }
+                        ctx.drawImage(background.image, offsetX, offsetY, drawWidth, drawHeight);
+                    }
+                    break;
+                case 'gradient':
+                    const angleRad = background.gradient.angle * PI / 180;
+                    const x1 = HDR_WIDTH / 2 - Math.cos(angleRad) * HDR_WIDTH / 2;
+                    const y1 = HDR_HEIGHT / 2 - Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const x2 = HDR_WIDTH / 2 + Math.cos(angleRad) * HDR_WIDTH / 2;
+                    const y2 = HDR_HEIGHT / 2 + Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+                    grad.addColorStop(0, background.gradient.color1);
+                    grad.addColorStop(1, background.gradient.color2);
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+                    break;
+            }
+            
+            ctx.save();
+            ctx.filter = `brightness(${background.brightness})`;
+            ctx.globalCompositeOperation = 'copy';
+            ctx.drawImage(hdrCanvas, 0, 0);
+            ctx.restore();
+
+            ctx.globalCompositeOperation = 'add';
+            lights.forEach(light => {
+                ctx.save();
+                
+                if (light.type === 'circle') createCirclePath(ctx, light);
+                else if (light.type === 'rect') createRectPath(ctx, light);
+                else if (light.type === 'octagon') createOctagonPath(ctx, light);
+                else if (light.type === 'ring') createRingPath(ctx, light);
+                else if (light.type === 'image') createImagePath(ctx, light);
+
+                const color = hexToRgb(light.color);
+                const displayAlpha = Math.min(light.intensity / 50, 1.0);
+                const fullColorRgba = `rgba(${color.r}, ${color.g}, ${color.b}, ${displayAlpha})`;
+                
+                if (light.innerShadow > 0 && light.type !== 'ring') {
+                    ctx.clip(); 
+                    const gradRadius = getProjectedSize(light).xRadius || Math.max(light.width || 0, light.height || 0);
+                    const grad = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, gradRadius);
+                    const solidRatio = Math.max(0, 1.0 - light.innerShadow);
+                    
+                    const min_attenuation = 0.1;
+                    const edgeAlpha = displayAlpha * min_attenuation;
+                    const edgeRgba = `rgba(${color.r}, ${color.g}, ${color.b}, ${edgeAlpha})`;
+                    
+                    grad.addColorStop(0, fullColorRgba);
+                    grad.addColorStop(solidRatio, fullColorRgba);
+                    grad.addColorStop(1, edgeRgba);
+
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+                } else if (light.type === 'image' && light.image && light.image.complete && light.image.naturalHeight > 0) {
+                    // --- 修复点 3: 增加鲁棒性检查，确保图片加载完成后再绘制 ---
+                    const { width, height } = getProjectedSize(light);
+                    ctx.save();
+                    ctx.translate(light.x, light.y);
+                    if (light.rotation) ctx.rotate(light.rotation * Math.PI / 180);
+                    ctx.globalAlpha = displayAlpha;
+                    ctx.drawImage(light.image, -width/2, -height/2, width, height);
+                    ctx.restore();
+                } else if (light.type !== 'image') { // 确保image类型不走这个分支
+                    ctx.shadowColor = `rgba(${color.r}, ${color.g}, ${color.b}, ${displayAlpha})`;
+                    ctx.shadowBlur = light.falloff;
+                    ctx.fillStyle = fullColorRgba;
+
+                    if (light.type === 'ring') {
+                         ctx.fill('evenodd');
+                    } else {
+                         ctx.fill();
+                    }
+                }
+                ctx.restore();
+                
+                if (selectedLight && selectedLight.id === light.id) {
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'source-over';
+                    if (light.type === 'circle') createCirclePath(ctx, light);
+                    else if (light.type === 'rect') createRectPath(ctx, light);
+                    else if (light.type === 'octagon') createOctagonPath(ctx, light);
+                    else if (light.type === 'ring') createRingPath(ctx, light);
+                    else if (light.type === 'image') createImagePath(ctx, light);
+                    ctx.lineWidth = 5;
+                    ctx.setLineDash([10, 4]);
+                    ctx.strokeStyle = 'rgba(128,128,255,0.9)';
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            });
+
+            ctx.globalCompositeOperation = 'source-over';
+            update3DScene();
+        }
+
+        function update3DScene() {
+            try {
+                if (!envTexture) return;
+                envTexture.dispose();
+                envTexture = new THREE.CanvasTexture(hdrCanvas);
+                envTexture.mapping = THREE.EquirectangularReflectionMapping;
+                scene.environment = envTexture;
+                scene.background = envTexture;
+            } catch (e) {
+                console.error("更新3D失败", e);
+            }
+        }
+        
+        function updateControlsUI() {
+            const container = document.getElementById('lightControls');
+            container.innerHTML = '';
+            if (!selectedLight) return;
+            const icon = selectedLight.type === 'circle' ? 'fa-lightbulb' :
+                         selectedLight.type === 'rect' ? 'fa-square' :
+                         selectedLight.type === 'octagon' ? 'fa-sun' :
+                         selectedLight.type === 'ring' ? 'fa-ring' :
+                         'fa-image';
+            const typeName = selectedLight.type === 'circle' ? '圆形灯光' :
+                             selectedLight.type === 'rect' ? '矩形灯光' :
+                             selectedLight.type === 'octagon' ? '八边形灯光' :
+                             selectedLight.type === 'ring' ? '环形灯光' :
+                             '贴图灯光';
+            let html = `<div class="control-section">
+                <div class="control-header">
+                    <h3><i class="fas ${icon}"></i> ${typeName}</h3>
+                    <button class="delete-button" id="deleteLightBtn"><i class="fa-solid fa-trash-can"></i></button>
+                </div>`;
+
+            if (selectedLight.type === 'circle') {
+                html += createSlider('size', '大小', 10, 500, 1, selectedLight.size);
+            } else if (selectedLight.type === 'rect') {
+                html += createSlider('width', '宽度', 10, 500, 1, selectedLight.width);
+                html += createSlider('height', '高度', 10, 500, 1, selectedLight.height);
+                html += createSlider('cornerRadius', '圆角半径', 0, 100, 1, selectedLight.cornerRadius || 0);
+                html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
+            } else if (selectedLight.type === 'octagon') {
+                html += createSlider('size', '大小', 10, 500, 1, selectedLight.size);
+                html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
+            } else if (selectedLight.type === 'ring') {
+                html += createSlider('size', '外半径', 10, 500, 1, selectedLight.size);
+                html += createSlider('thickness', '环厚度', 1, 200, 1, selectedLight.thickness || (selectedLight.size * 0.3));
+                html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
+            } else if (selectedLight.type === 'image') {
+                html += createSlider('size', '尺寸', 50, 500, 1, selectedLight.size);
+                html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
+            }
+            
+            // 贴图灯光不需要色温控制
+            if (selectedLight.type !== 'image') {
+                html += createColorInput('color', '颜色', selectedLight.color);
+                
+                // 新增色温控制部分
+                const useTemperature = selectedLight.useTemperature || false;
+                const temperature = selectedLight.temperature || 6500;
+                html += `
+                    <div class="control-group">
+                        <div class="temperature-toggle">
+                            <input type="checkbox" id="useTemperature" ${useTemperature ? 'checked' : ''}>
+                            <label for="useTemperature">使用色温(K)</label>
+                        </div>
+                        <div class="temperature-control ${useTemperature ? 'active' : ''}">
+                            <label for="temperature"> </label>
+                            <div class="value-display">
+                                <input type="range" id="temperature" min="1000" max="30000" step="100" value="${temperature}">
+                                <input type="number" id="temperatureValue" min="1000" max="30000" step="100" value="${temperature}">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += createSlider('intensity', '亮度 (HDR)', 0.1, 100, 0.1, selectedLight.intensity);
+            
+            // 贴图灯光不需要衰减和柔化控制
+            if (selectedLight.type !== 'image') {
+                html += createSlider('falloff', '外侧衰减', 0, 100, 1, selectedLight.falloff);
+                html += createSlider('innerShadow', '内侧柔化 (0-1)', 0, 1, 0.01, selectedLight.innerShadow || 0);
+            }
+            
+            html += `</div>`;
+            container.innerHTML = html;
+            addControlListeners();
+            
+            // 初始化色温控制状态
+            if (selectedLight.useTemperature && selectedLight.type !== 'image') {
+                document.getElementById('color').classList.add('disabled-color');
+                document.getElementById('colorText').classList.add('disabled-color');
+            }
+        }
+
+        function createSlider(id, label, min, max, step, value) {
+            return `<div class="control-group">
+                        <label for="${id}">${label}</label>
+                        <div class="value-display">
+                            <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}">
+                            <input type="number" id="${id}Value" min="${min}" max="${max}" step="${step}" value="${value}">
+                        </div>
+                    </div>`;
+        }
+
+        function createColorInput(id, label, value) {
+            return `<div class="control-group">
+                        <label for="${id}">${label}</label>
+                        <div class="color-input-wrapper">
+                          <input type="color" id="${id}" value="${value}">
+                          <input type="text" id="${id}Text" value="${value}">
+                        </div>
+                    </div>`;
+        }
+        
+        // 色温转RGB算法
+        function temperatureToRGB(kelvin) {
+            // 限制色温范围
+            kelvin = Math.max(1000, Math.min(40000, kelvin));
+            
+            // 计算色温
+            let temp = kelvin / 100;
+            let r, g, b;
+            
+            // 红色通道
+            if (temp <= 66) {
+                r = 255;
+            } else {
+                r = temp - 60;
+                r = 329.698727446 * Math.pow(r, -0.1332047592);
+                r = Math.max(0, Math.min(255, r));
+            }
+            
+            // 绿色通道
+            if (temp <= 66) {
+                g = temp;
+                g = 99.4708025861 * Math.log(g) - 161.1195681661;
+            } else {
+                g = temp - 60;
+                g = 288.1221695283 * Math.pow(g, -0.0755148492);
+            }
+            g = Math.max(0, Math.min(255, g));
+            
+            // 蓝色通道
+            if (temp >= 66) {
+                b = 255;
+            } else if (temp <= 19) {
+                b = 0;
+            } else {
+                b = temp - 10;
+                b = 138.5177312231 * Math.log(b) - 305.0447927307;
+                b = Math.max(0, Math.min(255, b));
+            }
+            
+            // 转换为16进制颜色
+            const hex = `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+            return hex;
+        }
+        
+        function initApp() {
+            try {
+                resetCanvas(HDR_WIDTH, HDR_HEIGHT);
+
+                document.getElementById('resolutionSelector').addEventListener('change', (e) => {
+                    const [w, h] = e.target.value.split('x').map(Number);
+                    resetCanvas(w, h);
+                });
+                
+                const addButtons = ['addCircleLight', 'addRectLight', 'addOctagonLight', 'addRingLight'];
+                addButtons.forEach(id => {
+                    const btn = document.getElementById(id);
+                    btn.addEventListener('click', (e) => {
+                        hdrCanvas.classList.remove('cursor-dashed', 'cursor-square', 'cursor-octagon', 'cursor-ring');
+                        addingLightType = id.replace('add', '').replace('Light', '').toLowerCase();
+                        document.querySelectorAll('.light-library-buttons button').forEach(b => b.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        document.querySelectorAll('.light-texture-item').forEach(item => item.classList.remove('active'));
+                        
+                        switch(addingLightType) {
+                            case 'circle': hdrCanvas.classList.add('cursor-dashed'); break;
+                            case 'rect': hdrCanvas.classList.add('cursor-square'); break;
+                            case 'octagon': hdrCanvas.classList.add('cursor-octagon'); break;
+                            case 'ring': hdrCanvas.classList.add('cursor-ring'); break;
+                        }
+                    });
+                });
+
+                // --- 修复点 4: 图片预加载逻辑 ---
+                const textureItems = document.querySelectorAll('.light-texture-item');
+                textureItems.forEach(item => {
+                    const src = item.dataset.src;
+                    if (src) {
+                        const img = new Image();
+                        // 如果需要处理跨域图片，请添加 img.crossOrigin = "Anonymous";
+                        img.onload = () => {
+                            textureCache[src] = img; // 图片加载完成后存入缓存
+                            console.log('Texture loaded:', src);
+                        };
+                        img.onerror = () => {
+                            console.error('Failed to load texture:', src);
+                        };
+                        img.src = src;
+                    }
+
+                    item.addEventListener('click', () => {
+                        addingLightType = 'image';
+                        selectedImageSrc = src; // 只记录选择的图片路径
+                        
+                        document.querySelectorAll('.light-library-buttons button').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.light-texture-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                    });
+                });
+
+                hdrCanvas.addEventListener('mousedown', handleCanvasMouseDown);
+                hdrCanvas.addEventListener('mousemove', handleCanvasMouseMove);
+                window.addEventListener('mouseup', handleMouseUp);
+                hdrCanvas.addEventListener('mouseleave', handleMouseUp);
+
+                const resizeHandle = document.getElementById('resizeHandle');
+                resizeHandle.addEventListener('mousedown', startResize);
+                window.addEventListener('mousemove', handleResize);
+                window.addEventListener('mouseup', stopResize);
+
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const tabId = btn.dataset.tab;
+                        background.type = tabId;
+                        document.querySelectorAll('.tab-button, .tab-content').forEach(el => el.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.getElementById(tabId + 'Tab').classList.add('active');
+                        drawHdrPreview();
+                    });
+                    updateResizeHandlePosition();
+                });
+
+                document.getElementById('bgColor').addEventListener('input', e => { background.color = e.target.value; drawHdrPreview(); });
+                document.getElementById('gradientColor1').addEventListener('input', e => { background.gradient.color1 = e.target.value; drawHdrPreview(); });
+                document.getElementById('gradientColor2').addEventListener('input', e => { background.gradient.color2 = e.target.value; drawHdrPreview(); });
+                const gradientAngleSlider = document.getElementById('gradientAngle');
+                const gradientAngleValue = document.getElementById('gradientAngleValue');
+                gradientAngleSlider.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleValue.value = e.target.value; drawHdrPreview(); });
+                gradientAngleValue.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleSlider.value = e.target.value; drawHdrPreview(); });
+
+                const bgBrightnessSlider = document.getElementById('bgBrightness');
+                const bgBrightnessValue = document.getElementById('bgBrightnessValue');
+                bgBrightnessSlider.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessValue.value = e.target.value; drawHdrPreview(); });
+                bgBrightnessValue.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessSlider.value = e.target.value; drawHdrPreview(); });
+
+                document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+                document.getElementById('exportHdri').addEventListener('click', generateHdrFile);
+
+                lights.push({
+                    id: Date.now(),
+                    type: 'circle',
+                    x: HDR_WIDTH * 0.3,
+                    y: HDR_HEIGHT * 0.4,
+                    size: 120,
+                    color: '#ffffff',
+                    intensity: 25.0,
+                    falloff: 30,
+                    innerShadow: 0,
+                    useTemperature: false,
+                    temperature: 6500
+                });
+                
+                selectedLight = lights[0];
+
+                init3DScene();
+                updateControlsUI();
+                drawHdrPreview();
+                updateStatus("HDRI编辑器已就绪", true);
+            } catch (e) {
+                console.error("初始化失败:", e);
+                updateStatus(`初始化错误: ${e.message}`, false);
+            }
+        }
+
+        function resetCanvas(width, height) {
+            const prevW = HDR_WIDTH, prevH = HDR_HEIGHT;
+            HDR_WIDTH = width; HDR_HEIGHT = height;
+            hdrCanvas.width = width; hdrCanvas.height = height;
+            lights.forEach(light => {
+                light.x *= (width / prevW);
+                light.y *= (height / prevH);
+                if (light.type === 'circle' || light.type === 'octagon' || light.type === 'ring' || light.type === 'image') {
+                    light.size *= (width / prevW);
+                    if (light.thickness) light.thickness *= (width / prevW);
+                } else if (light.type === 'rect') {
+                    light.width *= (width / prevW);
+                    light.height *= (height / prevH);
+                }
+            });
+            drawHdrPreview();
+        }
+        
+        function handleCanvasMouseDown(e) {
+            const { x, y } = getCanvasCoords(e);
+            
+            document.querySelectorAll('.light-texture-item').forEach(el => el.classList.remove('active'));
+            hdrCanvas.classList.remove('cursor-dashed', 'cursor-square', 'cursor-octagon', 'cursor-ring');
+            
+            if (addingLightType) {
+                 // --- 修复点 5: 修改创建贴图灯光的逻辑 ---
+                if (addingLightType === 'image') {
+                    // 检查选择的图片是否已加载并缓存
+                    if (selectedImageSrc && textureCache[selectedImageSrc]) {
+                        const newLight = {
+                            id: Date.now(),
+                            type: 'image',
+                            x, y,
+                            intensity: 15.0,
+                            rotation: 0,
+                            size: 150 * (HDR_WIDTH / 2048),
+                            src: selectedImageSrc, // 保存图片源路径
+                            image: textureCache[selectedImageSrc] // 从缓存中获取已加载的图片对象
+                        };
+                        lights.push(newLight);
+                        selectedLight = newLight;
+                    } else {
+                        // 如果图片还没加载好，则不添加，并给出提示
+                        console.warn('Selected texture is not ready yet. Please wait a moment and try again.');
+                        updateStatus("贴图未加载完成，请稍后重试", false);
+                    }
+                } else {
+                    // 创建程序化灯光
+                    const newLight = {
+                        id: Date.now(),
+                        type: addingLightType,
+                        x, y,
+                        color: '#ffffff',
+                        intensity: 15.0,
+                        falloff: 30,
+                        innerShadow: 0,
+                        useTemperature: false,
+                        temperature: 6500,
+                        rotation: 0
+                    };
+                    
+                    if (addingLightType === 'circle' || addingLightType === 'octagon' || addingLightType === 'ring') {
+                        newLight.size = 80 * (HDR_WIDTH / 2048);
+                        if (addingLightType === 'ring') newLight.thickness = newLight.size * 0.3;
+                    } else if (addingLightType === 'rect') {
+                        newLight.width = 120 * (HDR_WIDTH / 2048);
+                        newLight.height = 80 * (HDR_HEIGHT / 1024);
+                        newLight.cornerRadius = 10;
+                    }
+                    lights.push(newLight);
+                    selectedLight = newLight;
+                }
+                
+                // 重置状态
+                addingLightType = null;
+                selectedImageSrc = null;
+                hdrCanvas.style.cursor = ''; 
+            } else {
+                let clicked = null;
+                for (let i = lights.length -1; i >=0; i--) {
+                    const light = lights[i];
+                    // 使用一个简化的点击检测区域
+                    const projectedSize = getProjectedSize(light);
+                    let effectiveRadius = 0;
+                    if(projectedSize.width) {
+                        effectiveRadius = Math.max(projectedSize.width, projectedSize.height) / 2;
+                    } else if (projectedSize.xRadius) {
+                        effectiveRadius = Math.max(projectedSize.xRadius, projectedSize.yRadius);
+                    }
+                    
+                    const dx = x - light.x, dy = y - light.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    if (dist < effectiveRadius + (light.falloff || 0)) {
+                        clicked = light; 
+                        break; 
+                    }
+                }
+                selectedLight = clicked;
+                if (selectedLight) draggingLight = selectedLight;
+            }
+            updateControlsUI();
+            drawHdrPreview();
+        }
+
+        function handleCanvasMouseMove(e) {
+            if (draggingLight) {
+                const { x, y } = getCanvasCoords(e);
+                draggingLight.x = x;
+                draggingLight.y = y;
+                drawHdrPreview();
+            }
+        }
+
+        function handleMouseUp() { draggingLight = null; }
+
+        function getCanvasCoords(e) {
+            const rect = hdrCanvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (HDR_WIDTH / rect.width);
+            const y = (e.clientY - rect.top) * (HDR_HEIGHT / rect.height);
+            return { x, y };
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    background.image = img;
+                    document.querySelector('.tab-button[data-tab="image"]').click();
+                    drawHdrPreview();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function startResize(e) {
+            isResizing = true;
+            startY = e.clientY;
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            startTopHeight = parseFloat(getComputedStyle(topPreview).height);
+            startBottomHeight = parseFloat(getComputedStyle(bottomPreview).height);
+            document.body.style.cursor = 'ns-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        }
+
+        function handleResize(e) {
+            if (!isResizing) return;
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            const deltaY = e.clientY - startY;
+            const newTop = startTopHeight + deltaY;
+            const newBottom = startBottomHeight - deltaY;
+            if (newTop > 120 && newBottom > 120) {
+                topPreview.style.height = `${newTop}px`;
+                bottomPreview.style.height = `${newBottom}px`;
+                const panelRect = document.querySelector('.preview-panel').getBoundingClientRect();
+                const topRect = topPreview.getBoundingClientRect();
+                const relativeTop = topRect.bottom - panelRect.top;
+                document.getElementById('resizeHandle').style.top = `${relativeTop - 3}px`;
+                resize3DCanvas();
+            }
+        }
+
+        function stopResize() {
+            if (!isResizing) return;
+            isResizing = false;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        }
+        
+        function addControlListeners() {
+            if (!selectedLight) return;
+            document.getElementById('deleteLightBtn').addEventListener('click', deleteSelectedLight);
+            
+            const updateLightProperty = (prop, value) => {
+                if (!selectedLight) return;
+                selectedLight[prop] = value;
+                
+                if (prop === 'falloff' && value > 0 && selectedLight.innerShadow > 0) {
+                    selectedLight.innerShadow = 0;
+                    if (document.getElementById('innerShadow')) {
+                        document.getElementById('innerShadow').value = 0;
+                        document.getElementById('innerShadowValue').value = 0;
+                    }
+                } else if (prop === 'innerShadow' && value > 0 && selectedLight.falloff > 0) {
+                    selectedLight.falloff = 0;
+                    if (document.getElementById('falloff')) {
+                        document.getElementById('falloff').value = 0;
+                        document.getElementById('falloffValue').value = 0;
+                    }
+                }
+                drawHdrPreview();
+            };
+
+            const sliders = document.querySelectorAll('.control-group input[type="range"]');
+            sliders.forEach(slider => {
+                const inputId = slider.id;
+                const valueInput = document.getElementById(inputId + 'Value');
+                slider.addEventListener('input', e => {
+                    const val = parseFloat(e.target.value);
+                    if (valueInput) valueInput.value = val;
+                    updateLightProperty(inputId, val);
+                });
+                if (valueInput) {
+                    valueInput.addEventListener('input', e => {
+                        const val = parseFloat(e.target.value) || 0;
+                        slider.value = val;
+                        updateLightProperty(inputId, val);
+                    });
+                }
+            });
+
+            const colorPicker = document.getElementById('color');
+            const colorText = document.getElementById('colorText');
+            if (colorPicker && colorText) {
+                const updateColor = (value) => {
+                    selectedLight.color = value;
+                    colorPicker.value = value;
+                    colorText.value = value;
+                    drawHdrPreview();
+                };
+                colorPicker.addEventListener('input', e => updateColor(e.target.value));
+                colorText.addEventListener('input', e => updateColor(e.target.value));
+            }
+            
+            // 新增色温控制监听
+            const useTemperatureCheckbox = document.getElementById('useTemperature');
+            const temperatureSlider = document.getElementById('temperature');
+            const temperatureValue = document.getElementById('temperatureValue');
+            
+            if (useTemperatureCheckbox && temperatureSlider && temperatureValue) {
+                // 色温切换
+                useTemperatureCheckbox.addEventListener('change', (e) => {
+                    selectedLight.useTemperature = e.target.checked;
+                    const temperatureControl = document.querySelector('.temperature-control');
+                    const colorInputs = document.querySelectorAll('#color, #colorText');
+                    
+                    if (e.target.checked) {
+                        temperatureControl.classList.add('active');
+                        colorInputs.forEach(el => el.classList.add('disabled-color'));
+                        // 应用当前色温
+                        const temp = selectedLight.temperature || 6500;
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                    } else {
+                        temperatureControl.classList.remove('active');
+                        colorInputs.forEach(el => el.classList.remove('disabled-color'));
+                    }
+                    drawHdrPreview();
+                });
+                
+                // 色温滑块
+                temperatureSlider.addEventListener('input', (e) => {
+                    const temp = parseFloat(e.target.value);
+                    temperatureValue.value = temp;
+                    selectedLight.temperature = temp;
+                    
+                    if (selectedLight.useTemperature) {
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                        drawHdrPreview();
+                    }
+                });
+                
+                temperatureValue.addEventListener('input', (e) => {
+                    const temp = parseFloat(e.target.value) || 6500;
+                    temperatureSlider.value = temp;
+                    selectedLight.temperature = temp;
+                    
+                    if (selectedLight.useTemperature) {
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                        drawHdrPreview();
+                    }
+                });
+            }
+        }
+
+        function deleteSelectedLight() {
+            if (!selectedLight) return;
+            lights = lights.filter(l => l.id !== selectedLight.id);
+            selectedLight = null;
+            updateControlsUI();
+            drawHdrPreview();
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r:255, g:255, b:255 };
+        }
+
+        function updateStatus(message, isSuccess) {
+            let statusEl = document.getElementById('status-indicator');
+            if (!statusEl) {
+                statusEl = document.createElement('div');
+                statusEl.id = 'status-indicator';
+                document.body.appendChild(statusEl);
+            }
+            statusEl.textContent = message;
+            statusEl.className = `status-indicator ${isSuccess ? 'status-ok' : 'status-error'}`;
+            setTimeout(() => {
+                if (statusEl && statusEl.parentNode) statusEl.parentNode.removeChild(statusEl);
+            }, 3000);
+        }
+        
+        function smoothStep(t) {
+             t = Math.max(0, Math.min(1, t));
+             return t * t * (3 - 2 * t);
+        }
+        
+        // --- 核心修复区：所有衰减函数均已更新，以支持模拟投影和新的内侧柔化效果 ---
+
+        function computeCircleAttenuation(x, y, light) {
+            const { xRadius, yRadius } = getProjectedSize(light);
+            // 计算点到椭圆中心的相对坐标下的等效距离
+            const dx = (x - light.x) / xRadius;
+            const dy = (y - light.y) / yRadius;
+            const dist = Math.sqrt(dx * dx + dy * dy); // dist = 1 在椭圆边上
+
+            if (light.falloff > 0) { // 外侧衰减
+                const falloff = Math.max(1e-3, light.falloff) / light.size; // 归一化
+                if (dist > 1 + falloff) return 0.0;
+                if (dist < 1) return 1.0;
+                const t = (1 + falloff - dist) / falloff;
+                return smoothStep(t);
+            } else if (light.innerShadow > 0) { // 内侧柔化
+                const softness = light.innerShadow;
+                if (dist > 1) return 0.0;
+                if (dist < 1 - softness) return 1.0;
+                
+                const t = (1 - dist) / softness;
+                const base_attenuation = smoothStep(t);
+                const min_attenuation = 0.1;
+                return min_attenuation + (1 - min_attenuation) * base_attenuation;
+            }
+            return dist <= 1 ? 1.0 : 0.0;
+        }
+
+        function computeRectAttenuation(x, y, light) {
+            const { width: projectedWidth, height: projectedHeight } = getProjectedSize(light);
+            let localX = x - light.x;
+            let localY = y - light.y;
+            const rot = (light.rotation || 0) * Math.PI / 180;
+            const cosR = Math.cos(-rot);
+            const sinR = Math.sin(-rot);
+            const rx = localX * cosR - localY * sinR;
+            const ry = localX * sinR + localY * cosR;
+
+            const halfW = projectedWidth / 2;
+            const halfH = projectedHeight / 2;
+            const q = { x: Math.abs(rx) - halfW, y: Math.abs(ry) - halfH };
+            const signedDist = Math.sqrt(Math.max(q.x,0)**2 + Math.max(q.y,0)**2) + Math.min(Math.max(q.x,q.y), 0);
+
+            if (light.falloff > 0) {
+                const falloff = Math.max(1e-3, light.falloff);
+                const t = 1.0 - signedDist / falloff;
+                return smoothStep(t);
+            } else if (light.innerShadow > 0) {
+                const softnessWidth = Math.min(halfW, halfH) * light.innerShadow;
+                if (signedDist > 0) return 0.0; 
+                if (signedDist < -softnessWidth) return 1.0;
+                
+                const t = (-signedDist) / softnessWidth;
+                const base_attenuation = smoothStep(t);
+                const min_attenuation = 0.1;
+                return min_attenuation + (1 - min_attenuation) * base_attenuation;
+            }
+            return signedDist <= 0 ? 1.0 : 0.0;
+        }
+        
+        function computeOctagonAttenuation(x, y, light) {
+            const { xRadius, yRadius } = getProjectedSize(light);
+            const dx = x - light.x;
+            const dy = y - light.y;
+            const rot = (light.rotation || 0) * Math.PI / 180;
+            const cosR = Math.cos(-rot);
+            const sinR = Math.sin(-rot);
+            // 对点进行反向缩放，以便使用单位SDF
+            const rx = (dx * cosR - dy * sinR) / xRadius;
+            const ry = (dx * sinR + dy * cosR) / yRadius;
+            
+            const N = 8;
+            const R = 1; // 在归一化空间中半径为1
+            const slice = Math.PI / N;
+            const apothem = R * Math.cos(slice);
+
+            let angle = Math.atan2(ry, rx);
+            angle = (angle + 10 * PI) % (2 * slice);
+            angle = Math.abs(angle - slice);
+
+            const distToCenter = Math.sqrt(rx * rx + ry * ry);
+            const edgeDistOnRay = apothem / Math.cos(angle);
+            const signedDist = distToCenter - edgeDistOnRay; // 在归一化空间中的距离
+
+            if (light.falloff > 0) {
+                const falloff = Math.max(1e-3, light.falloff) / light.size;
+                const t = 1.0 - (signedDist / falloff);
+                return smoothStep(t);
+            } else if (light.innerShadow > 0) {
+                const softness = light.innerShadow;
+                if (signedDist > 0) return 0.0;
+                if (signedDist < -softness) return 1.0;
+                
+                const t = (-signedDist) / softness;
+                const base_attenuation = smoothStep(t);
+                const min_attenuation = 0.1;
+                return min_attenuation + (1 - min_attenuation) * base_attenuation;
+            }
+            return signedDist <= 0 ? 1.0 : 0.0;
+        }
+        
+        function computeRingAttenuation(x, y, light) {
+            const { xRadius, yRadius } = getProjectedSize(light);
+            const thicknessRatio = (light.thickness || (light.size * 0.3)) / light.size;
+            
+            const dx = (x - light.x) / xRadius;
+            const dy = (y - light.y) / yRadius;
+            const dist = Math.sqrt(dx * dx + dy * dy); // 归一化距离
+
+            const outerRadius = 1.0;
+            const innerRadius = 1.0 - thicknessRatio;
+            const thickness = outerRadius - innerRadius;
+            
+            const falloff = Math.max(1e-3, light.falloff) / light.size;
+
+            const distToRingCenter = Math.abs(dist - (innerRadius + thickness / 2));
+            const signedDist = distToRingCenter - thickness / 2;
+
+            const t = 1.0 - signedDist / falloff;
+            return smoothStep(t);
+        }
+
+        function frexp(value) {
+            if (value === 0) return [0, 0];
+            const data = new DataView(new ArrayBuffer(8));
+            data.setFloat64(0, value);
+            let bits = data.getBigUint64(0);
+            const sign = (bits >> 63n) === 0n ? 1 : -1;
+            let exponent = Number((bits >> 52n) & 0x7ffn) - 1023;
+            let mantissa = 1 + Number(bits & 0xfffffffffffffn) / (2**52);
+            exponent += 1;
+            mantissa /= 2;
+            return [sign * mantissa, exponent];
+        }
+
+        function floatToRgbe(r, g, b) {
+            const v = Math.max(r, g, b);
+            if (v < 1e-32) return [0,0,0,0];
+            const res = frexp(v);
+            let m = res[0], e = res[1];
+            m = m * 256.0 / v;
+            return [ Math.floor(r * m), Math.floor(g * m), Math.floor(b * m), e + 128 ];
+        }
+
+        async function generateHdrFile() {
+            console.log("Generating true HDR data with corrected logic...");
+            const floatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
+            const bgCanvas = document.createElement('canvas');
+            bgCanvas.width = HDR_WIDTH;
+            bgCanvas.height = HDR_HEIGHT;
+            const bgCtx = bgCanvas.getContext('2d');
+
+            switch (background.type) {
+                case 'image':
+                    if (background.image) {
+                        const imgRatio = background.image.width / background.image.height;
+                        const canvasRatio = HDR_WIDTH / HDR_HEIGHT;
+                        let drawWidth, drawHeight, offsetX, offsetY;
+                        if (imgRatio > canvasRatio) {
+                            drawHeight = HDR_HEIGHT;
+                            drawWidth = background.image.width * (HDR_HEIGHT / background.image.height);
+                            offsetX = (HDR_WIDTH - drawWidth) / 2; offsetY = 0;
+                        } else {
+                            drawWidth = HDR_WIDTH;
+                            drawHeight = background.image.height * (HDR_WIDTH / background.image.width);
+                            offsetX = 0; offsetY = (HDR_HEIGHT - drawHeight) / 2;
+                        }
+                        bgCtx.drawImage(background.image, offsetX, offsetY, drawWidth, drawHeight);
+                    } else { bgCtx.fillStyle = '#000'; bgCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT); }
+                    break;
+                case 'gradient':
+                    const angleRad = background.gradient.angle * PI / 180;
+                    const x1 = HDR_WIDTH / 2 - Math.cos(angleRad) * HDR_WIDTH / 2, y1 = HDR_HEIGHT / 2 - Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const x2 = HDR_WIDTH / 2 + Math.cos(angleRad) * HDR_WIDTH / 2, y2 = HDR_HEIGHT / 2 + Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const grad = bgCtx.createLinearGradient(x1, y1, x2, y2);
+                    grad.addColorStop(0, background.gradient.color1);
+                    grad.addColorStop(1, background.gradient.color2);
+                    bgCtx.fillStyle = grad;
+                    bgCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+                    break;
+                default:
+                    bgCtx.fillStyle = background.color;
+                    bgCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+            }
+
+            const bgImageData = bgCtx.getImageData(0, 0, HDR_WIDTH, HDR_HEIGHT).data;
+            for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
+                floatData[i * 3 + 0] = (bgImageData[i * 4 + 0] / 255) * background.brightness;
+                floatData[i * 3 + 1] = (bgImageData[i * 4 + 1] / 255) * background.brightness;
+                floatData[i * 3 + 2] = (bgImageData[i * 4 + 2] / 255) * background.brightness;
+            }
+
+            for (const light of lights) {
+                const intensity = light.intensity;
+                let lr, lg, lb;
+
+                if (light.type === 'image') {
+                    // 对于贴图灯光，颜色信息来自贴图本身，只乘亮度
+                    lr = intensity;
+                    lg = intensity;
+                    lb = intensity;
+                } else {
+                    const color = hexToRgb(light.color);
+                    lr = (color.r / 255) * intensity;
+                    lg = (color.g / 255) * intensity;
+                    lb = (color.b / 255) * intensity;
+                }
+
+                for (let y = 0; y < HDR_HEIGHT; y++) {
+                    for (let x = 0; x < HDR_WIDTH; x++) {
+                        const idx = (y * HDR_WIDTH + x) * 3;
+                        let attenuation = 0;
+                        if (light.type === 'image') {
+                            // 此处需要一个单独的衰减逻辑用于导出，或假定没有额外衰减
+                            // 为了简化，我们暂时只考虑贴图自身的像素值
+                            attenuation = 1.0; // 假设贴图本身已经包含了衰减信息
+                        }
+                        else if (light.type === 'circle') attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, light);
+                        else if (light.type === 'rect') attenuation = computeRectAttenuation(x + 0.5, y + 0.5, light);
+                        else if (light.type === 'octagon') attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, light);
+                        else if (light.type === 'ring') attenuation = computeRingAttenuation(x + 0.5, y + 0.5, light);
+
+                        if (attenuation > 0) {
+                             if(light.type === 'image') {
+                                // 逻辑过于复杂，暂时跳过贴图灯光的导出
+                             } else {
+                                floatData[idx + 0] += lr * attenuation;
+                                floatData[idx + 1] += lg * attenuation;
+                                floatData[idx + 2] += lb * attenuation;
+                            }
+                        }
+                    }
+                }
+            }
+
+            const rgbeData = new Uint8Array(HDR_WIDTH * HDR_HEIGHT * 4);
+            for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
+                const r = floatData[i * 3 + 0], g = floatData[i * 3 + 1], b = floatData[i * 3 + 2];
+                const rgbe = floatToRgbe(r, g, b);
+                rgbeData.set(rgbe, i * 4);
+            }
+
+            const header = `#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y ${HDR_HEIGHT} +X ${HDR_WIDTH}\n`;
+            const headerBytes = new TextEncoder().encode(header);
+            const fileData = new Uint8Array(headerBytes.length + rgbeData.length);
+            fileData.set(headerBytes, 0);
+            fileData.set(rgbeData, headerBytes.length);
+
+            const blob = new Blob([fileData], { type: 'application/octet-stream' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `studio-light-${Date.now()}.hdr`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            
+            updateStatus("HDRI导出成功！", true);
+        }
+
+        function updateResizeHandlePosition() {
+            const topPreview = document.querySelector('.top-preview');
+            const panelRect = document.querySelector('.preview-panel').getBoundingClientRect();
+            const topRect = topPreview.getBoundingClientRect();
+            const relativeTop = topRect.bottom - panelRect.top;
+            document.getElementById('resizeHandle').style.top = `${relativeTop - 3}px`;
+        }
+        
+        window.addEventListener('load', initApp);
+        window.addEventListener('resize', () => {
+            resize3DCanvas();
+            updateResizeHandlePosition();
+        });
+
+    </script>
+</body>
+</html>
