@@ -574,6 +574,7 @@ canvas {
                 return this.isMobile ? 1.5 : 2;
             },
             get ballSpawnRate() {
+                // 修改：初始生成频率
                 return this.isMobile ? 80 : 60;
             },
             get maxBalls() {
@@ -985,9 +986,17 @@ canvas {
             
             gameState.frameCount++;
             
-            if (gameState.frameCount % config.ballSpawnRate === 0) {
+            // --- [修改] ---
+            // 随着速度增加，让篮球生成频率变快
+            // 速度为1.0时，rate为 config.ballSpawnRate
+            // 速度为2.0时，rate为 config.ballSpawnRate / 2
+            // 速度越高，rate越小，生成越频繁
+            const dynamicSpawnRate = Math.max(10, Math.floor(config.ballSpawnRate / gameState.speed));
+            
+            if (gameState.frameCount % dynamicSpawnRate === 0) {
                 spawnBall();
             }
+            // --- [修改结束] ---
             
             updatePlayerAnimation();
             updateBalls();

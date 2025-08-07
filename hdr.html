@@ -39,6 +39,12 @@ body {
 		align-items: flex-start; 
 		min-height: 100vh; overflow-x: hidden;
  	}
+.scripts {
+	margin-left: 10px; 
+	font-size: 14px; 
+	font-weight: 400; color: 
+	var(--text3);
+	}
 #resizeHandle {
             position: static;
             left: 0;
@@ -530,7 +536,7 @@ h2.main-title {
             <div class="preview-box top-preview">
                 <div class="preview-header">
                     <h3><i class="fa-solid fa-globe"></i> 二维展开图
-		<span style="margin-left: 10px; font-size: 14px; font-weight: 400; color: var(--text3);">点击画布中的灯光进行编辑，点击左侧可添加灯光<span>
+		<span class="scripts">点击画布中的灯光进行编辑，点击左侧可添加灯光<span>
 		</h3>
                 </div>
                 <canvas id="hdrCanvas" style="width:auto; max-width:100%;"></canvas>
@@ -539,7 +545,7 @@ h2.main-title {
             <div class="preview-box bottom-preview">
                 <div class="preview-header">
                     <h3><i class="fa-solid fa-cube"></i> 3D环境预览
-		<span style="margin-left: 10px; font-size: 14px; font-weight: 400; color: var(--text3);">模拟效果展示，最终渲染请导出至3D软件中查看（鼠标拖动进行旋转，滑动滚轮可缩放画面）<span>
+		<span class="scripts">模拟效果展示，最终渲染请导出至3D软件中查看（鼠标拖动进行旋转，滑动滚轮可缩放画面）<span>
 		</h3>
                 </div>
                 <canvas id="sceneCanvas"></canvas>
