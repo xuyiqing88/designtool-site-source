@@ -700,8 +700,6 @@ h2.main-title {
                 scene.add(originalSphere);
                 currentModel = originalSphere; // 初始时，当前模型就是球体
 
-                const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-                scene.add(ambientLight);
                 
                 const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
                 scene.add(gridHelper);
@@ -946,19 +944,87 @@ h2.main-title {
             ctx.globalCompositeOperation = 'source-over';
             update3DScene();
         }
-
-        function update3DScene() {
-            try {
-                if (!envTexture) return;
-                envTexture.dispose();
-                envTexture = new THREE.CanvasTexture(hdrCanvas);
-                envTexture.mapping = THREE.EquirectangularReflectionMapping;
-                scene.environment = envTexture;
-                scene.background = envTexture;
-            } catch (e) {
-                console.error("更新3D失败", e);
-            }
+// 新增：用于在模型加载后更新其材质
+function updateModelMaterial(model, envMap) {
+    if (!model) return;
+    model.traverse(child => {
+        if (child.isMesh && child.material.isMeshStandardMaterial) {
+            // 确保材质能接收反射
+            child.material.envMap = envMap;
+            // 确保材质更新
+            child.material.needsUpdate = true;
         }
+    });
+}
+
+let threejsLights = []; // 用于存储 Three.js 光源的数组
+let ambientLight;
+
+function update3DScene() {
+    try {
+        if (!envTexture) return;
+
+        // 1. 更新 HDRI 纹理
+        envTexture.dispose();
+        envTexture = new THREE.CanvasTexture(hdrCanvas);
+        envTexture.mapping = THREE.EquirectangularReflectionMapping;
+
+        // 2. 核心修复：分离照明和反射
+        // 将 HDRI 仅用于背景
+        scene.background = envTexture;
+        // 移除环境光贡献，只保留反射
+        scene.environment = null; 
+
+        // 3. 移除旧的 Three.js 光源
+        threejsLights.forEach(light => scene.remove(light));
+        threejsLights = [];
+        if (ambientLight) {
+            scene.remove(ambientLight);
+        }
+
+        // 4. 添加基础环境光，以照亮阴影区域
+        ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // 微弱的白色环境光
+        scene.add(ambientLight);
+
+        // 5. 根据 2D 灯光配置创建新的 Three.js 光源
+        lights.forEach(lightConfig => {
+            const color = new THREE.Color(lightConfig.color);
+            const intensity = lightConfig.intensity * 2.0;
+            const falloff = lightConfig.falloff;
+
+            // 核心修复：修正经度计算，通过取负值来反转方向
+            const latitude = -(lightConfig.y / HDR_HEIGHT - 0.35) * Math.PI;
+            const longitude = -(lightConfig.x / HDR_WIDTH - 0.75) * 2 * Math.PI; // **修正此处**
+
+            const direction = new THREE.Vector3(
+                Math.cos(latitude) * Math.sin(longitude),
+                Math.sin(latitude),
+                Math.cos(latitude) * Math.cos(longitude)
+            );
+
+            // 模拟光源：使用聚光灯
+            const threeLight = new THREE.SpotLight(color, intensity, 0, Math.PI / 4, 0.5, 2);
+            threeLight.position.copy(direction).multiplyScalar(5);
+            threeLight.target.position.set(0, 0, 0);
+            threeLight.castShadow = true;
+            threeLight.shadow.mapSize.width = 1024;
+            threeLight.shadow.mapSize.height = 1024;
+            threeLight.shadow.camera.near = 1;
+            threeLight.shadow.camera.far = 10;
+            threeLight.shadow.focus = 1;
+
+            scene.add(threeLight);
+            scene.add(threeLight.target);
+            threejsLights.push(threeLight);
+        });
+
+        // 6. 更新模型材质以接收反射
+        updateModelMaterial(gltfModel, envTexture);
+
+    } catch (e) {
+        console.error("更新3D失败", e);
+    }
+}
         
         function updateControlsUI() {
             const container = document.getElementById('lightControls');
