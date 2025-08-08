@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线视频编辑器 - 视频剪辑OpenCut</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <script src="menu.js" defer></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+<link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 编辑器容器 */
+        .editor-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+	    padding: 0 0 0 60px;
+        }
+        
+        /* 编辑器框架 */
+        #editor-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: rgba(30, 30, 42, 0.95);
+            display: block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+	 .editor-container {
+	 padding: 0;}
+        }
+
+    </style>
+</head>
+<body>
+<div id="global-sidebar"></div>
+    <!-- 编辑器容器 -->
+    <div class="editor-container">
+        <!-- 视频编辑器框架 -->
+        <iframe id="editor-frame" 
+                allowfullscreen 
+                allow="fullscreen" 
+                webkitallowfullscreen 
+                mozallowfullscreen
+                src="https://opencut.app/projects"></iframe>
+        
+
+    </div>
+
+    <script>
+
+    </script>
+</body>
+</html>
