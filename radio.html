@@ -6,9 +6,7 @@
     <title>在线网络收音机 - 全球电台实时收听 | 华语乐坛 |流行音乐</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
-  <script src="menu.js" defer></script>
-  <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     <style>
         :root {
             --main-color: #5a64ff;
@@ -41,16 +39,18 @@
             justify-content: center;
             align-items: center;
             background: #f5f7ff;
-    background-image: radial-gradient(var(--line) 1px, transparent 1px);
-    background-size: 20px 20px;
+            background-image: radial-gradient(var(--line) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-	.laba {
-		margin-right: 40px;
-	}
+        
+        .laba {
+            margin-right: 40px;
+        }
+        
         .container {
             width: 100%;
             max-width: 1100px;
-            max-height: 900px; /* 限制最大高度 */
+            max-height: 900px;
             background: var(--card-bg);
             border-radius: 24px;
             box-shadow: 0 15px 40px rgba(90, 100, 255, 0.08);
@@ -59,7 +59,7 @@
             flex-direction: column;
             position: relative;
             z-index: 10;
-	    border-top: 1px solid #fff;
+            border-top: 1px solid #fff;
         }
 
         header {
@@ -69,7 +69,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            z-index: 20; /* 确保 header 在列表之上 */
+            z-index: 20;
         }
 
         header::before {
@@ -104,12 +104,12 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-	    background: linear-gradient(135deg, #5a64ff, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    width: fit-content;
-    margin: 0 auto 8px;
+            background: linear-gradient(135deg, #5a64ff, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            width: fit-content;
+            margin: 0 auto 8px;
         }
 
         header p {
@@ -123,10 +123,10 @@
 
         .content1 {
             display: flex;
-            flex: 1; /* 占据剩余空间 */
+            flex: 1;
             min-height: 0;
             position: relative;
-	    flex-direction: row-reverse;
+            flex-direction: row-reverse;
         }
 
         .radio-list {
@@ -135,17 +135,18 @@
             display: flex;
             flex-direction: column;
             background: rgba(249, 250, 255, 0.75);
-	    max-height: 600px;
-		    border-right: 1px solid var(--line);
+            max-height: 600px;
+            border-right: 1px solid var(--line);
         }
 
         .radio-list-scroll-area {
             overflow-y: auto;
             flex: 1;
-	    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-	    box-shadow: inset 0px 5px 5px -8px #0000004a;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: inset 0px 5px 5px -8px #0000004a;
         }
+        
         .radio-list-scroll-area::-webkit-scrollbar {
             width: 6px;
         }
@@ -198,7 +199,7 @@
             margin-right: 16px;
             flex-shrink: 0;
             overflow: hidden;
-	    box-shadow: 0 0 10px #0000000a;
+            box-shadow: 0 0 10px #0000000a;
         }
 
         .station-logo img {
@@ -261,20 +262,21 @@
         }
 
         .rotate1 {
-	        background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
+            background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
             padding: 20px;
         }
-        /* --- MODIFICATION: Added .is-playing class for conditional rotation --- */
+        
         .rotate1.is-playing {
-    	    animation: spin 10s linear infinite;
+            animation: spin 10s linear infinite;
         }
 
-	    .rotate2 {
-	        width: 116px;
-    		height: 116px;
-    		border-radius: 50%;
-    		overflow: hidden;
-	    }
+        .rotate2 {
+            width: 116px;
+            height: 116px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
         .album-art {
             border-radius: 50%;
             margin-right: 30px;
@@ -282,46 +284,27 @@
             overflow: hidden;
             position: relative;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-	        border: 2px solid;
-            /* --- MODIFICATION: Added position relative for note container --- */
+            border: 2px solid;
             position: relative;
         }
+        
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-        .album-art img { width: 100%; height: 100%; object-fit: cover; }
-
-        .album-art i {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 25px;
-            color: rgba(255, 255, 255, 0.8);
-            z-index: 2;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            background: #000;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: conic-gradient(from 0rad at 50% 50%, #000 0%, #656574 15%, #000 35%, #4E4E5B 50%, #000 70%, #656574 85%, #000 100%);
+        
+        .album-art img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
         }
 
-        /* --- MODIFICATION: Added styles for music note animation --- */
         .music-notes-container {
             position: absolute;
             top: 25px;
-    	left: 60px;
-    	width: 60%;
-    	height: 60%;
+            left: 60px;
+            width: 60%;
+            height: 60%;
             pointer-events: none;
             overflow: hidden;
         }
@@ -337,16 +320,9 @@
         }
 
         @keyframes float-up {
-            0% {
-                transform: translate(0, 0) scale(0.8);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translate(40px, -80px) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translate(0, 0) scale(0.8); opacity: 0.8; }
+            100% { transform: translate(40px, -80px) scale(1.2); opacity: 0; }
         }
-        /* --- End of modification --- */
 
         .track-details { flex: 1; min-width: 0; }
 
@@ -357,8 +333,17 @@
             margin-bottom: 8px;
         }
 
-        .track-artist { font-size: 18px; color: var(--text2); margin-bottom: 16px; }
-        .track-album { font-size: 15px; color: var(--text3); }
+        .track-artist { 
+            font-size: 18px; 
+            color: var(--text2); 
+            margin-bottom: 16px; 
+        }
+        
+        .track-album { 
+            font-size: 15px; 
+            color: var(--text3); 
+        }
+        
         .track-title, .track-artist, .track-album {
             white-space: nowrap;
             overflow: hidden;
@@ -372,7 +357,12 @@
             padding: 0 20px;
         }
 
-        .control-buttons { display: flex; align-items: center; gap: 24px; margin-bottom: 24px; }
+        .control-buttons { 
+            display: flex; 
+            align-items: center; 
+            gap: 24px; 
+            margin-bottom: 24px; 
+        }
 
         .btn {
             width: 56px;
@@ -389,12 +379,14 @@
             font-size: 20px;
             box-shadow: 0 4px 12px rgba(90, 100, 255, 0.1);
         }
+        
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(90, 100, 255, 0.2);
             border-color: var(--main-color);
-	    color: var(--main-color);
+            color: var(--main-color);
         }
+        
         .btn:active { transform: translateY(1px); }
 
         .btn-play {
@@ -406,14 +398,28 @@
             border: none;
             box-shadow: 0 6px 16px rgba(90, 100, 255, 0.3);
         }
+        
         .btn-play:hover {
             box-shadow: 0 8px 20px rgba(90, 100, 255, 0.4);
-	    opacity: 0.9;
-	color: #fff;
+            opacity: 0.9;
+            color: #fff;
         }
 
-        .volume-control { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 300px; margin-top: 16px; }
-        .volume-icon { color: var(--text2); font-size: 20px; width: 24px; text-align: center; }
+        .volume-control { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            width: 100%; 
+            max-width: 300px; 
+            margin-top: 16px; 
+        }
+        
+        .volume-icon { 
+            color: var(--text2); 
+            font-size: 20px; 
+            width: 24px; 
+            text-align: center; 
+        }
 
         .volume-slider {
             flex: 1;
@@ -423,17 +429,22 @@
             background: var(--line);
             outline: none;
         }
+        
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 18px;
             height: 18px;
             border-radius: 50%;
-	background: #fff;
+            background: #fff;
             border: 2px solid var(--main-color);
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); background: #4755e6; }
+        
+        .volume-slider::-webkit-slider-thumb:hover { 
+            transform: scale(1.2); 
+            background: #4755e6; 
+        }
 
         .radio-status {
             background: rgba(249, 250, 255, 0.8);
@@ -446,17 +457,34 @@
             font-size: 14px;
             width: 100%;
         }
-        .status-indicator { width: 12px; height: 12px; border-radius: 50%; background: var(--error); flex-shrink: 0; }
-        .status-text { color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
-        .status-text strong { var(--text1); }
+        
+        .status-indicator { 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background: var(--error); 
+            flex-shrink: 0; 
+        }
+        
+        .status-text { 
+            color: var(--text2); 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            font-weight: 500; 
+        }
+        
+        .status-text strong { 
+            color: var(--text1); 
+        }
 
         footer { 
-	    text-align: center;
-    padding: 20px;
-    color: var(--text3);
-    font-size: 14px;
-    background: rgb(245 247 255);
-	 } 
+            text-align: center;
+            padding: 20px;
+            color: var(--text3);
+            font-size: 14px;
+            background: rgb(245 247 255);
+        } 
 
         .notification {
             position: fixed;
@@ -472,14 +500,32 @@
             display: flex;
             align-items: center;
             gap: 10px;
-	    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
-        .notification i { font-size: 18px; }
+        
+        .notification i { 
+            font-size: 18px; 
+        }
 
-        .search-container { padding: 0 24px 16px; background: var(--card-bg);  }
-        .search-box { display: flex; align-items: center; background: var(--background); border-radius: 12px; padding: 2px 16px; }
-        .search-box i { color: var(--text3); margin-right: 8px; }
+        .search-container { 
+            padding: 0 24px 16px; 
+            background: var(--card-bg);  
+        }
+        
+        .search-box { 
+            display: flex; 
+            align-items: center; 
+            background: var(--background); 
+            border-radius: 12px; 
+            padding: 2px 16px; 
+        }
+        
+        .search-box i { 
+            color: var(--text3); 
+            margin-right: 8px; 
+        }
+        
         .search-box input {
             flex: 1;
             border: none;
@@ -489,87 +535,91 @@
             background: transparent;
             color: var(--text2);
         }
-        .search-box input::placeholder { color: var(--text3); }
+        
+        .search-box input::placeholder { 
+            color: var(--text3); 
+        }
 
-        /* --- 移动端优化 --- */
         @media (max-width: 768px) {
             body { align-items: flex-start; }
-	.now-playing h3, .laba,  footer {
-		display: none;}
-        .station {
-            border-bottom: 1px solid #00000012;}
-	.music-notes-container {
-		left: 110px;
-    		top: 0;}
-	.radio-status {
-		padding: 10px 24px;}
+            .now-playing h3, .laba, footer {
+                display: none;
+            }
+            .station {
+                border-bottom: 1px solid #00000012;
+            }
+            .music-notes-container {
+                left: 110px;
+                top: 0;
+            }
+            .radio-status {
+                padding: 10px 24px;
+            }
             .container {
                 border-radius: 0;
                 max-height: none;
                 height: 100%;
                 box-shadow: none;
             }
-	.volume-control {
-		margin-top: 10px;}
+            .volume-control {
+                margin-top: 10px;
+            }
             .content1 {
                 flex-direction: column;
-                overflow: hidden; /* 防止列表溢出 */
+                overflow: hidden;
             }
             .player-section {
-                flex: 1; /* 让播放器占据主要空间 */
-	padding: 50px 24px;
+                flex: 1;
+                padding: 50px 24px;
             }
             .track-info {
                 flex-direction: column;
                 text-align: center;
-	        margin-bottom: 0;
-		margin-top: -50px;
+                margin-bottom: 0;
+                margin-top: -50px;
             }
-            .album-art { margin-right: 0; margin-bottom: 20px; }
-            header h1 { font-size: 26px; }
-            .track-title { font-size: 22px; }
-            .track-artist { font-size: 17px; }
+            .album-art { 
+                margin-right: 0; 
+                margin-bottom: 20px; 
+            }
+            header h1 { 
+                font-size: 26px; 
+            }
+            .track-title { 
+                font-size: 22px; 
+            }
+            .track-artist { 
+                font-size: 17px; 
+            }
 
-            /* --- 列表抽屉交互逻辑 --- */
             .radio-list {
                 position: absolute;
                 bottom: 0;
                 left: 0;
                 right: 0;
-                height: 100%; /* 展开后的高度 */
-                max-height: 80vh; /* 最大高度，防止在长屏幕上过高 */
+                height: 100%;
+                max-height: 80vh;
                 z-index: 10;
                 border-right: none;
                 border-radius: 24px 24px 0 0;
                 box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
-                /* 默认状态：收起，只露出标题 */
-                transform: translateY(calc(100% - 66px)); /* 66px 约等于 h2 的高度 */
+                transform: translateY(calc(100% - 66px));
                 transition: transform 0.4s ease-in-out;
             }
+            
             .radio-list.expanded {
                 transform: translateY(0);
             }
+            
             .radio-list h2 {
                 cursor: pointer;
-                flex-shrink: 0; /* 防止标题被压缩 */
-	        border-radius: 16px 16px 0 0;
-            }
-            .radio-list h2::after {
-                content: "▲"; /* 添加一个指示器 */
-                font-size: 12px;
-                margin-left: auto;
-                color: var(--text3);
-                transition: transform 0.4s ease;
-		display: none;
-            }
-            .radio-list.expanded h2::after {
-                transform: rotate(180deg);
+                flex-shrink: 0;
+                border-radius: 16px 16px 0 0;
             }
         }
     </style>
 </head>
 <body>
-<div id="global-sidebar"></div>
     <div class="container">
         <header>
             <h1><i class="fas fa-radio"></i> 青艺云广播</h1>
@@ -581,18 +631,20 @@
                 <div class="now-playing">
                     <h3><i class="fas fa-play-circle"></i> 正在播放</h3>
                     <div class="track-info">
-                             <div class="music-notes-container"></div>
+                        <div class="music-notes-container"></div>
                         <div class="album-art">
                             <div class="rotate1">
-				                <div class="rotate2"><img src="" alt="Album Art"></div>
-			                </div>
+                                <div class="rotate2">
+                                    <img id="album-art-img" src="" alt="Album Art">
+                                </div>
+                            </div>
                         </div>
                         <div class="track-details">
-                            <div class="track-title">电台名称</div>
-                            <div class="track-artist">电台分类</div>
-                            <div class="track-album">电台描述</div>
+                            <div id="track-title" class="track-title">电台名称</div>
+                            <div id="track-artist" class="track-artist">电台分类</div>
+                            <div id="track-album" class="track-album">电台描述</div>
                         </div>
-			<div class="laba">
+                        <div class="laba">
                             <img src="img/laba.svg" style="width: 70px;">
                         </div>
                     </div>
@@ -625,312 +677,398 @@
                         <input type="text" id="search-input" placeholder="搜索电台...">
                     </div>
                 </div>
-                <div class="radio-list-scroll-area">
-                    <div class="station active" data-stream="https://stream-164.zeno.fm/nbdgqsc4uwzuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJuYmRncXNjNHV3enV2IiwiaG9zdCI6InN0cmVhbS0xNjQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlRBem1YdFJrUWd1YkozZmtiTkxiSmciLCJpYXQiOjE3NTM4ODc4NTYsImV4cCI6MTc1Mzg4NzkxNn0.iry7HVbIgdfPlgjn93XyyJSvewmdm_18m3pp9UGmFNI&an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=72ce21eb817b1807c6dfcebad240ce89" data-name="华语流行音乐台" data-genre="流行 • 最新单曲 • 排行榜" data-icon="compact-disc" data-image="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" loading="lazy" data-album="热门单曲放送">
-                        <div class="station-logo"><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Pop"></div>
-                        <div class="station-info"><div class="station-name">华语流行音乐台</div><div class="station-genre">流行 • 最新单曲 • 排行榜</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://stream.zeno.fm/cfwn65k0hd0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="UFM-100.3中文频道" data-genre="新加坡 • 音乐 • 中文" data-icon="volume-up" data-image="https://radiosgp.com/uploads/img/ufm100-3.jpg" loading="lazy" data-album="全天候中文广播（live）">
-                        <div class="station-logo"><img src="https://radiosgp.com/uploads/img/ufm100-3.jpg" loading="lazy" alt="Rock"></div>
-                        <div class="station-info"><div class="station-name">UFM-100.3中文频道</div><div class="station-genre">新加坡 • 音乐 • 中文</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://stream.rcs.revma.com/ndk05tyy2tzuv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d" data-name="i Radio FM-96.3中廣音樂網" data-genre="台湾 • 音乐 • 中文" data-icon="volume-up" data-image="img/96.png" loading="lazy" data-album="台湾流行音乐广播（live）">
-                        <div class="station-logo"><img src="img/96.png" loading="lazy" alt="pop"></div>
-                        <div class="station-info"><div class="station-name">i Radio FM-96.3中廣音樂網</div><div class="station-genre">台湾 • 音乐 • 中文</div></div>
-                    </div>
-
-
-                    <div class="station" data-stream="https://stream.rcs.revma.com/xpgtqc74hv8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d" data-name="FM-92.7魅力亚洲电台" data-genre="台湾 • 音乐 • 中文" data-icon="volume-up" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/c-8ND2ZJx3XkNpN-XIsINt-47EZN5jb5F3mrlXGUmcU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvMmE4N2RlNDMtOTU4Ni00OWI3LTg5NzgtMzgzMjIwZTljYjAwL2ltYWdlLz91PTE3MTM4NzMyMzcwMDA.webp" loading="lazy" data-album="台湾流行音乐广播（live）">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/c-8ND2ZJx3XkNpN-XIsINt-47EZN5jb5F3mrlXGUmcU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvMmE4N2RlNDMtOTU4Ni00OWI3LTg5NzgtMzgzMjIwZTljYjAwL2ltYWdlLz91PTE3MTM4NzMyMzcwMDA.webp" loading="lazy" alt="pop"></div>
-                        <div class="station-info"><div class="station-name">FM-92.7魅力亚洲电台</div><div class="station-genre">台湾 • 音乐 • 中文</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://playerservices.streamtheworld.com/api/livestream-redirect/LOVE972FMAAC.aac?dist=streema?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd" data-name="Love FM-97.2中文频道" data-genre="新加坡 • 中英文 • 90年代" data-icon="guitar" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/Koh7GF066mSD7BXdq4ZL-jl_FI4r-p70gyxIVZaPs3s/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvNzg4NzNkZTUtMTE1NC00YzYwLWI5YWItZjY5OGZhYWQwYjc2L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp" loading="lazy" data-album="80/90年代中英文金曲（live）">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/Koh7GF066mSD7BXdq4ZL-jl_FI4r-p70gyxIVZaPs3s/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvNzg4NzNkZTUtMTE1NC00YzYwLWI5YWItZjY5OGZhYWQwYjc2L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp" loading="lazy" alt="Chinese"></div>
-                        <div class="station-info"><div class="station-name">Love FM-97.2中文频道</div><div class="station-genre">新加坡 • 中英文 • 90年代</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://playerservices.streamtheworld.com/api/livestream-redirect/883JIA.mp3?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&triton-uid=cookie%3A53627b09-6048-4631-b094-fbe7bc28ce14&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd" data-name="FM-88.3 JIA 双语频道" data-genre="新加坡 • 双语 • 中英文热门金曲" data-icon="guitar" data-image="https://radiosgp.com/uploads/img/88-3jia.jpg" loading="lazy" data-album="全天候中英文热门金曲（live）">
-                        <div class="station-logo"><img src="https://radiosgp.com/uploads/img/88-3jia.jpg" loading="lazy" alt="Chinese"></div>
-                        <div class="station-info"><div class="station-name">FM-88.3 JIA 双语频道</div><div class="station-genre">新加坡 • 双语 • 中英文热门金曲</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://stream.zeno.fm/i3q4bwnzxp1uv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd" data-name="俄罗斯华语音乐台" data-genre="俄语 • 中文 • 流行" data-icon="guitar" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/NjLmIk1NtJ6l_xkr2eC2PDvkhgYIoSh_mhKo5I0x9co/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvNjVhMTJkM2EtYWM4NC00Njg4LTlmYjktN2RmZjZmMTgzMWNhL2ltYWdlLz91PTE3NDg1OTIwNjcwMDA.webp" loading="lazy" data-album="中文流行音乐">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/NjLmIk1NtJ6l_xkr2eC2PDvkhgYIoSh_mhKo5I0x9co/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvNjVhMTJkM2EtYWM4NC00Njg4LTlmYjktN2RmZjZmMTgzMWNhL2ltYWdlLz91PTE3NDg1OTIwNjcwMDA.webp" loading="lazy" alt="Russian"></div>
-                        <div class="station-info"><div class="station-name">俄罗斯华语音乐台</div><div class="station-genre">俄语 • 中文 • 流行</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://scdn.nrjaudio.fm/audio1/fr/31187/mp3_128.mp3?origine=tuneinradio?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="TAYLOR SWIFT" data-genre="乡村 • Taylor Swift • 美国风情" data-icon="guitar" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/LDQu9H9mVFRnBCnOV3RAWWfnF96h2iZ27tp9SciEtB8/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvZDc0ODMwOTAtYWY1Yy00MDA5LWJiYzAtZDAyZTczNjViYmM0L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp" loading="lazy" data-album="Taylor Swift精选">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/LDQu9H9mVFRnBCnOV3RAWWfnF96h2iZ27tp9SciEtB8/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvZDc0ODMwOTAtYWY1Yy00MDA5LWJiYzAtZDAyZTczNjViYmM0L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp" loading="lazy" alt="Country"></div>
-                        <div class="station-info"><div class="station-name">TAYLOR SWIFT</div><div class="station-genre">乡村 • Taylor Swift • 美国风情</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://stream.zeno.fm/zibntg5gtr7vv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=e9bf6dcddca747f3cbc7264658badad6" data-name="周杰伦合集" data-genre="周杰伦 • R&B • 流行" data-icon="music" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/In_bLFDIcPRONKTr-UlzdHYTmAP6O59Z46ke-oHbxyA/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvODg4MTllN2EtNjhjZS00MzA5LWFjM2YtOTZmNDEzMTY3NWMxL2ltYWdlLz91PTE3MTk4OTAyNzMwMDA.webp" loading="lazy"  data-album="周杰伦轮播音乐">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/In_bLFDIcPRONKTr-UlzdHYTmAP6O59Z46ke-oHbxyA/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvODg4MTllN2EtNjhjZS00MzA5LWFjM2YtOTZmNDEzMTY3NWMxL2ltYWdlLz91PTE3MTk4OTAyNzMwMDA.webp" loading="lazy"  alt="guodegang"></div>
-                        <div class="station-info"><div class="station-name">周杰伦合集</div><div class="station-genre">周杰伦 • R&B • 流行</div></div>
-                    </div>
-
-                    <div class="station" data-stream="https://stream.zeno.fm/rxx6d9fbvv8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="美国乡村流行" data-genre="乡村 • R&B • 美国" data-icon="microphone-alt" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/l-Q0wixmFPPeE5naCek6ALcM7trbLMht0UiMAwOPHAM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3ctcG1RMndrTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d4b1RfLXdzTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5NTgzMTcwNDAwMA.webp" loading="lazy" data-album="美国公告牌流行">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/l-Q0wixmFPPeE5naCek6ALcM7trbLMht0UiMAwOPHAM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3ctcG1RMndrTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d4b1RfLXdzTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5NTgzMTcwNDAwMA.webp" loading="lazy" alt="Hip Hop"></div>
-                        <div class="station-info"><div class="station-name">美国乡村流行</div><div class="station-genre">乡村 • R&B • 美国</div></div>
-                    </div>
-                    <div class="station" data-stream="https://stream.zeno.fm/2satvbfq4a0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="80年代英语金曲" data-genre="80年代 • 怀旧 • 经典" data-icon="history" data-image="https://images.unsplash.com/photo-1587132137056-bfbf0166836e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" loading="lazy" data-album="重回80年代">
-                        <div class="station-logo"><img src="https://images.unsplash.com/photo-1587132137056-bfbf0166836e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" loading="lazy" alt="80s"></div>
-                        <div class="station-info"><div class="station-name">80年代英语金曲</div><div class="station-genre">80年代 • 怀旧 • 经典</div></div>
-                    </div>
-                    <div class="station" data-stream="https://stream.zeno.fm/gq7kqcntzwzuv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8" data-name="英语情歌" data-genre="情歌 • 怀旧 • 经典" data-icon="compact-disc" data-image="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" loading="lazy" data-album="经典英文情歌">
-                        <div class="station-logo"><img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" loading="lazy" alt="90s"></div>
-                        <div class="station-info"><div class="station-name">英语情歌</div><div class="station-genre">情歌 • 怀旧 • 经典</div></div>
-                    </div>
-                    <div class="station" data-stream="https://stream.zeno.fm/advmk81bu68uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=73cc6bb2efb73c1ad85109feaf770231" data-name="tiktok	音乐台" data-genre="拉丁 • 萨尔萨 • 雷鬼" data-icon="music" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/fA-43wjtrcbtfJwGLa4oJtyTGQR8c-UgcJq7T3vGUZU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJRFE4dlQ4cVFzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJRHdnTWo4aEFnTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5MTkyOTU0MDAwMA.webp" loading="lazy"  data-album="抖音热门神曲">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/fA-43wjtrcbtfJwGLa4oJtyTGQR8c-UgcJq7T3vGUZU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJRFE4dlQ4cVFzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJRHdnTWo4aEFnTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5MTkyOTU0MDAwMA.webp" loading="lazy"  alt="Latin"></div>
-                        <div class="station-info"><div class="station-name">TIKTOK音乐台</div><div class="station-genre">TIKTOK • 流行 • 雷鬼</div></div>
-                    </div>
-                    <div class="station" data-stream="https://stream.zeno.fm/6pa9cwlcb98vv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd" data-name="宝宝巴士儿歌" data-genre="儿歌 • 休闲 • 宝宝巴士" data-icon="music" data-image="https://pp.myapp.com/ma_icon/0/icon_53383110_1753870960/256" loading="lazy"  data-album="儿歌合集">
-                        <div class="station-logo"><img src="https://pp.myapp.com/ma_icon/0/icon_53383110_1753870960/256" loading="lazy"  alt="child"></div>
-                        <div class="station-info"><div class="station-name">宝宝巴士儿歌</div><div class="station-genre">儿歌 • 休闲 • 宝宝巴士</div></div>
-                    </div>
-                    <div class="station" data-stream="https://stream.zeno.fm/yqawwmweq8mtv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6" data-name="德云社相声合集" data-genre="德云社 • 郭德纲 • 相声" data-icon="music" data-image="https://zeno.fm/_ipx/_/https://images.zeno.fm/BBQWLCRkIxnFcWJm5z4AUgaXnw1UBX0jrus9rR4UYSM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYjRjZjgwMTUtYWY2Ni00YjE1LTlkODEtMDI3ZDMyODYzYWI1L2ltYWdlLz91PTE3MTQ5OTQzNjMwMDA.webp" loading="lazy"  data-album="相声合集">
-                        <div class="station-logo"><img src="https://zeno.fm/_ipx/_/https://images.zeno.fm/BBQWLCRkIxnFcWJm5z4AUgaXnw1UBX0jrus9rR4UYSM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYjRjZjgwMTUtYWY2Ni00YjE1LTlkODEtMDI3ZDMyODYzYWI1L2ltYWdlLz91PTE3MTQ5OTQzNjMwMDA.webp" loading="lazy"  alt="guodegang"></div>
-                        <div class="station-info"><div class="station-name">德云社相声合集</div><div class="station-genre">德云社 • 郭德纲 • 相声</div></div>
-                    </div>
-
-
+                <div id="station-container" class="radio-list-scroll-area">
+                    <!-- 电台列表将由JavaScript动态生成 -->
                 </div>
             </div>
         </div>
-<footer>
+        
+        <footer>
             <p>使用开源zenofm技术构建</p>
         </footer>
     </div>
     
     <script>
+        // 所有电台数据集中存储在这里
+        const radioStations = [
+            {
+                id: 1,
+                name: "华语流行音乐台",
+                genre: "流行 • 最新单曲 • 排行榜",
+                stream: "https://stream-164.zeno.fm/nbdgqsc4uwzuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJuYmRncXNjNHV3enV2IiwiaG9zdCI6InN0cmVhbS0xNjQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlRBem1YdFJrUWd1YkozZmtiTkxiSmciLCJpYXQiOjE3NTM4ODc4NTYsImV4cCI6MTc1Mzg4NzkxNn0.iry7HVbIgdfPlgjn93XyyJSvewmdm_18m3pp9UGmFNI&an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=72ce21eb817b1807c6dfcebad240ce89",
+                image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "热门单曲放送"
+            },
+            {
+                id: 2,
+                name: "UFM-100.3中文频道",
+                genre: "新加坡 • 音乐 • 中文",
+                stream: "https://stream.zeno.fm/cfwn65k0hd0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8",
+                image: "https://radiosgp.com/uploads/img/ufm100-3.jpg",
+                description: "全天候中文广播（live）"
+            },
+            {
+                id: 3,
+                name: "i Radio FM-96.3中廣音樂網",
+                genre: "台湾 • 音乐 • 中文",
+                stream: "https://stream.rcs.revma.com/ndk05tyy2tzuv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d",
+                image: "img/96.png",
+                description: "台湾流行音乐广播（live）"
+            },
+            {
+                id: 4,
+                name: "FM-92.7魅力亚洲电台",
+                genre: "台湾 • 音乐 • 中文",
+                stream: "https://stream.rcs.revma.com/xpgtqc74hv8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/c-8ND2ZJx3XkNpN-XIsINt-47EZN5jb5F3mrlXGUmcU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvMmE4N2RlNDMtOTU4Ni00OWI3LTg5NzgtMzgzMjIwZTljYjAwL2ltYWdlLz91PTE3MTM4NzMyMzcwMDA.webp",
+                description: "台湾流行音乐广播（live）"
+            },
+            {
+                id: 5,
+                name: "Love FM-97.2中文频道",
+                genre: "新加坡 • 中英文 • 90年代",
+                stream: "https://playerservices.streamtheworld.com/api/livestream-redirect/LOVE972FMAAC.aac?dist=streema?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/Koh7GF066mSD7BXdq4ZL-jl_FI4r-p70gyxIVZaPs3s/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvNzg4NzNkZTUtMTE1NC00YzYwLWI5YWItZjY5OGZhYWQwYjc2L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp",
+                description: "80/90年代中英文金曲（live）"
+            },
+            {
+                id: 6,
+                name: "FM-88.3 JIA 双语频道",
+                genre: "新加坡 • 双语 • 中英文热门金曲",
+                stream: "https://playerservices.streamtheworld.com/api/livestream-redirect/883JIA.mp3?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&triton-uid=cookie%3A53627b09-6048-4631-b094-fbe7bc28ce14&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd",
+                image: "https://radiosgp.com/uploads/img/88-3jia.jpg",
+                description: "全天候中英文热门金曲（live）"
+            },
+            {
+                id: 7,
+                name: "俄罗斯华语音乐台",
+                genre: "俄语 • 中文 • 流行",
+                stream: "https://stream.zeno.fm/i3q4bwnzxp1uv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/NjLmIk1NtJ6l_xkr2eC2PDvkhgYIoSh_mhKo5I0x9co/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvNjVhMTJkM2EtYWM4NC00Njg4LTlmYjktN2RmZjZmMTgzMWNhL2ltYWdlLz91PTE3NDg1OTIwNjcwMDA.webp",
+                description: "中文流行音乐"
+            },
+            {
+                id: 8,
+                name: "TAYLOR SWIFT",
+                genre: "乡村 • Taylor Swift • 美国风情",
+                stream: "https://scdn.nrjaudio.fm/audio1/fr/31187/mp3_128.mp3?origine=tuneinradio?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/LDQu9H9mVFRnBCnOV3RAWWfnF96h2iZ27tp9SciEtB8/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvZDc0ODMwOTAtYWY1Yy00MDA5LWJiYzAtZDAyZTczNjViYmM0L2ltYWdlLz91PTE3MzQ0MjczMTgwMDA.webp",
+                description: "Taylor Swift精选"
+            },
+            {
+                id: 9,
+                name: "周杰伦合集",
+                genre: "周杰伦 • R&B • 流行",
+                stream: "https://stream.zeno.fm/zibntg5gtr7vv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=e9bf6dcddca747f3cbc7264658badad6",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/In_bLFDIcPRONKTr-UlzdHYTmAP6O59Z46ke-oHbxyA/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvODg4MTllN2EtNjhjZS00MzA5LWFjM2YtOTZmNDEzMTY3NWMxL2ltYWdlLz91PTE3MTk4OTAyNzMwMDA.webp",
+                description: "周杰伦轮播音乐"
+            },
+            {
+                id: 10,
+                name: "美国乡村流行",
+                genre: "乡村 • R&B • 美国",
+                stream: "https://stream.zeno.fm/rxx6d9fbvv8uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/l-Q0wixmFPPeE5naCek6ALcM7trbLMht0UiMAwOPHAM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJQ3ctcG1RMndrTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJQ3d4b1RfLXdzTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5NTgzMTcwNDAwMA.webp",
+                description: "美国公告牌流行"
+            },
+            {
+                id: 11,
+                name: "80年代英语金曲",
+                genre: "80年代 • 怀旧 • 经典",
+                stream: "https://stream.zeno.fm/2satvbfq4a0uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8",
+                image: "https://images.unsplash.com/photo-1587132137056-bfbf0166836e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "重回80年代"
+            },
+            {
+                id: 12,
+                name: "英语情歌",
+                genre: "情歌 • 怀旧 • 经典",
+                stream: "https://stream.zeno.fm/gq7kqcntzwzuv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=5abf391679e4c36d9441a4ce5f9040d8",
+                image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "经典英文情歌"
+            },
+            {
+                id: 13,
+                name: "TIKTOK音乐台",
+                genre: "TIKTOK • 流行 • 雷鬼",
+                stream: "https://stream.zeno.fm/advmk81bu68uv?an-uid=7928543335841209656&dot-uid=0c202203001e320bf496da0e&triton-uid=cookie%3A18e872fa-808d-47cf-b211-f40eaf1f1288&amb-uid=4204633875433189227&dbm-uid=CAESEN0q8AQtvR_ZE38daBz4eOY&cto-uid=46dd0701-3eb4-43c0-ad42-d21c5be51291-66f40d35-5553&bsw-uid=7b89ca25-77ad-4cfa-81bb-cdaab56886d8&dyn-uid=5911168575308321625&ttd-uid=43ffc88e-3c3d-4221-9057-04fc2072f63d&aw_0_req_lsid=73cc6bb2efb73c1ad85109feaf770231",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/fA-43wjtrcbtfJwGLa4oJtyTGQR8c-UgcJq7T3vGUZU/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYWd4emZucGxibTh0YzNSaGRITnlNZ3NTQ2tGMWRHaERiR2xsYm5RWWdJRFE4dlQ4cVFzTUN4SU9VM1JoZEdsdmJsQnliMlpwYkdVWWdJRHdnTWo4aEFnTW9nRUVlbVZ1YncvaW1hZ2UvP3U9MTY5MTkyOTU0MDAwMA.webp",
+                description: "抖音热门神曲"
+            },
+            {
+                id: 14,
+                name: "宝宝巴士儿歌",
+                genre: "儿歌 • 休闲 • 宝宝巴士",
+                stream: "https://stream.zeno.fm/6pa9cwlcb98vv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6&aw_0_req_lsid=5acec1232fc165b839f62f17ba9f8bbd",
+                image: "https://pp.myapp.com/ma_icon/0/icon_53383110_1753870960/256",
+                description: "儿歌合集"
+            },
+            {
+                id: 15,
+                name: "德云社相声合集",
+                genre: "德云社 • 郭德纲 • 相声",
+                stream: "https://stream.zeno.fm/yqawwmweq8mtv?an-uid=8350531543407715207&dot-uid=0c22220300169fdc89be25ef&amb-uid=8359487124954536153&dbm-uid=CAESEEIlsoZMHcXMf55NGu_3uHw&cto-uid=44a91195-84f7-4f45-a03d-b9aba6f121a6-6752513d-5553&bsw-uid=60a9fda4-56fe-4481-93f8-6d950d4cd968&dyn-uid=2144659742103673471&ttd-uid=c5ba62db-db59-41dd-ba5a-008a4bd005f6",
+                image: "https://zeno.fm/_ipx/_/https://images.zeno.fm/BBQWLCRkIxnFcWJm5z4AUgaXnw1UBX0jrus9rR4UYSM/rs:fill:288:288/g:ce:0:0/aHR0cHM6Ly9wcm94eS56ZW5vLmZtL2NvbnRlbnQvc3RhdGlvbnMvYjRjZjgwMTUtYWY2Ni00YjE1LTlkODEtMDI3ZDMyODYzYWI1L2ltYWdlLz91PTE3MTQ5OTQzNjMwMDA.webp",
+                description: "相声合集"
+            }
+        ];
+
         document.addEventListener('DOMContentLoaded', function() {
             const audio = new Audio();
-            let currentStation = document.querySelector('.station.active');
+            let currentStation = null;
             let isPlaying = false;
-            // --- MODIFICATION: Added variable for note interval ---
             let noteInterval;
             
-            if(currentStation) {
-                audio.src = currentStation.getAttribute('data-stream');
-            }
-            
-            const playBtn = document.getElementById('play-btn');
-            const stationElements = document.querySelectorAll('.station');
-
-            function updatePlayerInfo(stationElement) {
-                if (!stationElement) return;
-                const name = stationElement.getAttribute('data-name');
-                const genre = stationElement.getAttribute('data-genre');
-                const image = stationElement.getAttribute('data-image');
-                const album = stationElement.getAttribute('data-album');
+            // 生成电台列表
+            function generateStationList() {
+                const container = document.getElementById('station-container');
+                container.innerHTML = '';
                 
-                document.querySelector('.album-art img').src = image;
-                document.querySelector('.track-title').textContent = name;
-                document.querySelector('.track-artist').textContent = genre;
-                document.querySelector('.track-album').textContent = album;
+                radioStations.forEach((station, index) => {
+                    const stationElement = document.createElement('div');
+                    stationElement.className = 'station';
+                    if (index === 0) stationElement.classList.add('active');
+                    
+                    stationElement.dataset.id = station.id;
+                    stationElement.innerHTML = `
+                        <div class="station-logo">
+                            <img src="${station.image}" loading="lazy" alt="${station.name}">
+                        </div>
+                        <div class="station-info">
+                            <div class="station-name">${station.name}</div>
+                            <div class="station-genre">${station.genre}</div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(stationElement);
+                });
+                
+                // 设置当前电台
+                currentStation = radioStations[0];
+                updatePlayerInfo(currentStation);
+                audio.src = currentStation.stream;
             }
             
+            // 更新播放器信息
+            function updatePlayerInfo(station) {
+                if (!station) return;
+                
+                document.getElementById('album-art-img').src = station.image;
+                document.getElementById('track-title').textContent = station.name;
+                document.getElementById('track-artist').textContent = station.genre;
+                document.getElementById('track-album').textContent = station.description;
+            }
+            
+            // 切换电台
+            function setCurrentStation(station) {
+                currentStation = station;
+                audio.src = station.stream;
+                updatePlayerInfo(station);
+                
+                // 更新UI选中状态
+                document.querySelectorAll('.station').forEach(el => {
+                    el.classList.remove('active');
+                    if (parseInt(el.dataset.id) === station.id) {
+                        el.classList.add('active');
+                    }
+                });
+                
+                showNotification(`正在播放: ${station.name}`);
+            }
+            
+            // 切换播放状态
             function togglePlay() {
-                if(isPlaying) {
+                if (isPlaying) {
                     audio.pause();
                 } else {
                     if (audio.src) {
-                        // 使用 a.play() 返回的 Promise 来处理自动播放策略
                         const playPromise = audio.play();
                         if (playPromise !== undefined) {
                             playPromise.catch(error => {
-                                // 自动播放失败通常是因为用户没有与页面交互
                                 isPlaying = false;
-                                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                                document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>';
                             });
                         }
                     }
                 }
             }
-
-            stationElements.forEach(station => {
-                station.addEventListener('click', function() {
-                    stationElements.forEach(s => s.classList.remove('active'));
-                    this.classList.add('active');
-                    currentStation = this;
-                    
-                    audio.src = this.getAttribute('data-stream');
-                    document.querySelector('.status-text').innerHTML = `当前状态: <strong>正在连接</strong> | 比特率: <strong>128kbps</strong>`;
-                    
-                    updatePlayerInfo(this);
-                    
-                    // 设置为true，让togglePlay函数执行播放操作
-                    isPlaying = false; 
-                    togglePlay();
-                    
-                    const stationName = this.getAttribute('data-name');
-                    showNotification(`正在播放: ${stationName}`);
-
-                    // 移动端点击后自动收起列表
-                    if (window.innerWidth <= 768) {
-                        document.querySelector('.radio-list').classList.remove('expanded');
-                    }
-                });
-            });
-
-            playBtn.addEventListener('click', togglePlay);
             
-            const volumeSlider = document.getElementById('volume-slider');
-            volumeSlider.addEventListener('input', function() {
-                audio.volume = this.value;
-                const volumeIcon = document.querySelector('.volume-icon');
-                if (this.value == 0) volumeIcon.className = 'fas fa-volume-mute volume-icon';
-                else if (this.value < 0.5) volumeIcon.className = 'fas fa-volume-down volume-icon';
-                else volumeIcon.className = 'fas fa-volume-up volume-icon';
-            });
-            
-            document.getElementById('prev-btn').addEventListener('click', function() {
-                const stations = Array.from(document.querySelectorAll('.station')).filter(s => s.style.display !== 'none');
-                if(stations.length === 0) return;
-                const activeIndex = stations.findIndex(el => el.classList.contains('active'));
-                const prevIndex = (activeIndex - 1 + stations.length) % stations.length;
-                stations[prevIndex].click();
-            });
-            
-            document.getElementById('next-btn').addEventListener('click', function() {
-                const stations = Array.from(document.querySelectorAll('.station')).filter(s => s.style.display !== 'none');
-                if(stations.length === 0) return;
-                const activeIndex = stations.findIndex(el => el.classList.contains('active'));
-                const nextIndex = (activeIndex + 1) % stations.length;
-                stations[nextIndex].click();
-            });
-
-// 替换原来的音符动画代码
-audio.addEventListener('play', () => { 
-    isPlaying = true; 
-    playBtn.innerHTML = '<i class="fas fa-pause"></i>'; 
-    document.querySelector('.status-indicator').style.background = 'var(--success)'; 
-    document.querySelector('.status-text strong').textContent = '正在播放';
-    document.querySelector('.rotate1').classList.add('is-playing');
-
-    // 更新后的音符动画代码
-    const notesContainer = document.querySelector('.music-notes-container');
-    if (noteInterval) clearInterval(noteInterval);
-    
-    // 每次创建2-4个音符
-    noteInterval = setInterval(() => {
-        const noteCount = Math.floor(Math.random() * 2); // 每次2-4个音符
-        const noteTypes = [
-            'fas fa-music', 
-            'fas fa-compact-disc',
-		'fa-solid fa-guitar',
-            'fas fa-music',
-        ];
-        const colors = ['#a0a4c9'];
-        
-        for (let i = 0; i < noteCount; i++) {
-            const note = document.createElement('i');
-            const typeIndex = Math.floor(Math.random() * noteTypes.length);
-            note.className = 'music-note ' + noteTypes[typeIndex];
-            
-            // 随机位置 (15-35%之间)
-            note.style.right = (15 + Math.random() * 20) + '%';
-            note.style.top = (15 + Math.random() * 20) + '%';
-            
-            // 随机动画参数
-            note.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-            note.style.color = colors[Math.floor(Math.random() * colors.length)];
-            note.style.fontSize = (14 + Math.random() * 10) + 'px';
-            
-            notesContainer.appendChild(note);
-            
-            // 自动清理
-            setTimeout(() => {
-                if (note.parentNode) {
-                    note.parentNode.removeChild(note);
-                }
-            }, 3000);
-        }
-    }, 600); // 每600ms创建一批音符
-});
-            audio.addEventListener('pause', () => { 
-                isPlaying = false; 
-                playBtn.innerHTML = '<i class="fas fa-play"></i>'; 
-                document.querySelector('.status-indicator').style.background = 'var(--error)'; 
-                document.querySelector('.status-text strong').textContent = '已暂停';
-                // Remove class to stop rotation
-                document.querySelector('.rotate1').classList.remove('is-playing');
-                // Stop music note animation
-                clearInterval(noteInterval);
-            });
-            // --- End of modification ---
-
-            audio.addEventListener('error', () => { showNotification('播放错误: 无法连接音频流'); document.querySelector('.status-indicator').style.background = 'var(--error)'; document.querySelector('.status-text strong').textContent = '连接错误'; });
-            audio.addEventListener('waiting', () => { document.querySelector('.status-text strong').textContent = '正在缓冲...'; });
-            audio.addEventListener('playing', () => { document.querySelector('.status-text strong').textContent = '正在播放'; });
-            
+            // 显示通知
             function showNotification(message) {
                 const existing = document.querySelector('.notification');
                 if (existing) existing.remove();
+                
                 const notification = document.createElement('div');
                 notification.className = 'notification';
                 notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
                 document.body.appendChild(notification);
-                setTimeout(() => { notification.style.opacity = '1'; }, 10);
-                setTimeout(() => { notification.style.opacity = '0'; setTimeout(() => notification.remove(), 500); }, 3000);
+                
+                setTimeout(() => { 
+                    notification.style.opacity = '0'; 
+                    setTimeout(() => notification.remove(), 500); 
+                }, 3000);
             }
             
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                document.querySelectorAll('.station').forEach(station => {
-                    const name = station.querySelector('.station-name').textContent.toLowerCase();
-                    const genre = station.querySelector('.station-genre').textContent.toLowerCase();
-                    station.style.display = (name.includes(searchTerm) || genre.includes(searchTerm)) ? 'flex' : 'none';
+            // 初始化
+            function init() {
+                generateStationList();
+                
+                // 绑定事件
+                document.getElementById('play-btn').addEventListener('click', togglePlay);
+                
+                document.getElementById('prev-btn').addEventListener('click', function() {
+                    const currentIndex = radioStations.findIndex(s => s.id === currentStation.id);
+                    const prevIndex = (currentIndex - 1 + radioStations.length) % radioStations.length;
+                    setCurrentStation(radioStations[prevIndex]);
+                    if (isPlaying) togglePlay();
                 });
-            });
-
-            /* --- 移动端交互逻辑 --- */
-            const radioList = document.querySelector('.radio-list');
-            const listHeader = document.querySelector('.radio-list h2');
-            const mainHeader = document.querySelector('header');
-            let touchStartY = 0;
-
-            if (listHeader) {
-                listHeader.addEventListener('click', () => {
-                    radioList.classList.toggle('expanded');
+                
+                document.getElementById('next-btn').addEventListener('click', function() {
+                    const currentIndex = radioStations.findIndex(s => s.id === currentStation.id);
+                    const nextIndex = (currentIndex + 1) % radioStations.length;
+                    setCurrentStation(radioStations[nextIndex]);
+                    if (isPlaying) togglePlay();
                 });
-
-                listHeader.addEventListener('touchstart', (e) => {
-                    touchStartY = e.touches[0].clientY;
-                }, { passive: true });
-
-                listHeader.addEventListener('touchend', (e) => {
-                    const touchEndY = e.changedTouches[0].clientY;
-                    // 如果是向下滑动超过50像素，并且列表是展开的，则收起
-                    if (radioList.classList.contains('expanded') && touchEndY > touchStartY + 50) {
-                        radioList.classList.remove('expanded');
+                
+                // 电台点击事件
+                document.getElementById('station-container').addEventListener('click', function(e) {
+                    const stationElement = e.target.closest('.station');
+                    if (!stationElement) return;
+                    
+                    const stationId = parseInt(stationElement.dataset.id);
+                    const station = radioStations.find(s => s.id === stationId);
+                    if (station) {
+                        setCurrentStation(station);
+                        if (isPlaying) togglePlay();
+                        
+                        // 移动端点击后自动收起列表
+                        if (window.innerWidth <= 768) {
+                            document.querySelector('.radio-list').classList.remove('expanded');
+                        }
                     }
                 });
-            }
-
-            if (mainHeader) {
-                mainHeader.addEventListener('click', () => {
-                    if (radioList.classList.contains('expanded')) {
-                        radioList.classList.remove('expanded');
-                    }
+                
+                // 音量控制
+                const volumeSlider = document.getElementById('volume-slider');
+                volumeSlider.addEventListener('input', function() {
+                    audio.volume = this.value;
+                    const volumeIcon = document.querySelector('.volume-icon');
+                    if (this.value == 0) volumeIcon.className = 'fas fa-volume-mute volume-icon';
+                    else if (this.value < 0.5) volumeIcon.className = 'fas fa-volume-down volume-icon';
+                    else volumeIcon.className = 'fas fa-volume-up volume-icon';
                 });
+                
+                // 搜索功能
+                const searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    document.querySelectorAll('.station').forEach(station => {
+                        const name = station.querySelector('.station-name').textContent.toLowerCase();
+                        const genre = station.querySelector('.station-genre').textContent.toLowerCase();
+                        station.style.display = (name.includes(searchTerm) || genre.includes(searchTerm)) ? 'flex' : 'none';
+                    });
+                });
+                
+                // 音频事件监听
+                audio.addEventListener('play', () => { 
+                    isPlaying = true; 
+                    document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>'; 
+                    document.querySelector('.status-indicator').style.background = 'var(--success)'; 
+                    document.querySelector('.status-text strong').textContent = '正在播放';
+                    document.querySelector('.rotate1').classList.add('is-playing');
+
+                    // 音符动画
+                    const notesContainer = document.querySelector('.music-notes-container');
+                    if (noteInterval) clearInterval(noteInterval);
+                    
+                    noteInterval = setInterval(() => {
+                        const noteCount = Math.floor(Math.random() * 2);
+                        const noteTypes = ['fas fa-music', 'fas fa-compact-disc', 'fa-solid fa-guitar', 'fas fa-music',];
+                        const colors = ['#a0a4c9'];
+                        
+                        for (let i = 0; i < noteCount; i++) {
+                            const note = document.createElement('i');
+                            const typeIndex = Math.floor(Math.random() * noteTypes.length);
+                            note.className = 'music-note ' + noteTypes[typeIndex];
+                            note.style.right = (15 + Math.random() * 20) + '%';
+                            note.style.top = (15 + Math.random() * 20) + '%';
+                            note.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+                            note.style.color = colors[Math.floor(Math.random() * colors.length)];
+                            note.style.fontSize = (14 + Math.random() * 10) + 'px';
+                            
+                            notesContainer.appendChild(note);
+                            
+                            setTimeout(() => {
+                                if (note.parentNode) note.parentNode.removeChild(note);
+                            }, 3000);
+                        }
+                    }, 600);
+                });
+                
+                audio.addEventListener('pause', () => { 
+                    isPlaying = false; 
+                    document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>'; 
+                    document.querySelector('.status-indicator').style.background = 'var(--error)'; 
+                    document.querySelector('.status-text strong').textContent = '已暂停';
+                    document.querySelector('.rotate1').classList.remove('is-playing');
+                    clearInterval(noteInterval);
+                });
+                
+                audio.addEventListener('error', () => { 
+                    showNotification('播放错误: 无法连接音频流'); 
+                    document.querySelector('.status-indicator').style.background = 'var(--error)'; 
+                    document.querySelector('.status-text strong').textContent = '连接错误'; 
+                });
+                
+                audio.addEventListener('waiting', () => { 
+                    document.querySelector('.status-text strong').textContent = '正在缓冲...'; 
+                });
+                
+                audio.addEventListener('playing', () => { 
+                    document.querySelector('.status-text strong').textContent = '正在播放'; 
+                });
+                
+                // 设置初始音量
+                audio.volume = volumeSlider.value;
+                
+                // 移动端列表交互
+                const radioList = document.querySelector('.radio-list');
+                const listHeader = document.querySelector('.radio-list h2');
+                const mainHeader = document.querySelector('header');
+                let touchStartY = 0;
+
+                if (listHeader) {
+                    listHeader.addEventListener('click', () => {
+                        radioList.classList.toggle('expanded');
+                    });
+
+                    listHeader.addEventListener('touchstart', (e) => {
+                        touchStartY = e.touches[0].clientY;
+                    }, { passive: true });
+
+                    listHeader.addEventListener('touchend', (e) => {
+                        const touchEndY = e.changedTouches[0].clientY;
+                        if (radioList.classList.contains('expanded') && touchEndY > touchStartY + 50) {
+                            radioList.classList.remove('expanded');
+                        }
+                    });
+                }
+
+                if (mainHeader) {
+                    mainHeader.addEventListener('click', () => {
+                        if (radioList.classList.contains('expanded')) {
+                            radioList.classList.remove('expanded');
+                        }
+                    });
+                }
+                
+                // 自动播放
+                setTimeout(() => {
+                    togglePlay();
+                }, 500);
             }
-
-            // ---- 初始化 ----
-            audio.volume = volumeSlider.value;
-            updatePlayerInfo(currentStation);
-            document.querySelector('.status-text').innerHTML = `当前状态: <strong>准备就绪</strong> | 比特率: <strong>128kbps</strong>`;
-
-            // --- MODIFICATION: Autoplay on load ---
-            // 延迟一小段时间以确保所有元素都已加载完毕
-            setTimeout(() => {
-                togglePlay();
-            }, 500);
+            
+            init();
         });
     </script>
 </body>
