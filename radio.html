@@ -860,11 +860,43 @@
                 document.getElementById('track-album').textContent = station.description;
             }
             
-            // 切换电台
+            // 播放音频
+            function playAudio() {
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error('播放失败:', error);
+                        isPlaying = false;
+                        document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>';
+                    });
+                }
+            }
+
+            // 切换电台 - 修复核心问题
             function setCurrentStation(station) {
+                // 保存当前播放状态
+                const wasPlaying = isPlaying;
+                
+                // 暂停当前播放
+                if (isPlaying) {
+                    audio.pause();
+                    isPlaying = false;
+                    document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>';
+                    document.querySelector('.status-indicator').style.background = 'var(--error)';
+                    document.querySelector('.status-text strong').textContent = '准备就绪';
+                    document.querySelector('.rotate1').classList.remove('is-playing');
+                    clearInterval(noteInterval);
+                }
+
+                // 设置新电台
                 currentStation = station;
                 audio.src = station.stream;
+                
+                // 关键修复：加载新音频源
+                audio.load();
+                
                 updatePlayerInfo(station);
+                showNotification(`正在播放: ${station.name}`);
                 
                 // 更新UI选中状态
                 document.querySelectorAll('.station').forEach(el => {
@@ -873,8 +905,30 @@
                         el.classList.add('active');
                     }
                 });
-                
-                showNotification(`正在播放: ${station.name}`);
+
+                // 如果之前正在播放，则播放新电台
+                if (wasPlaying) {
+                    // 等待音频元数据加载
+                    audio.addEventListener('loadedmetadata', () => {
+                        // 设置状态为缓冲中
+                        document.querySelector('.status-text strong').textContent = '正在缓冲...';
+                        
+                        // 添加canplay事件确保可以播放
+                        const canPlayHandler = () => {
+                            audio.removeEventListener('canplay', canPlayHandler);
+                            isPlaying = true;
+                            document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+                            playAudio();
+                        };
+                        
+                        audio.addEventListener('canplay', canPlayHandler);
+                        
+                        // 如果已经可以播放，直接开始
+                        if (audio.readyState >= 3) {
+                            canPlayHandler();
+                        }
+                    }, { once: true });
+                }
             }
             
             // 切换播放状态
@@ -883,13 +937,9 @@
                     audio.pause();
                 } else {
                     if (audio.src) {
-                        const playPromise = audio.play();
-                        if (playPromise !== undefined) {
-                            playPromise.catch(error => {
-                                isPlaying = false;
-                                document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>';
-                            });
-                        }
+                        isPlaying = true;
+                        document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+                        playAudio();
                     }
                 }
             }
@@ -921,14 +971,12 @@
                     const currentIndex = radioStations.findIndex(s => s.id === currentStation.id);
                     const prevIndex = (currentIndex - 1 + radioStations.length) % radioStations.length;
                     setCurrentStation(radioStations[prevIndex]);
-                    if (isPlaying) togglePlay();
                 });
                 
                 document.getElementById('next-btn').addEventListener('click', function() {
                     const currentIndex = radioStations.findIndex(s => s.id === currentStation.id);
                     const nextIndex = (currentIndex + 1) % radioStations.length;
                     setCurrentStation(radioStations[nextIndex]);
-                    if (isPlaying) togglePlay();
                 });
                 
                 // 电台点击事件
@@ -940,7 +988,6 @@
                     const station = radioStations.find(s => s.id === stationId);
                     if (station) {
                         setCurrentStation(station);
-                        if (isPlaying) togglePlay();
                         
                         // 移动端点击后自动收起列表
                         if (window.innerWidth <= 768) {
@@ -1065,8 +1112,9 @@
                 
                 // 自动播放
                 setTimeout(() => {
-                    togglePlay();
-                }, 500);
+                    setCurrentStation(radioStations[0]);
+                    setTimeout(() => togglePlay(), 500);
+                }, 1000);
             }
             
             init();
