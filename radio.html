@@ -868,6 +868,7 @@
                         console.error('播放失败:', error);
                         isPlaying = false;
                         document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>';
+                        showNotification('播放失败，请重试');
                     });
                 }
             }
