@@ -144,8 +144,6 @@
         .radio-list-scroll-area {
             overflow-y: auto;
             flex: 1;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             box-shadow: inset 0px 5px 5px -8px #0000004a;
         }
         
@@ -547,6 +545,9 @@
             .now-playing h3, .laba, footer {
                 display: none;
             }
+	.radio-list-scroll-area {
+	backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);}
             .station {
                 border-bottom: 1px solid #00000012;
             }
