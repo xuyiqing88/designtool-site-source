@@ -564,7 +564,7 @@
                         <div class="control-group">
                             <label for="bgColor">颜色</label>
                             <div class="color-input-wrapper">
-                                <input type="color" id="bgColor" value="#161618">
+                                <input type="color" id="bgColor" value="#202025">
                             </div>
                         </div>
                     </div>
@@ -668,7 +668,7 @@
 
         let background = {
             type: 'solid',
-            color: '#161618',
+            color: '#202025',
             gradient: { color1: '#1a73e8', color2: '#aaaaa1', angle: 90 },
             image: null,
             brightness: 1.0,
@@ -702,7 +702,7 @@
                 });
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 1.0;
+                renderer.toneMappingExposure = 4.0;
                 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
                 camera = new THREE.PerspectiveCamera(75, sceneCanvas.clientWidth / sceneCanvas.clientHeight, 0.1, 1000);
@@ -717,7 +717,7 @@
 
                 const geometry = new THREE.SphereGeometry(1, 128, 64);
                 const material = new THREE.MeshStandardMaterial({
-                    color: 0xffffff,
+                    color: 0x787878,
                     metalness: 0.1,
                     roughness: 0.1,
                     side: THREE.DoubleSide
@@ -726,7 +726,7 @@
                 scene.add(originalSphere);
                 currentModel = originalSphere;
                 
-                const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+                const gridHelper = new THREE.GridHelper(10, 10, 0x666666, 0x444444);
                 scene.add(gridHelper);
                 const axesHelper = new THREE.AxesHelper(1.5);
                 scene.add(axesHelper);
