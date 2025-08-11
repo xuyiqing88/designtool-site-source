@@ -553,7 +553,7 @@
                 </div>
                 <div class="control-section" id="backgroundControlsContainer">
                     <div class="control-header">
-                        <h3><i class="fa-solid fa-globe"></i> 背景调节</h3>
+                        <h3><i class="fa-solid fa-globe"></i> 环境调节</h3>
                     </div>
                     <div class="tab-buttons">
                         <button class="tab-button active" data-tab="solid">纯色</button>
@@ -592,6 +592,13 @@
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:20px;">
+                        <label for="bgRotation">旋转</label>
+                        <div class="value-display">
+                            <input type="range" id="bgRotation" min="0" max="360" value="0" step="1">
+                            <input type="number" id="bgRotationValue" min="0" max="360" value="0" step="1">
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <label for="bgBrightness">亮度</label>
                         <div class="value-display">
                             <input type="range" id="bgBrightness" min="0" max="5" value="1" step="0.01">
@@ -656,26 +663,32 @@
         let startTopHeight = 0;
         let startBottomHeight = 0;
 
+        // [新增] 用于合成的临时画布
+        let tempHdrCanvas, tempHdrCtx;
+
         let background = {
             type: 'solid',
             color: '#161618',
             gradient: { color1: '#1a73e8', color2: '#aaaaa1', angle: 90 },
             image: null,
             brightness: 1.0,
+            rotation: 0,
         };
 
         let scene, camera, renderer, originalSphere, controls, envTexture;
         let currentModel = null;
+        
+        function sRGBToLinear(c) {
+            return (c < 0.04045) ? c * 0.0773993808 : Math.pow(c * 0.9478672986 + 0.0521327014, 2.4);
+        }
 
-        // 新增：材质信息显示
-        function logMaterialInfo(material) {
-            console.log(`Material type: ${material.type}`);
-            console.log(`Properties: 
-                color: ${material.color ? material.color.getHexString() : 'none'},
-                map: ${material.map ? 'yes' : 'no'},
-                envMap: ${material.envMap ? 'yes' : 'no'},
-                roughness: ${material.roughness || 'n/a'},
-                metalness: ${material.metalness || 'n/a'}`);
+        function hexToLinear(hex) {
+            const rgb = hexToRgb(hex);
+            return {
+                r: sRGBToLinear(rgb.r / 255.0),
+                g: sRGBToLinear(rgb.g / 255.0),
+                b: sRGBToLinear(rgb.b / 255.0)
+            };
         }
 
         function init3DScene() {
@@ -689,7 +702,8 @@
                 });
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 0.8;
+                renderer.toneMappingExposure = 1.0;
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
 
                 camera = new THREE.PerspectiveCamera(75, sceneCanvas.clientWidth / sceneCanvas.clientHeight, 0.1, 1000);
                 camera.position.z = 2.5;
@@ -748,22 +762,22 @@
             return { scaleX, scaleY };
         }
         
-        function createCirclePath(ctx, light) {
+        function createCirclePath(ctx, light, offsetX = 0) {
             const { scaleX, scaleY } = getProjectionFactors(light);
             const xRadius = light.size * scaleX;
             const yRadius = light.size * scaleY;
             ctx.beginPath();
-            ctx.ellipse(light.x, light.y, xRadius, yRadius, 0, 0, TWO_PI);
+            ctx.ellipse(light.x + offsetX, light.y, xRadius, yRadius, 0, 0, TWO_PI);
             ctx.closePath();
         }
 
-        function createRectPath(ctx, light) {
+        function createRectPath(ctx, light, offsetX = 0) {
             const { scaleX, scaleY } = getProjectionFactors(light);
             const rotation = light.rotation || 0;
             const cornerRadius = Math.min(light.cornerRadius || 0, light.width / 2, light.height / 2);
 
             ctx.save();
-            ctx.translate(light.x, light.y);
+            ctx.translate(light.x + offsetX, light.y);
             ctx.rotate(rotation * Math.PI / 180);
             ctx.scale(scaleX, scaleY);
 
@@ -784,14 +798,14 @@
             ctx.restore();
         }
         
-        function createOctagonPath(ctx, light) {
+        function createOctagonPath(ctx, light, offsetX = 0) {
             const { scaleX, scaleY } = getProjectionFactors(light);
             const rotation = light.rotation || 0;
             const points = 8;
             const size = light.size;
 
             ctx.save();
-            ctx.translate(light.x, light.y);
+            ctx.translate(light.x + offsetX, light.y);
             ctx.rotate(rotation * Math.PI / 180);
             ctx.scale(scaleX, scaleY);
             
@@ -807,12 +821,12 @@
             ctx.restore();
         }
 
-        function createRingPath(ctx, light) {
+        function createRingPath(ctx, light, offsetX = 0) {
             const { scaleX, scaleY } = getProjectionFactors(light);
             const thickness = light.thickness || (light.size * 0.3);
             
             ctx.save();
-            ctx.translate(light.x, light.y);
+            ctx.translate(light.x + offsetX, light.y);
             ctx.rotate((light.rotation || 0) * Math.PI / 180);
             ctx.scale(scaleX, scaleY);
 
@@ -825,14 +839,16 @@
             ctx.restore();
         }
 
+        // [修复] 重构绘制函数以支持全局旋转
         function drawHdrPreview() {
-            const ctx = hdrCanvas.getContext('2d');
-            if (!ctx) { console.error("无法获取2D上下文"); return; }
-            
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = background.color;
-            ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+            if (!tempHdrCtx) return; // 确保临时画布已初始化
 
+            // === 步骤1: 在临时画布上合成未旋转的完整图像 ===
+            tempHdrCtx.globalCompositeOperation = 'source-over';
+            tempHdrCtx.fillStyle = background.color;
+            tempHdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+
+            // 绘制背景 (不旋转)
             switch (background.type) {
                 case 'image':
                     if (background.image) {
@@ -848,7 +864,7 @@
                             drawHeight = background.image.height * (HDR_WIDTH / background.image.width);
                             offsetX = 0; offsetY = (HDR_HEIGHT - drawHeight) / 2;
                         }
-                        ctx.drawImage(background.image, offsetX, offsetY, drawWidth, drawHeight);
+                        tempHdrCtx.drawImage(background.image, offsetX, offsetY, drawWidth, drawHeight);
                     }
                     break;
                 case 'gradient':
@@ -857,80 +873,107 @@
                     const y1 = HDR_HEIGHT / 2 - Math.sin(angleRad) * HDR_HEIGHT / 2;
                     const x2 = HDR_WIDTH / 2 + Math.cos(angleRad) * HDR_WIDTH / 2;
                     const y2 = HDR_HEIGHT / 2 + Math.sin(angleRad) * HDR_HEIGHT / 2;
-                    const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+                    const grad = tempHdrCtx.createLinearGradient(x1, y1, x2, y2);
                     grad.addColorStop(0, background.gradient.color1);
                     grad.addColorStop(1, background.gradient.color2);
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+                    tempHdrCtx.fillStyle = grad;
+                    tempHdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
                     break;
             }
             
-            ctx.save();
-            ctx.filter = `brightness(${background.brightness})`;
-            ctx.globalCompositeOperation = 'copy';
-            ctx.drawImage(hdrCanvas, 0, 0);
-            ctx.restore();
+            // 应用背景亮度
+            tempHdrCtx.save();
+            tempHdrCtx.filter = `brightness(${background.brightness})`;
+            tempHdrCtx.globalCompositeOperation = 'copy';
+            tempHdrCtx.drawImage(tempHdrCanvas, 0, 0);
+            tempHdrCtx.restore();
 
-            ctx.globalCompositeOperation = 'add';
+            // 在背景上叠加灯光
+            tempHdrCtx.globalCompositeOperation = 'lighter';
             lights.forEach(light => {
-                ctx.save();
-                
-                if (light.type === 'circle') createCirclePath(ctx, light);
-                else if (light.type === 'rect') createRectPath(ctx, light);
-                else if (light.type === 'octagon') createOctagonPath(ctx, light);
-                else if (light.type === 'ring') createRingPath(ctx, light);
+                const offsets = [0];
+                const effectiveRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * 1.5 + (light.falloff || 0);
 
-                const color = hexToRgb(light.color);
-                const displayAlpha = Math.min(light.intensity / 15, 1.0);
-                const fullColorRgba = `rgba(${color.r}, ${color.g}, ${color.b}, ${displayAlpha})`;
-                
-                if (light.innerShadow > 0 && light.type !== 'ring') {
-                    ctx.clip(); 
-                    const { scaleX } = getProjectionFactors(light);
-                    const gradRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * scaleX;
-                    
-                    const grad = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, gradRadius);
-                    const solidRatio = Math.max(0, 1.0 - light.innerShadow);
-                    
-                    const min_attenuation = 0.1;
-                    const edgeAlpha = displayAlpha * min_attenuation;
-                    const edgeRgba = `rgba(${color.r}, ${color.g}, ${color.b}, ${edgeAlpha})`;
-                    
-                    grad.addColorStop(0, fullColorRgba);
-                    grad.addColorStop(solidRatio, fullColorRgba);
-                    grad.addColorStop(1, edgeRgba);
+                // 检查是否需要循环绘制 (在临时画布的边缘)
+                if (light.x - effectiveRadius < 0) offsets.push(HDR_WIDTH);
+                if (light.x + effectiveRadius > HDR_WIDTH) offsets.push(-HDR_WIDTH);
 
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
-                } else {
-                    ctx.shadowColor = `rgba(${color.r}, ${color.g}, ${color.b}, ${displayAlpha})`;
-                    ctx.shadowBlur = light.falloff;
-                    ctx.fillStyle = fullColorRgba;
+                offsets.forEach(offsetX => {
+                    tempHdrCtx.save();
+                    if (light.type === 'circle') createCirclePath(tempHdrCtx, light, offsetX);
+                    else if (light.type === 'rect') createRectPath(tempHdrCtx, light, offsetX);
+                    else if (light.type === 'octagon') createOctagonPath(tempHdrCtx, light, offsetX);
+                    else if (light.type === 'ring') createRingPath(tempHdrCtx, light, offsetX);
 
-                    if (light.type === 'ring') {
-                         ctx.fill('evenodd');
+                    const linearColor = hexToLinear(light.color);
+                    const r = Math.floor(linearColor.r * 255);
+                    const g = Math.floor(linearColor.g * 255);
+                    const b = Math.floor(linearColor.b * 255);
+                    const displayAlpha = Math.min(light.intensity / 15, 1.0);
+                    const fullColorRgba = `rgba(${r}, ${g}, ${b}, ${displayAlpha})`;
+                    
+                    // ... (省略内部绘制逻辑，与之前相同)
+                    if (light.innerShadow > 0 && light.type !== 'ring') {
+                        tempHdrCtx.clip();
+                        const { scaleX } = getProjectionFactors(light);
+                        const gradRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * scaleX;
+                        const grad = tempHdrCtx.createRadialGradient(light.x + offsetX, light.y, 0, light.x + offsetX, light.y, gradRadius);
+                        const solidRatio = Math.max(0, 1.0 - light.innerShadow);
+                        const min_attenuation = 0.1;
+                        const edgeAlpha = displayAlpha * min_attenuation;
+                        const edgeRgba = `rgba(${r}, ${g}, ${b}, ${edgeAlpha})`;
+                        grad.addColorStop(0, fullColorRgba);
+                        grad.addColorStop(solidRatio, fullColorRgba);
+                        grad.addColorStop(1, edgeRgba);
+                        tempHdrCtx.fillStyle = grad;
+                        tempHdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
                     } else {
-                         ctx.fill();
+                        tempHdrCtx.shadowColor = `rgba(${r}, ${g}, ${b}, ${displayAlpha})`;
+                        tempHdrCtx.shadowBlur = light.falloff;
+                        tempHdrCtx.fillStyle = fullColorRgba;
+                        if (light.type === 'ring') {
+                             tempHdrCtx.fill('evenodd');
+                        } else {
+                             tempHdrCtx.fill();
+                        }
                     }
-                }
-                ctx.restore();
-                
-                if (selectedLight && selectedLight.id === light.id) {
-                    ctx.save();
-                    ctx.globalCompositeOperation = 'source-over';
-                    if (light.type === 'circle') createCirclePath(ctx, light);
-                    else if (light.type === 'rect') createRectPath(ctx, light);
-                    else if (light.type === 'octagon') createOctagonPath(ctx, light);
-                    else if (light.type === 'ring') createRingPath(ctx, light);
-                    ctx.lineWidth = 5;
-                    ctx.setLineDash([10, 4]);
-                    ctx.strokeStyle = 'rgba(128,128,255,0.9)';
-                    ctx.stroke();
-                    ctx.restore();
-                }
+                    tempHdrCtx.restore();
+                });
             });
 
+             // 绘制选中框 (也在临时画布上)
+            if (selectedLight) {
+                const offsets = [0];
+                const effectiveRadius = (selectedLight.size || Math.max(selectedLight.width || 0, selectedLight.height || 0)) * 1.5 + (selectedLight.falloff || 0);
+                if (selectedLight.x - effectiveRadius < 0) offsets.push(HDR_WIDTH);
+                if (selectedLight.x + effectiveRadius > HDR_WIDTH) offsets.push(-HDR_WIDTH);
+
+                offsets.forEach(offsetX => {
+                    tempHdrCtx.save();
+                    tempHdrCtx.globalCompositeOperation = 'source-over';
+                    if (selectedLight.type === 'circle') createCirclePath(tempHdrCtx, selectedLight, offsetX);
+                    else if (selectedLight.type === 'rect') createRectPath(tempHdrCtx, selectedLight, offsetX);
+                    else if (selectedLight.type === 'octagon') createOctagonPath(tempHdrCtx, selectedLight, offsetX);
+                    else if (selectedLight.type === 'ring') createRingPath(tempHdrCtx, selectedLight, offsetX);
+                    tempHdrCtx.lineWidth = 5;
+                    tempHdrCtx.setLineDash([10, 4]);
+                    tempHdrCtx.strokeStyle = 'rgba(128,128,255,0.9)';
+                    tempHdrCtx.stroke();
+                    tempHdrCtx.restore();
+                });
+            }
+
+            // === 步骤2: 将临时画布的内容旋转后绘制到主画布上 ===
+            const ctx = hdrCanvas.getContext('2d');
             ctx.globalCompositeOperation = 'source-over';
+            ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT); // 清空主画布
+            const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+            
+            // 绘制两次以实现无缝循环
+            ctx.drawImage(tempHdrCanvas, -rotationOffset, 0);
+            ctx.drawImage(tempHdrCanvas, -rotationOffset + HDR_WIDTH, 0);
+
+            // 更新3D场景
             update3DScene();
         }
 
@@ -942,6 +985,7 @@
                 
                 envTexture = new THREE.CanvasTexture(hdrCanvas);
                 envTexture.mapping = THREE.EquirectangularReflectionMapping;
+                envTexture.colorSpace = THREE.SRGBColorSpace;
                 
                 if (scene) {
                     scene.environment = envTexture;
@@ -1027,8 +1071,7 @@
             addControlListeners();
             
             if (useTemperature) {
-                document.getElementById('color').classList.add('disabled-color');
-                document.getElementById('colorText').classList.add('disabled-color');
+                document.getElementById('color').parentElement.classList.add('disabled-color');
             }
         }
 
@@ -1126,7 +1169,6 @@
                     }
 
                     if (child.isMesh) {
-                        // 处理材质问题
                         let materials = [];
                         if (child.material) {
                             if (Array.isArray(child.material)) {
@@ -1136,22 +1178,16 @@
                             }
                         }
 
-                        // 修复：处理没有材质的情况
                         if (materials.length === 0) {
-                            // 创建白膜材质
                             child.material = new THREE.MeshStandardMaterial({
                                 color: 0xffffff,
                                 roughness: 0.8,
                                 metalness: 0.05,
                                 envMap: scene.environment
                             });
-                            console.log("为模型网格创建了白膜材质");
                         } else {
-                            // 修复材质问题
                             const newMaterials = materials.map(mat => {
-                                // 检查材质是否支持环境贴图
                                 if (!mat.isMeshStandardMaterial && !mat.isMeshPhysicalMaterial) {
-                                    // 创建新的标准材质并复制属性
                                     const newMat = new THREE.MeshStandardMaterial({
                                         color: mat.color ? mat.color.clone() : new THREE.Color(0xffffff),
                                         map: mat.map || null,
@@ -1160,26 +1196,16 @@
                                         envMap: scene.environment,
                                         side: THREE.DoubleSide
                                     });
-                                    
-                                    // 复制其他重要属性
-                                    if (mat.emissive) newMat.emissive = mat.emissive.clone();
-                                    if (mat.emissiveIntensity) newMat.emissiveIntensity = mat.emissiveIntensity;
-                                    if (mat.opacity) newMat.opacity = mat.opacity;
-                                    if (mat.transparent) newMat.transparent = mat.transparent;
-                                    if (mat.alphaTest) newMat.alphaTest = mat.alphaTest;
-                                    if (mat.alphaMap) newMat.alphaMap = mat.alphaMap;
-                                    
-                                    console.log(`已将材质 ${mat.type} 转换为 MeshStandardMaterial`);
+                                    if (mat.map) {
+                                        newMat.map.colorSpace = THREE.SRGBColorSpace;
+                                    }
                                     return newMat;
                                 } else {
-                                    // 设置环境贴图
                                     mat.envMap = scene.environment;
                                     mat.needsUpdate = true;
                                     return mat;
                                 }
                             });
-                            
-                            // 应用新材质
                             child.material = Array.isArray(child.material) ? newMaterials : newMaterials[0];
                         }
                     }
@@ -1315,6 +1341,11 @@
                 const gradientAngleValue = document.getElementById('gradientAngleValue');
                 gradientAngleSlider.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleValue.value = e.target.value; drawHdrPreview(); });
                 gradientAngleValue.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleSlider.value = e.target.value; drawHdrPreview(); });
+                
+                const bgRotationSlider = document.getElementById('bgRotation');
+                const bgRotationValue = document.getElementById('bgRotationValue');
+                bgRotationSlider.addEventListener('input', e => { background.rotation = e.target.value; bgRotationValue.value = e.target.value; drawHdrPreview(); });
+                bgRotationValue.addEventListener('input', e => { background.rotation = e.target.value; bgRotationSlider.value = e.target.value; drawHdrPreview(); });
 
                 const bgBrightnessSlider = document.getElementById('bgBrightness');
                 const bgBrightnessValue = document.getElementById('bgBrightnessValue');
@@ -1357,6 +1388,13 @@
             const prevW = HDR_WIDTH, prevH = HDR_HEIGHT;
             HDR_WIDTH = width; HDR_HEIGHT = height;
             hdrCanvas.width = width; hdrCanvas.height = height;
+
+            // [新增] 创建或重置临时画布
+            tempHdrCanvas = document.createElement('canvas');
+            tempHdrCanvas.width = width;
+            tempHdrCanvas.height = height;
+            tempHdrCtx = tempHdrCanvas.getContext('2d');
+
             lights.forEach(light => {
                 light.x *= (width / prevW);
                 light.y *= (height / prevH);
@@ -1372,7 +1410,13 @@
         }
         
         function handleCanvasMouseDown(e) {
-            const { x, y } = getCanvasCoords(e);
+            const rect = hdrCanvas.getBoundingClientRect();
+            // [修复] 计算鼠标在未旋转场景中的坐标
+            const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+            const mouseX = (e.clientX - rect.left) * (HDR_WIDTH / rect.width);
+            
+            let x = (mouseX + rotationOffset) % HDR_WIDTH;
+            let y = (e.clientY - rect.top) * (HDR_HEIGHT / rect.height);
             
             document.querySelectorAll('#addCircleLight, #addRectLight, #addOctagonLight, #addRingLight').forEach(btn => btn.classList.remove('active'));
             hdrCanvas.classList.remove('cursor-dashed', 'cursor-square', 'cursor-octagon', 'cursor-ring');
@@ -1410,7 +1454,9 @@
                     const { scaleX } = getProjectionFactors(light);
                     const effectiveRadius = (light.size || Math.max(light.width, light.height)/2) * scaleX;
                     const dx = x - light.x, dy = y - light.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const wrapped_dx = Math.min(Math.abs(dx), Math.abs(dx - HDR_WIDTH), Math.abs(dx + HDR_WIDTH));
+                    const dist = Math.sqrt(wrapped_dx*wrapped_dx + dy*dy);
+
                     if (dist < effectiveRadius + (light.falloff || 0)) {
                         clicked = light; 
                         break; 
@@ -1425,9 +1471,19 @@
 
         function handleCanvasMouseMove(e) {
             if (draggingLight) {
-                const { x, y } = getCanvasCoords(e);
-                draggingLight.x = x;
-                draggingLight.y = y;
+                const rect = hdrCanvas.getBoundingClientRect();
+                const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+                const mouseX = (e.clientX - rect.left) * (HDR_WIDTH / rect.width);
+                
+                let x = (mouseX + rotationOffset);
+                let y = (e.clientY - rect.top) * (HDR_HEIGHT / rect.height);
+
+                let newX = x;
+                newX = (newX % HDR_WIDTH + HDR_WIDTH) % HDR_WIDTH;
+                
+                draggingLight.x = newX;
+                draggingLight.y = Math.max(0, Math.min(HDR_HEIGHT, y));
+
                 drawHdrPreview();
             }
         }
@@ -1512,7 +1568,7 @@
 
             const sliders = document.querySelectorAll('.control-group input[type="range"]');
             sliders.forEach(slider => {
-                if(slider.id.startsWith('model')) return;
+                if(slider.id.startsWith('model') || slider.id.startsWith('bg')) return;
 
                 const inputId = slider.id;
                 const valueInput = document.getElementById(inputId + 'Value');
@@ -1534,13 +1590,14 @@
             const colorText = document.getElementById('colorText');
             if (colorPicker && colorText) {
                 const updateColor = (value) => {
+                    if (!/^#[0-9a-f]{6}$/i.test(value)) return;
                     selectedLight.color = value;
                     colorPicker.value = value;
                     colorText.value = value;
                     drawHdrPreview();
                 };
                 colorPicker.addEventListener('input', e => updateColor(e.target.value));
-                colorText.addEventListener('input', e => updateColor(e.target.value));
+                colorText.addEventListener('change', e => updateColor(e.target.value));
             }
             
             const useTemperatureCheckbox = document.getElementById('useTemperature');
@@ -1551,11 +1608,11 @@
                 useTemperatureCheckbox.addEventListener('change', (e) => {
                     selectedLight.useTemperature = e.target.checked;
                     const temperatureControl = document.querySelector('.temperature-control');
-                    const colorInputs = document.querySelectorAll('#color, #colorText');
+                    const colorWrapper = document.getElementById('color').parentElement;
                     
                     if (e.target.checked) {
                         temperatureControl.classList.add('active');
-                        colorInputs.forEach(el => el.classList.add('disabled-color'));
+                        colorWrapper.classList.add('disabled-color');
                         const temp = selectedLight.temperature || 6500;
                         const hexColor = temperatureToRGB(temp);
                         selectedLight.color = hexColor;
@@ -1563,16 +1620,13 @@
                         document.getElementById('colorText').value = hexColor;
                     } else {
                         temperatureControl.classList.remove('active');
-                        colorInputs.forEach(el => el.classList.remove('disabled-color'));
+                        colorWrapper.classList.remove('disabled-color');
                     }
                     drawHdrPreview();
                 });
                 
-                temperatureSlider.addEventListener('input', (e) => {
-                    const temp = parseFloat(e.target.value);
-                    temperatureValue.value = temp;
+                const updateTemp = (temp) => {
                     selectedLight.temperature = temp;
-                    
                     if (selectedLight.useTemperature) {
                         const hexColor = temperatureToRGB(temp);
                         selectedLight.color = hexColor;
@@ -1580,20 +1634,18 @@
                         document.getElementById('colorText').value = hexColor;
                         drawHdrPreview();
                     }
+                }
+                
+                temperatureSlider.addEventListener('input', (e) => {
+                    const temp = parseFloat(e.target.value);
+                    temperatureValue.value = temp;
+                    updateTemp(temp);
                 });
                 
                 temperatureValue.addEventListener('input', (e) => {
                     const temp = parseFloat(e.target.value) || 6500;
                     temperatureSlider.value = temp;
-                    selectedLight.temperature = temp;
-                    
-                    if (selectedLight.useTemperature) {
-                        const hexColor = temperatureToRGB(temp);
-                        selectedLight.color = hexColor;
-                        document.getElementById('color').value = hexColor;
-                        document.getElementById('colorText').value = hexColor;
-                        drawHdrPreview();
-                    }
+                    updateTemp(temp);
                 });
             }
         }
@@ -1768,14 +1820,16 @@
             return [ Math.floor(r * m), Math.floor(g * m), Math.floor(b * m), e + 128 ];
         }
 
+        // [修复] 重构导出函数以支持全局旋转
         async function generateHdrFile() {
             console.log("Generating true HDR data...");
-            const floatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
+            // 步骤1: 生成未旋转的浮点数据
+            const unrotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const bgCanvas = document.createElement('canvas');
             bgCanvas.width = HDR_WIDTH;
             bgCanvas.height = HDR_HEIGHT;
             const bgCtx = bgCanvas.getContext('2d');
-
+            
             switch (background.type) {
                 case 'image':
                     if (background.image) {
@@ -1811,16 +1865,19 @@
 
             const bgImageData = bgCtx.getImageData(0, 0, HDR_WIDTH, HDR_HEIGHT).data;
             for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
-                floatData[i * 3 + 0] = (bgImageData[i * 4 + 0] / 255) * background.brightness;
-                floatData[i * 3 + 1] = (bgImageData[i * 4 + 1] / 255) * background.brightness;
-                floatData[i * 3 + 2] = (bgImageData[i * 4 + 2] / 255) * background.brightness;
+                const r = sRGBToLinear(bgImageData[i * 4 + 0] / 255);
+                const g = sRGBToLinear(bgImageData[i * 4 + 1] / 255);
+                const b = sRGBToLinear(bgImageData[i * 4 + 2] / 255);
+                unrotatedFloatData[i * 3 + 0] = r * background.brightness;
+                unrotatedFloatData[i * 3 + 1] = g * background.brightness;
+                unrotatedFloatData[i * 3 + 2] = b * background.brightness;
             }
 
             for (const light of lights) {
-                const color = hexToRgb(light.color);
-                const lr = (color.r / 255) * light.intensity;
-                const lg = (color.g / 255) * light.intensity;
-                const lb = (color.b / 255) * light.intensity;
+                const linearColor = hexToLinear(light.color);
+                const lr = linearColor.r * light.intensity;
+                const lg = linearColor.g * light.intensity;
+                const lb = linearColor.b * light.intensity;
                 for (let y = 0; y < HDR_HEIGHT; y++) {
                     for (let x = 0; x < HDR_WIDTH; x++) {
                         const idx = (y * HDR_WIDTH + x) * 3;
@@ -1830,17 +1887,33 @@
                         else if (light.type === 'octagon') attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, light);
                         else if (light.type === 'ring') attenuation = computeRingAttenuation(x + 0.5, y + 0.5, light);
                         if (attenuation > 0) {
-                            floatData[idx + 0] += lr * attenuation;
-                            floatData[idx + 1] += lg * attenuation;
-                            floatData[idx + 2] += lb * attenuation;
+                            unrotatedFloatData[idx + 0] += lr * attenuation;
+                            unrotatedFloatData[idx + 1] += lg * attenuation;
+                            unrotatedFloatData[idx + 2] += lb * attenuation;
                         }
                     }
                 }
             }
+            
+            // 步骤2: 创建旋转后的浮点数据
+            const rotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
+            const rotationOffset = Math.round((background.rotation / 360) * HDR_WIDTH);
+            for (let y = 0; y < HDR_HEIGHT; y++) {
+                for (let x = 0; x < HDR_WIDTH; x++) {
+                    const sourceX = (x + rotationOffset) % HDR_WIDTH;
+                    const sourceIndex = (y * HDR_WIDTH + sourceX) * 3;
+                    const destIndex = (y * HDR_WIDTH + x) * 3;
 
+                    rotatedFloatData[destIndex] = unrotatedFloatData[sourceIndex];
+                    rotatedFloatData[destIndex + 1] = unrotatedFloatData[sourceIndex + 1];
+                    rotatedFloatData[destIndex + 2] = unrotatedFloatData[sourceIndex + 2];
+                }
+            }
+
+            // 步骤3: 将旋转后的数据转换为RGBE格式
             const rgbeData = new Uint8Array(HDR_WIDTH * HDR_HEIGHT * 4);
             for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
-                const r = floatData[i * 3 + 0], g = floatData[i * 3 + 1], b = floatData[i * 3 + 2];
+                const r = rotatedFloatData[i * 3 + 0], g = rotatedFloatData[i * 3 + 1], b = rotatedFloatData[i * 3 + 2];
                 const rgbe = floatToRgbe(r, g, b);
                 rgbeData.set(rgbe, i * 4);
             }
