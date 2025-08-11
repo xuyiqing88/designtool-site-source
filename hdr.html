@@ -881,7 +881,7 @@
                 else if (light.type === 'ring') createRingPath(ctx, light);
 
                 const color = hexToRgb(light.color);
-                const displayAlpha = Math.min(light.intensity / 50, 1.0);
+                const displayAlpha = Math.min(light.intensity / 15, 1.0);
                 const fullColorRgba = `rgba(${color.r}, ${color.g}, ${color.b}, ${displayAlpha})`;
                 
                 if (light.innerShadow > 0 && light.type !== 'ring') {
@@ -1019,7 +1019,7 @@
                 </div>
             `;
             
-            html += createSlider('intensity', '亮度 (HDR)', 0.1, 100, 0.1, selectedLight.intensity);
+            html += createSlider('intensity', '亮度 (HDR)', 0.1, 25, 0.1, selectedLight.intensity);
             html += createSlider('falloff', '外侧衰减', 0, 100, 1, selectedLight.falloff);
             html += createSlider('innerShadow', '内侧柔化', 0, 1, 0.01, selectedLight.innerShadow || 0);
             html += `</div>`;
@@ -1335,7 +1335,7 @@
                     y: HDR_HEIGHT * 0.4,
                     size: 120,
                     color: '#ffffff',
-                    intensity: 25.0,
+                    intensity: 10.0,
                     falloff: 30,
                     innerShadow: 0,
                     useTemperature: false,
@@ -1383,7 +1383,7 @@
                     type: addingLightType,
                     x, y,
                     color: '#ffffff',
-                    intensity: 15.0,
+                    intensity: 10.0,
                     falloff: 30,
                     innerShadow: 0,
                     useTemperature: false,
