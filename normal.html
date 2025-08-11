@@ -44,6 +44,7 @@
 		display: grid; 
 		grid-template-columns: 1fr 1fr;
 		font-size: 0.9rem;
+		padding: 0 16px;
 	}
         .topgroup {
             gap: 10px;
@@ -74,7 +75,7 @@
         }
         .kuang {
             background: var(--lightbg);
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid var(--line);
         }
         .scrib{
@@ -104,7 +105,7 @@
             padding: 20px;
 	display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
         }
         
         header {
@@ -112,6 +113,7 @@
             position: relative;
             overflow: hidden;
             padding: 0 20px;
+	    margin-bottom: 10px;
         }
         
         h1 {
@@ -137,14 +139,14 @@
         .content-n {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 10px;
         }
 
         
         .panel {
             background: var(--mainbg);
             border-radius: 10px;
-            padding: 25px;
+            padding: 20px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
@@ -166,7 +168,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 25px;
-            padding: 12px 20px;
+            padding: 10px 16px;
             justify-content: space-between;
         }
         
@@ -221,7 +223,7 @@
             display: flex;
             gap: 15px;
             grid-column: 1 / -1;
-            margin: 20px 0 25px 0;
+            margin: 16px 0 20px 0;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -241,8 +243,8 @@
             gap: 12px;
             position: relative;
             overflow: hidden;
-            height: 46px;
-	    width: 40%;
+            height: 40px;
+	    width: 30%;
         }
         
         button:hover {
@@ -265,9 +267,9 @@
         .canvas-container {
             position: relative;
             background: rgba(10, 10, 20, 0.7);
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
-            min-height: 300px;
+            min-height: 270px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -757,6 +759,12 @@
         @media (max-width: 768px) {
 	.progress-container {
 		width: 80%;}
+	.panel-title {
+	flex-wrap: wrap;
+    	gap: 8px;}
+	.example-image {    
+	width: 60px;
+    	height: 60px;}
             .content-n {
 		    display: flex;
 	    	flex-direction: column;
@@ -776,7 +784,6 @@
                 padding: 10px;
             }
             .scrib {
-		display: none;
 		}
             .controls {
                 padding: 15px;
@@ -1072,7 +1079,7 @@
                 
                 <div id="reverseSection">
                     <div class="panel-title">
-                        <h2>反推灰度图<span class="scrib">拖拽法线图上传反推出灰度图</span></h2>
+                        <h2>反推灰度图<span class="scrib">拖拽上传法线图反推出灰度图</span></h2>
                         <button id="reverseBtn" class="toggle-btn" style="font-size: 14px; height: 38px; width: 120px;">
                             一键反推
                         </button>
