@@ -905,10 +905,10 @@
                     else if (light.type === 'octagon') createOctagonPath(tempHdrCtx, light, offsetX);
                     else if (light.type === 'ring') createRingPath(tempHdrCtx, light, offsetX);
 
-                    const linearColor = hexToLinear(light.color);
-                    const r = Math.floor(linearColor.r * 255);
-                    const g = Math.floor(linearColor.g * 255);
-                    const b = Math.floor(linearColor.b * 255);
+const rgb = hexToRgb(light.color);
+const r = rgb.r;
+const g = rgb.g;
+const b = rgb.b;
                     const displayAlpha = Math.min(light.intensity / 15, 1.0);
                     const fullColorRgba = `rgba(${r}, ${g}, ${b}, ${displayAlpha})`;
                     
@@ -1658,10 +1658,14 @@
             drawHdrPreview();
         }
 
-        function hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r:255, g:255, b:255 };
-        }
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : { r: 255, g: 255, b: 255 };
+}
 
         function updateStatus(message, isSuccess) {
             let statusEl = document.getElementById('status-indicator');
@@ -1873,31 +1877,46 @@
                 unrotatedFloatData[i * 3 + 2] = b * background.brightness;
             }
 
-            for (const light of lights) {
-                const linearColor = hexToLinear(light.color);
-                const lr = linearColor.r * light.intensity;
-                const lg = linearColor.g * light.intensity;
-                const lb = linearColor.b * light.intensity;
-                for (let y = 0; y < HDR_HEIGHT; y++) {
-                    for (let x = 0; x < HDR_WIDTH; x++) {
-                        const idx = (y * HDR_WIDTH + x) * 3;
-                        let attenuation = 0;
-                        if (light.type === 'circle') attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, light);
-                        else if (light.type === 'rect') attenuation = computeRectAttenuation(x + 0.5, y + 0.5, light);
-                        else if (light.type === 'octagon') attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, light);
-                        else if (light.type === 'ring') attenuation = computeRingAttenuation(x + 0.5, y + 0.5, light);
-                        if (attenuation > 0) {
-                            unrotatedFloatData[idx + 0] += lr * attenuation;
-                            unrotatedFloatData[idx + 1] += lg * attenuation;
-                            unrotatedFloatData[idx + 2] += lb * attenuation;
-                        }
+    for (const light of lights) {
+        const linearColor = hexToLinear(light.color);
+        const lr = linearColor.r * light.intensity;
+        const lg = linearColor.g * light.intensity;
+        const lb = linearColor.b * light.intensity;
+        
+        const positions = [light.x];
+        if (light.x < light.size) positions.push(light.x + HDR_WIDTH);
+        if (light.x > HDR_WIDTH - light.size) positions.push(light.x - HDR_WIDTH);
+        
+        for (const posX of positions) {
+            for (let y = 0; y < HDR_HEIGHT; y++) {
+                for (let x = 0; x < HDR_WIDTH; x++) {
+                    const idx = (y * HDR_WIDTH + x) * 3;
+                    let attenuation = 0;
+                    
+                    if (light.type === 'circle') {
+                        attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                    } else if (light.type === 'rect') {
+                        attenuation = computeRectAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                    } else if (light.type === 'octagon') {
+                        attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                    } else if (light.type === 'ring') {
+                        attenuation = computeRingAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                    }
+                    
+                    if (attenuation > 0) {
+                        unrotatedFloatData[idx] += lr * attenuation;
+                        unrotatedFloatData[idx + 1] += lg * attenuation;
+                        unrotatedFloatData[idx + 2] += lb * attenuation;
                     }
                 }
             }
+        }
+    }
             
             // 步骤2: 创建旋转后的浮点数据
             const rotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const rotationOffset = Math.round((background.rotation / 360) * HDR_WIDTH);
+
             for (let y = 0; y < HDR_HEIGHT; y++) {
                 for (let x = 0; x < HDR_WIDTH; x++) {
                     const sourceX = (x + rotationOffset) % HDR_WIDTH;
