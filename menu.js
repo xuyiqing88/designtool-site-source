@@ -330,7 +330,7 @@ const menuData = [
             { title: "PBR贴图生成", link: "normal.html" },
             { title: "无缝贴图制作", link: "texture.html" },
             { title: "无缝贴图预览", link: "map.html" },
-            { title: "ORM游戏贴图生成", link: "ORM.html" },
+            { title: "ORM贴图合成与拆解", link: "ORM.html" },
 	    { title: "线性颜色转换", link: "color.html" },
         ]
     },
