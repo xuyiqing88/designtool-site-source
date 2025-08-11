@@ -26,400 +26,429 @@
             --success: #50c878;
             --warning: #ff7e5f;
         }
-* { 
-box-sizing: border-box;
-}
-body {
+        * { 
+            box-sizing: border-box;
+        }
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0; 
-		background-color: var(--main-bg); 
-		color: var(--text2);
+            background-color: var(--main-bg); 
+            color: var(--text2);
             display: flex; 
-		justify-content: center; 
-		align-items: flex-start; 
-		min-height: 100vh; overflow-x: hidden;
- 	}
-.scripts {
-	margin-left: 10px; 
-	font-size: 14px; 
-	font-weight: 400; color: 
-	var(--text3);
-	}
-#resizeHandle {
+            justify-content: center; 
+            align-items: flex-start; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
+        .scripts {
+            margin-left: 10px; 
+            font-size: 14px; 
+            font-weight: 400; 
+            color: var(--text3);
+        }
+        #resizeHandle {
             position: static;
             left: 0;
             right: 0;
-            height: 4px;
-            background: var(--scrollbar-track);
+            height: 10px;
+            background: #00000000;
             cursor: ns-resize;
             z-index: 50;
-            border-radius: 3px;
             transition: background .2s;
         }
-#resizeHandle:hover {
-            background: rgba(128, 128, 255, 0.25);
+        .editor-container { 
+            display: flex; 
+            gap: 10px; 
+            width: 100%; 
+            height: calc(100vh - 40px); 
+            position: relative; 
+            margin: 20px 20px 20px 60px;
         }
-.editor-container { 
-		display: flex; 
-		gap: 20px; 
-		width: 100%; height: calc(100vh - 40px); 
-		position: relative; 
-		margin: 20px 20px 20px 60px;}
-.controls-panel {
+        .controls-panel {
             width: 400px; 
-		background-color: var(--panel-bg); 
-		border: 1px solid var(--line); 
-		border-radius: 8px;
+            background-color: var(--panel-bg); 
+            border: 1px solid var(--line); 
+            border-radius: 8px;
             padding: 20px; 
-		box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
-		flex-shrink: 0; 
-		display: flex; 
-		flex-direction: column; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+            flex-shrink: 0; 
+            display: flex; 
+            flex-direction: column; 
         }
-.controls-header {
-	position: sticky;
-	top: 0;
-	background-color: var(--panel-bg);
-	z-index: 10;
-}
+        .controls-header {
+            position: sticky;
+            top: 0;
+            background-color: var(--panel-bg);
+            z-index: 10;
+        }
 
-.controls-content {
-	overflow-y: auto;
-	flex-grow: 1;
-	margin-top: 15px;
-}
+        .controls-content {
+            overflow-y: auto;
+            flex-grow: 1;
+            margin-top: 15px;
+        }
 
-.preview-panel {
-	flex-grow: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-	height: 100%;
-	position: relative;
-}
+        .preview-panel {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
 
-.preview-box {
-	background-color: var(--panel-bg);
-	border: 1px solid var(--line);
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-	padding: 15px;
-	overflow: hidden;
-	position: relative;
-}
+        .preview-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
 
-.top-preview {
-	height: 50%;
-}
+        .top-preview {
+            height: 50%;
+        }
 
-.bottom-preview {
-	height: 50%;
-}
+        .bottom-preview {
+            height: 50%;
+        }
 
-.preview-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 10px;
-	font-size: 14px;
-	color: var(--text3);
-}
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text3);
+        }
 
-.preview-header h3 {
-	margin: 0;
-	color: var(--text2);
-	font-weight: 500;
-}
-canvas { 
-		display:block; 
-		background-color:#000; 
-		border-radius:4px; 
-		height:calc(100% - 30px); 
-		margin:0 auto; 
-		width:100%; 
-		border: 1px solid var(--main-bg);}
-canvas:hover {
-		border: 1px solid #8080ff75;} 
-h2.main-title { 
-		margin-top:0; 
-		border-bottom:1px solid var(--line); 
-		padding-bottom:15px; 
-		font-size:22px; 
-		color: var(--main-color); 
-		font-weight:600; 
-		display:flex; 
-		align-items:center; 
-		gap:10px; 
-		justify-content:space-between; }
-.button-group {
-	display: grid;
-	grid-template-columns: repeat(4,1fr);
-	gap: 10px;
-}
-.button-group button {
-            	padding:10px 12px; 
-		border:none; 
-		border-radius:5px; 
-		color: var(--text1); 
-		cursor:pointer; 
-		transition:all .2s ease;
+        .preview-header h3 {
+            margin: 0;
+            color: var(--text2);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .import-model-button {
+            padding: 4px 12px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            background: var(--input-bg);
+            color: var(--text2);
+            cursor: pointer;
+            transition: all .2s ease;
+            font-size: 12px;
+            margin-left: auto;
+        }
+        .import-model-button:hover {
+            border-color: var(--main-color);
+            color: var(--main-color);
+        }
+
+        canvas { 
+            display:block; 
+            background-color:#000; 
+            border-radius:4px; 
+            height:calc(100% - 30px); 
+            margin:0 auto; 
+            width:100%; 
+            border: 1px solid var(--main-bg);
+        }
+        canvas:hover {
+            border: 1px solid #8080ff75;
+        } 
+        h2.main-title { 
+            margin-top:0; 
+            border-bottom:1px solid var(--line); 
+            padding-bottom:15px; 
+            font-size:22px; 
+            color: var(--main-color); 
+            font-weight:600; 
+            display:flex; 
+            align-items:center; 
+            gap:10px; 
+            justify-content:space-between; 
+        }
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 10px;
+        }
+        .button-group button {
+            padding:10px 12px; 
+            border:none; 
+            border-radius:5px; 
+            color: var(--text1); 
+            cursor:pointer; 
+            transition:all .2s ease;
             font-size:14px; 
-		display:flex; 
-		align-items:center; 
-		justify-content:center; 
-		gap:8px; 
-		background:var(--line); 
-		border:1px solid #969dbb00;
-	        flex-direction: column;
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            gap:8px; 
+            background:var(--line); 
+            border:1px solid #969dbb00;
+            flex-direction: column;
         }
-.button-group button.active {
+        .button-group button.active {
             border:1px solid var(--main-color); 
             color: var(--main-color); 
             background:#8080ff30;
             box-shadow: 0 0 10px rgba(128, 128, 255, 0.5);
         }
-.button-group button:hover {
-	border: 1px solid var(--main-color);
-	color: var(--main-color);
-	background: #8080ff30;
-}
+        .button-group button:hover {
+            border: 1px solid var(--main-color);
+            color: var(--main-color);
+            background: #8080ff30;
+        }
 
-.export-button {
-	padding: 10px 22px;
-	border: none;
-	border-radius: 25px;
-	background: var(--bt-gradient);
-	color: var(--text1);
-	cursor: pointer;
-	transition: all .2s ease-in-out;
-	font-size: 14px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 8px;
-}
+        .export-button {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 25px;
+            background: var(--bt-gradient);
+            color: var(--text1);
+            cursor: pointer;
+            transition: all .2s ease-in-out;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
 
-.export-button:hover {
-	transform: scale(1.05);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	opacity: 0.86;
-}
+        .export-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            opacity: 0.86;
+        }
 
-.control-section {
-	background-color: rgba(0,0,0,0.1);
-	border: 1px solid var(--line);
-	border-radius: 6px;
-	padding: 15px;
-	margin-top: 20px;
-}
+        .control-section {
+            background-color: rgba(0,0,0,0.1);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+        }
 
-.control-group {
-	margin: 16px 0;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
+        #modelControls {
+            display: none; 
+        }
+
+        .control-group {
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
         .control-group label { 
-		display:block;  
-		font-size:14px; 
-		color: var(--text2); 
-		width: 100px;}
-.control-group input[type="range"] {
-	-webkit-appearance: none;
-	width: 100%;
-	height: 4px;
-	background:var(--line);
-	border-radius: 2px;
-	outline: none;
-}
+            display:block;  
+            font-size:14px; 
+            color: var(--text2); 
+            width: 100px;
+        }
+        .control-group input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background:var(--line);
+            border-radius: 2px;
+            outline: none;
+        }
 
-.control-group input[type="range"]::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	appearance: none;
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	background: var(--main-color);
-	cursor: pointer;
-	border: 2px solid var(--panel-bg);
-}
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--main-color);
+            cursor: pointer;
+            border: 2px solid var(--panel-bg);
+        }
 
-.control-group input[type="range"]::-moz-range-thumb {
-	width: 14px;
-	height: 14px;
-	border-radius: 50%;
-	background: var(--main-color);
-	cursor: pointer;
-	border: 2px solid var(--panel-bg);
-}
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--main-color);
+            cursor: pointer;
+            border: 2px solid var(--panel-bg);
+        }
 
-.color-input-wrapper {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-}
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.control-group input[type="color"] {
-	min-width: 40px;
-	height: 30px;
-	border: 1px solid var(--line);
-	border-radius: 4px;
-	padding: 2px;
-	cursor: pointer;
-	background: none;
-}
+        .control-group input[type="color"] {
+            min-width: 40px;
+            height: 30px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+            background: none;
+        }
 
-.control-group input[type="text"], .control-group input[type="number"], #resolutionSelector {
-	flex-grow: 1;
-	background-color: var(--main-bg);
-	color: var(--text1);
-	border: 1px solid var(--line);
-	border-radius: 4px;
-	padding: 6px 8px;
-	min-width: 70px;
-}
+        .control-group input[type="text"], .control-group input[type="number"], #resolutionSelector {
+            flex-grow: 1;
+            background-color: var(--main-bg);
+            color: var(--text1);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 6px 8px;
+            min-width: 70px;
+        }
 
-.value-display {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	flex: 1;
-}
+        .value-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
 
-.control-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 15px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid var(--line);
-}
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--line);
+        }
 
-.control-header h3 {
-	margin: 0;
-	font-size: 16px;
-	color: #f59e0b;
-	font-weight: 500;
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
+        .control-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #f59e0b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.delete-button {
-	background: none;
-	border: none;
-	color: #fff;
-	cursor: pointer;
-	font-size: 14px;
-}
+        .delete-button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-.delete-button:hover {
-	color: #ff4757;
-}
+        .delete-button:hover {
+            color: #ff4757;
+        }
 
-.tab-buttons {
-	display: flex;
-	background-color: var(--line);
-	border-radius: 6px;
-	padding: 4px;
-	margin-bottom: 15px;
-	gap: 4px;
-}
+        .tab-buttons {
+            display: flex;
+            background-color: var(--line);
+            border-radius: 6px;
+            padding: 4px;
+            margin-bottom: 15px;
+            gap: 4px;
+        }
 
-.tab-button {
-	flex: 1;
-	padding: 6px 0;
-	background: none;
-	border: none;
-	color: var(--text1);
-	cursor: pointer;
-	border-radius: 4px;
-	transition: all .2s ease;
-}
-.tab-button:hover {
-	background: var(--line);
-	box-shadow: 0 2px 4px #27272b3d;
-}
-.tab-button.active {
-	background: #babac5;
-	color: var(--main-bg);
-	font-weight: 600;
-}
+        .tab-button {
+            flex: 1;
+            padding: 6px 0;
+            background: none;
+            border: none;
+            color: var(--text1);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all .2s ease;
+        }
+        .tab-button:hover {
+            background: var(--line);
+            box-shadow: 0 2px 4px #27272b3d;
+        }
+        .tab-button.active {
+            background: #babac5;
+            color: var(--main-bg);
+            font-weight: 600;
+        }
 
-.tab-content {
-	display: none;
-}
+        .tab-content {
+            display: none;
+        }
 
-.tab-content.active {
-	display: block;
-}
-#imageUploadLabel { 
-		display:block; 
-		padding:10px; 
-		text-align:center; 
-		background-color: var(--input-bg); 
-		border:1px dashed var(--line); 
-		border-radius:4px; 
-		cursor:pointer;    
-		flex: 1;}
-#imageUploadLabel:hover {
-	background-color: #44444c;
-}
+        .tab-content.active {
+            display: block;
+        }
+        #imageUploadLabel { 
+            display:block; 
+            padding:10px; 
+            text-align:center; 
+            background-color: var(--input-bg); 
+            border:1px dashed var(--line); 
+            border-radius:4px; 
+            cursor:pointer;    
+            flex: 1;
+        }
+        #imageUploadLabel:hover {
+            background-color: #44444c;
+        }
 
-#imageUpload {
-	display: none;
-}
+        #imageUpload {
+            display: none;
+        }
+        #modelUpload {
+            display: none;
+        }
 
-.status-indicator {
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	padding: 5px 10px;
-	border-radius: 4px;
-	font-size: 12px;
-	z-index: 100;
-	background: rgba(0,0,0,0.7);
-}
+        .status-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 100;
+            background: rgba(0,0,0,0.7);
+        }
 
-.status-ok {
-	color: var(--success);
-	border: 1px solid var(--success);
-}
+        .status-ok {
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
 
-.status-error {
-	color: var(--warning);
-	border: 1px solid var(--warning);
-}
+        .status-error {
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
 
-.cursor-dashed {
-	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
-}
+        .cursor-dashed {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
 
-.cursor-ring {
-	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
-}
+        .cursor-ring {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
 
-.cursor-square {
-	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
-}
+        .cursor-square {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
 
-.cursor-octagon {
-	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="8.5,4 15.5,4 20,8.5 20,15.5 15.5,20 8.5,20 4,15.5 4,8.5" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
-}
+        .cursor-octagon {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="8.5,4 15.5,4 20,8.5 20,15.5 15.5,20 8.5,20 4,15.5 4,8.5" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
         
-        /* 自定义滚动条 */
-.controls-content::-webkit-scrollbar {
-	width: 8px;
-}
+        .controls-content::-webkit-scrollbar {
+            width: 8px;
+        }
 
-.controls-content::-webkit-scrollbar-track {
-	background: var(--scrollbar-track);
-}
+        .controls-content::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
 
-.controls-content::-webkit-scrollbar-thumb {
-	background: var(--scrollbar-thumb);
-	border-radius: 4px;
-}
+        .controls-content::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
         
         @media (max-width: 768px) {
             .editor-container { flex-direction: column; height: auto; margin: 0;}
@@ -428,11 +457,11 @@ h2.main-title {
             .button-group button {
                 flex-direction: row;
             }
-	h2.main-title {
-	flex-direction: column;}
+            h2.main-title {
+                flex-direction: column;
+            }
         }
         
-        /* 新增的色温控制样式 */
         .temperature-control { 
             display: none; 
         }
@@ -447,11 +476,18 @@ h2.main-title {
         .temperature-toggle label {
             margin-bottom: 0;
             cursor: pointer;
-	width: auto;
+            width: auto;
         }
         .disabled-color {
             opacity: 0.6;
             pointer-events: none;
+        }
+        .material-info {
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -481,6 +517,40 @@ h2.main-title {
             </div>
             <div class="controls-content">
                 <div id="lightControls"></div>
+                <div class="control-section" id="modelControls">
+                    <div class="control-header">
+                        <h3><i class="fa-solid fa-box"></i> 模型调节</h3>
+                        <button class="delete-button" id="resetSceneBtn" title="恢复为球体"><i class="fa-solid fa-arrow-rotate-left"></i> 复位场景</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelScale">缩放</label>
+                        <div class="value-display">
+                            <input type="range" id="modelScale" min="0.1" max="10" value="1" step="0.01">
+                            <input type="number" id="modelScaleValue" min="0.1" max="10" value="1" step="0.01">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelPosX">位置 X</label>
+                        <div class="value-display">
+                            <input type="range" id="modelPosX" min="-5" max="5" value="0" step="0.01">
+                            <input type="number" id="modelPosXValue" min="-5" max="5" value="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelPosY">位置 Y</label>
+                        <div class="value-display">
+                            <input type="range" id="modelPosY" min="-5" max="5" value="0" step="0.01">
+                            <input type="number" id="modelPosYValue" min="-5" max="5" value="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelPosZ">位置 Z</label>
+                        <div class="value-display">
+                            <input type="range" id="modelPosZ" min="-5" max="5" value="0" step="0.01">
+                            <input type="number" id="modelPosZValue" min="-5" max="5" value="0" step="0.01">
+                        </div>
+                    </div>
+                </div>
                 <div class="control-section" id="backgroundControlsContainer">
                     <div class="control-header">
                         <h3><i class="fa-solid fa-globe"></i> 背景调节</h3>
@@ -494,7 +564,7 @@ h2.main-title {
                         <div class="control-group">
                             <label for="bgColor">颜色</label>
                             <div class="color-input-wrapper">
-                                <input type="color" id="bgColor" value="#202025">
+                                <input type="color" id="bgColor" value="#161618">
                             </div>
                         </div>
                     </div>
@@ -536,8 +606,8 @@ h2.main-title {
             <div class="preview-box top-preview">
                 <div class="preview-header">
                     <h3><i class="fa-solid fa-globe"></i> 二维展开图
-		<span class="scripts">点击画布中的灯光进行编辑，点击左侧可添加灯光<span>
-		</h3>
+                        <span class="scripts">点击画布中的灯光进行编辑，点击左侧可添加灯光<span>
+                    </h3>
                 </div>
                 <canvas id="hdrCanvas" style="width:auto; max-width:100%;"></canvas>
             </div>
@@ -545,8 +615,10 @@ h2.main-title {
             <div class="preview-box bottom-preview">
                 <div class="preview-header">
                     <h3><i class="fa-solid fa-cube"></i> 3D环境预览
-		<span class="scripts">模拟效果展示，最终渲染请导出至3D软件中查看（鼠标拖动进行旋转，滑动滚轮可缩放画面）<span>
-		</h3>
+                        <span class="scripts">模拟效果展示，最终渲染请导出至3D软件中查看（鼠标拖动进行旋转，滑动滚轮可缩放画面）<span>
+                    </h3>
+                    <input type="file" id="modelUpload" accept=".obj,.glb,.gltf,.fbx">
+                    <button id="importModelBtn" class="import-model-button"><i class="fa-solid fa-file-import"></i> 导入模型</button>
                 </div>
                 <canvas id="sceneCanvas"></canvas>
             </div>
@@ -564,6 +636,9 @@ h2.main-title {
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 
         // 常量 & 状态
         const hdrCanvas = document.getElementById('hdrCanvas');
@@ -583,14 +658,25 @@ h2.main-title {
 
         let background = {
             type: 'solid',
-            color: '#202025',
+            color: '#161618',
             gradient: { color1: '#1a73e8', color2: '#aaaaa1', angle: 90 },
             image: null,
             brightness: 1.0,
         };
 
-        // 3D 场景
-        let scene, camera, renderer, sphere, controls, envTexture;
+        let scene, camera, renderer, originalSphere, controls, envTexture;
+        let currentModel = null;
+
+        // 新增：材质信息显示
+        function logMaterialInfo(material) {
+            console.log(`Material type: ${material.type}`);
+            console.log(`Properties: 
+                color: ${material.color ? material.color.getHexString() : 'none'},
+                map: ${material.map ? 'yes' : 'no'},
+                envMap: ${material.envMap ? 'yes' : 'no'},
+                roughness: ${material.roughness || 'n/a'},
+                metalness: ${material.metalness || 'n/a'}`);
+        }
 
         function init3DScene() {
             try {
@@ -603,7 +689,7 @@ h2.main-title {
                 });
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 0.6;
+                renderer.toneMappingExposure = 0.8;
 
                 camera = new THREE.PerspectiveCamera(75, sceneCanvas.clientWidth / sceneCanvas.clientHeight, 0.1, 1000);
                 camera.position.z = 2.5;
@@ -618,25 +704,18 @@ h2.main-title {
                 const geometry = new THREE.SphereGeometry(1, 128, 64);
                 const material = new THREE.MeshStandardMaterial({
                     color: 0xffffff,
-                    metalness: 0.8,
+                    metalness: 0.1,
                     roughness: 0.1,
                     side: THREE.DoubleSide
                 });
-                sphere = new THREE.Mesh(geometry, material);
-                scene.add(sphere);
-
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-                scene.add(ambientLight);
+                originalSphere = new THREE.Mesh(geometry, material);
+                scene.add(originalSphere);
+                currentModel = originalSphere;
                 
                 const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
                 scene.add(gridHelper);
                 const axesHelper = new THREE.AxesHelper(1.5);
                 scene.add(axesHelper);
-
-                envTexture = new THREE.CanvasTexture(hdrCanvas);
-                envTexture.mapping = THREE.EquirectangularReflectionMapping;
-                scene.environment = envTexture;
-                scene.background = envTexture;
 
                 animate();
                 resize3DCanvas();
@@ -661,53 +740,36 @@ h2.main-title {
             camera.updateProjectionMatrix();
         }
 
-        /**
-         * 核心修复：模拟球面投影
-         * 根据灯光在Y轴（纬度）的位置，计算其在2D展开图上应有的拉伸和缩放，以模拟球面投影效果。
-         * @param {object} light - 灯光对象
-         * @returns {object} 包含投影后尺寸的对象 { width, height, radius }
-         */
-        function getProjectedSize(light) {
-            // 将Y坐标从 [0, HDR_HEIGHT] 映射到纬度 [-PI/2, PI/2]
+        function getProjectionFactors(light) {
             const latitude = (light.y / HDR_HEIGHT - 0.5) * PI;
-            // 越靠近两极，cos(latitude) 越接近0，导致拉伸系数越大
             const cosLat = Math.cos(latitude);
-            // 设置一个最小缩放值，防止在极点处无限大
-            const scaleFactor = 1 / Math.max(cosLat, 0.05);
-
-            const result = {};
-            // 根据灯光类型计算投影后的尺寸
-            if (light.type === 'rect') {
-                result.width = light.width * scaleFactor;
-                result.height = light.height * cosLat; // 高度上进行压缩
-            } else { // Circle, Octagon, Ring
-                result.radius = light.size * scaleFactor;
-                // 对于圆形等，可以简化为统一缩放或只缩放宽度，这里我们用一个混合方式
-                result.xRadius = light.size * scaleFactor;
-                result.yRadius = light.size * cosLat;
-            }
-            return result;
+            const scaleX = 1 / Math.max(cosLat, 0.05);
+            const scaleY = cosLat;
+            return { scaleX, scaleY };
         }
-
+        
         function createCirclePath(ctx, light) {
-            const { xRadius, yRadius } = getProjectedSize(light);
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const xRadius = light.size * scaleX;
+            const yRadius = light.size * scaleY;
             ctx.beginPath();
-            // 使用 ellipse 来绘制可能被压扁的圆形
             ctx.ellipse(light.x, light.y, xRadius, yRadius, 0, 0, TWO_PI);
             ctx.closePath();
         }
 
         function createRectPath(ctx, light) {
-            const { width, height } = getProjectedSize(light); // 使用投影后的尺寸
-            const cornerRadius = Math.min(light.cornerRadius || 0, width / 2, height / 2);
+            const { scaleX, scaleY } = getProjectionFactors(light);
             const rotation = light.rotation || 0;
+            const cornerRadius = Math.min(light.cornerRadius || 0, light.width / 2, light.height / 2);
 
             ctx.save();
             ctx.translate(light.x, light.y);
             ctx.rotate(rotation * Math.PI / 180);
-            const halfW = width / 2;
-            const halfH = height / 2;
+            ctx.scale(scaleX, scaleY);
 
+            const halfW = light.width / 2;
+            const halfH = light.height / 2;
+            
             ctx.beginPath();
             ctx.moveTo(-halfW + cornerRadius, -halfH);
             ctx.lineTo(halfW - cornerRadius, -halfH);
@@ -723,19 +785,21 @@ h2.main-title {
         }
         
         function createOctagonPath(ctx, light) {
-            const { xRadius, yRadius } = getProjectedSize(light);
+            const { scaleX, scaleY } = getProjectionFactors(light);
             const rotation = light.rotation || 0;
             const points = 8;
+            const size = light.size;
 
             ctx.save();
             ctx.translate(light.x, light.y);
             ctx.rotate(rotation * Math.PI / 180);
+            ctx.scale(scaleX, scaleY);
+            
             ctx.beginPath();
             for (let i = 0; i < points; i++) {
                 const angle = (i * 2 * Math.PI) / points - Math.PI / 8;
-                // 使用投影后的 xRadius 和 yRadius
-                const x = xRadius * Math.cos(angle);
-                const y = yRadius * Math.sin(angle);
+                const x = size * Math.cos(angle);
+                const y = size * Math.sin(angle);
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
@@ -744,19 +808,19 @@ h2.main-title {
         }
 
         function createRingPath(ctx, light) {
-            const { xRadius, yRadius } = getProjectedSize(light);
-            const thicknessRatio = (light.thickness || (light.size * 0.3)) / light.size;
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const thickness = light.thickness || (light.size * 0.3);
             
             ctx.save();
             ctx.translate(light.x, light.y);
-            // 外圈
+            ctx.rotate((light.rotation || 0) * Math.PI / 180);
+            ctx.scale(scaleX, scaleY);
+
             ctx.beginPath();
-            ctx.ellipse(0, 0, xRadius, yRadius, 0, 0, TWO_PI);
-            // 内圈
-            const innerXRadius = Math.max(1, xRadius * (1 - thicknessRatio));
-            const innerYRadius = Math.max(1, yRadius * (1 - thicknessRatio));
-            ctx.moveTo(innerXRadius, 0); // 移动到内圈起始点
-            ctx.ellipse(0, 0, innerXRadius, innerYRadius, 0, 0, TWO_PI, true); // 逆时针
+            ctx.ellipse(0, 0, light.size, light.size, 0, 0, TWO_PI);
+            const innerRadius = Math.max(1, light.size - thickness);
+            ctx.moveTo(innerRadius, 0);
+            ctx.ellipse(0, 0, innerRadius, innerRadius, 0, 0, TWO_PI, true);
             ctx.closePath();
             ctx.restore();
         }
@@ -822,7 +886,9 @@ h2.main-title {
                 
                 if (light.innerShadow > 0 && light.type !== 'ring') {
                     ctx.clip(); 
-                    const gradRadius = getProjectedSize(light).xRadius || Math.max(light.width || 0, light.height || 0);
+                    const { scaleX } = getProjectionFactors(light);
+                    const gradRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * scaleX;
+                    
                     const grad = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, gradRadius);
                     const solidRatio = Math.max(0, 1.0 - light.innerShadow);
                     
@@ -870,14 +936,33 @@ h2.main-title {
 
         function update3DScene() {
             try {
-                if (!envTexture) return;
-                envTexture.dispose();
+                if (envTexture) {
+                    envTexture.dispose();
+                }
+                
                 envTexture = new THREE.CanvasTexture(hdrCanvas);
                 envTexture.mapping = THREE.EquirectangularReflectionMapping;
-                scene.environment = envTexture;
-                scene.background = envTexture;
+                
+                if (scene) {
+                    scene.environment = envTexture;
+                    scene.background = envTexture;
+                    
+                    if (currentModel) {
+                        currentModel.traverse((child) => {
+                            if (child.isMesh && child.material) {
+                                const materials = Array.isArray(child.material) ? child.material : [child.material];
+                                materials.forEach(material => {
+                                    if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
+                                        material.envMap = envTexture;
+                                        material.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
             } catch (e) {
-                console.error("更新3D失败", e);
+                console.error("更新3D场景失败", e);
             }
         }
         
@@ -916,7 +1001,6 @@ h2.main-title {
             }
             html += createColorInput('color', '颜色', selectedLight.color);
             
-            // 新增色温控制部分
             const useTemperature = selectedLight.useTemperature || false;
             const temperature = selectedLight.temperature || 6500;
             html += `
@@ -937,12 +1021,11 @@ h2.main-title {
             
             html += createSlider('intensity', '亮度 (HDR)', 0.1, 100, 0.1, selectedLight.intensity);
             html += createSlider('falloff', '外侧衰减', 0, 100, 1, selectedLight.falloff);
-            html += createSlider('innerShadow', '内侧柔化 (0-1)', 0, 1, 0.01, selectedLight.innerShadow || 0);
+            html += createSlider('innerShadow', '内侧柔化', 0, 1, 0.01, selectedLight.innerShadow || 0);
             html += `</div>`;
             container.innerHTML = html;
             addControlListeners();
             
-            // 初始化色温控制状态
             if (useTemperature) {
                 document.getElementById('color').classList.add('disabled-color');
                 document.getElementById('colorText').classList.add('disabled-color');
@@ -969,52 +1052,216 @@ h2.main-title {
                     </div>`;
         }
         
-        // 色温转RGB算法
         function temperatureToRGB(kelvin) {
-            // 限制色温范围
             kelvin = Math.max(1000, Math.min(40000, kelvin));
-            
-            // 计算色温
             let temp = kelvin / 100;
             let r, g, b;
             
-            // 红色通道
             if (temp <= 66) {
                 r = 255;
+                g = 99.4708025861 * Math.log(temp) - 161.1195681661;
             } else {
-                r = temp - 60;
-                r = 329.698727446 * Math.pow(r, -0.1332047592);
-                r = Math.max(0, Math.min(255, r));
+                r = 329.698727446 * Math.pow(temp - 60, -0.1332047592);
+                g = 288.1221695283 * Math.pow(temp - 60, -0.0755148492);
             }
-            
-            // 绿色通道
-            if (temp <= 66) {
-                g = temp;
-                g = 99.4708025861 * Math.log(g) - 161.1195681661;
-            } else {
-                g = temp - 60;
-                g = 288.1221695283 * Math.pow(g, -0.0755148492);
-            }
+            r = Math.max(0, Math.min(255, r));
             g = Math.max(0, Math.min(255, g));
             
-            // 蓝色通道
             if (temp >= 66) {
                 b = 255;
             } else if (temp <= 19) {
                 b = 0;
             } else {
-                b = temp - 10;
-                b = 138.5177312231 * Math.log(b) - 305.0447927307;
+                b = 138.5177312231 * Math.log(temp - 10) - 305.0447927307;
                 b = Math.max(0, Math.min(255, b));
             }
             
-            // 转换为16进制颜色
             const hex = `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
             return hex;
         }
         
+        function handleModelUpload(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            const filename = file.name.toLowerCase();
+            let loader;
+
+            if (filename.endsWith('.glb') || filename.endsWith('.gltf')) {
+                loader = new GLTFLoader();
+            } else if (filename.endsWith('.obj')) {
+                loader = new OBJLoader();
+            } else if (filename.endsWith('.fbx')) {
+                loader = new FBXLoader();
+            } else {
+                updateStatus('不支持的文件格式', false);
+                return;
+            }
+
+            updateStatus('正在加载模型...', true);
+            loader.load(url, (loadedObject) => {
+                const model = filename.endsWith('.gltf') || filename.endsWith('.glb') ? loadedObject.scene : loadedObject;
+                
+                if (currentModel) {
+                    scene.remove(currentModel);
+                }
+                
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+                
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 2.0 / maxDim;
+                
+                model.userData.initialScale = scale;
+                model.scale.set(scale, scale, scale);
+                model.position.sub(center.multiplyScalar(scale));
+
+                const lightsToRemove = [];
+                model.traverse((child) => {
+                    if (child.isLight) {
+                        lightsToRemove.push(child);
+                    }
+
+                    if (child.isMesh) {
+                        // 处理材质问题
+                        let materials = [];
+                        if (child.material) {
+                            if (Array.isArray(child.material)) {
+                                materials = child.material;
+                            } else {
+                                materials = [child.material];
+                            }
+                        }
+
+                        // 修复：处理没有材质的情况
+                        if (materials.length === 0) {
+                            // 创建白膜材质
+                            child.material = new THREE.MeshStandardMaterial({
+                                color: 0xffffff,
+                                roughness: 0.8,
+                                metalness: 0.05,
+                                envMap: scene.environment
+                            });
+                            console.log("为模型网格创建了白膜材质");
+                        } else {
+                            // 修复材质问题
+                            const newMaterials = materials.map(mat => {
+                                // 检查材质是否支持环境贴图
+                                if (!mat.isMeshStandardMaterial && !mat.isMeshPhysicalMaterial) {
+                                    // 创建新的标准材质并复制属性
+                                    const newMat = new THREE.MeshStandardMaterial({
+                                        color: mat.color ? mat.color.clone() : new THREE.Color(0xffffff),
+                                        map: mat.map || null,
+                                        roughness: mat.roughness || 0.8,
+                                        metalness: mat.metalness || 0.05,
+                                        envMap: scene.environment,
+                                        side: THREE.DoubleSide
+                                    });
+                                    
+                                    // 复制其他重要属性
+                                    if (mat.emissive) newMat.emissive = mat.emissive.clone();
+                                    if (mat.emissiveIntensity) newMat.emissiveIntensity = mat.emissiveIntensity;
+                                    if (mat.opacity) newMat.opacity = mat.opacity;
+                                    if (mat.transparent) newMat.transparent = mat.transparent;
+                                    if (mat.alphaTest) newMat.alphaTest = mat.alphaTest;
+                                    if (mat.alphaMap) newMat.alphaMap = mat.alphaMap;
+                                    
+                                    console.log(`已将材质 ${mat.type} 转换为 MeshStandardMaterial`);
+                                    return newMat;
+                                } else {
+                                    // 设置环境贴图
+                                    mat.envMap = scene.environment;
+                                    mat.needsUpdate = true;
+                                    return mat;
+                                }
+                            });
+                            
+                            // 应用新材质
+                            child.material = Array.isArray(child.material) ? newMaterials : newMaterials[0];
+                        }
+                    }
+                });
+                
+                lightsToRemove.forEach(light => light.removeFromParent());
+
+                scene.add(model);
+                currentModel = model;
+                URL.revokeObjectURL(url);
+                updateStatus('模型加载成功', true);
+                
+                document.getElementById('modelControls').style.display = 'block';
+                document.getElementById('modelScale').value = 1;
+                document.getElementById('modelScaleValue').value = 1;
+                document.getElementById('modelPosX').value = 0;
+                document.getElementById('modelPosXValue').value = 0;
+                document.getElementById('modelPosY').value = 0;
+                document.getElementById('modelPosYValue').value = 0;
+                document.getElementById('modelPosZ').value = 0;
+                document.getElementById('modelPosZValue').value = 0;
+                
+            }, undefined, (error) => {
+                console.error('模型加载失败:', error);
+                updateStatus('模型加载失败', false);
+                URL.revokeObjectURL(url);
+            });
+
+            fileInput.value = null;
+        }
+
+        function resetScene() {
+            if (currentModel && currentModel !== originalSphere) {
+                scene.remove(currentModel);
+            }
+            scene.add(originalSphere);
+            currentModel = originalSphere;
+            document.getElementById('modelControls').style.display = 'none';
+            updateStatus('场景已复位', true);
+        }
+
+        function addModelControlListeners() {
+            const controls = [
+                { id: 'modelScale', valueId: 'modelScaleValue', prop: 'scale' },
+                { id: 'modelPosX', valueId: 'modelPosXValue', prop: 'position', axis: 'x' },
+                { id: 'modelPosY', valueId: 'modelPosYValue', prop: 'position', axis: 'y' },
+                { id: 'modelPosZ', valueId: 'modelPosZValue', prop: 'position', axis: 'z' },
+            ];
+
+            controls.forEach(c => {
+                const slider = document.getElementById(c.id);
+                const valueInput = document.getElementById(c.valueId);
+
+                const updateModelTransform = (val) => {
+                    if (currentModel && currentModel !== originalSphere) {
+                        if (c.prop === 'scale') {
+                            const initialScale = currentModel.userData.initialScale || 1.0;
+                            currentModel.scale.set(val * initialScale, val * initialScale, val * initialScale);
+                        } else {
+                            currentModel.position[c.axis] = val;
+                        }
+                    }
+                };
+
+                slider.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    valueInput.value = val;
+                    updateModelTransform(val);
+                });
+                valueInput.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value) || 0;
+                    slider.value = val;
+                    updateModelTransform(val);
+                });
+            });
+
+            document.getElementById('resetSceneBtn').addEventListener('click', resetScene);
+        }
+
         function initApp() {
             try {
+                init3DScene();
                 resetCanvas(HDR_WIDTH, HDR_HEIGHT);
 
                 document.getElementById('resolutionSelector').addEventListener('change', (e) => {
@@ -1059,7 +1306,6 @@ h2.main-title {
                         document.getElementById(tabId + 'Tab').classList.add('active');
                         drawHdrPreview();
                     });
-                    updateResizeHandlePosition();
                 });
 
                 document.getElementById('bgColor').addEventListener('input', e => { background.color = e.target.value; drawHdrPreview(); });
@@ -1077,11 +1323,15 @@ h2.main-title {
 
                 document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
                 document.getElementById('exportHdri').addEventListener('click', generateHdrFile);
+                
+                document.getElementById('importModelBtn').addEventListener('click', () => document.getElementById('modelUpload').click());
+                document.getElementById('modelUpload').addEventListener('change', handleModelUpload);
+                addModelControlListeners();
 
                 lights.push({
                     id: Date.now(),
                     type: 'circle',
-                    x: HDR_WIDTH * 0.3,
+                    x: HDR_WIDTH * 0.85,
                     y: HDR_HEIGHT * 0.4,
                     size: 120,
                     color: '#ffffff',
@@ -1094,7 +1344,6 @@ h2.main-title {
                 
                 selectedLight = lights[0];
 
-                init3DScene();
                 updateControlsUI();
                 drawHdrPreview();
                 updateStatus("HDRI编辑器已就绪", true);
@@ -1158,8 +1407,8 @@ h2.main-title {
                 let clicked = null;
                 for (let i = lights.length -1; i >=0; i--) {
                     const light = lights[i];
-                    const { xRadius, yRadius } = getProjectedSize(light);
-                    const effectiveRadius = xRadius || (light.width/2);
+                    const { scaleX } = getProjectionFactors(light);
+                    const effectiveRadius = (light.size || Math.max(light.width, light.height)/2) * scaleX;
                     const dx = x - light.x, dy = y - light.y;
                     const dist = Math.sqrt(dx*dx + dy*dy);
                     if (dist < effectiveRadius + (light.falloff || 0)) {
@@ -1230,10 +1479,6 @@ h2.main-title {
             if (newTop > 120 && newBottom > 120) {
                 topPreview.style.height = `${newTop}px`;
                 bottomPreview.style.height = `${newBottom}px`;
-                const panelRect = document.querySelector('.preview-panel').getBoundingClientRect();
-                const topRect = topPreview.getBoundingClientRect();
-                const relativeTop = topRect.bottom - panelRect.top;
-                document.getElementById('resizeHandle').style.top = `${relativeTop - 3}px`;
                 resize3DCanvas();
             }
         }
@@ -1267,6 +1512,8 @@ h2.main-title {
 
             const sliders = document.querySelectorAll('.control-group input[type="range"]');
             sliders.forEach(slider => {
+                if(slider.id.startsWith('model')) return;
+
                 const inputId = slider.id;
                 const valueInput = document.getElementById(inputId + 'Value');
                 slider.addEventListener('input', e => {
@@ -1296,13 +1543,11 @@ h2.main-title {
                 colorText.addEventListener('input', e => updateColor(e.target.value));
             }
             
-            // 新增色温控制监听
             const useTemperatureCheckbox = document.getElementById('useTemperature');
             const temperatureSlider = document.getElementById('temperature');
             const temperatureValue = document.getElementById('temperatureValue');
             
             if (useTemperatureCheckbox && temperatureSlider && temperatureValue) {
-                // 色温切换
                 useTemperatureCheckbox.addEventListener('change', (e) => {
                     selectedLight.useTemperature = e.target.checked;
                     const temperatureControl = document.querySelector('.temperature-control');
@@ -1311,7 +1556,6 @@ h2.main-title {
                     if (e.target.checked) {
                         temperatureControl.classList.add('active');
                         colorInputs.forEach(el => el.classList.add('disabled-color'));
-                        // 应用当前色温
                         const temp = selectedLight.temperature || 6500;
                         const hexColor = temperatureToRGB(temp);
                         selectedLight.color = hexColor;
@@ -1324,7 +1568,6 @@ h2.main-title {
                     drawHdrPreview();
                 });
                 
-                // 色温滑块
                 temperatureSlider.addEventListener('input', (e) => {
                     const temp = parseFloat(e.target.value);
                     temperatureValue.value = temp;
@@ -1387,126 +1630,120 @@ h2.main-title {
              return t * t * (3 - 2 * t);
         }
         
-        // --- 核心修复区：所有衰减函数均已更新，以支持模拟投影和新的内侧柔化效果 ---
-
         function computeCircleAttenuation(x, y, light) {
-            const { xRadius, yRadius } = getProjectedSize(light);
-            // 计算点到椭圆中心的相对坐标下的等效距离
-            const dx = (x - light.x) / xRadius;
-            const dy = (y - light.y) / yRadius;
-            const dist = Math.sqrt(dx * dx + dy * dy); // dist = 1 在椭圆边上
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const dx = (x - light.x) / (light.size * scaleX);
+            const dy = (y - light.y) / (light.size * scaleY);
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (light.falloff > 0) { // 外侧衰减
-                const falloff = Math.max(1e-3, light.falloff) / light.size; // 归一化
+            if (light.falloff > 0) {
+                const falloff = Math.max(1e-3, light.falloff) / light.size;
                 if (dist > 1 + falloff) return 0.0;
                 if (dist < 1) return 1.0;
-                const t = (1 + falloff - dist) / falloff;
-                return smoothStep(t);
-            } else if (light.innerShadow > 0) { // 内侧柔化
-                const softness = light.innerShadow;
+                return smoothStep((1 + falloff - dist) / falloff);
+            } else if (light.innerShadow > 0) {
                 if (dist > 1) return 0.0;
-                if (dist < 1 - softness) return 1.0;
-                
-                const t = (1 - dist) / softness;
-                const base_attenuation = smoothStep(t);
-                const min_attenuation = 0.1;
-                return min_attenuation + (1 - min_attenuation) * base_attenuation;
+                if (dist < 1 - light.innerShadow) return 1.0;
+                const t = (1 - dist) / light.innerShadow;
+                return 0.1 + 0.9 * smoothStep(t);
             }
             return dist <= 1 ? 1.0 : 0.0;
         }
 
         function computeRectAttenuation(x, y, light) {
-            const { width: projectedWidth, height: projectedHeight } = getProjectedSize(light);
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const r_rad = (light.rotation || 0) * Math.PI / 180;
+            const cos_r = Math.cos(-r_rad);
+            const sin_r = Math.sin(-r_rad);
+
             let localX = x - light.x;
             let localY = y - light.y;
-            const rot = (light.rotation || 0) * Math.PI / 180;
-            const cosR = Math.cos(-rot);
-            const sinR = Math.sin(-rot);
-            const rx = localX * cosR - localY * sinR;
-            const ry = localX * sinR + localY * cosR;
 
-            const halfW = projectedWidth / 2;
-            const halfH = projectedHeight / 2;
-            const q = { x: Math.abs(rx) - halfW, y: Math.abs(ry) - halfH };
+            const rx = localX * cos_r - localY * sin_r;
+            const ry = localX * sin_r + localY * cos_r;
+            
+            const urx = rx / scaleX;
+            const ury = ry / scaleY;
+
+            const halfW = light.width / 2;
+            const halfH = light.height / 2;
+            const q = { x: Math.abs(urx) - halfW, y: Math.abs(ury) - halfH };
             const signedDist = Math.sqrt(Math.max(q.x,0)**2 + Math.max(q.y,0)**2) + Math.min(Math.max(q.x,q.y), 0);
 
             if (light.falloff > 0) {
-                const falloff = Math.max(1e-3, light.falloff);
-                const t = 1.0 - signedDist / falloff;
-                return smoothStep(t);
+                return smoothStep(1.0 - signedDist / light.falloff);
             } else if (light.innerShadow > 0) {
                 const softnessWidth = Math.min(halfW, halfH) * light.innerShadow;
                 if (signedDist > 0) return 0.0; 
                 if (signedDist < -softnessWidth) return 1.0;
-                
                 const t = (-signedDist) / softnessWidth;
-                const base_attenuation = smoothStep(t);
-                const min_attenuation = 0.1;
-                return min_attenuation + (1 - min_attenuation) * base_attenuation;
+                return 0.1 + 0.9 * smoothStep(t);
             }
             return signedDist <= 0 ? 1.0 : 0.0;
         }
         
         function computeOctagonAttenuation(x, y, light) {
-            const { xRadius, yRadius } = getProjectedSize(light);
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const r_rad = (light.rotation || 0) * Math.PI / 180;
+            const cos_r = Math.cos(r_rad);
+            const sin_r = Math.sin(r_rad);
+
             const dx = x - light.x;
             const dy = y - light.y;
-            const rot = (light.rotation || 0) * Math.PI / 180;
-            const cosR = Math.cos(-rot);
-            const sinR = Math.sin(-rot);
-            // 对点进行反向缩放，以便使用单位SDF
-            const rx = (dx * cosR - dy * sinR) / xRadius;
-            const ry = (dx * sinR + dy * cosR) / yRadius;
-            
+            const urx = dx * cos_r + dy * sin_r;
+            const ury = -dx * sin_r + dy * cos_r;
+            const localX = urx / scaleX;
+            const localY = ury / scaleY;
+
             const N = 8;
-            const R = 1; // 在归一化空间中半径为1
+            const R = light.size;
             const slice = Math.PI / N;
             const apothem = R * Math.cos(slice);
 
-            let angle = Math.atan2(ry, rx);
+            let angle = Math.atan2(localY, localX);
             angle = (angle + 10 * PI) % (2 * slice);
             angle = Math.abs(angle - slice);
 
-            const distToCenter = Math.sqrt(rx * rx + ry * ry);
+            const distToCenter = Math.sqrt(localX * localX + localY * localY);
             const edgeDistOnRay = apothem / Math.cos(angle);
-            const signedDist = distToCenter - edgeDistOnRay; // 在归一化空间中的距离
+            const signedDistFromEdge = distToCenter - edgeDistOnRay;
 
             if (light.falloff > 0) {
-                const falloff = Math.max(1e-3, light.falloff) / light.size;
-                const t = 1.0 - (signedDist / falloff);
+                const t = 1.0 - signedDistFromEdge / light.falloff;
                 return smoothStep(t);
             } else if (light.innerShadow > 0) {
-                const softness = light.innerShadow;
-                if (signedDist > 0) return 0.0;
-                if (signedDist < -softness) return 1.0;
-                
-                const t = (-signedDist) / softness;
-                const base_attenuation = smoothStep(t);
-                const min_attenuation = 0.1;
-                return min_attenuation + (1 - min_attenuation) * base_attenuation;
+                const softness = R * light.innerShadow;
+                if (signedDistFromEdge > 0) return 0.0;
+                if (signedDistFromEdge < -softness) return 1.0;
+                const t = (-signedDistFromEdge) / softness;
+                return 0.1 + 0.9 * smoothStep(t);
             }
-            return signedDist <= 0 ? 1.0 : 0.0;
+            return signedDistFromEdge <= 0 ? 1.0 : 0.0;
         }
-        
         function computeRingAttenuation(x, y, light) {
-            const { xRadius, yRadius } = getProjectedSize(light);
+            const { scaleX, scaleY } = getProjectionFactors(light);
             const thicknessRatio = (light.thickness || (light.size * 0.3)) / light.size;
-            
-            const dx = (x - light.x) / xRadius;
-            const dy = (y - light.y) / yRadius;
-            const dist = Math.sqrt(dx * dx + dy * dy); // 归一化距离
 
-            const outerRadius = 1.0;
-            const innerRadius = 1.0 - thicknessRatio;
+            const r_rad = (light.rotation || 0) * Math.PI / 180;
+            const cos_r = Math.cos(-r_rad);
+            const sin_r = Math.sin(-r_rad);
+            let localX = x - light.x;
+            let localY = y - light.y;
+            const rx = (localX * cos_r - localY * sin_r) / scaleX;
+            const ry = (localX * sin_r + localY * cos_r) / scaleY;
+
+            const dist = Math.sqrt(rx * rx + ry * ry);
+            
+            const outerRadius = light.size;
+            const innerRadius = outerRadius * (1 - thicknessRatio);
             const thickness = outerRadius - innerRadius;
             
-            const falloff = Math.max(1e-3, light.falloff) / light.size;
+            const falloff = Math.max(1e-3, light.falloff);
 
             const distToRingCenter = Math.abs(dist - (innerRadius + thickness / 2));
             const signedDist = distToRingCenter - thickness / 2;
 
-            const t = 1.0 - signedDist / falloff;
-            return smoothStep(t);
+            return smoothStep(1.0 - signedDist / falloff);
         }
 
         function frexp(value) {
@@ -1532,7 +1769,7 @@ h2.main-title {
         }
 
         async function generateHdrFile() {
-            console.log("Generating true HDR data with corrected logic...");
+            console.log("Generating true HDR data...");
             const floatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const bgCanvas = document.createElement('canvas');
             bgCanvas.width = HDR_WIDTH;
@@ -1624,19 +1861,8 @@ h2.main-title {
             updateStatus("HDRI导出成功！", true);
         }
 
-        function updateResizeHandlePosition() {
-            const topPreview = document.querySelector('.top-preview');
-            const panelRect = document.querySelector('.preview-panel').getBoundingClientRect();
-            const topRect = topPreview.getBoundingClientRect();
-            const relativeTop = topRect.bottom - panelRect.top;
-            document.getElementById('resizeHandle').style.top = `${relativeTop - 3}px`;
-        }
-        
         window.addEventListener('load', initApp);
-        window.addEventListener('resize', () => {
-            resize3DCanvas();
-            updateResizeHandlePosition();
-        });
+        window.addEventListener('resize', resize3DCanvas);
 
     </script>
 </body>
