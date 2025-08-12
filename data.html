@@ -1318,11 +1318,6 @@
         document.getElementById('bank-name').textContent = bank;
     }
     
-    function generateCountry() {
-        const country = countries[Math.floor(Math.random() * countries.length)];
-        document.getElementById('country').textContent = country;
-    }
-    
     function generateProvince() {
         const province = provinces[Math.floor(Math.random() * provinces.length)];
         document.getElementById('province').textContent = province;
@@ -1606,30 +1601,28 @@ function generateNatureScenery() {
     });
     
     // 一键生成所有数据
-    function generateAllData() {
-    generateNames();
-    generatePhones();
-    generatePrice();
-    generateProductName();
-    generateProductId();
-    generateBankName();
-    fetchNews();
-    generateCountry();
-    generateProvince();
-    generateAddress();
-    generateStoreAddress();
-    generateCompanyName(); 
-    generateDate();
-    generateTime();
-    generateEmail();
-    generateIdCard();
-    generatePersonAvatar();
-    generateNatureScenery();
-    generateVectorAvatar();
-    
-    showNotification('所有数据已重新生成！');
+function generateAllData() {
+        generateNames();
+        generatePhones();
+        generatePrice();
+        generateProductName();
+        generateProductId();
+        generateBankName();
+        fetchNews();
+        generateProvince();  // 这会生成省份、城市和区域
+        generateAddress();
+        generateStoreAddress();
+        generateCompanyName(); // 生成公司名称
+        generateDate();
+        generateTime();
+        generateEmail();
+        generateIdCard();
+        generatePersonAvatar();
+        generateNatureScenery();
+        generateVectorAvatar();
+        
+        showNotification('所有数据已重新生成！');
     }
-    
     // 初始化数据
     window.onload = function() {
         generateAllData();
