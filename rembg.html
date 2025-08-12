@@ -653,6 +653,15 @@
 </head>
 <body>
 <div id="global-sidebar"></div>
+<div id="global-loader" class="hidden">
+  <div class="loader-content">
+    <div class="spinner"></div>
+    <p>首次使用需要加载AI模型(约30MB)，请稍候...</p>
+    <div class="progress-bar">
+      <div class="progress"></div>
+    </div>
+  </div>
+</div>
   <div class="container">
     <header>
       <h1>AI一键抠图（支持批量）</h1>
@@ -744,7 +753,28 @@
     const modalImage = document.getElementById('modal-image');
     const closeModal = document.querySelector('.close-modal');
 
-    let session = null; // 模型会话
+// 在脚本开头添加预加载逻辑
+let session = null;
+let modelLoaded = false;
+
+// 新增预加载函数
+async function preloadModel() {
+  try {
+    console.time('模型加载时间');
+    session = await ort.InferenceSession.create('model/u2netp.onnx');
+    console.timeEnd('模型加载时间');
+    modelLoaded = true;
+    console.log('✅ 模型预加载完成');
+    
+    // 如果有待处理的图片，启用按钮
+    if (files.length > 0) {
+      processBtn.disabled = false;
+    }
+  } catch (error) {
+    console.error('模型预加载失败:', error);
+  }
+}
+
     let files = []; // 存储用户选择的文件
     let processedFiles = []; // 存储处理后的文件
 
@@ -913,15 +943,15 @@
     // 处理图片
     async function processImages() {
       if (files.length === 0) return;
-      
-      processBtn.disabled = true;
-      processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
-      
-      // 加载模型（如果尚未加载）
-      if (!session) {
-        try {
-          session = await ort.InferenceSession.create('model/u2netp.onnx');
-        } catch (error) {
+  
+  // 如果模型尚未加载，显示加载状态
+  if (!modelLoaded) {
+    processBtn.disabled = true;
+    processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 模型加载中...';
+    
+    try {
+      await preloadModel(); // 确保模型加载
+    } catch (error) {
           console.error('模型加载失败:', error);
           alert('模型加载失败，请检查控制台获取详细信息');
           resetProcessButton();
@@ -1159,7 +1189,8 @@
 
     // 初始化
     window.addEventListener('DOMContentLoaded', () => {
-      initEventListeners();
+        initEventListeners();
+  preloadModel(); // 新增预加载调用
     });
   </script>
 </body>
