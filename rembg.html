@@ -918,11 +918,9 @@
       processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
       
       // 加载模型（如果尚未加载）
-const MODEL_URL = 'https://your-cdn-domain.com/model/u2netp.onnx';
-
-async function preloadModel() {
-  try {
-    session = await ort.InferenceSession.create(MODEL_URL);
+      if (!session) {
+        try {
+          session = await ort.InferenceSession.create('model/u2netp.onnx');
         } catch (error) {
           console.error('模型加载失败:', error);
           alert('模型加载失败，请检查控制台获取详细信息');
