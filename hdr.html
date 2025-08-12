@@ -38,7 +38,7 @@
             justify-content: center; 
             align-items: flex-start; 
             min-height: 100vh; 
-            overflow-x: hidden;
+            overflow: hidden; /* 防止拖动时页面滚动 */
         }
         .scripts {
             margin-left: 10px; 
@@ -47,9 +47,7 @@
             color: var(--text3);
         }
         #resizeHandle {
-            position: static;
-            left: 0;
-            right: 0;
+            position: relative; /* 从 static 改为 relative */
             height: 10px;
             background: #00000000;
             cursor: ns-resize;
@@ -74,6 +72,7 @@
             flex-shrink: 0; 
             display: flex; 
             flex-direction: column; 
+            height: 100%;
         }
         .controls-header {
             position: sticky;
@@ -104,11 +103,129 @@
             padding: 15px;
             overflow: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .top-preview {
             height: 50%;
         }
+        
+        /* 新增: top-preview 内部布局 */
+        .top-preview-content {
+display: flex;
+  flex-grow: 1;
+  height: calc(100% - 38px); 
+        }
+        
+        #hdr-canvas-wrapper {
+  flex-grow: 1;
+  position: relative;
+  min-width: 200px; /* 最小宽度 */
+        }
+#hdrCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 保持比例 */
+}
+        #vertical-resize-handle {
+            width: 10px;
+            background: #00000000;
+            cursor: ew-resize;
+            flex-shrink: 0;
+            transition: background .2s;
+        }
+        #vertical-resize-handle:hover {
+            background: #ffffff1a;
+        }
+        
+        #light-list-panel {
+  width: 25%; /* 默认宽度 */
+  min-width: 200px; /* 最小宽度 */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+  padding-left: 10px;
+  overflow: hidden;
+        }
+        
+        .light-list-header h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: var(--text2);
+            font-weight: 500;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        #light-list-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            flex-grow: 1;
+	    background: var(--main-bg);
+    border-radius: 4px;
+    padding: 8px;
+        }
+        
+        .light-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 5px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background-color .2s;
+            font-size: 14px;
+        }
+        
+        .light-item:hover {
+            background-color: rgba(255,255,255,0.08);
+        }
+
+        .light-item.active {
+            background-color: #8080ff30;
+            border: 1px solid var(--main-color);
+        }
+        
+        .light-item .icon {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .light-item .name {
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .light-item .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .light-item .actions button {
+            background: none;
+            border: none;
+            color: var(--text3);
+            cursor: pointer;
+            padding: 2px;
+            font-size: 14px;
+            line-height: 1;
+            transition: color .2s;
+        }
+        
+        .light-item .actions button:hover {
+            color: var(--text1);
+        }
+
 
         .bottom-preview {
             height: 50%;
@@ -121,6 +238,7 @@
             margin-bottom: 10px;
             font-size: 14px;
             color: var(--text3);
+            flex-shrink: 0; /* 防止 header 被压缩 */
         }
 
         .preview-header h3 {
@@ -152,7 +270,7 @@
             display:block; 
             background-color:#000; 
             border-radius:4px; 
-            height:calc(100% - 30px); 
+            height:100%; 
             margin:0 auto; 
             width:100%; 
             border: 1px solid var(--main-bg);
@@ -437,28 +555,46 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="8.5,4 15.5,4 20,8.5 20,15.5 15.5,20 8.5,20 4,15.5 4,8.5" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
         }
         
-        .controls-content::-webkit-scrollbar {
+        .controls-content::-webkit-scrollbar, #light-list-items::-webkit-scrollbar {
             width: 8px;
         }
 
-        .controls-content::-webkit-scrollbar-track {
+        .controls-content::-webkit-scrollbar-track, #light-list-items::-webkit-scrollbar-track {
             background: var(--scrollbar-track);
         }
 
-        .controls-content::-webkit-scrollbar-thumb {
+        .controls-content::-webkit-scrollbar-thumb, #light-list-items::-webkit-scrollbar-thumb {
             background: var(--scrollbar-thumb);
             border-radius: 4px;
         }
         
         @media (max-width: 768px) {
-            .editor-container { flex-direction: column; height: auto; margin: 0;}
-            .controls-panel { width: 100%; padding: 10px; }
+            .editor-container { flex-direction: column;         overflow-y: auto; margin: 0;}
+            .controls-panel { width: 100%; padding: 10px;        height: auto; }
             .button-group { grid-template-columns: repeat(2, 1fr); }
             .button-group button {
                 flex-direction: row;
             }
             h2.main-title {
                 flex-direction: column;
+            }
+            .top-preview-content {
+                flex-direction: column;
+            }
+            #hdr-canvas-wrapper, #light-list-panel {
+                width: 100%;
+	        height: 224px;
+            }
+	.bottom-preview {    height: 35%;}
+            #light-list-panel {
+                height: 150px; /* 在小屏幕上给列表一个固定高度 */
+                border-left: none;
+                border-top: 1px solid var(--line);
+                padding-left: 0;
+                margin-top: 10px;
+            }
+            #vertical-resize-handle {
+                display: none; /* 小屏幕上隐藏拖动条 */
             }
         }
         
@@ -611,18 +747,32 @@
 
         <div class="preview-panel">
             <div class="preview-box top-preview">
-                <div class="preview-header">
-                    <h3><i class="fa-solid fa-globe"></i> 二维展开图
-                        <span class="scripts">点击画布中的灯光进行编辑，点击左侧可添加灯光<span>
-                    </h3>
+  <div class="preview-header">
+    <h3><i class="fa-solid fa-lightbulb"></i> 二维视图 & 灯光列表
+	<span class="scripts">点击左侧添加灯光，选中画布中的灯光进行编辑</span>
+	</h3>
+  </div>
+  <div class="top-preview-content">
+    <div id="hdr-canvas-wrapper">
+      <canvas id="hdrCanvas"></canvas>
+    </div>
+    <div id="vertical-resize-handle"></div>
+    <div id="light-list-panel">
+           <div class="preview-header">
+                <h3><i class="fa-solid fa-list-ul"></i> 灯光列表
+		<span class="scripts">支持隐藏和删除</span>
+		</h3>
+                        </div>
+                        <ul id="light-list-items">
+                            </ul>
+                    </div>
                 </div>
-                <canvas id="hdrCanvas" style="width:auto; max-width:100%;"></canvas>
             </div>
             <div class="resize-handle" id="resizeHandle"></div>
             <div class="preview-box bottom-preview">
                 <div class="preview-header">
                     <h3><i class="fa-solid fa-cube"></i> 3D环境预览
-                        <span class="scripts">模拟效果展示，最终结果请导出HDR至3D软件中进行渲染（支持obj、fbx、glb格式的外部模型导入）<span>
+                        <span class="scripts">支持obj、fbx、glb格式的外部模型导入</span>
                     </h3>
                     <input type="file" id="modelUpload" accept=".obj,.glb,.gltf,.fbx">
                     <button id="importModelBtn" class="import-model-button"><i class="fa-solid fa-file-import"></i> 导入模型</button>
@@ -655,15 +805,19 @@
 
         let HDR_WIDTH = 2048, HDR_HEIGHT = 1024;
         let lights = [];
+        let lightTypeCounters = {}; // 新增: 用于灯光命名序号
         let selectedLight = null;
         let addingLightType = null;
         let draggingLight = null;
-        let isResizing = false;
-        let startY = 0;
-        let startTopHeight = 0;
-        let startBottomHeight = 0;
+        
+        // 拖动状态
+        let isResizingVertical = false;
+        let startY = 0, startTopHeight = 0, startBottomHeight = 0;
+        let isResizingHorizontal = false;
+        let startX = 0, startCanvasWidth = 0, startListWidth = 0;
 
-        // [新增] 用于合成的临时画布
+
+        // 用于合成的临时画布
         let tempHdrCanvas, tempHdrCtx;
 
         let background = {
@@ -748,10 +902,85 @@
 
         function resize3DCanvas() {
             if (!renderer || !camera) return;
-            const { clientWidth, clientHeight } = sceneCanvas;
-            renderer.setSize(clientWidth, clientHeight, false);
-            camera.aspect = clientWidth / clientHeight;
+            const previewBox = sceneCanvas.parentElement;
+            if (!previewBox) return;
+            const { clientWidth, clientHeight } = previewBox;
+            const headerHeight = previewBox.querySelector('.preview-header').offsetHeight;
+            const finalHeight = clientHeight - headerHeight - 15; // 15 for padding
+            
+            renderer.setSize(clientWidth, finalHeight, false);
+            camera.aspect = clientWidth / finalHeight;
             camera.updateProjectionMatrix();
+        }
+        
+        // [新增] 动态更新灯光列表UI
+        function updateLightListUI() {
+            const container = document.getElementById('light-list-items');
+            container.innerHTML = '';
+            
+            const typeTranslations = {
+                circle: '圆形灯', rect: '矩形灯', octagon: '八边形灯', ring: '环形灯'
+            };
+            const typeIcons = {
+                circle: 'fa-regular fa-lightbulb', rect: 'fa-regular fa-square', octagon: 'fa-solid fa-sun', ring: 'fa-solid fa-ring'
+            };
+
+            lights.forEach(light => {
+                const li = document.createElement('li');
+                li.className = 'light-item';
+                li.dataset.id = light.id;
+                if (selectedLight && light.id === selectedLight.id) {
+                    li.classList.add('active');
+                }
+
+                const iconClass = typeIcons[light.type] || 'fa-solid fa-question';
+                const name = `${typeTranslations[light.type] || '未知'} ${light.displayId}`;
+                
+                const visibilityIcon = light.visible ? 'fa-eye' : 'fa-eye-slash';
+
+                li.innerHTML = `
+                    <span class="icon" style="color: ${light.color};"><i class="fa-fw ${iconClass}"></i></span>
+                    <span class="name">${name}</span>
+                    <div class="actions">
+                        <button class="toggle-visibility" title="切换可见性"><i class="fa-solid ${visibilityIcon}"></i></button>
+                        <button class="delete-from-list" title="删除灯光"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+
+                // 事件监听：点击整个列表项以选中
+                li.addEventListener('click', (e) => {
+                    if (e.target.closest('.actions')) return; // 如果点击的是按钮区域，则不触发选中
+                    selectedLight = lights.find(l => l.id === light.id);
+                    updateControlsUI();
+                    drawHdrPreview();
+                    updateLightListUI(); // 重新渲染列表以更新 active 状态
+                });
+
+                // 事件监听：切换可见性
+                li.querySelector('.toggle-visibility').addEventListener('click', () => {
+                    light.visible = !light.visible;
+                    drawHdrPreview();
+                    updateLightListUI();
+                });
+
+                // 事件监听：从列表中删除
+                li.querySelector('.delete-from-list').addEventListener('click', () => {
+                    deleteLightById(light.id);
+                });
+
+                container.appendChild(li);
+            });
+        }
+        
+        // [新增] 根据ID删除灯光
+        function deleteLightById(id) {
+            if (selectedLight && selectedLight.id === id) {
+                selectedLight = null;
+            }
+            lights = lights.filter(l => l.id !== id);
+            updateControlsUI();
+            drawHdrPreview();
+            updateLightListUI();
         }
 
         function getProjectionFactors(light) {
@@ -839,9 +1068,8 @@
             ctx.restore();
         }
 
-        // [修复] 重构绘制函数以支持全局旋转
         function drawHdrPreview() {
-            if (!tempHdrCtx) return; // 确保临时画布已初始化
+            if (!tempHdrCtx) return; 
 
             // === 步骤1: 在临时画布上合成未旋转的完整图像 ===
             tempHdrCtx.globalCompositeOperation = 'source-over';
@@ -891,10 +1119,11 @@
             // 在背景上叠加灯光
             tempHdrCtx.globalCompositeOperation = 'lighter';
             lights.forEach(light => {
+                if (!light.visible) return; // [修改] 跳过不可见的灯光
+
                 const offsets = [0];
                 const effectiveRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * 1.5 + (light.falloff || 0);
 
-                // 检查是否需要循环绘制 (在临时画布的边缘)
                 if (light.x - effectiveRadius < 0) offsets.push(HDR_WIDTH);
                 if (light.x + effectiveRadius > HDR_WIDTH) offsets.push(-HDR_WIDTH);
 
@@ -905,14 +1134,11 @@
                     else if (light.type === 'octagon') createOctagonPath(tempHdrCtx, light, offsetX);
                     else if (light.type === 'ring') createRingPath(tempHdrCtx, light, offsetX);
 
-const rgb = hexToRgb(light.color);
-const r = rgb.r;
-const g = rgb.g;
-const b = rgb.b;
+                    const rgb = hexToRgb(light.color);
+                    const r = rgb.r, g = rgb.g, b = rgb.b;
                     const displayAlpha = Math.min(light.intensity / 15, 1.0);
                     const fullColorRgba = `rgba(${r}, ${g}, ${b}, ${displayAlpha})`;
                     
-                    // ... (省略内部绘制逻辑，与之前相同)
                     if (light.innerShadow > 0 && light.type !== 'ring') {
                         tempHdrCtx.clip();
                         const { scaleX } = getProjectionFactors(light);
@@ -942,7 +1168,7 @@ const b = rgb.b;
             });
 
              // 绘制选中框 (也在临时画布上)
-            if (selectedLight) {
+            if (selectedLight && selectedLight.visible) { // [修改] 只为可见的选中灯光绘制边框
                 const offsets = [0];
                 const effectiveRadius = (selectedLight.size || Math.max(selectedLight.width || 0, selectedLight.height || 0)) * 1.5 + (selectedLight.falloff || 0);
                 if (selectedLight.x - effectiveRadius < 0) offsets.push(HDR_WIDTH);
@@ -955,7 +1181,7 @@ const b = rgb.b;
                     else if (selectedLight.type === 'rect') createRectPath(tempHdrCtx, selectedLight, offsetX);
                     else if (selectedLight.type === 'octagon') createOctagonPath(tempHdrCtx, selectedLight, offsetX);
                     else if (selectedLight.type === 'ring') createRingPath(tempHdrCtx, selectedLight, offsetX);
-                    tempHdrCtx.lineWidth = 5;
+                    tempHdrCtx.lineWidth = 5 * (HDR_WIDTH / 2048); // 边框随分辨率缩放
                     tempHdrCtx.setLineDash([10, 4]);
                     tempHdrCtx.strokeStyle = 'rgba(128,128,255,0.9)';
                     tempHdrCtx.stroke();
@@ -966,7 +1192,8 @@ const b = rgb.b;
             // === 步骤2: 将临时画布的内容旋转后绘制到主画布上 ===
             const ctx = hdrCanvas.getContext('2d');
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT); // 清空主画布
+            ctx.fillStyle = '#000'; // 清空主画布
+            ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
             const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
             
             // 绘制两次以实现无缝循环
@@ -1013,7 +1240,9 @@ const b = rgb.b;
         function updateControlsUI() {
             const container = document.getElementById('lightControls');
             container.innerHTML = '';
+            updateLightListUI(); // [修改] 任何控件更新时都刷新灯光列表
             if (!selectedLight) return;
+
             const icon = selectedLight.type === 'circle' ? 'fa-lightbulb' :
                          selectedLight.type === 'rect' ? 'fa-square' :
                          selectedLight.type === 'octagon' ? 'fa-sun' :
@@ -1024,7 +1253,7 @@ const b = rgb.b;
                              '环形灯光';
             let html = `<div class="control-section">
                 <div class="control-header">
-                    <h3><i class="fas ${icon}"></i> ${typeName}</h3>
+                    <h3><i class="fas ${icon}"></i> ${typeName} ${selectedLight.displayId}</h3>
                     <button class="delete-button" id="deleteLightBtn"><i class="fa-solid fa-trash-can"></i></button>
                 </div>`;
 
@@ -1284,11 +1513,82 @@ const b = rgb.b;
 
             document.getElementById('resetSceneBtn').addEventListener('click', resetScene);
         }
+        
+        function initResizeEvents() {
+            const verticalHandle = document.getElementById('resizeHandle');
+            verticalHandle.addEventListener('mousedown', startVerticalResize);
 
+            const horizontalHandle = document.getElementById('vertical-resize-handle');
+            horizontalHandle.addEventListener('mousedown', startHorizontalResize);
+
+            window.addEventListener('mousemove', (e) => {
+                if (isResizingVertical) handleVerticalResize(e);
+                if (isResizingHorizontal) handleHorizontalResize(e);
+            });
+            window.addEventListener('mouseup', () => {
+                isResizingVertical = false;
+                isResizingHorizontal = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            });
+        }
+        
+        function startVerticalResize(e) {
+            isResizingVertical = true;
+            startY = e.clientY;
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            startTopHeight = topPreview.offsetHeight;
+            startBottomHeight = bottomPreview.offsetHeight;
+            document.body.style.cursor = 'ns-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        }
+
+        function handleVerticalResize(e) {
+            if (!isResizingVertical) return;
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            const deltaY = e.clientY - startY;
+            const newTop = startTopHeight + deltaY;
+            const newBottom = startBottomHeight - deltaY;
+            if (newTop > 120 && newBottom > 120) {
+                topPreview.style.height = `${newTop}px`;
+                bottomPreview.style.height = `${newBottom}px`;
+                resize3DCanvas();
+            }
+        }
+        
+        function startHorizontalResize(e) {
+            isResizingHorizontal = true;
+            startX = e.clientX;
+            const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+            const listPanel = document.getElementById('light-list-panel');
+            startCanvasWidth = canvasWrapper.offsetWidth;
+            startListWidth = listPanel.offsetWidth;
+            document.body.style.cursor = 'ew-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        }
+
+        function handleHorizontalResize(e) {
+            if (!isResizingHorizontal) return;
+            const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+            const listPanel = document.getElementById('light-list-panel');
+            const deltaX = e.clientX - startX;
+            const newCanvasWidth = startCanvasWidth + deltaX;
+            const newListWidth = startListWidth - deltaX;
+            if (newCanvasWidth > 150 && newListWidth > 150) { // 最小宽度限制
+                canvasWrapper.style.width = `${newCanvasWidth}px`;
+                listPanel.style.width = `${newListWidth}px`;
+            }
+        }
+        
         function initApp() {
             try {
                 init3DScene();
                 resetCanvas(HDR_WIDTH, HDR_HEIGHT);
+                initResizeEvents();
 
                 document.getElementById('resolutionSelector').addEventListener('change', (e) => {
                     const [w, h] = e.target.value.split('x').map(Number);
@@ -1305,10 +1605,10 @@ const b = rgb.b;
                         e.currentTarget.classList.add('active');
                         
                         switch(addingLightType) {
-                            case 'circle': hdrCanvas.classList.add('cursor-dashed'); break;
-                            case 'rect': hdrCanvas.classList.add('cursor-square'); break;
-                            case 'octagon': hdrCanvas.classList.add('cursor-octagon'); break;
-                            case 'ring': hdrCanvas.classList.add('cursor-ring'); break;
+                            case 'circle': hdrCanvas.style.cursor = 'crosshair'; break;
+                            case 'rect': hdrCanvas.style.cursor = 'crosshair'; break;
+                            case 'octagon': hdrCanvas.style.cursor = 'crosshair'; break;
+                            case 'ring': hdrCanvas.style.cursor = 'crosshair'; break;
                         }
                     });
                 });
@@ -1316,12 +1616,7 @@ const b = rgb.b;
                 hdrCanvas.addEventListener('mousedown', handleCanvasMouseDown);
                 hdrCanvas.addEventListener('mousemove', handleCanvasMouseMove);
                 window.addEventListener('mouseup', handleMouseUp);
-                hdrCanvas.addEventListener('mouseleave', handleMouseUp);
-
-                const resizeHandle = document.getElementById('resizeHandle');
-                resizeHandle.addEventListener('mousedown', startResize);
-                window.addEventListener('mousemove', handleResize);
-                window.addEventListener('mouseup', stopResize);
+                hdrCanvas.addEventListener('mouseleave', () => { if (!addingLightType) handleMouseUp(); });
 
                 document.querySelectorAll('.tab-button').forEach(btn => {
                     btn.addEventListener('click', () => {
@@ -1359,9 +1654,13 @@ const b = rgb.b;
                 document.getElementById('modelUpload').addEventListener('change', handleModelUpload);
                 addModelControlListeners();
 
+                // 初始化一个灯光
+                lightTypeCounters['circle'] = 1;
                 lights.push({
                     id: Date.now(),
+                    displayId: 1,
                     type: 'circle',
+                    visible: true,
                     x: HDR_WIDTH * 0.85,
                     y: HDR_HEIGHT * 0.4,
                     size: 120,
@@ -1389,7 +1688,6 @@ const b = rgb.b;
             HDR_WIDTH = width; HDR_HEIGHT = height;
             hdrCanvas.width = width; hdrCanvas.height = height;
 
-            // [新增] 创建或重置临时画布
             tempHdrCanvas = document.createElement('canvas');
             tempHdrCanvas.width = width;
             tempHdrCanvas.height = height;
@@ -1411,7 +1709,6 @@ const b = rgb.b;
         
         function handleCanvasMouseDown(e) {
             const rect = hdrCanvas.getBoundingClientRect();
-            // [修复] 计算鼠标在未旋转场景中的坐标
             const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
             const mouseX = (e.clientX - rect.left) * (HDR_WIDTH / rect.width);
             
@@ -1419,12 +1716,19 @@ const b = rgb.b;
             let y = (e.clientY - rect.top) * (HDR_HEIGHT / rect.height);
             
             document.querySelectorAll('#addCircleLight, #addRectLight, #addOctagonLight, #addRingLight').forEach(btn => btn.classList.remove('active'));
-            hdrCanvas.classList.remove('cursor-dashed', 'cursor-square', 'cursor-octagon', 'cursor-ring');
+            hdrCanvas.style.cursor = 'default';
             
             if (addingLightType) {
+                if (!lightTypeCounters[addingLightType]) {
+                    lightTypeCounters[addingLightType] = 0;
+                }
+                lightTypeCounters[addingLightType]++;
+                
                 const newLight = {
                     id: Date.now(),
+                    displayId: lightTypeCounters[addingLightType],
                     type: addingLightType,
+                    visible: true,
                     x, y,
                     color: '#ffffff',
                     intensity: 10.0,
@@ -1446,11 +1750,12 @@ const b = rgb.b;
                 lights.push(newLight);
                 selectedLight = newLight;
                 addingLightType = null;
-                hdrCanvas.style.cursor = ''; 
             } else {
                 let clicked = null;
                 for (let i = lights.length -1; i >=0; i--) {
                     const light = lights[i];
+                    if (!light.visible) continue; // 不可选不可见的灯光
+                    
                     const { scaleX } = getProjectionFactors(light);
                     const effectiveRadius = (light.size || Math.max(light.width, light.height)/2) * scaleX;
                     const dx = x - light.x, dy = y - light.y;
@@ -1490,13 +1795,6 @@ const b = rgb.b;
 
         function handleMouseUp() { draggingLight = null; }
 
-        function getCanvasCoords(e) {
-            const rect = hdrCanvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) * (HDR_WIDTH / rect.width);
-            const y = (e.clientY - rect.top) * (HDR_HEIGHT / rect.height);
-            return { x, y };
-        }
-
         function handleImageUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1513,39 +1811,6 @@ const b = rgb.b;
             reader.readAsDataURL(file);
         }
 
-        function startResize(e) {
-            isResizing = true;
-            startY = e.clientY;
-            const topPreview = document.querySelector('.top-preview');
-            const bottomPreview = document.querySelector('.bottom-preview');
-            startTopHeight = parseFloat(getComputedStyle(topPreview).height);
-            startBottomHeight = parseFloat(getComputedStyle(bottomPreview).height);
-            document.body.style.cursor = 'ns-resize';
-            document.body.style.userSelect = 'none';
-            e.preventDefault();
-        }
-
-        function handleResize(e) {
-            if (!isResizing) return;
-            const topPreview = document.querySelector('.top-preview');
-            const bottomPreview = document.querySelector('.bottom-preview');
-            const deltaY = e.clientY - startY;
-            const newTop = startTopHeight + deltaY;
-            const newBottom = startBottomHeight - deltaY;
-            if (newTop > 120 && newBottom > 120) {
-                topPreview.style.height = `${newTop}px`;
-                bottomPreview.style.height = `${newBottom}px`;
-                resize3DCanvas();
-            }
-        }
-
-        function stopResize() {
-            if (!isResizing) return;
-            isResizing = false;
-            document.body.style.cursor = '';
-            document.body.style.userSelect = '';
-        }
-        
         function addControlListeners() {
             if (!selectedLight) return;
             document.getElementById('deleteLightBtn').addEventListener('click', deleteSelectedLight);
@@ -1564,6 +1829,7 @@ const b = rgb.b;
                     document.getElementById('falloffValue').value = 0;
                 }
                 drawHdrPreview();
+                if (prop === 'color') updateLightListUI(); // 颜色变化时更新列表图标颜色
             };
 
             const sliders = document.querySelectorAll('.control-group input[type="range"]');
@@ -1591,10 +1857,9 @@ const b = rgb.b;
             if (colorPicker && colorText) {
                 const updateColor = (value) => {
                     if (!/^#[0-9a-f]{6}$/i.test(value)) return;
-                    selectedLight.color = value;
                     colorPicker.value = value;
                     colorText.value = value;
-                    drawHdrPreview();
+                    updateLightProperty('color', value);
                 };
                 colorPicker.addEventListener('input', e => updateColor(e.target.value));
                 colorText.addEventListener('change', e => updateColor(e.target.value));
@@ -1623,6 +1888,7 @@ const b = rgb.b;
                         colorWrapper.classList.remove('disabled-color');
                     }
                     drawHdrPreview();
+                    updateLightListUI();
                 });
                 
                 const updateTemp = (temp) => {
@@ -1633,6 +1899,7 @@ const b = rgb.b;
                         document.getElementById('color').value = hexColor;
                         document.getElementById('colorText').value = hexColor;
                         drawHdrPreview();
+                        updateLightListUI();
                     }
                 }
                 
@@ -1652,20 +1919,17 @@ const b = rgb.b;
 
         function deleteSelectedLight() {
             if (!selectedLight) return;
-            lights = lights.filter(l => l.id !== selectedLight.id);
-            selectedLight = null;
-            updateControlsUI();
-            drawHdrPreview();
+            deleteLightById(selectedLight.id);
         }
 
-function hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : { r: 255, g: 255, b: 255 };
-}
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 255, g: 255, b: 255 };
+        }
 
         function updateStatus(message, isSuccess) {
             let statusEl = document.getElementById('status-indicator');
@@ -1824,10 +2088,8 @@ function hexToRgb(hex) {
             return [ Math.floor(r * m), Math.floor(g * m), Math.floor(b * m), e + 128 ];
         }
 
-        // [修复] 重构导出函数以支持全局旋转
         async function generateHdrFile() {
             console.log("Generating true HDR data...");
-            // 步骤1: 生成未旋转的浮点数据
             const unrotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const bgCanvas = document.createElement('canvas');
             bgCanvas.width = HDR_WIDTH;
@@ -1877,43 +2139,43 @@ function hexToRgb(hex) {
                 unrotatedFloatData[i * 3 + 2] = b * background.brightness;
             }
 
-    for (const light of lights) {
-        const linearColor = hexToLinear(light.color);
-        const lr = linearColor.r * light.intensity;
-        const lg = linearColor.g * light.intensity;
-        const lb = linearColor.b * light.intensity;
-        
-        const positions = [light.x];
-        if (light.x < light.size) positions.push(light.x + HDR_WIDTH);
-        if (light.x > HDR_WIDTH - light.size) positions.push(light.x - HDR_WIDTH);
-        
-        for (const posX of positions) {
-            for (let y = 0; y < HDR_HEIGHT; y++) {
-                for (let x = 0; x < HDR_WIDTH; x++) {
-                    const idx = (y * HDR_WIDTH + x) * 3;
-                    let attenuation = 0;
-                    
-                    if (light.type === 'circle') {
-                        attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                    } else if (light.type === 'rect') {
-                        attenuation = computeRectAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                    } else if (light.type === 'octagon') {
-                        attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                    } else if (light.type === 'ring') {
-                        attenuation = computeRingAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                    }
-                    
-                    if (attenuation > 0) {
-                        unrotatedFloatData[idx] += lr * attenuation;
-                        unrotatedFloatData[idx + 1] += lg * attenuation;
-                        unrotatedFloatData[idx + 2] += lb * attenuation;
+            for (const light of lights) {
+                if (!light.visible) continue; // 跳过不可见的灯光
+                const linearColor = hexToLinear(light.color);
+                const lr = linearColor.r * light.intensity;
+                const lg = linearColor.g * light.intensity;
+                const lb = linearColor.b * light.intensity;
+                
+                const positions = [light.x];
+                if (light.x < light.size) positions.push(light.x + HDR_WIDTH);
+                if (light.x > HDR_WIDTH - light.size) positions.push(light.x - HDR_WIDTH);
+                
+                for (const posX of positions) {
+                    for (let y = 0; y < HDR_HEIGHT; y++) {
+                        for (let x = 0; x < HDR_WIDTH; x++) {
+                            const idx = (y * HDR_WIDTH + x) * 3;
+                            let attenuation = 0;
+                            
+                            if (light.type === 'circle') {
+                                attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            } else if (light.type === 'rect') {
+                                attenuation = computeRectAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            } else if (light.type === 'octagon') {
+                                attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            } else if (light.type === 'ring') {
+                                attenuation = computeRingAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            }
+                            
+                            if (attenuation > 0) {
+                                unrotatedFloatData[idx] += lr * attenuation;
+                                unrotatedFloatData[idx + 1] += lg * attenuation;
+                                unrotatedFloatData[idx + 2] += lb * attenuation;
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
             
-            // 步骤2: 创建旋转后的浮点数据
             const rotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const rotationOffset = Math.round((background.rotation / 360) * HDR_WIDTH);
 
@@ -1929,7 +2191,6 @@ function hexToRgb(hex) {
                 }
             }
 
-            // 步骤3: 将旋转后的数据转换为RGBE格式
             const rgbeData = new Uint8Array(HDR_WIDTH * HDR_HEIGHT * 4);
             for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
                 const r = rotatedFloatData[i * 3 + 0], g = rotatedFloatData[i * 3 + 1], b = rotatedFloatData[i * 3 + 2];
@@ -1954,7 +2215,11 @@ function hexToRgb(hex) {
         }
 
         window.addEventListener('load', initApp);
-        window.addEventListener('resize', resize3DCanvas);
+        window.addEventListener('resize', () => {
+            resize3DCanvas();
+            // 在窗口大小变化时也需要重新绘制2D画布以适应新的容器尺寸
+            drawHdrPreview();
+        });
 
     </script>
 </body>
