@@ -37,6 +37,39 @@
       position: relative;
 	background-color: #f5f7ff;
     }
+#global-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loader-content {
+  text-align: center;
+  max-width: 300px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: var(--main-color);
+  width: 0%;
+  transition: width 0.3s ease;
+}
     .download-all-container {
 	text-align: center;
     padding: 10px;
@@ -759,17 +792,25 @@ let modelLoaded = false;
 
 // 新增预加载函数
 async function preloadModel() {
+  const loader = document.getElementById('global-loader');
+  const progressBar = document.querySelector('.progress');
+  
+  if (loader) loader.classList.remove('hidden');
+  
   try {
-    console.time('模型加载时间');
-    session = await ort.InferenceSession.create('model/u2netp.onnx');
-    console.timeEnd('模型加载时间');
-    modelLoaded = true;
-    console.log('✅ 模型预加载完成');
+    // 添加ORT进度回调
+    ort.env.wasm.progress = (p) => {
+      progressBar.style.width = `${p * 100}%`;
+    };
     
-    // 如果有待处理的图片，启用按钮
-    if (files.length > 0) {
-      processBtn.disabled = false;
-    }
+    session = await ort.InferenceSession.create('model/u2netp.onnx', {
+      executionProviders: ['wasm'],
+      graphOptimizationLevel: 'all'
+    });
+    
+    modelLoaded = true;
+    if (loader) loader.classList.add('hidden');
+    
   } catch (error) {
     console.error('模型预加载失败:', error);
   }
