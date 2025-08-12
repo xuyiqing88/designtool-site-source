@@ -182,10 +182,14 @@ display: flex;
             cursor: pointer;
             transition: background-color .2s;
             font-size: 14px;
+	border: 1px solid #00000000;
         }
-        
+ 
+	.light-item:nth-child(even) {
+    		background: var(--panel-bg)
+	}
         .light-item:hover {
-            background-color: rgba(255,255,255,0.08);
+            background-color: #8080ff1a;
         }
 
         .light-item.active {
