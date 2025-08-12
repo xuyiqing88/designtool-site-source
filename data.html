@@ -725,6 +725,13 @@
                 <button class="btn" onclick="generateStoreAddress()"><i class="fas fa-sync-alt"></i></button>
             </div>
         </div>
+<div class="data-item">
+    <div class="data-label">公司名称</div>
+    <div class="data-value" id="company-name">联通支付有限公司</div>
+    <div class="data-controls">
+        <button class="btn" onclick="generateCompanyName()"><i class="fas fa-sync-alt"></i></button>
+    </div>
+</div>
     </div>
 
         <div class="data-group">
@@ -1105,7 +1112,24 @@
     const storeSuffixes = ['中关村店', '王府井店', '西单店', '国贸店', '望京店', '五道口店', 
                          '朝阳门店', '三里屯店', '金融街店', '上地店', '回龙观店', '天通苑店', 
                          '皂君庙营业厅', '西直门店', '东直门店', '海淀黄庄店'];
-    
+    const companyNames = [
+    '联通支付有限公司',
+    '中企动力科技股份有限公司',
+    '阿里巴巴集团控股有限公司',
+    '腾讯科技（深圳）有限公司',
+    '百度在线网络技术（北京）有限公司',
+    '京东数字科技控股有限公司',
+    '华为技术有限公司',
+    '小米科技有限责任公司',
+    '字节跳动有限公司',
+    '美团科技有限公司',
+    '滴滴出行科技有限公司',
+    '网易（杭州）网络有限公司',
+    '新浪网络技术股份有限公司',
+    '联想（北京）有限公司',
+    '中兴通讯股份有限公司',
+    '中国移动通信集团有限公司'
+];
     const domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', '163.com', 'qq.com', 'foxmail.com', 'icloud.com'];
     
     // 图片API配置
@@ -1369,7 +1393,10 @@
         const suffix = storeSuffixes[Math.floor(Math.random() * storeSuffixes.length)];
         document.getElementById('store-address').textContent = `${brand}（${suffix}）`;
     }
-    
+    function generateCompanyName() {
+    const company = companyNames[Math.floor(Math.random() * companyNames.length)];
+    document.getElementById('company-name').textContent = company;
+}
     function generateTime() {
         const hours = Math.floor(Math.random() * 24).toString().padStart(2, '0');
         const minutes = Math.floor(Math.random() * 60).toString().padStart(2, '0');
@@ -1580,26 +1607,27 @@ function generateNatureScenery() {
     
     // 一键生成所有数据
     function generateAllData() {
-        generateNames();
-        generatePhones();
-        generatePrice();
-        generateProductName();
-        generateProductId();
-        generateBankName();
-        fetchNews();
-        generateCountry();
-        generateProvince();  // 这会生成省份、城市和区域
-        generateAddress();
-        generateStoreAddress();
-        generateDate();
-        generateTime();
-        generateEmail();
-        generateIdCard();
-        generatePersonAvatar();
-        generateNatureScenery();
-	generateVectorAvatar(); 
-        
-        showNotification('所有数据已重新生成！');
+    generateNames();
+    generatePhones();
+    generatePrice();
+    generateProductName();
+    generateProductId();
+    generateBankName();
+    fetchNews();
+    generateCountry();
+    generateProvince();
+    generateAddress();
+    generateStoreAddress();
+    generateCompanyName();  // 添加这行
+    generateDate();
+    generateTime();
+    generateEmail();
+    generateIdCard();
+    generatePersonAvatar();
+    generateNatureScenery();
+    generateVectorAvatar();
+    
+    showNotification('所有数据已重新生成！');
     }
     
     // 初始化数据
