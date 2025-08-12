@@ -37,39 +37,6 @@
       position: relative;
 	background-color: #f5f7ff;
     }
-#global-loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.loader-content {
-  text-align: center;
-  max-width: 300px;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 6px;
-  background: #e0e0e0;
-  border-radius: 3px;
-  margin-top: 20px;
-  overflow: hidden;
-}
-
-.progress {
-  height: 100%;
-  background: var(--main-color);
-  width: 0%;
-  transition: width 0.3s ease;
-}
     .download-all-container {
 	text-align: center;
     padding: 10px;
@@ -686,15 +653,6 @@
 </head>
 <body>
 <div id="global-sidebar"></div>
-<div id="global-loader" class="hidden">
-  <div class="loader-content">
-    <div class="spinner"></div>
-    <p>首次使用需要加载AI模型(约30MB)，请稍候...</p>
-    <div class="progress-bar">
-      <div class="progress"></div>
-    </div>
-  </div>
-</div>
   <div class="container">
     <header>
       <h1>AI一键抠图（支持批量）</h1>
@@ -786,36 +744,7 @@
     const modalImage = document.getElementById('modal-image');
     const closeModal = document.querySelector('.close-modal');
 
-// 在脚本开头添加预加载逻辑
-let session = null;
-let modelLoaded = false;
-
-// 新增预加载函数
-async function preloadModel() {
-  const loader = document.getElementById('global-loader');
-  const progressBar = document.querySelector('.progress');
-  
-  if (loader) loader.classList.remove('hidden');
-  
-  try {
-    // 添加ORT进度回调
-    ort.env.wasm.progress = (p) => {
-      progressBar.style.width = `${p * 100}%`;
-    };
-    
-    session = await ort.InferenceSession.create('model/u2netp.onnx', {
-      executionProviders: ['wasm'],
-      graphOptimizationLevel: 'all'
-    });
-    
-    modelLoaded = true;
-    if (loader) loader.classList.add('hidden');
-    
-  } catch (error) {
-    console.error('模型预加载失败:', error);
-  }
-}
-
+    let session = null; // 模型会话
     let files = []; // 存储用户选择的文件
     let processedFiles = []; // 存储处理后的文件
 
@@ -984,15 +913,15 @@ async function preloadModel() {
     // 处理图片
     async function processImages() {
       if (files.length === 0) return;
-  
-  // 如果模型尚未加载，显示加载状态
-  if (!modelLoaded) {
-    processBtn.disabled = true;
-    processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 模型加载中...';
-    
-    try {
-      await preloadModel(); // 确保模型加载
-    } catch (error) {
+      
+      processBtn.disabled = true;
+      processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+      
+      // 加载模型（如果尚未加载）
+      if (!session) {
+        try {
+          session = await ort.InferenceSession.create('model/u2netp.onnx');
+        } catch (error) {
           console.error('模型加载失败:', error);
           alert('模型加载失败，请检查控制台获取详细信息');
           resetProcessButton();
@@ -1230,8 +1159,7 @@ async function preloadModel() {
 
     // 初始化
     window.addEventListener('DOMContentLoaded', () => {
-        initEventListeners();
-  preloadModel(); // 新增预加载调用
+      initEventListeners();
     });
   </script>
 </body>
