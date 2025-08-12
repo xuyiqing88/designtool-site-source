@@ -1682,7 +1682,43 @@ display: flex;
                 updateStatus(`初始化错误: ${e.message}`, false);
             }
         }
-
+    // === 添加缺失的 getCanvasPixelPosition 函数 ===
+    function getCanvasPixelPosition(canvas, clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        
+        // 计算实际显示区域（去除黑边）
+        const canvasAspect = HDR_WIDTH / HDR_HEIGHT;
+        const displayAspect = rect.width / rect.height;
+        
+        let displayWidth, displayHeight, offsetX, offsetY;
+        
+        if (displayAspect > canvasAspect) {
+            // 容器更宽，上下有黑边
+            displayHeight = rect.height;
+            displayWidth = displayHeight * canvasAspect;
+            offsetX = (rect.width - displayWidth) / 2;
+            offsetY = 0;
+        } else {
+            // 容器更高，左右有黑边
+            displayWidth = rect.width;
+            displayHeight = displayWidth / canvasAspect;
+            offsetX = 0;
+            offsetY = (rect.height - displayHeight) / 2;
+        }
+        
+        // 计算在画布内容区域的相对位置
+        const x = clientX - rect.left - offsetX;
+        const y = clientY - rect.top - offsetY;
+        
+        // 转换为画布像素坐标
+        const pixelX = (x / displayWidth) * HDR_WIDTH;
+        const pixelY = (y / displayHeight) * HDR_HEIGHT;
+        
+        return { 
+            x: Math.max(0, Math.min(HDR_WIDTH, pixelX)), 
+            y: Math.max(0, Math.min(HDR_HEIGHT, pixelY))
+        };
+    }
         function resetCanvas(width, height) {
             const prevW = HDR_WIDTH, prevH = HDR_HEIGHT;
             HDR_WIDTH = width; HDR_HEIGHT = height;
@@ -1708,12 +1744,10 @@ display: flex;
         }
         
         function handleCanvasMouseDown(e) {
-            const rect = hdrCanvas.getBoundingClientRect();
-            const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
-            const mouseX = (e.clientX - rect.left) * (HDR_WIDTH / rect.width);
-            
-            let x = (mouseX + rotationOffset) % HDR_WIDTH;
-            let y = (e.clientY - rect.top) * (HDR_HEIGHT / rect.height);
+    const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
+    const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+    let x = (pos.x + rotationOffset) % HDR_WIDTH;
+    let y = pos.y;
             
             document.querySelectorAll('#addCircleLight, #addRectLight, #addOctagonLight, #addRingLight').forEach(btn => btn.classList.remove('active'));
             hdrCanvas.style.cursor = 'default';
@@ -1775,13 +1809,11 @@ display: flex;
         }
 
         function handleCanvasMouseMove(e) {
-            if (draggingLight) {
-                const rect = hdrCanvas.getBoundingClientRect();
-                const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
-                const mouseX = (e.clientX - rect.left) * (HDR_WIDTH / rect.width);
-                
-                let x = (mouseX + rotationOffset);
-                let y = (e.clientY - rect.top) * (HDR_HEIGHT / rect.height);
+    if (draggingLight) {
+        const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
+        const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+        let x = (pos.x + rotationOffset);
+        let y = pos.y;
 
                 let newX = x;
                 newX = (newX % HDR_WIDTH + HDR_WIDTH) % HDR_WIDTH;
