@@ -113,15 +113,15 @@
         
         /* 新增: top-preview 内部布局 */
         .top-preview-content {
-display: flex;
-  flex-grow: 1;
-  height: calc(100% - 38px); 
+    display: flex;
+    flex-grow: 1;
+    height: calc(100% - 38px);
         }
         
         #hdr-canvas-wrapper {
-  flex-grow: 1;
-  position: relative;
-  min-width: 200px; /* 最小宽度 */
+    flex: 0.75 1 0%; /* 默认75%宽度 */
+    position: relative;
+    min-width: 200px;
         }
 #hdrCanvas {
   position: absolute;
@@ -143,14 +143,14 @@ display: flex;
         }
         
         #light-list-panel {
-  width: 25%; /* 默认宽度 */
-  min-width: 200px; /* 最小宽度 */
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid var(--line);
-  padding-left: 10px;
-  overflow: hidden;
+    flex: 0.25 1 0%; /* 默认25%宽度 */
+    min-width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--line);
+    padding-left: 10px;
+    overflow: hidden;
         }
         
         .light-list-header h4 {
@@ -1574,19 +1574,44 @@ display: flex;
             document.body.style.userSelect = 'none';
             e.preventDefault();
         }
+// 新增自适应函数
+function adjustCanvasAndListWidths() {
+    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+    const listPanel = document.getElementById('light-list-panel');
+    
+    // 检查是否有保存的比例值
+    if (canvasWrapper.dataset.ratio && listPanel.dataset.ratio) {
+        const canvasRatio = parseFloat(canvasWrapper.dataset.ratio);
+        const listRatio = parseFloat(listPanel.dataset.ratio);
+        
+        // 应用保存的比例
+        canvasWrapper.style.flex = `${canvasRatio} 1 0%`;
+        listPanel.style.flex = `${listRatio} 1 0%`;
+    } else {
+        // 没有比例时恢复默认
+        canvasWrapper.style.flex = '';
+        listPanel.style.flex = '';
+    }
+}
 
-        function handleHorizontalResize(e) {
-            if (!isResizingHorizontal) return;
-            const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
-            const listPanel = document.getElementById('light-list-panel');
-            const deltaX = e.clientX - startX;
-            const newCanvasWidth = startCanvasWidth + deltaX;
-            const newListWidth = startListWidth - deltaX;
-            if (newCanvasWidth > 150 && newListWidth > 150) { // 最小宽度限制
-                canvasWrapper.style.width = `${newCanvasWidth}px`;
-                listPanel.style.width = `${newListWidth}px`;
-            }
-        }
+function handleHorizontalResize(e) {
+    if (!isResizingHorizontal) return;
+    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+    const listPanel = document.getElementById('light-list-panel');
+    const deltaX = e.clientX - startX;
+    
+    // 计算新宽度比例
+    const newCanvasRatio = (startCanvasWidth + deltaX) / (startCanvasWidth + startListWidth);
+    const newListRatio = (startListWidth - deltaX) / (startCanvasWidth + startListWidth);
+    
+    // 设置比例值
+    canvasWrapper.style.flex = `${newCanvasRatio} 1 0%`;
+    listPanel.style.flex = `${newListRatio} 1 0%`;
+    
+    // 保存当前比例到元素
+    canvasWrapper.dataset.ratio = newCanvasRatio;
+    listPanel.dataset.ratio = newListRatio;
+}
         
         function initApp() {
             try {
@@ -1598,7 +1623,13 @@ display: flex;
                     const [w, h] = e.target.value.split('x').map(Number);
                     resetCanvas(w, h);
                 });
-                
+                    // 初始化比例值
+    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+    const listPanel = document.getElementById('light-list-panel');
+    if (!canvasWrapper.dataset.ratio) {
+        canvasWrapper.dataset.ratio = "0.75";
+        listPanel.dataset.ratio = "0.25";
+    }
                 const addButtons = ['addCircleLight', 'addRectLight', 'addOctagonLight', 'addRingLight'];
                 addButtons.forEach(id => {
                     const btn = document.getElementById(id);
@@ -2255,6 +2286,7 @@ display: flex;
             resize3DCanvas();
             // 在窗口大小变化时也需要重新绘制2D画布以适应新的容器尺寸
             drawHdrPreview();
+    adjustCanvasAndListWidths(); // 添加这行
         });
 
     </script>
