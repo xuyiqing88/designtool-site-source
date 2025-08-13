@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDRI Studio 编辑器 - 免费在线HDR编辑器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <style>
+        :root {
+            --main-color: #8080FF;
+            --line: #7878784d;
+            --main-bg: #222228;
+            --panel-bg: #2E2E33;
+            --bt-gradient: linear-gradient(to left, #6450ff, #8f56fa);
+            --add-gradient: linear-gradient(to left, #50c878, #56fa8f);
+            --octagon-gradient: linear-gradient(to left, #ff7e5f, #feb47b);
+            --text1: #ffffff;
+            --text2: #c7d1e2;
+            --text3: #969dbb;
+            --input-bg: #3a3a42;
+            --scrollbar-thumb: #4a4a5a;
+            --scrollbar-track: #2a2a33;
+            --success: #50c878;
+            --warning: #ff7e5f;
+        }
+        * { 
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0; 
+            background-color: var(--main-bg); 
+            color: var(--text2);
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            min-height: 100vh; 
+            overflow: hidden; /* 防止拖动时页面滚动 */
+        }
+        .scripts {
+            margin-left: 10px; 
+            font-size: 14px; 
+            font-weight: 400; 
+            color: var(--text3);
+        }
+        #resizeHandle {
+            position: relative; /* 从 static 改为 relative */
+            height: 10px;
+            background: #00000000;
+            cursor: ns-resize;
+            z-index: 50;
+            transition: background .2s;
+        }
+        .editor-container { 
+            display: flex; 
+            gap: 10px; 
+            width: 100%; 
+            height: calc(100vh - 40px); 
+            position: relative; 
+            margin: 20px 20px 20px 60px;
+        }
+        .controls-panel {
+            width: 400px; 
+            background-color: var(--panel-bg); 
+            border: 1px solid var(--line); 
+            border-radius: 8px;
+            padding: 20px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+            flex-shrink: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%;
+        }
+        .controls-header {
+            position: sticky;
+            top: 0;
+            background-color: var(--panel-bg);
+            z-index: 10;
+        }
+
+        .controls-content {
+            overflow-y: auto;
+            flex-grow: 1;
+            margin-top: 15px;
+        }
+
+        .preview-panel {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+
+        .preview-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-preview {
+            height: 50%;
+        }
+        
+        /* 新增: top-preview 内部布局 */
+        .top-preview-content {
+    display: flex;
+    flex-grow: 1;
+    height: calc(100% - 38px);
+        }
+        
+        #hdr-canvas-wrapper {
+    flex: 0.75 1 0%; /* 默认75%宽度 */
+    position: relative;
+    min-width: 200px;
+        }
+#hdrCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 保持比例 */
+}
+        #vertical-resize-handle {
+            width: 10px;
+            background: #00000000;
+            cursor: ew-resize;
+            flex-shrink: 0;
+            transition: background .2s;
+        }
+        #vertical-resize-handle:hover {
+            background: #ffffff1a;
+        }
+        
+        #light-list-panel {
+    flex: 0.25 1 0%; /* 默认25%宽度 */
+    min-width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--line);
+    padding-left: 10px;
+    overflow: hidden;
+        }
+        
+        .light-list-header h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: var(--text2);
+            font-weight: 500;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        #light-list-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            flex-grow: 1;
+	    background: var(--main-bg);
+    border-radius: 4px;
+    padding: 8px;
+        }
+        
+        .light-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 5px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background-color .2s;
+            font-size: 14px;
+	border: 1px solid #00000000;
+        }
+ 
+	.light-item:nth-child(even) {
+    		background: var(--panel-bg)
+	}
+        .light-item:hover {
+            background-color: #8080ff1a;
+        }
+
+        .light-item.active {
+            background-color: #8080ff30;
+            border: 1px solid var(--main-color);
+        }
+        
+        .light-item .icon {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .light-item .name {
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .light-item .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .light-item .actions button {
+            background: none;
+            border: none;
+            color: var(--text3);
+            cursor: pointer;
+            padding: 2px;
+            font-size: 14px;
+            line-height: 1;
+            transition: color .2s;
+        }
+        
+        .light-item .actions button:hover {
+            color: var(--text1);
+        }
+
+
+        .bottom-preview {
+            height: 50%;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text3);
+            flex-shrink: 0; /* 防止 header 被压缩 */
+        }
+
+        .preview-header h3 {
+            margin: 0;
+            color: var(--text2);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .import-model-button {
+            padding: 4px 12px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            background: var(--input-bg);
+            color: var(--text2);
+            cursor: pointer;
+            transition: all .2s ease;
+            font-size: 12px;
+            margin-left: auto;
+        }
+        .import-model-button:hover {
+            border-color: var(--main-color);
+            color: var(--main-color);
+        }
+
+        canvas { 
+            display:block; 
+            background-color:#000; 
+            border-radius:4px; 
+            height:100%; 
+            margin:0 auto; 
+            width:100%; 
+            border: 1px solid var(--main-bg);
+        }
+        canvas:hover {
+            border: 1px solid #8080ff75;
+        } 
+        h2.main-title { 
+            margin-top:0; 
+            border-bottom:1px solid var(--line); 
+            padding-bottom:15px; 
+            font-size:22px; 
+            color: var(--main-color); 
+            font-weight:600; 
+            display:flex; 
+            align-items:center; 
+            gap:10px; 
+            justify-content:space-between; 
+        }
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 10px;
+        }
+        .button-group button {
+            padding:10px 12px; 
+            border:none; 
+            border-radius:5px; 
+            color: var(--text1); 
+            cursor:pointer; 
+            transition:all .2s ease;
+            font-size:14px; 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            gap:8px; 
+            background:var(--line); 
+            border:1px solid #969dbb00;
+            flex-direction: column;
+        }
+        .button-group button.active {
+            border:1px solid var(--main-color); 
+            color: var(--main-color); 
+            background:#8080ff30;
+            box-shadow: 0 0 10px rgba(128, 128, 255, 0.5);
+        }
+        .button-group button:hover {
+            border: 1px solid var(--main-color);
+            color: var(--main-color);
+            background: #8080ff30;
+        }
+
+        .export-button {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 25px;
+            background: var(--bt-gradient);
+            color: var(--text1);
+            cursor: pointer;
+            transition: all .2s ease-in-out;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .export-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            opacity: 0.86;
+        }
+
+        .control-section {
+            background-color: rgba(0,0,0,0.1);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        #modelControls {
+            display: none; 
+        }
+
+        .control-group {
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .control-group label { 
+            display:block;  
+            font-size:14px; 
+            color: var(--text2); 
+            width: 100px;
+        }
+        .control-group input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background:var(--line);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--main-color);
+            cursor: pointer;
+            border: 2px solid var(--panel-bg);
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--main-color);
+            cursor: pointer;
+            border: 2px solid var(--panel-bg);
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group input[type="color"] {
+            min-width: 40px;
+            height: 30px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+            background: none;
+        }
+
+        .control-group input[type="text"], .control-group input[type="number"], #resolutionSelector {
+            flex-grow: 1;
+            background-color: var(--main-bg);
+            color: var(--text1);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 6px 8px;
+            min-width: 70px;
+        }
+
+        .value-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .control-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #f59e0b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-button:hover {
+            color: #ff4757;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background-color: var(--line);
+            border-radius: 6px;
+            padding: 4px;
+            margin-bottom: 15px;
+            gap: 4px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 6px 0;
+            background: none;
+            border: none;
+            color: var(--text1);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all .2s ease;
+        }
+        .tab-button:hover {
+            background: var(--line);
+            box-shadow: 0 2px 4px #27272b3d;
+        }
+        .tab-button.active {
+            background: #babac5;
+            color: var(--main-bg);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        #imageUploadLabel { 
+            display:block; 
+            padding:10px; 
+            text-align:center; 
+            background-color: var(--input-bg); 
+            border:1px dashed var(--line); 
+            border-radius:4px; 
+            cursor:pointer;    
+            flex: 1;
+        }
+        #imageUploadLabel:hover {
+            background-color: #44444c;
+        }
+
+        #imageUpload {
+            display: none;
+        }
+        #modelUpload {
+            display: none;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 100;
+            background: rgba(0,0,0,0.7);
+        }
+
+        .status-ok {
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-error {
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .cursor-dashed {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
+
+        .cursor-ring {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="1"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
+
+        .cursor-square {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
+
+        .cursor-octagon {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="8.5,4 15.5,4 20,8.5 20,15.5 15.5,20 8.5,20 4,15.5 4,8.5" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4,4"/></svg>') 12 12, auto;
+        }
+        
+        .controls-content::-webkit-scrollbar, #light-list-items::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .controls-content::-webkit-scrollbar-track, #light-list-items::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        .controls-content::-webkit-scrollbar-thumb, #light-list-items::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-container { flex-direction: column;         overflow-y: auto; margin: 0;}
+            .controls-panel { width: 100%; padding: 10px;        height: auto; }
+            .button-group { grid-template-columns: repeat(2, 1fr); }
+            .button-group button {
+                flex-direction: row;
+            }
+            h2.main-title {
+                flex-direction: column;
+            }
+            .top-preview-content {
+                flex-direction: column;
+            }
+            #hdr-canvas-wrapper, #light-list-panel {
+                width: 100%;
+	        height: 224px;
+            }
+	.bottom-preview {    height: 35%;}
+            #light-list-panel {
+                height: 150px; /* 在小屏幕上给列表一个固定高度 */
+                border-left: none;
+                border-top: 1px solid var(--line);
+                padding-left: 0;
+                margin-top: 10px;
+            }
+            #vertical-resize-handle {
+                display: none; /* 小屏幕上隐藏拖动条 */
+            }
+        }
+        
+        .temperature-control { 
+            display: none; 
+        }
+        .temperature-control.active {
+            display: block;
+        }
+        .temperature-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .temperature-toggle label {
+            margin-bottom: 0;
+            cursor: pointer;
+            width: auto;
+        }
+        .disabled-color {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .material-info {
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="global-sidebar"></div>
+    <div class="editor-container">
+        <div class="controls-panel">
+            <div class="controls-header">
+                <h2 class="main-title">
+                    <span>HDRI Studio 编辑器</span>
+                    <button class="export-button" id="exportHdri"><i class="fa-solid fa-download"></i> 导出 HDRI</button>
+                </h2>
+                <div class="control-group">
+                    <label for="resolutionSelector"><i class="fa-solid fa-ruler-combined"></i> 尺寸选择</label>
+                    <select id="resolutionSelector">
+                        <option value="1024x512">1024 × 512</option>
+                        <option value="2048x1024" selected>2048 × 1024</option>
+                        <option value="4096x2048">4096 × 2048</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button id="addCircleLight"><i class="fa-regular fa-lightbulb"></i> 圆形灯</button>
+                    <button id="addRectLight"><i class="fa-regular fa-square"></i> 矩形灯</button>
+                    <button id="addOctagonLight"><i class="fa-solid fa-sun"></i> 八边形灯</button>
+                    <button id="addRingLight"><i class="fa-solid fa-ring"></i> 环形灯</button>
+                </div>
+            </div>
+            <div class="controls-content">
+                <div id="lightControls"></div>
+                <div class="control-section" id="modelControls">
+                    <div class="control-header">
+                        <h3><i class="fa-solid fa-box"></i> 模型调节</h3>
+                        <button class="delete-button" id="resetSceneBtn" title="恢复为球体"><i class="fa-solid fa-arrow-rotate-left"></i> 复位场景</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelScale">缩放</label>
+                        <div class="value-display">
+                            <input type="range" id="modelScale" min="0.1" max="10" value="1" step="0.01">
+                            <input type="number" id="modelScaleValue" min="0.1" max="10" value="1" step="0.01">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelPosX">位置 X</label>
+                        <div class="value-display">
+                            <input type="range" id="modelPosX" min="-5" max="5" value="0" step="0.01">
+                            <input type="number" id="modelPosXValue" min="-5" max="5" value="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelPosY">位置 Y</label>
+                        <div class="value-display">
+                            <input type="range" id="modelPosY" min="-5" max="5" value="0" step="0.01">
+                            <input type="number" id="modelPosYValue" min="-5" max="5" value="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="modelPosZ">位置 Z</label>
+                        <div class="value-display">
+                            <input type="range" id="modelPosZ" min="-5" max="5" value="0" step="0.01">
+                            <input type="number" id="modelPosZValue" min="-5" max="5" value="0" step="0.01">
+                        </div>
+                    </div>
+                </div>
+                <div class="control-section" id="backgroundControlsContainer">
+                    <div class="control-header">
+                        <h3><i class="fa-solid fa-globe"></i> 环境调节</h3>
+                    </div>
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="solid">纯色</button>
+                        <button class="tab-button" data-tab="gradient">渐变</button>
+                        <button class="tab-button" data-tab="image">图片</button>
+                    </div>
+                    <div id="solidTab" class="tab-content active">
+                        <div class="control-group">
+                            <label for="bgColor">颜色</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="bgColor" value="#202025">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gradientTab" class="tab-content">
+                        <div class="control-group">
+                            <label for="gradientColor1">颜色 1 (天空)</label>
+                            <input type="color" id="gradientColor1" value="#1a73e8">
+                        </div>
+                        <div class="control-group">
+                            <label for="gradientColor2">颜色 2 (地面)</label>
+                            <input type="color" id="gradientColor2" value="#aaaaa1">
+                        </div>
+                        <div class="control-group">
+                            <label for="gradientAngle">角度</label>
+                            <div class="value-display">
+                                <input type="range" id="gradientAngle" min="0" max="360" value="90" step="1">
+                                <input type="number" id="gradientAngleValue" min="0" max="360" value="90" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="imageTab" class="tab-content">
+                        <div class="control-group">
+                            <input type="file" id="imageUpload" accept="image/*">
+                            <label for="imageUpload" id="imageUploadLabel"><i class="fa-solid fa-upload"></i> 点击上传图片</label>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-top:20px;">
+                        <label for="bgRotation">旋转</label>
+                        <div class="value-display">
+                            <input type="range" id="bgRotation" min="0" max="360" value="0" step="1">
+                            <input type="number" id="bgRotationValue" min="0" max="360" value="0" step="1">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="bgBrightness">亮度</label>
+                        <div class="value-display">
+                            <input type="range" id="bgBrightness" min="0" max="5" value="1" step="0.01">
+                            <input type="number" id="bgBrightnessValue" min="0" max="5" value="1" step="0.01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-box top-preview">
+  <div class="preview-header">
+    <h3><i class="fa-solid fa-lightbulb"></i> 二维视图 & 灯光列表
+	<span class="scripts">点击左侧添加灯光，选中画布中的灯光进行编辑</span>
+	</h3>
+  </div>
+  <div class="top-preview-content">
+    <div id="hdr-canvas-wrapper">
+      <canvas id="hdrCanvas"></canvas>
+    </div>
+    <div id="vertical-resize-handle"></div>
+    <div id="light-list-panel">
+           <div class="preview-header">
+                <h3><i class="fa-solid fa-list-ul"></i> 灯光列表
+		<span class="scripts">支持隐藏和删除</span>
+		</h3>
+                        </div>
+                        <ul id="light-list-items">
+                            </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="resize-handle" id="resizeHandle"></div>
+            <div class="preview-box bottom-preview">
+                <div class="preview-header">
+                    <h3><i class="fa-solid fa-cube"></i> 3D环境预览
+                        <span class="scripts">支持obj、fbx、glb格式的外部模型导入</span>
+                    </h3>
+                    <input type="file" id="modelUpload" accept=".obj,.glb,.gltf,.fbx">
+                    <button id="importModelBtn" class="import-model-button"><i class="fa-solid fa-file-import"></i> 导入模型</button>
+                </div>
+                <canvas id="sceneCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
+        // 常量 & 状态
+        const hdrCanvas = document.getElementById('hdrCanvas');
+        const sceneCanvas = document.getElementById('sceneCanvas');
+        const PI = Math.PI;
+        const TWO_PI = 2 * PI;
+
+        let HDR_WIDTH = 2048, HDR_HEIGHT = 1024;
+        let lights = [];
+        let lightTypeCounters = {}; // 新增: 用于灯光命名序号
+        let selectedLight = null;
+        let addingLightType = null;
+        let draggingLight = null;
+        
+        // 拖动状态
+        let isResizingVertical = false;
+        let startY = 0, startTopHeight = 0, startBottomHeight = 0;
+        let isResizingHorizontal = false;
+        let startX = 0, startCanvasWidth = 0, startListWidth = 0;
+
+
+        // 用于合成的临时画布
+        let tempHdrCanvas, tempHdrCtx;
+
+        let background = {
+            type: 'solid',
+            color: '#202025',
+            gradient: { color1: '#1a73e8', color2: '#aaaaa1', angle: 90 },
+            image: null,
+            brightness: 1.0,
+            rotation: 0,
+        };
+
+        let scene, camera, renderer, originalSphere, controls, envTexture;
+        let currentModel = null;
+
+        // =================================================================
+        // === 新增：球体投影辅助函数 (New: Spherical Projection Helpers) ===
+        // =================================================================
+        /**
+         * 将2D画布像素坐标转换为球面坐标 (经度/纬度)
+         * @param {number} x - 画布 x 坐标
+         * @param {number} y - 画布 y 坐标
+         * @param {number} width - 画布宽度
+         * @param {number} height - 画布高度
+         * @returns {{lon: number, lat: number}} - 经纬度 (弧度)
+         */
+        function pixelsToSpherical(x, y, width, height) {
+            const lon = (x / width) * TWO_PI - PI; // 经度: -PI to +PI
+            const lat = (y / height) * PI - PI / 2;   // 纬度: -PI/2 to +PI/2
+            return { lon, lat };
+        }
+
+        /**
+         * 将球面坐标 (经度/纬度) 转换回2D画布像素坐标
+         * @param {number} lon - 经度 (弧度)
+         * @param {number} lat - 纬度 (弧度)
+         * @param {number} width - 画布宽度
+         * @param {number} height - 画布高度
+         * @returns {{x: number, y: number}} - 画布坐标
+         */
+        function sphericalToPixels(lon, lat, width, height) {
+            const x = ((lon + PI) / TWO_PI) * width;
+            const y = ((lat + PI / 2) / PI) * height;
+            return { x, y };
+        }
+
+        /**
+         * 计算从起点出发，沿指定方向和距离移动后的终点球面坐标
+         * @param {number} startLon - 起点经度 (弧度)
+         * @param {number} startLat - 起点纬度 (弧度)
+         * @param {number} bearing - 方向 (弧度, 0=北, PI/2=东)
+         * @param {number} angularDistance - 角距离 (弧度)
+         * @returns {{lon: number, lat: number}} - 终点经纬度 (弧度)
+         */
+        function getDestinationPoint(startLon, startLat, bearing, angularDistance) {
+            const δ = angularDistance;
+            const φ1 = startLat;
+            const λ1 = startLon;
+            const θ = bearing;
+
+            const sin_φ1 = Math.sin(φ1);
+            const cos_φ1 = Math.cos(φ1);
+            const sin_δ = Math.sin(δ);
+            const cos_δ = Math.cos(δ);
+            const sin_θ = Math.sin(θ);
+            const cos_θ = Math.cos(θ);
+
+            const sin_φ2 = sin_φ1 * cos_δ + cos_φ1 * sin_δ * cos_θ;
+            const φ2 = Math.asin(sin_φ2);
+            
+            const y = sin_θ * sin_δ * cos_φ1;
+            const x = cos_δ - sin_φ1 * sin_φ2;
+            
+            const λ2 = λ1 + Math.atan2(y, x);
+            
+            return { lon: λ2, lat: φ2 };
+        }
+
+        // =================================================================
+        // === 核心逻辑 (Core Logic) ===
+        // =================================================================
+        
+        function sRGBToLinear(c) {
+            return (c < 0.04045) ? c * 0.0773993808 : Math.pow(c * 0.9478672986 + 0.0521327014, 2.4);
+        }
+
+        function hexToLinear(hex) {
+            const rgb = hexToRgb(hex);
+            return {
+                r: sRGBToLinear(rgb.r / 255.0),
+                g: sRGBToLinear(rgb.g / 255.0),
+                b: sRGBToLinear(rgb.b / 255.0)
+            };
+        }
+
+        function init3DScene() {
+            try {
+                scene = new THREE.Scene();
+                renderer = new THREE.WebGLRenderer({
+                    canvas: sceneCanvas,
+                    antialias: true,
+                    alpha: true,
+                    logarithmicDepthBuffer: true
+                });
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 4.0;
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+                camera = new THREE.PerspectiveCamera(75, sceneCanvas.clientWidth / sceneCanvas.clientHeight, 0.1, 1000);
+                camera.position.z = 2.5;
+
+                controls = new OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.screenSpacePanning = false;
+                controls.minDistance = 1.5;
+                controls.maxDistance = 5;
+
+                const geometry = new THREE.SphereGeometry(1, 128, 64);
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0x787878,
+                    metalness: 0.1,
+                    roughness: 0.1,
+                    side: THREE.DoubleSide
+                });
+                originalSphere = new THREE.Mesh(geometry, material);
+                scene.add(originalSphere);
+                currentModel = originalSphere;
+                
+                const gridHelper = new THREE.GridHelper(10, 10, 0x3333330d, 0x0000000d);
+                scene.add(gridHelper);
+                const axesHelper = new THREE.AxesHelper(1.5);
+                scene.add(axesHelper);
+
+                animate();
+                resize3DCanvas();
+                updateStatus("3D场景初始化成功", true);
+            } catch (e) {
+                console.error("初始化3D失败", e);
+                updateStatus(`3D场景错误: ${e.message}`, false);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (controls) controls.update();
+            if (renderer && scene && camera) renderer.render(scene, camera);
+        }
+
+        function resize3DCanvas() {
+            if (!renderer || !camera) return;
+            const previewBox = sceneCanvas.parentElement;
+            if (!previewBox) return;
+            const { clientWidth, clientHeight } = previewBox;
+            const headerHeight = previewBox.querySelector('.preview-header').offsetHeight;
+            const finalHeight = clientHeight - headerHeight - 15; // 15 for padding
+            
+            renderer.setSize(clientWidth, finalHeight, false);
+            camera.aspect = clientWidth / finalHeight;
+            camera.updateProjectionMatrix();
+        }
+        
+        // [新增] 动态更新灯光列表UI
+        function updateLightListUI() {
+            const container = document.getElementById('light-list-items');
+            container.innerHTML = '';
+            
+            const typeTranslations = {
+                circle: '圆形灯', rect: '矩形灯', octagon: '八边形灯', ring: '环形灯'
+            };
+            const typeIcons = {
+                circle: 'fa-regular fa-lightbulb', rect: 'fa-regular fa-square', octagon: 'fa-solid fa-sun', ring: 'fa-solid fa-ring'
+            };
+
+            lights.forEach(light => {
+                const li = document.createElement('li');
+                li.className = 'light-item';
+                li.dataset.id = light.id;
+                if (selectedLight && light.id === selectedLight.id) {
+                    li.classList.add('active');
+                }
+
+                const iconClass = typeIcons[light.type] || 'fa-solid fa-question';
+                const name = `${typeTranslations[light.type] || '未知'} ${light.displayId}`;
+                
+                const visibilityIcon = light.visible ? 'fa-eye' : 'fa-eye-slash';
+
+                li.innerHTML = `
+                    <span class="icon" style="color: ${light.color};"><i class="fa-fw ${iconClass}"></i></span>
+                    <span class="name">${name}</span>
+                    <div class="actions">
+                        <button class="toggle-visibility" title="切换可见性"><i class="fa-solid ${visibilityIcon}"></i></button>
+                        <button class="delete-from-list" title="删除灯光"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+
+                // 事件监听：点击整个列表项以选中
+                li.addEventListener('click', (e) => {
+                    if (e.target.closest('.actions')) return; // 如果点击的是按钮区域，则不触发选中
+                    selectedLight = lights.find(l => l.id === light.id);
+                    updateControlsUI();
+                    drawHdrPreview();
+                    updateLightListUI(); // 重新渲染列表以更新 active 状态
+                });
+
+                // 事件监听：切换可见性
+                li.querySelector('.toggle-visibility').addEventListener('click', () => {
+                    light.visible = !light.visible;
+                    drawHdrPreview();
+                    updateLightListUI();
+                });
+
+                // 事件监听：从列表中删除
+                li.querySelector('.delete-from-list').addEventListener('click', () => {
+                    deleteLightById(light.id);
+                });
+
+                container.appendChild(li);
+            });
+        }
+        
+        // [新增] 根据ID删除灯光
+        function deleteLightById(id) {
+            if (selectedLight && selectedLight.id === id) {
+                selectedLight = null;
+            }
+            lights = lights.filter(l => l.id !== id);
+            updateControlsUI();
+            drawHdrPreview();
+            updateLightListUI();
+        }
+
+        function getProjectionFactors(light) {
+            const latitude = (light.y / HDR_HEIGHT - 0.5) * PI;
+            const cosLat = Math.cos(latitude);
+            const scaleX = 1 / Math.max(cosLat, 0.05);
+            const scaleY = cosLat;
+            return { scaleX, scaleY };
+        }
+        
+        // ========================================================================
+        // === 修改：使用真实球面投影的灯光路径生成函数 (Modified Path Functions) ===
+        // ========================================================================
+
+        function createCirclePath(ctx, light, offsetX = 0) {
+            const center = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            // 将 light.size (在赤道处的像素半径) 转换为角距离
+            const angularRadius = (light.size / HDR_WIDTH) * TWO_PI;
+            const segments = 64; // 分段数，越高越平滑
+
+            ctx.beginPath();
+
+            for (let i = 0; i <= segments; i++) {
+                const bearing = (i / segments) * TWO_PI;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, angularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    // 防止跨越 anti-meridian 时画出长线
+                    const prevDest = getDestinationPoint(center.lon, center.lat, ((i - 1) / segments) * TWO_PI, angularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                         ctx.lineTo(x, y);
+                    } else {
+                         ctx.moveTo(x,y); // 如果跳跃了，就移动过去而不是画线
+                    }
+                }
+            }
+            ctx.closePath();
+        }
+
+        // 矩形灯的精确球面投影非常复杂，且定义模糊 (边是直线还是大圆弧?)
+        // 遵从用户指示，如果不能全部实现，可实现部分。此处保留原有的近似模拟，效果对小矩形尚可。
+        function createRectPath(ctx, light, offsetX = 0) {
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const rotation = light.rotation || 0;
+            const cornerRadius = Math.min(light.cornerRadius || 0, light.width / 2, light.height / 2);
+
+            ctx.save();
+            ctx.translate(light.x + offsetX, light.y);
+            ctx.rotate(rotation * Math.PI / 180);
+            ctx.scale(scaleX, scaleY);
+
+            const halfW = light.width / 2;
+            const halfH = light.height / 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(-halfW + cornerRadius, -halfH);
+            ctx.lineTo(halfW - cornerRadius, -halfH);
+            ctx.arcTo(halfW, -halfH, halfW, -halfH + cornerRadius, cornerRadius);
+            ctx.lineTo(halfW, halfH - cornerRadius);
+            ctx.arcTo(halfW, halfH, halfW - cornerRadius, halfH, cornerRadius);
+            ctx.lineTo(-halfW + cornerRadius, halfH);
+            ctx.arcTo(-halfW, halfH, -halfW, halfH - cornerRadius, cornerRadius);
+            ctx.lineTo(-halfW, -halfH + cornerRadius);
+            ctx.arcTo(-halfW, -halfH, -halfW + cornerRadius, -halfH, cornerRadius);
+            ctx.closePath();
+            ctx.restore();
+        }
+        
+        function createOctagonPath(ctx, light, offsetX = 0) {
+            const center = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            const angularRadius = (light.size / HDR_WIDTH) * TWO_PI; // size 作为外接圆半径
+            const points = 8;
+            const rotation = (light.rotation || 0) * PI / 180;
+
+            ctx.beginPath();
+            for (let i = 0; i <= points; i++) {
+                const bearing = (i / points) * TWO_PI + rotation;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, angularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    const prevDest = getDestinationPoint(center.lon, center.lat, (((i - 1) / points) * TWO_PI + rotation), angularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                         ctx.lineTo(x, y);
+                    } else {
+                         ctx.moveTo(x,y);
+                    }
+                }
+            }
+            ctx.closePath();
+        }
+
+        function createRingPath(ctx, light, offsetX = 0) {
+            const center = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            const rotation = (light.rotation || 0) * PI / 180;
+            
+            const outerAngularRadius = (light.size / HDR_WIDTH) * TWO_PI;
+            const thicknessAngular = ((light.thickness || (light.size * 0.3)) / HDR_WIDTH) * TWO_PI;
+            const innerAngularRadius = Math.max(0, outerAngularRadius - thicknessAngular);
+            
+            const segments = 64;
+
+            // 绘制外圆
+            ctx.beginPath();
+            for (let i = 0; i <= segments; i++) {
+                const bearing = (i / segments) * TWO_PI + rotation;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, outerAngularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    const prevDest = getDestinationPoint(center.lon, center.lat, (((i-1) / segments) * TWO_PI + rotation), outerAngularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                        ctx.lineTo(x, y);
+                    } else {
+                        ctx.moveTo(x, y);
+                    }
+                }
+            }
+            
+            // 逆时针绘制内圆，以适配 evenodd 填充规则
+            for (let i = segments; i >= 0; i--) {
+                const bearing = (i / segments) * TWO_PI + rotation;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, innerAngularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+                
+                if (i === segments) {
+                     ctx.moveTo(x,y); // 移动到内圆的起点
+                } else {
+                    const prevDest = getDestinationPoint(center.lon, center.lat, (((i+1) / segments) * TWO_PI + rotation), innerAngularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                        ctx.lineTo(x, y);
+                    } else {
+                        ctx.moveTo(x, y);
+                    }
+                }
+            }
+
+            ctx.closePath();
+        }
+
+        function drawHdrPreview() {
+            if (!tempHdrCtx) return; 
+
+            // === 步骤1: 在临时画布上合成未旋转的完整图像 ===
+            tempHdrCtx.globalCompositeOperation = 'source-over';
+            tempHdrCtx.fillStyle = background.color;
+            tempHdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+
+            // 绘制背景 (不旋转)
+            switch (background.type) {
+                case 'image':
+                    if (background.image) {
+                        const imgRatio = background.image.width / background.image.height;
+                        const canvasRatio = HDR_WIDTH / HDR_HEIGHT;
+                        let drawWidth, drawHeight, offsetX, offsetY;
+                        if (imgRatio > canvasRatio) {
+                            drawHeight = HDR_HEIGHT;
+                            drawWidth = background.image.width * (HDR_HEIGHT / background.image.height);
+                            offsetX = (HDR_WIDTH - drawWidth) / 2; offsetY = 0;
+                        } else {
+                            drawWidth = HDR_WIDTH;
+                            drawHeight = background.image.height * (HDR_WIDTH / background.image.width);
+                            offsetX = 0; offsetY = (HDR_HEIGHT - drawHeight) / 2;
+                        }
+                        tempHdrCtx.drawImage(background.image, offsetX, offsetY, drawWidth, drawHeight);
+                    }
+                    break;
+                case 'gradient':
+                    const angleRad = background.gradient.angle * PI / 180;
+                    const x1 = HDR_WIDTH / 2 - Math.cos(angleRad) * HDR_WIDTH / 2;
+                    const y1 = HDR_HEIGHT / 2 - Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const x2 = HDR_WIDTH / 2 + Math.cos(angleRad) * HDR_WIDTH / 2;
+                    const y2 = HDR_HEIGHT / 2 + Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const grad = tempHdrCtx.createLinearGradient(x1, y1, x2, y2);
+                    grad.addColorStop(0, background.gradient.color1);
+                    grad.addColorStop(1, background.gradient.color2);
+                    tempHdrCtx.fillStyle = grad;
+                    tempHdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+                    break;
+            }
+            
+            // 应用背景亮度
+            tempHdrCtx.save();
+            tempHdrCtx.filter = `brightness(${background.brightness})`;
+            tempHdrCtx.globalCompositeOperation = 'copy';
+            tempHdrCtx.drawImage(tempHdrCanvas, 0, 0);
+            tempHdrCtx.restore();
+
+            // 在背景上叠加灯光
+            tempHdrCtx.globalCompositeOperation = 'lighter';
+            lights.forEach(light => {
+                if (!light.visible) return; // [修改] 跳过不可见的灯光
+
+                const offsets = [0];
+                const effectiveRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * 1.5 + (light.falloff || 0);
+
+                if (light.x - effectiveRadius < 0) offsets.push(HDR_WIDTH);
+                if (light.x + effectiveRadius > HDR_WIDTH) offsets.push(-HDR_WIDTH);
+
+                offsets.forEach(offsetX => {
+                    tempHdrCtx.save();
+                    if (light.type === 'circle') createCirclePath(tempHdrCtx, light, offsetX);
+                    else if (light.type === 'rect') createRectPath(tempHdrCtx, light, offsetX);
+                    else if (light.type === 'octagon') createOctagonPath(tempHdrCtx, light, offsetX);
+                    else if (light.type === 'ring') createRingPath(tempHdrCtx, light, offsetX);
+
+                    const rgb = hexToRgb(light.color);
+                    const r = rgb.r, g = rgb.g, b = rgb.b;
+                    const displayAlpha = Math.min(light.intensity / 15, 1.0);
+                    const fullColorRgba = `rgba(${r}, ${g}, ${b}, ${displayAlpha})`;
+                    
+                    if (light.innerShadow > 0 && light.type !== 'ring') {
+                        tempHdrCtx.clip();
+                        const { scaleX } = getProjectionFactors(light);
+                        const gradRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * scaleX;
+                        const grad = tempHdrCtx.createRadialGradient(light.x + offsetX, light.y, 0, light.x + offsetX, light.y, gradRadius);
+                        const solidRatio = Math.max(0, 1.0 - light.innerShadow);
+                        const min_attenuation = 0.1;
+                        const edgeAlpha = displayAlpha * min_attenuation;
+                        const edgeRgba = `rgba(${r}, ${g}, ${b}, ${edgeAlpha})`;
+                        grad.addColorStop(0, fullColorRgba);
+                        grad.addColorStop(solidRatio, fullColorRgba);
+                        grad.addColorStop(1, edgeRgba);
+                        tempHdrCtx.fillStyle = grad;
+                        tempHdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+                    } else {
+                        tempHdrCtx.shadowColor = `rgba(${r}, ${g}, ${b}, ${displayAlpha})`;
+                        tempHdrCtx.shadowBlur = light.falloff;
+                        tempHdrCtx.fillStyle = fullColorRgba;
+                        if (light.type === 'ring') {
+                             tempHdrCtx.fill('evenodd');
+                        } else {
+                             tempHdrCtx.fill();
+                        }
+                    }
+                    tempHdrCtx.restore();
+                });
+            });
+
+             // 绘制选中框 (也在临时画布上)
+            if (selectedLight && selectedLight.visible) { // [修改] 只为可见的选中灯光绘制边框
+                const offsets = [0];
+                const effectiveRadius = (selectedLight.size || Math.max(selectedLight.width || 0, selectedLight.height || 0)) * 1.5 + (selectedLight.falloff || 0);
+                if (selectedLight.x - effectiveRadius < 0) offsets.push(HDR_WIDTH);
+                if (selectedLight.x + effectiveRadius > HDR_WIDTH) offsets.push(-HDR_WIDTH);
+
+                offsets.forEach(offsetX => {
+                    tempHdrCtx.save();
+                    tempHdrCtx.globalCompositeOperation = 'source-over';
+                    if (selectedLight.type === 'circle') createCirclePath(tempHdrCtx, selectedLight, offsetX);
+                    else if (selectedLight.type === 'rect') createRectPath(tempHdrCtx, selectedLight, offsetX);
+                    else if (selectedLight.type === 'octagon') createOctagonPath(tempHdrCtx, selectedLight, offsetX);
+                    else if (selectedLight.type === 'ring') createRingPath(tempHdrCtx, selectedLight, offsetX);
+                    tempHdrCtx.lineWidth = 5 * (HDR_WIDTH / 2048); // 边框随分辨率缩放
+                    tempHdrCtx.setLineDash([10, 4]);
+                    tempHdrCtx.strokeStyle = 'rgba(128,128,255,0.9)';
+                    tempHdrCtx.stroke();
+                    tempHdrCtx.restore();
+                });
+            }
+
+            // === 步骤2: 将临时画布的内容旋转后绘制到主画布上 ===
+            const ctx = hdrCanvas.getContext('2d');
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = '#000'; // 清空主画布
+            ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+            const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+            
+            // 绘制两次以实现无缝循环
+            ctx.drawImage(tempHdrCanvas, -rotationOffset, 0);
+            ctx.drawImage(tempHdrCanvas, -rotationOffset + HDR_WIDTH, 0);
+
+            // 更新3D场景
+            update3DScene();
+        }
+
+        function update3DScene() {
+            try {
+                if (envTexture) {
+                    envTexture.dispose();
+                }
+                
+                envTexture = new THREE.CanvasTexture(hdrCanvas);
+                envTexture.mapping = THREE.EquirectangularReflectionMapping;
+                envTexture.colorSpace = THREE.SRGBColorSpace;
+                
+                if (scene) {
+                    scene.environment = envTexture;
+                    scene.background = envTexture;
+                    
+                    if (currentModel) {
+                        currentModel.traverse((child) => {
+                            if (child.isMesh && child.material) {
+                                const materials = Array.isArray(child.material) ? child.material : [child.material];
+                                materials.forEach(material => {
+                                    if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
+                                        material.envMap = envTexture;
+                                        material.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("更新3D场景失败", e);
+            }
+        }
+        
+        function updateControlsUI() {
+            const container = document.getElementById('lightControls');
+            container.innerHTML = '';
+            updateLightListUI(); // [修改] 任何控件更新时都刷新灯光列表
+            if (!selectedLight) return;
+
+            const icon = selectedLight.type === 'circle' ? 'fa-lightbulb' :
+                         selectedLight.type === 'rect' ? 'fa-square' :
+                         selectedLight.type === 'octagon' ? 'fa-sun' :
+                         'fa-ring';
+            const typeName = selectedLight.type === 'circle' ? '圆形灯光' :
+                             selectedLight.type === 'rect' ? '矩形灯光' :
+                             selectedLight.type === 'octagon' ? '八边形灯光' :
+                             '环形灯光';
+            let html = `<div class="control-section">
+                <div class="control-header">
+                    <h3><i class="fas ${icon}"></i> ${typeName} ${selectedLight.displayId}</h3>
+                    <button class="delete-button" id="deleteLightBtn"><i class="fa-solid fa-trash-can"></i></button>
+                </div>`;
+
+            if (selectedLight.type === 'circle') {
+                html += createSlider('size', '大小', 10, 500, 1, selectedLight.size);
+            } else if (selectedLight.type === 'rect') {
+                html += createSlider('width', '宽度', 10, 500, 1, selectedLight.width);
+                html += createSlider('height', '高度', 10, 500, 1, selectedLight.height);
+                html += createSlider('cornerRadius', '圆角半径', 0, 100, 1, selectedLight.cornerRadius || 0);
+                html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
+            } else if (selectedLight.type === 'octagon') {
+                html += createSlider('size', '大小', 10, 500, 1, selectedLight.size);
+                html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
+            } else if (selectedLight.type === 'ring') {
+                html += createSlider('size', '外半径', 10, 500, 1, selectedLight.size);
+                html += createSlider('thickness', '环厚度', 1, 200, 1, selectedLight.thickness || (selectedLight.size * 0.3));
+                html += createSlider('rotation', '旋转', 0, 360, 1, selectedLight.rotation || 0);
+            }
+            html += createColorInput('color', '颜色', selectedLight.color);
+            
+            const useTemperature = selectedLight.useTemperature || false;
+            const temperature = selectedLight.temperature || 6500;
+            html += `
+                <div class="control-group">
+                    <div class="temperature-toggle">
+                        <input type="checkbox" id="useTemperature" ${useTemperature ? 'checked' : ''}>
+                        <label for="useTemperature">使用色温(K)</label>
+                    </div>
+                    <div class="temperature-control ${useTemperature ? 'active' : ''}">
+                        <label for="temperature"> </label>
+                        <div class="value-display">
+                            <input type="range" id="temperature" min="1000" max="30000" step="100" value="${temperature}">
+                            <input type="number" id="temperatureValue" min="1000" max="30000" step="100" value="${temperature}">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            html += createSlider('intensity', '亮度 (HDR)', 0.1, 25, 0.1, selectedLight.intensity);
+            html += createSlider('falloff', '外侧衰减', 0, 100, 1, selectedLight.falloff);
+            html += createSlider('innerShadow', '内侧柔化', 0, 1, 0.01, selectedLight.innerShadow || 0);
+            html += `</div>`;
+            container.innerHTML = html;
+            addControlListeners();
+            
+            if (useTemperature) {
+                document.getElementById('color').parentElement.classList.add('disabled-color');
+            }
+        }
+
+        function createSlider(id, label, min, max, step, value) {
+            return `<div class="control-group">
+                        <label for="${id}">${label}</label>
+                        <div class="value-display">
+                            <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}">
+                            <input type="number" id="${id}Value" min="${min}" max="${max}" step="${step}" value="${value}">
+                        </div>
+                    </div>`;
+        }
+
+        function createColorInput(id, label, value) {
+            return `<div class="control-group">
+                        <label for="${id}">${label}</label>
+                        <div class="color-input-wrapper">
+                          <input type="color" id="${id}" value="${value}">
+                          <input type="text" id="${id}Text" value="${value}">
+                        </div>
+                    </div>`;
+        }
+        
+        function temperatureToRGB(kelvin) {
+            kelvin = Math.max(1000, Math.min(40000, kelvin));
+            let temp = kelvin / 100;
+            let r, g, b;
+            
+            if (temp <= 66) {
+                r = 255;
+                g = 99.4708025861 * Math.log(temp) - 161.1195681661;
+            } else {
+                r = 329.698727446 * Math.pow(temp - 60, -0.1332047592);
+                g = 288.1221695283 * Math.pow(temp - 60, -0.0755148492);
+            }
+            r = Math.max(0, Math.min(255, r));
+            g = Math.max(0, Math.min(255, g));
+            
+            if (temp >= 66) {
+                b = 255;
+            } else if (temp <= 19) {
+                b = 0;
+            } else {
+                b = 138.5177312231 * Math.log(temp - 10) - 305.0447927307;
+                b = Math.max(0, Math.min(255, b));
+            }
+            
+            const hex = `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+            return hex;
+        }
+        
+        function handleModelUpload(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            const filename = file.name.toLowerCase();
+            let loader;
+
+            if (filename.endsWith('.glb') || filename.endsWith('.gltf')) {
+                loader = new GLTFLoader();
+            } else if (filename.endsWith('.obj')) {
+                loader = new OBJLoader();
+            } else if (filename.endsWith('.fbx')) {
+                loader = new FBXLoader();
+            } else {
+                updateStatus('不支持的文件格式', false);
+                return;
+            }
+
+            updateStatus('正在加载模型...', true);
+            loader.load(url, (loadedObject) => {
+                const model = filename.endsWith('.gltf') || filename.endsWith('.glb') ? loadedObject.scene : loadedObject;
+                
+                if (currentModel) {
+                    scene.remove(currentModel);
+                }
+                
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+                
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 2.0 / maxDim;
+                
+                model.userData.initialScale = scale;
+                model.scale.set(scale, scale, scale);
+                model.position.sub(center.multiplyScalar(scale));
+
+                const lightsToRemove = [];
+                model.traverse((child) => {
+                    if (child.isLight) {
+                        lightsToRemove.push(child);
+                    }
+
+                    if (child.isMesh) {
+                        let materials = [];
+                        if (child.material) {
+                            if (Array.isArray(child.material)) {
+                                materials = child.material;
+                            } else {
+                                materials = [child.material];
+                            }
+                        }
+
+                        if (materials.length === 0) {
+                            child.material = new THREE.MeshStandardMaterial({
+                                color: 0xffffff,
+                                roughness: 0.8,
+                                metalness: 0.05,
+                                envMap: scene.environment
+                            });
+                        } else {
+                            const newMaterials = materials.map(mat => {
+                                if (!mat.isMeshStandardMaterial && !mat.isMeshPhysicalMaterial) {
+                                    const newMat = new THREE.MeshStandardMaterial({
+                                        color: mat.color ? mat.color.clone() : new THREE.Color(0xffffff),
+                                        map: mat.map || null,
+                                        roughness: mat.roughness || 0.8,
+                                        metalness: mat.metalness || 0.05,
+                                        envMap: scene.environment,
+                                        side: THREE.DoubleSide
+                                    });
+                                    if (mat.map) {
+                                        newMat.map.colorSpace = THREE.SRGBColorSpace;
+                                    }
+                                    return newMat;
+                                } else {
+                                    mat.envMap = scene.environment;
+                                    mat.needsUpdate = true;
+                                    return mat;
+                                }
+                            });
+                            child.material = Array.isArray(child.material) ? newMaterials : newMaterials[0];
+                        }
+                    }
+                });
+                
+                lightsToRemove.forEach(light => light.removeFromParent());
+
+                scene.add(model);
+                currentModel = model;
+                URL.revokeObjectURL(url);
+                updateStatus('模型加载成功', true);
+                
+                document.getElementById('modelControls').style.display = 'block';
+                document.getElementById('modelScale').value = 1;
+                document.getElementById('modelScaleValue').value = 1;
+                document.getElementById('modelPosX').value = 0;
+                document.getElementById('modelPosXValue').value = 0;
+                document.getElementById('modelPosY').value = 0;
+                document.getElementById('modelPosYValue').value = 0;
+                document.getElementById('modelPosZ').value = 0;
+                document.getElementById('modelPosZValue').value = 0;
+                
+            }, undefined, (error) => {
+                console.error('模型加载失败:', error);
+                updateStatus('模型加载失败', false);
+                URL.revokeObjectURL(url);
+            });
+
+            fileInput.value = null;
+        }
+
+        function resetScene() {
+            if (currentModel && currentModel !== originalSphere) {
+                scene.remove(currentModel);
+            }
+            scene.add(originalSphere);
+            currentModel = originalSphere;
+            document.getElementById('modelControls').style.display = 'none';
+            updateStatus('场景已复位', true);
+        }
+
+        function addModelControlListeners() {
+            const controls = [
+                { id: 'modelScale', valueId: 'modelScaleValue', prop: 'scale' },
+                { id: 'modelPosX', valueId: 'modelPosXValue', prop: 'position', axis: 'x' },
+                { id: 'modelPosY', valueId: 'modelPosYValue', prop: 'position', axis: 'y' },
+                { id: 'modelPosZ', valueId: 'modelPosZValue', prop: 'position', axis: 'z' },
+            ];
+
+            controls.forEach(c => {
+                const slider = document.getElementById(c.id);
+                const valueInput = document.getElementById(c.valueId);
+
+                const updateModelTransform = (val) => {
+                    if (currentModel && currentModel !== originalSphere) {
+                        if (c.prop === 'scale') {
+                            const initialScale = currentModel.userData.initialScale || 1.0;
+                            currentModel.scale.set(val * initialScale, val * initialScale, val * initialScale);
+                        } else {
+                            currentModel.position[c.axis] = val;
+                        }
+                    }
+                };
+
+                slider.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    valueInput.value = val;
+                    updateModelTransform(val);
+                });
+                valueInput.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value) || 0;
+                    slider.value = val;
+                    updateModelTransform(val);
+                });
+            });
+
+            document.getElementById('resetSceneBtn').addEventListener('click', resetScene);
+        }
+        
+        function initResizeEvents() {
+            const verticalHandle = document.getElementById('resizeHandle');
+            verticalHandle.addEventListener('mousedown', startVerticalResize);
+
+            const horizontalHandle = document.getElementById('vertical-resize-handle');
+            horizontalHandle.addEventListener('mousedown', startHorizontalResize);
+
+            window.addEventListener('mousemove', (e) => {
+                if (isResizingVertical) handleVerticalResize(e);
+                if (isResizingHorizontal) handleHorizontalResize(e);
+            });
+            window.addEventListener('mouseup', () => {
+                isResizingVertical = false;
+                isResizingHorizontal = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            });
+        }
+        
+        function startVerticalResize(e) {
+            isResizingVertical = true;
+            startY = e.clientY;
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            startTopHeight = topPreview.offsetHeight;
+            startBottomHeight = bottomPreview.offsetHeight;
+            document.body.style.cursor = 'ns-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        }
+
+        function handleVerticalResize(e) {
+            if (!isResizingVertical) return;
+            const topPreview = document.querySelector('.top-preview');
+            const bottomPreview = document.querySelector('.bottom-preview');
+            const deltaY = e.clientY - startY;
+            const newTop = startTopHeight + deltaY;
+            const newBottom = startBottomHeight - deltaY;
+            if (newTop > 120 && newBottom > 120) {
+                topPreview.style.height = `${newTop}px`;
+                bottomPreview.style.height = `${newBottom}px`;
+                resize3DCanvas();
+            }
+        }
+        
+        function startHorizontalResize(e) {
+            isResizingHorizontal = true;
+            startX = e.clientX;
+            const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+            const listPanel = document.getElementById('light-list-panel');
+            startCanvasWidth = canvasWrapper.offsetWidth;
+            startListWidth = listPanel.offsetWidth;
+            document.body.style.cursor = 'ew-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        }
+// 新增自适应函数
+function adjustCanvasAndListWidths() {
+    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+    const listPanel = document.getElementById('light-list-panel');
+    
+    // 检查是否有保存的比例值
+    if (canvasWrapper.dataset.ratio && listPanel.dataset.ratio) {
+        const canvasRatio = parseFloat(canvasWrapper.dataset.ratio);
+        const listRatio = parseFloat(listPanel.dataset.ratio);
+        
+        // 应用保存的比例
+        canvasWrapper.style.flex = `${canvasRatio} 1 0%`;
+        listPanel.style.flex = `${listRatio} 1 0%`;
+    } else {
+        // 没有比例时恢复默认
+        canvasWrapper.style.flex = '';
+        listPanel.style.flex = '';
+    }
+}
+
+function handleHorizontalResize(e) {
+    if (!isResizingHorizontal) return;
+    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+    const listPanel = document.getElementById('light-list-panel');
+    const deltaX = e.clientX - startX;
+    
+    // 计算新宽度比例
+    const newCanvasRatio = (startCanvasWidth + deltaX) / (startCanvasWidth + startListWidth);
+    const newListRatio = (startListWidth - deltaX) / (startCanvasWidth + startListWidth);
+    
+    // 设置比例值
+    canvasWrapper.style.flex = `${newCanvasRatio} 1 0%`;
+    listPanel.style.flex = `${newListRatio} 1 0%`;
+    
+    // 保存当前比例到元素
+    canvasWrapper.dataset.ratio = newCanvasRatio;
+    listPanel.dataset.ratio = newListRatio;
+}
+        
+        function initApp() {
+            try {
+                init3DScene();
+                resetCanvas(HDR_WIDTH, HDR_HEIGHT);
+                initResizeEvents();
+
+                document.getElementById('resolutionSelector').addEventListener('change', (e) => {
+                    const [w, h] = e.target.value.split('x').map(Number);
+                    resetCanvas(w, h);
+                });
+                    // 初始化比例值
+    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+    const listPanel = document.getElementById('light-list-panel');
+    if (!canvasWrapper.dataset.ratio) {
+        canvasWrapper.dataset.ratio = "0.75";
+        listPanel.dataset.ratio = "0.25";
+    }
+                const addButtons = ['addCircleLight', 'addRectLight', 'addOctagonLight', 'addRingLight'];
+                addButtons.forEach(id => {
+                    const btn = document.getElementById(id);
+                    btn.addEventListener('click', (e) => {
+                        hdrCanvas.classList.remove('cursor-dashed', 'cursor-square', 'cursor-octagon', 'cursor-ring');
+                        addingLightType = id.replace('add', '').replace('Light', '').toLowerCase();
+                        addButtons.forEach(bid => document.getElementById(bid).classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        
+                        switch(addingLightType) {
+                            case 'circle': hdrCanvas.style.cursor = 'crosshair'; break;
+                            case 'rect': hdrCanvas.style.cursor = 'crosshair'; break;
+                            case 'octagon': hdrCanvas.style.cursor = 'crosshair'; break;
+                            case 'ring': hdrCanvas.style.cursor = 'crosshair'; break;
+                        }
+                    });
+                });
+
+                hdrCanvas.addEventListener('mousedown', handleCanvasMouseDown);
+                hdrCanvas.addEventListener('mousemove', handleCanvasMouseMove);
+                window.addEventListener('mouseup', handleMouseUp);
+                hdrCanvas.addEventListener('mouseleave', () => { if (!addingLightType) handleMouseUp(); });
+
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const tabId = btn.dataset.tab;
+                        background.type = tabId;
+                        document.querySelectorAll('.tab-button, .tab-content').forEach(el => el.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.getElementById(tabId + 'Tab').classList.add('active');
+                        drawHdrPreview();
+                    });
+                });
+
+                document.getElementById('bgColor').addEventListener('input', e => { background.color = e.target.value; drawHdrPreview(); });
+                document.getElementById('gradientColor1').addEventListener('input', e => { background.gradient.color1 = e.target.value; drawHdrPreview(); });
+                document.getElementById('gradientColor2').addEventListener('input', e => { background.gradient.color2 = e.target.value; drawHdrPreview(); });
+                const gradientAngleSlider = document.getElementById('gradientAngle');
+                const gradientAngleValue = document.getElementById('gradientAngleValue');
+                gradientAngleSlider.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleValue.value = e.target.value; drawHdrPreview(); });
+                gradientAngleValue.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleSlider.value = e.target.value; drawHdrPreview(); });
+                
+                const bgRotationSlider = document.getElementById('bgRotation');
+                const bgRotationValue = document.getElementById('bgRotationValue');
+                bgRotationSlider.addEventListener('input', e => { background.rotation = e.target.value; bgRotationValue.value = e.target.value; drawHdrPreview(); });
+                bgRotationValue.addEventListener('input', e => { background.rotation = e.target.value; bgRotationSlider.value = e.target.value; drawHdrPreview(); });
+
+                const bgBrightnessSlider = document.getElementById('bgBrightness');
+                const bgBrightnessValue = document.getElementById('bgBrightnessValue');
+                bgBrightnessSlider.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessValue.value = e.target.value; drawHdrPreview(); });
+                bgBrightnessValue.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessSlider.value = e.target.value; drawHdrPreview(); });
+
+                document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+                document.getElementById('exportHdri').addEventListener('click', generateHdrFile);
+                
+                document.getElementById('importModelBtn').addEventListener('click', () => document.getElementById('modelUpload').click());
+                document.getElementById('modelUpload').addEventListener('change', handleModelUpload);
+                addModelControlListeners();
+
+                // 初始化一个灯光
+                lightTypeCounters['circle'] = 1;
+                lights.push({
+                    id: Date.now(),
+                    displayId: 1,
+                    type: 'circle',
+                    visible: true,
+                    x: HDR_WIDTH * 0.85,
+                    y: HDR_HEIGHT * 0.4,
+                    size: 120,
+                    color: '#ffffff',
+                    intensity: 10.0,
+                    falloff: 30,
+                    innerShadow: 0,
+                    useTemperature: false,
+                    temperature: 6500
+                });
+                
+                selectedLight = lights[0];
+
+                updateControlsUI();
+                drawHdrPreview();
+                updateStatus("HDRI编辑器已就绪", true);
+            } catch (e) {
+                console.error("初始化失败:", e);
+                updateStatus(`初始化错误: ${e.message}`, false);
+            }
+        }
+    // === 添加缺失的 getCanvasPixelPosition 函数 ===
+    function getCanvasPixelPosition(canvas, clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        
+        // 计算实际显示区域（去除黑边）
+        const canvasAspect = HDR_WIDTH / HDR_HEIGHT;
+        const displayAspect = rect.width / rect.height;
+        
+        let displayWidth, displayHeight, offsetX, offsetY;
+        
+        if (displayAspect > canvasAspect) {
+            // 容器更宽，上下有黑边
+            displayHeight = rect.height;
+            displayWidth = displayHeight * canvasAspect;
+            offsetX = (rect.width - displayWidth) / 2;
+            offsetY = 0;
+        } else {
+            // 容器更高，左右有黑边
+            displayWidth = rect.width;
+            displayHeight = displayWidth / canvasAspect;
+            offsetX = 0;
+            offsetY = (rect.height - displayHeight) / 2;
+        }
+        
+        // 计算在画布内容区域的相对位置
+        const x = clientX - rect.left - offsetX;
+        const y = clientY - rect.top - offsetY;
+        
+        // 转换为画布像素坐标
+        const pixelX = (x / displayWidth) * HDR_WIDTH;
+        const pixelY = (y / displayHeight) * HDR_HEIGHT;
+        
+        return { 
+            x: Math.max(0, Math.min(HDR_WIDTH, pixelX)), 
+            y: Math.max(0, Math.min(HDR_HEIGHT, pixelY))
+        };
+    }
+        function resetCanvas(width, height) {
+            const prevW = HDR_WIDTH, prevH = HDR_HEIGHT;
+            HDR_WIDTH = width; HDR_HEIGHT = height;
+            hdrCanvas.width = width; hdrCanvas.height = height;
+
+            tempHdrCanvas = document.createElement('canvas');
+            tempHdrCanvas.width = width;
+            tempHdrCanvas.height = height;
+            tempHdrCtx = tempHdrCanvas.getContext('2d');
+
+            lights.forEach(light => {
+                light.x *= (width / prevW);
+                light.y *= (height / prevH);
+                if (light.type === 'circle' || light.type === 'octagon' || light.type === 'ring') {
+                    light.size *= (width / prevW);
+                    if (light.thickness) light.thickness *= (width / prevW);
+                } else if (light.type === 'rect') {
+                    light.width *= (width / prevW);
+                    light.height *= (height / prevH);
+                }
+            });
+            drawHdrPreview();
+        }
+        
+        function handleCanvasMouseDown(e) {
+    const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
+    const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+    let x = (pos.x + rotationOffset) % HDR_WIDTH;
+    let y = pos.y;
+            
+            document.querySelectorAll('#addCircleLight, #addRectLight, #addOctagonLight, #addRingLight').forEach(btn => btn.classList.remove('active'));
+            hdrCanvas.style.cursor = 'default';
+            
+            if (addingLightType) {
+                if (!lightTypeCounters[addingLightType]) {
+                    lightTypeCounters[addingLightType] = 0;
+                }
+                lightTypeCounters[addingLightType]++;
+                
+                const newLight = {
+                    id: Date.now(),
+                    displayId: lightTypeCounters[addingLightType],
+                    type: addingLightType,
+                    visible: true,
+                    x, y,
+                    color: '#ffffff',
+                    intensity: 10.0,
+                    falloff: 30,
+                    innerShadow: 0,
+                    useTemperature: false,
+                    temperature: 6500
+                };
+                if (addingLightType === 'circle' || addingLightType === 'octagon' || addingLightType === 'ring') {
+                    newLight.size = 80 * (HDR_WIDTH / 2048);
+                    if (addingLightType === 'ring') newLight.thickness = newLight.size * 0.3;
+                    newLight.rotation = 0;
+                } else if (addingLightType === 'rect') {
+                    newLight.width = 120 * (HDR_WIDTH / 2048);
+                    newLight.height = 80 * (HDR_HEIGHT / 1024);
+                    newLight.cornerRadius = 10;
+                    newLight.rotation = 0;
+                }
+                lights.push(newLight);
+                selectedLight = newLight;
+                addingLightType = null;
+            } else {
+                let clicked = null;
+                for (let i = lights.length -1; i >=0; i--) {
+                    const light = lights[i];
+                    if (!light.visible) continue; // 不可选不可见的灯光
+                    
+                    const { scaleX } = getProjectionFactors(light);
+                    const effectiveRadius = (light.size || Math.max(light.width, light.height)/2) * scaleX;
+                    const dx = x - light.x, dy = y - light.y;
+                    const wrapped_dx = Math.min(Math.abs(dx), Math.abs(dx - HDR_WIDTH), Math.abs(dx + HDR_WIDTH));
+                    const dist = Math.sqrt(wrapped_dx*wrapped_dx + dy*dy);
+
+                    if (dist < effectiveRadius + (light.falloff || 0)) {
+                        clicked = light; 
+                        break; 
+                    }
+                }
+                selectedLight = clicked;
+                if (selectedLight) draggingLight = selectedLight;
+            }
+            updateControlsUI();
+            drawHdrPreview();
+        }
+
+        function handleCanvasMouseMove(e) {
+    if (draggingLight) {
+        const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
+        const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+        let x = (pos.x + rotationOffset);
+        let y = pos.y;
+
+                let newX = x;
+                newX = (newX % HDR_WIDTH + HDR_WIDTH) % HDR_WIDTH;
+                
+                draggingLight.x = newX;
+                draggingLight.y = Math.max(0, Math.min(HDR_HEIGHT, y));
+
+                drawHdrPreview();
+            }
+        }
+
+        function handleMouseUp() { draggingLight = null; }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    background.image = img;
+                    document.querySelector('.tab-button[data-tab="image"]').click();
+                    drawHdrPreview();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addControlListeners() {
+            if (!selectedLight) return;
+            document.getElementById('deleteLightBtn').addEventListener('click', deleteSelectedLight);
+            
+            const updateLightProperty = (prop, value) => {
+                if (!selectedLight) return;
+                selectedLight[prop] = value;
+                
+                if (prop === 'falloff' && value > 0 && selectedLight.innerShadow > 0) {
+                    selectedLight.innerShadow = 0;
+                    document.getElementById('innerShadow').value = 0;
+                    document.getElementById('innerShadowValue').value = 0;
+                } else if (prop === 'innerShadow' && value > 0 && selectedLight.falloff > 0) {
+                    selectedLight.falloff = 0;
+                    document.getElementById('falloff').value = 0;
+                    document.getElementById('falloffValue').value = 0;
+                }
+                drawHdrPreview();
+                if (prop === 'color') updateLightListUI(); // 颜色变化时更新列表图标颜色
+            };
+
+            const sliders = document.querySelectorAll('.control-group input[type="range"]');
+            sliders.forEach(slider => {
+                if(slider.id.startsWith('model') || slider.id.startsWith('bg')) return;
+
+                const inputId = slider.id;
+                const valueInput = document.getElementById(inputId + 'Value');
+                slider.addEventListener('input', e => {
+                    const val = parseFloat(e.target.value);
+                    if (valueInput) valueInput.value = val;
+                    updateLightProperty(inputId, val);
+                });
+                if (valueInput) {
+                    valueInput.addEventListener('input', e => {
+                        const val = parseFloat(e.target.value) || 0;
+                        slider.value = val;
+                        updateLightProperty(inputId, val);
+                    });
+                }
+            });
+
+            const colorPicker = document.getElementById('color');
+            const colorText = document.getElementById('colorText');
+            if (colorPicker && colorText) {
+                const updateColor = (value) => {
+                    if (!/^#[0-9a-f]{6}$/i.test(value)) return;
+                    colorPicker.value = value;
+                    colorText.value = value;
+                    updateLightProperty('color', value);
+                };
+                colorPicker.addEventListener('input', e => updateColor(e.target.value));
+                colorText.addEventListener('change', e => updateColor(e.target.value));
+            }
+            
+            const useTemperatureCheckbox = document.getElementById('useTemperature');
+            const temperatureSlider = document.getElementById('temperature');
+            const temperatureValue = document.getElementById('temperatureValue');
+            
+            if (useTemperatureCheckbox && temperatureSlider && temperatureValue) {
+                useTemperatureCheckbox.addEventListener('change', (e) => {
+                    selectedLight.useTemperature = e.target.checked;
+                    const temperatureControl = document.querySelector('.temperature-control');
+                    const colorWrapper = document.getElementById('color').parentElement;
+                    
+                    if (e.target.checked) {
+                        temperatureControl.classList.add('active');
+                        colorWrapper.classList.add('disabled-color');
+                        const temp = selectedLight.temperature || 6500;
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                    } else {
+                        temperatureControl.classList.remove('active');
+                        colorWrapper.classList.remove('disabled-color');
+                    }
+                    drawHdrPreview();
+                    updateLightListUI();
+                });
+                
+                const updateTemp = (temp) => {
+                    selectedLight.temperature = temp;
+                    if (selectedLight.useTemperature) {
+                        const hexColor = temperatureToRGB(temp);
+                        selectedLight.color = hexColor;
+                        document.getElementById('color').value = hexColor;
+                        document.getElementById('colorText').value = hexColor;
+                        drawHdrPreview();
+                        updateLightListUI();
+                    }
+                }
+                
+                temperatureSlider.addEventListener('input', (e) => {
+                    const temp = parseFloat(e.target.value);
+                    temperatureValue.value = temp;
+                    updateTemp(temp);
+                });
+                
+                temperatureValue.addEventListener('input', (e) => {
+                    const temp = parseFloat(e.target.value) || 6500;
+                    temperatureSlider.value = temp;
+                    updateTemp(temp);
+                });
+            }
+        }
+
+        function deleteSelectedLight() {
+            if (!selectedLight) return;
+            deleteLightById(selectedLight.id);
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 255, g: 255, b: 255 };
+        }
+
+        function updateStatus(message, isSuccess) {
+            let statusEl = document.getElementById('status-indicator');
+            if (!statusEl) {
+                statusEl = document.createElement('div');
+                statusEl.id = 'status-indicator';
+                document.body.appendChild(statusEl);
+            }
+            statusEl.textContent = message;
+            statusEl.className = `status-indicator ${isSuccess ? 'status-ok' : 'status-error'}`;
+            setTimeout(() => {
+                if (statusEl && statusEl.parentNode) statusEl.parentNode.removeChild(statusEl);
+            }, 3000);
+        }
+        
+        function smoothStep(t) {
+             t = Math.max(0, Math.min(1, t));
+             return t * t * (3 - 2 * t);
+        }
+        
+        function computeCircleAttenuation(x, y, light) {
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const dx = (x - light.x) / (light.size * scaleX);
+            const dy = (y - light.y) / (light.size * scaleY);
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (light.falloff > 0) {
+                const falloff = Math.max(1e-3, light.falloff) / light.size;
+                if (dist > 1 + falloff) return 0.0;
+                if (dist < 1) return 1.0;
+                return smoothStep((1 + falloff - dist) / falloff);
+            } else if (light.innerShadow > 0) {
+                if (dist > 1) return 0.0;
+                if (dist < 1 - light.innerShadow) return 1.0;
+                const t = (1 - dist) / light.innerShadow;
+                return 0.1 + 0.9 * smoothStep(t);
+            }
+            return dist <= 1 ? 1.0 : 0.0;
+        }
+
+        function computeRectAttenuation(x, y, light) {
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const r_rad = (light.rotation || 0) * Math.PI / 180;
+            const cos_r = Math.cos(-r_rad);
+            const sin_r = Math.sin(-r_rad);
+
+            let localX = x - light.x;
+            let localY = y - light.y;
+
+            const rx = localX * cos_r - localY * sin_r;
+            const ry = localX * sin_r + localY * cos_r;
+            
+            const urx = rx / scaleX;
+            const ury = ry / scaleY;
+
+            const halfW = light.width / 2;
+            const halfH = light.height / 2;
+            const q = { x: Math.abs(urx) - halfW, y: Math.abs(ury) - halfH };
+            const signedDist = Math.sqrt(Math.max(q.x,0)**2 + Math.max(q.y,0)**2) + Math.min(Math.max(q.x,q.y), 0);
+
+            if (light.falloff > 0) {
+                return smoothStep(1.0 - signedDist / light.falloff);
+            } else if (light.innerShadow > 0) {
+                const softnessWidth = Math.min(halfW, halfH) * light.innerShadow;
+                if (signedDist > 0) return 0.0; 
+                if (signedDist < -softnessWidth) return 1.0;
+                const t = (-signedDist) / softnessWidth;
+                return 0.1 + 0.9 * smoothStep(t);
+            }
+            return signedDist <= 0 ? 1.0 : 0.0;
+        }
+        
+        function computeOctagonAttenuation(x, y, light) {
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const r_rad = (light.rotation || 0) * Math.PI / 180;
+            const cos_r = Math.cos(r_rad);
+            const sin_r = Math.sin(r_rad);
+
+            const dx = x - light.x;
+            const dy = y - light.y;
+            const urx = dx * cos_r + dy * sin_r;
+            const ury = -dx * sin_r + dy * cos_r;
+            const localX = urx / scaleX;
+            const localY = ury / scaleY;
+
+            const N = 8;
+            const R = light.size;
+            const slice = Math.PI / N;
+            const apothem = R * Math.cos(slice);
+
+            let angle = Math.atan2(localY, localX);
+            angle = (angle + 10 * PI) % (2 * slice);
+            angle = Math.abs(angle - slice);
+
+            const distToCenter = Math.sqrt(localX * localX + localY * localY);
+            const edgeDistOnRay = apothem / Math.cos(angle);
+            const signedDistFromEdge = distToCenter - edgeDistOnRay;
+
+            if (light.falloff > 0) {
+                const t = 1.0 - signedDistFromEdge / light.falloff;
+                return smoothStep(t);
+            } else if (light.innerShadow > 0) {
+                const softness = R * light.innerShadow;
+                if (signedDistFromEdge > 0) return 0.0;
+                if (signedDistFromEdge < -softness) return 1.0;
+                const t = (-signedDistFromEdge) / softness;
+                return 0.1 + 0.9 * smoothStep(t);
+            }
+            return signedDistFromEdge <= 0 ? 1.0 : 0.0;
+        }
+        function computeRingAttenuation(x, y, light) {
+            const { scaleX, scaleY } = getProjectionFactors(light);
+            const thicknessRatio = (light.thickness || (light.size * 0.3)) / light.size;
+
+            const r_rad = (light.rotation || 0) * Math.PI / 180;
+            const cos_r = Math.cos(-r_rad);
+            const sin_r = Math.sin(-r_rad);
+            let localX = x - light.x;
+            let localY = y - light.y;
+            const rx = (localX * cos_r - localY * sin_r) / scaleX;
+            const ry = (localX * sin_r + localY * cos_r) / scaleY;
+
+            const dist = Math.sqrt(rx * rx + ry * ry);
+            
+            const outerRadius = light.size;
+            const innerRadius = outerRadius * (1 - thicknessRatio);
+            const thickness = outerRadius - innerRadius;
+            
+            const falloff = Math.max(1e-3, light.falloff);
+
+            const distToRingCenter = Math.abs(dist - (innerRadius + thickness / 2));
+            const signedDist = distToRingCenter - thickness / 2;
+
+            return smoothStep(1.0 - signedDist / falloff);
+        }
+
+        function frexp(value) {
+            if (value === 0) return [0, 0];
+            const data = new DataView(new ArrayBuffer(8));
+            data.setFloat64(0, value);
+            let bits = data.getBigUint64(0);
+            const sign = (bits >> 63n) === 0n ? 1 : -1;
+            let exponent = Number((bits >> 52n) & 0x7ffn) - 1023;
+            let mantissa = 1 + Number(bits & 0xfffffffffffffn) / (2**52);
+            exponent += 1;
+            mantissa /= 2;
+            return [sign * mantissa, exponent];
+        }
+
+        function floatToRgbe(r, g, b) {
+            const v = Math.max(r, g, b);
+            if (v < 1e-32) return [0,0,0,0];
+            const res = frexp(v);
+            let m = res[0], e = res[1];
+            m = m * 256.0 / v;
+            return [ Math.floor(r * m), Math.floor(g * m), Math.floor(b * m), e + 128 ];
+        }
+
+        async function generateHdrFile() {
+            console.log("Generating true HDR data...");
+            const unrotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
+            const bgCanvas = document.createElement('canvas');
+            bgCanvas.width = HDR_WIDTH;
+            bgCanvas.height = HDR_HEIGHT;
+            const bgCtx = bgCanvas.getContext('2d');
+            
+            switch (background.type) {
+                case 'image':
+                    if (background.image) {
+                        const imgRatio = background.image.width / background.image.height;
+                        const canvasRatio = HDR_WIDTH / HDR_HEIGHT;
+                        let drawWidth, drawHeight, offsetX, offsetY;
+                        if (imgRatio > canvasRatio) {
+                            drawHeight = HDR_HEIGHT;
+                            drawWidth = background.image.width * (HDR_HEIGHT / background.image.height);
+                            offsetX = (HDR_WIDTH - drawWidth) / 2; offsetY = 0;
+                        } else {
+                            drawWidth = HDR_WIDTH;
+                            drawHeight = background.image.height * (HDR_WIDTH / background.image.width);
+                            offsetX = 0; offsetY = (HDR_HEIGHT - drawHeight) / 2;
+                        }
+                        bgCtx.drawImage(background.image, offsetX, offsetY, drawWidth, drawHeight);
+                    } else { bgCtx.fillStyle = '#000'; bgCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT); }
+                    break;
+                case 'gradient':
+                    const angleRad = background.gradient.angle * PI / 180;
+                    const x1 = HDR_WIDTH / 2 - Math.cos(angleRad) * HDR_WIDTH / 2, y1 = HDR_HEIGHT / 2 - Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const x2 = HDR_WIDTH / 2 + Math.cos(angleRad) * HDR_WIDTH / 2, y2 = HDR_HEIGHT / 2 + Math.sin(angleRad) * HDR_HEIGHT / 2;
+                    const grad = bgCtx.createLinearGradient(x1, y1, x2, y2);
+                    grad.addColorStop(0, background.gradient.color1);
+                    grad.addColorStop(1, background.gradient.color2);
+                    bgCtx.fillStyle = grad;
+                    bgCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+                    break;
+                default:
+                    bgCtx.fillStyle = background.color;
+                    bgCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
+            }
+
+            const bgImageData = bgCtx.getImageData(0, 0, HDR_WIDTH, HDR_HEIGHT).data;
+            for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
+                const r = sRGBToLinear(bgImageData[i * 4 + 0] / 255);
+                const g = sRGBToLinear(bgImageData[i * 4 + 1] / 255);
+                const b = sRGBToLinear(bgImageData[i * 4 + 2] / 255);
+                unrotatedFloatData[i * 3 + 0] = r * background.brightness;
+                unrotatedFloatData[i * 3 + 1] = g * background.brightness;
+                unrotatedFloatData[i * 3 + 2] = b * background.brightness;
+            }
+
+            for (const light of lights) {
+                if (!light.visible) continue; // 跳过不可见的灯光
+                const linearColor = hexToLinear(light.color);
+                const lr = linearColor.r * light.intensity;
+                const lg = linearColor.g * light.intensity;
+                const lb = linearColor.b * light.intensity;
+                
+                const positions = [light.x];
+                if (light.x < light.size) positions.push(light.x + HDR_WIDTH);
+                if (light.x > HDR_WIDTH - light.size) positions.push(light.x - HDR_WIDTH);
+                
+                for (const posX of positions) {
+                    for (let y = 0; y < HDR_HEIGHT; y++) {
+                        for (let x = 0; x < HDR_WIDTH; x++) {
+                            const idx = (y * HDR_WIDTH + x) * 3;
+                            let attenuation = 0;
+                            
+                            if (light.type === 'circle') {
+                                attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            } else if (light.type === 'rect') {
+                                attenuation = computeRectAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            } else if (light.type === 'octagon') {
+                                attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            } else if (light.type === 'ring') {
+                                attenuation = computeRingAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
+                            }
+                            
+                            if (attenuation > 0) {
+                                unrotatedFloatData[idx] += lr * attenuation;
+                                unrotatedFloatData[idx + 1] += lg * attenuation;
+                                unrotatedFloatData[idx + 2] += lb * attenuation;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            const rotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
+            const rotationOffset = Math.round((background.rotation / 360) * HDR_WIDTH);
+
+            for (let y = 0; y < HDR_HEIGHT; y++) {
+                for (let x = 0; x < HDR_WIDTH; x++) {
+                    const sourceX = (x + rotationOffset) % HDR_WIDTH;
+                    const sourceIndex = (y * HDR_WIDTH + sourceX) * 3;
+                    const destIndex = (y * HDR_WIDTH + x) * 3;
+
+                    rotatedFloatData[destIndex] = unrotatedFloatData[sourceIndex];
+                    rotatedFloatData[destIndex + 1] = unrotatedFloatData[sourceIndex + 1];
+                    rotatedFloatData[destIndex + 2] = unrotatedFloatData[sourceIndex + 2];
+                }
+            }
+
+            const rgbeData = new Uint8Array(HDR_WIDTH * HDR_HEIGHT * 4);
+            for (let i = 0; i < HDR_WIDTH * HDR_HEIGHT; i++) {
+                const r = rotatedFloatData[i * 3 + 0], g = rotatedFloatData[i * 3 + 1], b = rotatedFloatData[i * 3 + 2];
+                const rgbe = floatToRgbe(r, g, b);
+                rgbeData.set(rgbe, i * 4);
+            }
+
+            const header = `#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y ${HDR_HEIGHT} +X ${HDR_WIDTH}\n`;
+            const headerBytes = new TextEncoder().encode(header);
+            const fileData = new Uint8Array(headerBytes.length + rgbeData.length);
+            fileData.set(headerBytes, 0);
+            fileData.set(rgbeData, headerBytes.length);
+
+            const blob = new Blob([fileData], { type: 'application/octet-stream' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `studio-light-${Date.now()}.hdr`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            
+            updateStatus("HDRI导出成功！", true);
+        }
+
+        window.addEventListener('load', initApp);
+        window.addEventListener('resize', () => {
+            resize3DCanvas();
+            // 在窗口大小变化时也需要重新绘制2D画布以适应新的容器尺寸
+            drawHdrPreview();
+    adjustCanvasAndListWidths(); // 添加这行
+        });
+
+    </script>
+</body>
+</html>
