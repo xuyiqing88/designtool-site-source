@@ -2160,7 +2160,7 @@ function computeOctagonAttenuation(x, y, light) {
             return [ Math.floor(r * m), Math.floor(g * m), Math.floor(b * m), e + 128 ];
         }
 
-        async function generateHdrFile() {
+async function generateHdrFile() {
             console.log("Generating true HDR data with spherical projection...");
             const unrotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const bgCanvas = document.createElement('canvas');
@@ -2230,7 +2230,8 @@ function computeOctagonAttenuation(x, y, light) {
                         } else if (light.type === 'ring') {
                             attenuation = computeRingAttenuation(x+0.5, y+0.5, light);
                         } else {
-                            // 矩形灯仍然使用2D平面投影
+                            // ===== MODIFICATION START =====
+                            // 修正后的矩形灯光逻辑
                             const { scaleX, scaleY } = getProjectionFactors(light);
                             const rotation = light.rotation || 0;
                             const r_rad = rotation * Math.PI / 180;
@@ -2238,6 +2239,10 @@ function computeOctagonAttenuation(x, y, light) {
                             const sin_r = Math.sin(-r_rad);
                             
                             let localX = x - light.x;
+                            // 处理水平环绕的情况
+                            if (localX > HDR_WIDTH / 2) localX -= HDR_WIDTH;
+                            if (localX < -HDR_WIDTH / 2) localX += HDR_WIDTH;
+                            
                             let localY = y - light.y;
                             
                             const rx = localX * cos_r - localY * sin_r;
@@ -2248,23 +2253,35 @@ function computeOctagonAttenuation(x, y, light) {
                             
                             const halfW = light.width / 2;
                             const halfH = light.height / 2;
+                            const cornerRadius = Math.min(light.cornerRadius || 0, halfW, halfH);
                             
-                            const qx = Math.abs(urx) - halfW;
-                            const qy = Math.abs(ury) - halfH;
-                            
-                            const signedDist = Math.sqrt(Math.max(qx,0)**2 + Math.max(qy,0)**2) + Math.min(Math.max(qx,qy), 0);
-                            
+                            // 使用标准的圆角矩形符号距离函数(SDF)
+                            const q_x = Math.abs(urx) - (halfW - cornerRadius);
+                            const q_y = Math.abs(ury) - (halfH - cornerRadius);
+                            const max_q_x = Math.max(q_x, 0);
+                            const max_q_y = Math.max(q_y, 0);
+                            const signedDist = Math.hypot(max_q_x, max_q_y) + Math.min(Math.max(q_x, q_y), 0) - cornerRadius;
+
+                            attenuation = 0.0; // 默认衰减为0
+
                             if (light.falloff > 0) {
                                 attenuation = smoothStep(1.0 - signedDist / light.falloff);
                             } else if (light.innerShadow > 0) {
                                 const softnessWidth = Math.min(halfW, halfH) * light.innerShadow;
-                                if (signedDist > 0) return 0.0; 
-                                if (signedDist < -softnessWidth) return 1.0;
-                                const t = (-signedDist) / softnessWidth;
-                                attenuation = 0.1 + 0.9 * smoothStep(t);
+                                if (signedDist > 0) {
+                                    attenuation = 0.0; // 在形状外，强度为0
+                                } else if (signedDist < -softnessWidth) {
+                                    attenuation = 1.0; // 在核心区域，强度为1
+                                } else {
+                                    // 在柔化边缘区域
+                                    const t = (-signedDist) / (softnessWidth || 1e-8);
+                                    attenuation = 0.1 + 0.9 * smoothStep(t);
+                                }
                             } else {
                                 attenuation = signedDist <= 0 ? 1.0 : 0.0;
                             }
+                            attenuation = Math.max(0, attenuation); // 确保衰减值不为负
+                            // ===== MODIFICATION END =====
                         }
                         
                         if (attenuation > 0) {
