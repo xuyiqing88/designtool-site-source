@@ -2002,33 +2002,41 @@
             return dist <= angularRadius ? 1.0 : 0.0;
         }
 
-        function computeRingAttenuation(x, y, light) {
-            const pixelPos = pixelsToSpherical(x, y, HDR_WIDTH, HDR_HEIGHT);
-            const lightPos = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
-            const angularOuterRadius = (light.size / HDR_WIDTH) * TWO_PI;
-            const angularInnerRadius = angularOuterRadius - (light.thickness / HDR_WIDTH) * TWO_PI;
+// ===== 替换 computeRingAttenuation 函数 =====
+function computeRingAttenuation(x, y, light) {
+    const pixelPos = pixelsToSpherical(x + 0.5, y + 0.5, HDR_WIDTH, HDR_HEIGHT);
+    const lightPos = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+    const angularOuterRadius = (light.size / HDR_WIDTH) * TWO_PI;
+    const angularInnerRadius = Math.max(0, angularOuterRadius - (light.thickness / HDR_WIDTH) * TWO_PI);
 
-            const dist = angularDistance(pixelPos.lon, pixelPos.lat, lightPos.lon, lightPos.lat);
-            
-            if (dist < angularInnerRadius || dist > angularOuterRadius) {
-                return 0.0;
-            }
-            
-            if (light.falloff <= 0) {
-                return 1.0;
-            }
-            
-            const angularFalloff = (light.falloff / HDR_WIDTH) * TWO_PI;
-            const distToInner = Math.max(0, dist - angularInnerRadius);
-            const distToOuter = Math.max(0, angularOuterRadius - dist);
-            const minDist = Math.min(distToInner, distToOuter);
-            
-            if (minDist >= angularFalloff) {
-                return 0.0;
-            }
-            
-            return smoothStep(1.0 - minDist / angularFalloff);
-        }
+    const dist = angularDistance(pixelPos.lon, pixelPos.lat, lightPos.lon, lightPos.lat);
+    
+    // 计算柔化范围（角距离）
+    const innerSoftness = light.innerShadow > 0 ? angularInnerRadius * light.innerShadow : 0;
+    const outerSoftnessAngular = light.falloff > 0 ? (light.falloff / HDR_WIDTH) * TWO_PI : 0;
+
+    // 完全在柔化区域之外
+    if (dist < angularInnerRadius - innerSoftness || dist > angularOuterRadius + outerSoftnessAngular) {
+        return 0.0;
+    }
+
+    // 处理内侧柔化区域
+    if (dist < angularInnerRadius) {
+        if (innerSoftness <= 0) return 0.0;
+        const t = (angularInnerRadius - dist) / innerSoftness;
+        return 1 - smoothStep(t);
+    }
+
+    // 处理外侧衰减区域
+    if (dist > angularOuterRadius) {
+        if (outerSoftnessAngular <= 0) return 0.0;
+        const t = (dist - angularOuterRadius) / outerSoftnessAngular;
+        return 1 - smoothStep(t);
+    }
+
+    // 实心环形部分
+    return 1.0;
+}
 
 // 计算点到线段的距离
 function pointToSegmentDistance(px, py, ax, ay, bx, by) {
