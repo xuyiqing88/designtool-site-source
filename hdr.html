@@ -38,7 +38,7 @@
             justify-content: center; 
             align-items: flex-start; 
             min-height: 100vh; 
-            overflow: hidden; /* 防止拖动时页面滚动 */
+            overflow: hidden;
         }
         .scripts {
             margin-left: 10px; 
@@ -47,7 +47,7 @@
             color: var(--text3);
         }
         #resizeHandle {
-            position: relative; /* 从 static 改为 relative */
+            position: relative;
             height: 10px;
             background: #00000000;
             cursor: ns-resize;
@@ -111,26 +111,25 @@
             height: 50%;
         }
         
-        /* 新增: top-preview 内部布局 */
         .top-preview-content {
-    display: flex;
-    flex-grow: 1;
-    height: calc(100% - 38px);
+            display: flex;
+            flex-grow: 1;
+            height: calc(100% - 38px);
         }
         
         #hdr-canvas-wrapper {
-    flex: 0.75 1 0%; /* 默认75%宽度 */
-    position: relative;
-    min-width: 200px;
+            flex: 0.75 1 0%;
+            position: relative;
+            min-width: 200px;
         }
-#hdrCanvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* 保持比例 */
-}
+        #hdrCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
         #vertical-resize-handle {
             width: 10px;
             background: #00000000;
@@ -143,14 +142,14 @@
         }
         
         #light-list-panel {
-    flex: 0.25 1 0%; /* 默认25%宽度 */
-    min-width: 200px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid var(--line);
-    padding-left: 10px;
-    overflow: hidden;
+            flex: 0.25 1 0%;
+            min-width: 200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--line);
+            padding-left: 10px;
+            overflow: hidden;
         }
         
         .light-list-header h4 {
@@ -168,9 +167,9 @@
             margin: 0;
             overflow-y: auto;
             flex-grow: 1;
-	    background: var(--main-bg);
-    border-radius: 4px;
-    padding: 8px;
+            background: var(--main-bg);
+            border-radius: 4px;
+            padding: 8px;
         }
         
         .light-item {
@@ -182,12 +181,12 @@
             cursor: pointer;
             transition: background-color .2s;
             font-size: 14px;
-	border: 1px solid #00000000;
+            border: 1px solid #00000000;
         }
  
-	.light-item:nth-child(even) {
-    		background: var(--panel-bg)
-	}
+        .light-item:nth-child(even) {
+            background: var(--panel-bg)
+        }
         .light-item:hover {
             background-color: #8080ff1a;
         }
@@ -242,7 +241,7 @@
             margin-bottom: 10px;
             font-size: 14px;
             color: var(--text3);
-            flex-shrink: 0; /* 防止 header 被压缩 */
+            flex-shrink: 0;
         }
 
         .preview-header h3 {
@@ -587,18 +586,18 @@
             }
             #hdr-canvas-wrapper, #light-list-panel {
                 width: 100%;
-	        height: 224px;
+                height: 224px;
             }
-	.bottom-preview {    height: 35%;}
+            .bottom-preview {    height: 35%;}
             #light-list-panel {
-                height: 150px; /* 在小屏幕上给列表一个固定高度 */
+                height: 150px;
                 border-left: none;
                 border-top: 1px solid var(--line);
                 padding-left: 0;
                 margin-top: 10px;
             }
             #vertical-resize-handle {
-                display: none; /* 小屏幕上隐藏拖动条 */
+                display: none;
             }
         }
         
@@ -751,24 +750,23 @@
 
         <div class="preview-panel">
             <div class="preview-box top-preview">
-  <div class="preview-header">
-    <h3><i class="fa-solid fa-lightbulb"></i> 二维视图 & 灯光列表
-	<span class="scripts">点击左侧添加灯光，选中画布中的灯光进行编辑</span>
-	</h3>
-  </div>
-  <div class="top-preview-content">
-    <div id="hdr-canvas-wrapper">
-      <canvas id="hdrCanvas"></canvas>
-    </div>
-    <div id="vertical-resize-handle"></div>
-    <div id="light-list-panel">
-           <div class="preview-header">
-                <h3><i class="fa-solid fa-list-ul"></i> 灯光列表
-		<span class="scripts">支持隐藏和删除</span>
-		</h3>
+                <div class="preview-header">
+                    <h3><i class="fa-solid fa-lightbulb"></i> 二维视图 & 灯光列表
+                        <span class="scripts">点击左侧添加灯光，选中画布中的灯光进行编辑</span>
+                    </h3>
+                </div>
+                <div class="top-preview-content">
+                    <div id="hdr-canvas-wrapper">
+                        <canvas id="hdrCanvas"></canvas>
+                    </div>
+                    <div id="vertical-resize-handle"></div>
+                    <div id="light-list-panel">
+                        <div class="preview-header">
+                            <h3><i class="fa-solid fa-list-ul"></i> 灯光列表
+                                <span class="scripts">支持隐藏和删除</span>
+                            </h3>
                         </div>
-                        <ul id="light-list-items">
-                            </ul>
+                        <ul id="light-list-items"></ul>
                     </div>
                 </div>
             </div>
@@ -809,7 +807,7 @@
 
         let HDR_WIDTH = 2048, HDR_HEIGHT = 1024;
         let lights = [];
-        let lightTypeCounters = {}; // 新增: 用于灯光命名序号
+        let lightTypeCounters = {};
         let selectedLight = null;
         let addingLightType = null;
         let draggingLight = null;
@@ -819,7 +817,6 @@
         let startY = 0, startTopHeight = 0, startBottomHeight = 0;
         let isResizingHorizontal = false;
         let startX = 0, startCanvasWidth = 0, startListWidth = 0;
-
 
         // 用于合成的临时画布
         let tempHdrCanvas, tempHdrCtx;
@@ -835,7 +832,52 @@
 
         let scene, camera, renderer, originalSphere, controls, envTexture;
         let currentModel = null;
-        
+
+        // 球面投影辅助函数
+        function pixelsToSpherical(x, y, width, height) {
+            const lon = (x / width) * TWO_PI - PI;
+            const lat = (y / height) * PI - PI / 2;
+            return { lon, lat };
+        }
+
+        function sphericalToPixels(lon, lat, width, height) {
+            const x = ((lon + PI) / TWO_PI) * width;
+            const y = ((lat + PI / 2) / PI) * height;
+            return { x, y };
+        }
+
+        function angularDistance(lon1, lat1, lon2, lat2) {
+            const dLon = Math.abs(lon2 - lon1);
+            const sinDLon = Math.sin(dLon/2);
+            const sinDLat = Math.sin((lat2-lat1)/2);
+            const a = sinDLat*sinDLat + Math.cos(lat1)*Math.cos(lat2)*sinDLon*sinDLon;
+            return 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function getDestinationPoint(startLon, startLat, bearing, angularDistance) {
+            const δ = angularDistance;
+            const φ1 = startLat;
+            const λ1 = startLon;
+            const θ = bearing;
+
+            const sin_φ1 = Math.sin(φ1);
+            const cos_φ1 = Math.cos(φ1);
+            const sin_δ = Math.sin(δ);
+            const cos_δ = Math.cos(δ);
+            const sin_θ = Math.sin(θ);
+            const cos_θ = Math.cos(θ);
+
+            const sin_φ2 = sin_φ1 * cos_δ + cos_φ1 * sin_δ * cos_θ;
+            const φ2 = Math.asin(sin_φ2);
+            
+            const y = sin_θ * sin_δ * cos_φ1;
+            const x = cos_δ - sin_φ1 * sin_φ2;
+            
+            const λ2 = λ1 + Math.atan2(y, x);
+            
+            return { lon: λ2, lat: φ2 };
+        }
+
         function sRGBToLinear(c) {
             return (c < 0.04045) ? c * 0.0773993808 : Math.pow(c * 0.9478672986 + 0.0521327014, 2.4);
         }
@@ -910,14 +952,13 @@
             if (!previewBox) return;
             const { clientWidth, clientHeight } = previewBox;
             const headerHeight = previewBox.querySelector('.preview-header').offsetHeight;
-            const finalHeight = clientHeight - headerHeight - 15; // 15 for padding
+            const finalHeight = clientHeight - headerHeight - 15;
             
             renderer.setSize(clientWidth, finalHeight, false);
             camera.aspect = clientWidth / finalHeight;
             camera.updateProjectionMatrix();
         }
         
-        // [新增] 动态更新灯光列表UI
         function updateLightListUI() {
             const container = document.getElementById('light-list-items');
             container.innerHTML = '';
@@ -951,23 +992,20 @@
                     </div>
                 `;
 
-                // 事件监听：点击整个列表项以选中
                 li.addEventListener('click', (e) => {
-                    if (e.target.closest('.actions')) return; // 如果点击的是按钮区域，则不触发选中
+                    if (e.target.closest('.actions')) return;
                     selectedLight = lights.find(l => l.id === light.id);
                     updateControlsUI();
                     drawHdrPreview();
-                    updateLightListUI(); // 重新渲染列表以更新 active 状态
+                    updateLightListUI();
                 });
 
-                // 事件监听：切换可见性
                 li.querySelector('.toggle-visibility').addEventListener('click', () => {
                     light.visible = !light.visible;
                     drawHdrPreview();
                     updateLightListUI();
                 });
 
-                // 事件监听：从列表中删除
                 li.querySelector('.delete-from-list').addEventListener('click', () => {
                     deleteLightById(light.id);
                 });
@@ -976,7 +1014,6 @@
             });
         }
         
-        // [新增] 根据ID删除灯光
         function deleteLightById(id) {
             if (selectedLight && selectedLight.id === id) {
                 selectedLight = null;
@@ -996,11 +1033,32 @@
         }
         
         function createCirclePath(ctx, light, offsetX = 0) {
-            const { scaleX, scaleY } = getProjectionFactors(light);
-            const xRadius = light.size * scaleX;
-            const yRadius = light.size * scaleY;
+            const center = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            const angularRadius = (light.size / HDR_WIDTH) * TWO_PI;
+            const segments = 64;
+
             ctx.beginPath();
-            ctx.ellipse(light.x + offsetX, light.y, xRadius, yRadius, 0, 0, TWO_PI);
+
+            for (let i = 0; i <= segments; i++) {
+                const bearing = (i / segments) * TWO_PI;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, angularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    const prevDest = getDestinationPoint(center.lon, center.lat, ((i - 1) / segments) * TWO_PI, angularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                         ctx.lineTo(x, y);
+                    } else {
+                         ctx.moveTo(x,y);
+                    }
+                }
+            }
             ctx.closePath();
         }
 
@@ -1032,55 +1090,97 @@
         }
         
         function createOctagonPath(ctx, light, offsetX = 0) {
-            const { scaleX, scaleY } = getProjectionFactors(light);
-            const rotation = light.rotation || 0;
+            const center = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            const angularRadius = (light.size / HDR_WIDTH) * TWO_PI;
             const points = 8;
-            const size = light.size;
+            const rotation = (light.rotation || 0) * PI / 180;
 
-            ctx.save();
-            ctx.translate(light.x + offsetX, light.y);
-            ctx.rotate(rotation * Math.PI / 180);
-            ctx.scale(scaleX, scaleY);
-            
             ctx.beginPath();
-            for (let i = 0; i < points; i++) {
-                const angle = (i * 2 * Math.PI) / points - Math.PI / 8;
-                const x = size * Math.cos(angle);
-                const y = size * Math.sin(angle);
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+            for (let i = 0; i <= points; i++) {
+                const bearing = (i / points) * TWO_PI + rotation;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, angularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    const prevDest = getDestinationPoint(center.lon, center.lat, (((i - 1) / points) * TWO_PI + rotation), angularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                         ctx.lineTo(x, y);
+                    } else {
+                         ctx.moveTo(x,y);
+                    }
+                }
             }
             ctx.closePath();
-            ctx.restore();
         }
 
         function createRingPath(ctx, light, offsetX = 0) {
-            const { scaleX, scaleY } = getProjectionFactors(light);
-            const thickness = light.thickness || (light.size * 0.3);
+            const center = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            const rotation = (light.rotation || 0) * PI / 180;
             
-            ctx.save();
-            ctx.translate(light.x + offsetX, light.y);
-            ctx.rotate((light.rotation || 0) * Math.PI / 180);
-            ctx.scale(scaleX, scaleY);
+            const outerAngularRadius = (light.size / HDR_WIDTH) * TWO_PI;
+            const thicknessAngular = ((light.thickness || (light.size * 0.3)) / HDR_WIDTH) * TWO_PI;
+            const innerAngularRadius = Math.max(0, outerAngularRadius - thicknessAngular);
+            
+            const segments = 64;
 
             ctx.beginPath();
-            ctx.ellipse(0, 0, light.size, light.size, 0, 0, TWO_PI);
-            const innerRadius = Math.max(1, light.size - thickness);
-            ctx.moveTo(innerRadius, 0);
-            ctx.ellipse(0, 0, innerRadius, innerRadius, 0, 0, TWO_PI, true);
+            for (let i = 0; i <= segments; i++) {
+                const bearing = (i / segments) * TWO_PI + rotation;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, outerAngularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    const prevDest = getDestinationPoint(center.lon, center.lat, (((i-1) / segments) * TWO_PI + rotation), outerAngularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                        ctx.lineTo(x, y);
+                    } else {
+                        ctx.moveTo(x, y);
+                    }
+                }
+            }
+            
+            for (let i = segments; i >= 0; i--) {
+                const bearing = (i / segments) * TWO_PI + rotation;
+                const dest = getDestinationPoint(center.lon, center.lat, bearing, innerAngularRadius);
+                const pixel = sphericalToPixels(dest.lon, dest.lat, HDR_WIDTH, HDR_HEIGHT);
+                const x = pixel.x + offsetX;
+                const y = pixel.y;
+                
+                if (i === segments) {
+                     ctx.moveTo(x,y);
+                } else {
+                    const prevDest = getDestinationPoint(center.lon, center.lat, (((i+1) / segments) * TWO_PI + rotation), innerAngularRadius);
+                    const prevPoint = sphericalToPixels(prevDest.lon, prevDest.lat, HDR_WIDTH, HDR_HEIGHT);
+
+                    if (Math.abs(pixel.x - prevPoint.x) < HDR_WIDTH * 0.8) {
+                        ctx.lineTo(x, y);
+                    } else {
+                        ctx.moveTo(x, y);
+                    }
+                }
+            }
+
             ctx.closePath();
-            ctx.restore();
         }
 
         function drawHdrPreview() {
             if (!tempHdrCtx) return; 
 
-            // === 步骤1: 在临时画布上合成未旋转的完整图像 ===
             tempHdrCtx.globalCompositeOperation = 'source-over';
             tempHdrCtx.fillStyle = background.color;
             tempHdrCtx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
 
-            // 绘制背景 (不旋转)
             switch (background.type) {
                 case 'image':
                     if (background.image) {
@@ -1113,17 +1213,15 @@
                     break;
             }
             
-            // 应用背景亮度
             tempHdrCtx.save();
             tempHdrCtx.filter = `brightness(${background.brightness})`;
             tempHdrCtx.globalCompositeOperation = 'copy';
             tempHdrCtx.drawImage(tempHdrCanvas, 0, 0);
             tempHdrCtx.restore();
 
-            // 在背景上叠加灯光
             tempHdrCtx.globalCompositeOperation = 'lighter';
             lights.forEach(light => {
-                if (!light.visible) return; // [修改] 跳过不可见的灯光
+                if (!light.visible) return;
 
                 const offsets = [0];
                 const effectiveRadius = (light.size || Math.max(light.width || 0, light.height || 0)) * 1.5 + (light.falloff || 0);
@@ -1171,8 +1269,7 @@
                 });
             });
 
-             // 绘制选中框 (也在临时画布上)
-            if (selectedLight && selectedLight.visible) { // [修改] 只为可见的选中灯光绘制边框
+            if (selectedLight && selectedLight.visible) {
                 const offsets = [0];
                 const effectiveRadius = (selectedLight.size || Math.max(selectedLight.width || 0, selectedLight.height || 0)) * 1.5 + (selectedLight.falloff || 0);
                 if (selectedLight.x - effectiveRadius < 0) offsets.push(HDR_WIDTH);
@@ -1185,7 +1282,7 @@
                     else if (selectedLight.type === 'rect') createRectPath(tempHdrCtx, selectedLight, offsetX);
                     else if (selectedLight.type === 'octagon') createOctagonPath(tempHdrCtx, selectedLight, offsetX);
                     else if (selectedLight.type === 'ring') createRingPath(tempHdrCtx, selectedLight, offsetX);
-                    tempHdrCtx.lineWidth = 5 * (HDR_WIDTH / 2048); // 边框随分辨率缩放
+                    tempHdrCtx.lineWidth = 5 * (HDR_WIDTH / 2048);
                     tempHdrCtx.setLineDash([10, 4]);
                     tempHdrCtx.strokeStyle = 'rgba(128,128,255,0.9)';
                     tempHdrCtx.stroke();
@@ -1193,18 +1290,15 @@
                 });
             }
 
-            // === 步骤2: 将临时画布的内容旋转后绘制到主画布上 ===
             const ctx = hdrCanvas.getContext('2d');
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = '#000'; // 清空主画布
+            ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, HDR_WIDTH, HDR_HEIGHT);
             const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
             
-            // 绘制两次以实现无缝循环
             ctx.drawImage(tempHdrCanvas, -rotationOffset, 0);
             ctx.drawImage(tempHdrCanvas, -rotationOffset + HDR_WIDTH, 0);
 
-            // 更新3D场景
             update3DScene();
         }
 
@@ -1244,7 +1338,7 @@
         function updateControlsUI() {
             const container = document.getElementById('lightControls');
             container.innerHTML = '';
-            updateLightListUI(); // [修改] 任何控件更新时都刷新灯光列表
+            updateLightListUI();
             if (!selectedLight) return;
 
             const icon = selectedLight.type === 'circle' ? 'fa-lightbulb' :
@@ -1574,186 +1668,55 @@
             document.body.style.userSelect = 'none';
             e.preventDefault();
         }
-// 新增自适应函数
-function adjustCanvasAndListWidths() {
-    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
-    const listPanel = document.getElementById('light-list-panel');
-    
-    // 检查是否有保存的比例值
-    if (canvasWrapper.dataset.ratio && listPanel.dataset.ratio) {
-        const canvasRatio = parseFloat(canvasWrapper.dataset.ratio);
-        const listRatio = parseFloat(listPanel.dataset.ratio);
+
+        function handleHorizontalResize(e) {
+            if (!isResizingHorizontal) return;
+            const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+            const listPanel = document.getElementById('light-list-panel');
+            const deltaX = e.clientX - startX;
+            
+            const newCanvasRatio = (startCanvasWidth + deltaX) / (startCanvasWidth + startListWidth);
+            const newListRatio = (startListWidth - deltaX) / (startCanvasWidth + startListWidth);
+            
+            canvasWrapper.style.flex = `${newCanvasRatio} 1 0%`;
+            listPanel.style.flex = `${newListRatio} 1 0%`;
+            
+            canvasWrapper.dataset.ratio = newCanvasRatio;
+            listPanel.dataset.ratio = newListRatio;
+        }
         
-        // 应用保存的比例
-        canvasWrapper.style.flex = `${canvasRatio} 1 0%`;
-        listPanel.style.flex = `${listRatio} 1 0%`;
-    } else {
-        // 没有比例时恢复默认
-        canvasWrapper.style.flex = '';
-        listPanel.style.flex = '';
-    }
-}
-
-function handleHorizontalResize(e) {
-    if (!isResizingHorizontal) return;
-    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
-    const listPanel = document.getElementById('light-list-panel');
-    const deltaX = e.clientX - startX;
-    
-    // 计算新宽度比例
-    const newCanvasRatio = (startCanvasWidth + deltaX) / (startCanvasWidth + startListWidth);
-    const newListRatio = (startListWidth - deltaX) / (startCanvasWidth + startListWidth);
-    
-    // 设置比例值
-    canvasWrapper.style.flex = `${newCanvasRatio} 1 0%`;
-    listPanel.style.flex = `${newListRatio} 1 0%`;
-    
-    // 保存当前比例到元素
-    canvasWrapper.dataset.ratio = newCanvasRatio;
-    listPanel.dataset.ratio = newListRatio;
-}
-        
-        function initApp() {
-            try {
-                init3DScene();
-                resetCanvas(HDR_WIDTH, HDR_HEIGHT);
-                initResizeEvents();
-
-                document.getElementById('resolutionSelector').addEventListener('change', (e) => {
-                    const [w, h] = e.target.value.split('x').map(Number);
-                    resetCanvas(w, h);
-                });
-                    // 初始化比例值
-    const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
-    const listPanel = document.getElementById('light-list-panel');
-    if (!canvasWrapper.dataset.ratio) {
-        canvasWrapper.dataset.ratio = "0.75";
-        listPanel.dataset.ratio = "0.25";
-    }
-                const addButtons = ['addCircleLight', 'addRectLight', 'addOctagonLight', 'addRingLight'];
-                addButtons.forEach(id => {
-                    const btn = document.getElementById(id);
-                    btn.addEventListener('click', (e) => {
-                        hdrCanvas.classList.remove('cursor-dashed', 'cursor-square', 'cursor-octagon', 'cursor-ring');
-                        addingLightType = id.replace('add', '').replace('Light', '').toLowerCase();
-                        addButtons.forEach(bid => document.getElementById(bid).classList.remove('active'));
-                        e.currentTarget.classList.add('active');
-                        
-                        switch(addingLightType) {
-                            case 'circle': hdrCanvas.style.cursor = 'crosshair'; break;
-                            case 'rect': hdrCanvas.style.cursor = 'crosshair'; break;
-                            case 'octagon': hdrCanvas.style.cursor = 'crosshair'; break;
-                            case 'ring': hdrCanvas.style.cursor = 'crosshair'; break;
-                        }
-                    });
-                });
-
-                hdrCanvas.addEventListener('mousedown', handleCanvasMouseDown);
-                hdrCanvas.addEventListener('mousemove', handleCanvasMouseMove);
-                window.addEventListener('mouseup', handleMouseUp);
-                hdrCanvas.addEventListener('mouseleave', () => { if (!addingLightType) handleMouseUp(); });
-
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const tabId = btn.dataset.tab;
-                        background.type = tabId;
-                        document.querySelectorAll('.tab-button, .tab-content').forEach(el => el.classList.remove('active'));
-                        btn.classList.add('active');
-                        document.getElementById(tabId + 'Tab').classList.add('active');
-                        drawHdrPreview();
-                    });
-                });
-
-                document.getElementById('bgColor').addEventListener('input', e => { background.color = e.target.value; drawHdrPreview(); });
-                document.getElementById('gradientColor1').addEventListener('input', e => { background.gradient.color1 = e.target.value; drawHdrPreview(); });
-                document.getElementById('gradientColor2').addEventListener('input', e => { background.gradient.color2 = e.target.value; drawHdrPreview(); });
-                const gradientAngleSlider = document.getElementById('gradientAngle');
-                const gradientAngleValue = document.getElementById('gradientAngleValue');
-                gradientAngleSlider.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleValue.value = e.target.value; drawHdrPreview(); });
-                gradientAngleValue.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleSlider.value = e.target.value; drawHdrPreview(); });
-                
-                const bgRotationSlider = document.getElementById('bgRotation');
-                const bgRotationValue = document.getElementById('bgRotationValue');
-                bgRotationSlider.addEventListener('input', e => { background.rotation = e.target.value; bgRotationValue.value = e.target.value; drawHdrPreview(); });
-                bgRotationValue.addEventListener('input', e => { background.rotation = e.target.value; bgRotationSlider.value = e.target.value; drawHdrPreview(); });
-
-                const bgBrightnessSlider = document.getElementById('bgBrightness');
-                const bgBrightnessValue = document.getElementById('bgBrightnessValue');
-                bgBrightnessSlider.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessValue.value = e.target.value; drawHdrPreview(); });
-                bgBrightnessValue.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessSlider.value = e.target.value; drawHdrPreview(); });
-
-                document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
-                document.getElementById('exportHdri').addEventListener('click', generateHdrFile);
-                
-                document.getElementById('importModelBtn').addEventListener('click', () => document.getElementById('modelUpload').click());
-                document.getElementById('modelUpload').addEventListener('change', handleModelUpload);
-                addModelControlListeners();
-
-                // 初始化一个灯光
-                lightTypeCounters['circle'] = 1;
-                lights.push({
-                    id: Date.now(),
-                    displayId: 1,
-                    type: 'circle',
-                    visible: true,
-                    x: HDR_WIDTH * 0.85,
-                    y: HDR_HEIGHT * 0.4,
-                    size: 120,
-                    color: '#ffffff',
-                    intensity: 10.0,
-                    falloff: 30,
-                    innerShadow: 0,
-                    useTemperature: false,
-                    temperature: 6500
-                });
-                
-                selectedLight = lights[0];
-
-                updateControlsUI();
-                drawHdrPreview();
-                updateStatus("HDRI编辑器已就绪", true);
-            } catch (e) {
-                console.error("初始化失败:", e);
-                updateStatus(`初始化错误: ${e.message}`, false);
+        function getCanvasPixelPosition(canvas, clientX, clientY) {
+            const rect = canvas.getBoundingClientRect();
+            
+            const canvasAspect = HDR_WIDTH / HDR_HEIGHT;
+            const displayAspect = rect.width / rect.height;
+            
+            let displayWidth, displayHeight, offsetX, offsetY;
+            
+            if (displayAspect > canvasAspect) {
+                displayHeight = rect.height;
+                displayWidth = displayHeight * canvasAspect;
+                offsetX = (rect.width - displayWidth) / 2;
+                offsetY = 0;
+            } else {
+                displayWidth = rect.width;
+                displayHeight = displayWidth / canvasAspect;
+                offsetX = 0;
+                offsetY = (rect.height - displayHeight) / 2;
             }
-        }
-    // === 添加缺失的 getCanvasPixelPosition 函数 ===
-    function getCanvasPixelPosition(canvas, clientX, clientY) {
-        const rect = canvas.getBoundingClientRect();
-        
-        // 计算实际显示区域（去除黑边）
-        const canvasAspect = HDR_WIDTH / HDR_HEIGHT;
-        const displayAspect = rect.width / rect.height;
-        
-        let displayWidth, displayHeight, offsetX, offsetY;
-        
-        if (displayAspect > canvasAspect) {
-            // 容器更宽，上下有黑边
-            displayHeight = rect.height;
-            displayWidth = displayHeight * canvasAspect;
-            offsetX = (rect.width - displayWidth) / 2;
-            offsetY = 0;
-        } else {
-            // 容器更高，左右有黑边
-            displayWidth = rect.width;
-            displayHeight = displayWidth / canvasAspect;
-            offsetX = 0;
-            offsetY = (rect.height - displayHeight) / 2;
+            
+            const x = clientX - rect.left - offsetX;
+            const y = clientY - rect.top - offsetY;
+            
+            const pixelX = (x / displayWidth) * HDR_WIDTH;
+            const pixelY = (y / displayHeight) * HDR_HEIGHT;
+            
+            return { 
+                x: Math.max(0, Math.min(HDR_WIDTH, pixelX)), 
+                y: Math.max(0, Math.min(HDR_HEIGHT, pixelY))
+            };
         }
         
-        // 计算在画布内容区域的相对位置
-        const x = clientX - rect.left - offsetX;
-        const y = clientY - rect.top - offsetY;
-        
-        // 转换为画布像素坐标
-        const pixelX = (x / displayWidth) * HDR_WIDTH;
-        const pixelY = (y / displayHeight) * HDR_HEIGHT;
-        
-        return { 
-            x: Math.max(0, Math.min(HDR_WIDTH, pixelX)), 
-            y: Math.max(0, Math.min(HDR_HEIGHT, pixelY))
-        };
-    }
         function resetCanvas(width, height) {
             const prevW = HDR_WIDTH, prevH = HDR_HEIGHT;
             HDR_WIDTH = width; HDR_HEIGHT = height;
@@ -1779,10 +1742,10 @@ function handleHorizontalResize(e) {
         }
         
         function handleCanvasMouseDown(e) {
-    const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
-    const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
-    let x = (pos.x + rotationOffset) % HDR_WIDTH;
-    let y = pos.y;
+            const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
+            const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+            let x = (pos.x + rotationOffset) % HDR_WIDTH;
+            let y = pos.y;
             
             document.querySelectorAll('#addCircleLight, #addRectLight, #addOctagonLight, #addRingLight').forEach(btn => btn.classList.remove('active'));
             hdrCanvas.style.cursor = 'default';
@@ -1823,7 +1786,7 @@ function handleHorizontalResize(e) {
                 let clicked = null;
                 for (let i = lights.length -1; i >=0; i--) {
                     const light = lights[i];
-                    if (!light.visible) continue; // 不可选不可见的灯光
+                    if (!light.visible) continue;
                     
                     const { scaleX } = getProjectionFactors(light);
                     const effectiveRadius = (light.size || Math.max(light.width, light.height)/2) * scaleX;
@@ -1844,11 +1807,11 @@ function handleHorizontalResize(e) {
         }
 
         function handleCanvasMouseMove(e) {
-    if (draggingLight) {
-        const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
-        const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
-        let x = (pos.x + rotationOffset);
-        let y = pos.y;
+            if (draggingLight) {
+                const pos = getCanvasPixelPosition(hdrCanvas, e.clientX, e.clientY);
+                const rotationOffset = (background.rotation / 360) * HDR_WIDTH;
+                let x = (pos.x + rotationOffset);
+                let y = pos.y;
 
                 let newX = x;
                 newX = (newX % HDR_WIDTH + HDR_WIDTH) % HDR_WIDTH;
@@ -1896,7 +1859,7 @@ function handleHorizontalResize(e) {
                     document.getElementById('falloffValue').value = 0;
                 }
                 drawHdrPreview();
-                if (prop === 'color') updateLightListUI(); // 颜色变化时更新列表图标颜色
+                if (prop === 'color') updateLightListUI();
             };
 
             const sliders = document.querySelectorAll('.control-group input[type="range"]');
@@ -2017,121 +1980,163 @@ function handleHorizontalResize(e) {
              return t * t * (3 - 2 * t);
         }
         
+        // 使用球面投影的衰减计算函数
         function computeCircleAttenuation(x, y, light) {
-            const { scaleX, scaleY } = getProjectionFactors(light);
-            const dx = (x - light.x) / (light.size * scaleX);
-            const dy = (y - light.y) / (light.size * scaleY);
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (light.falloff > 0) {
-                const falloff = Math.max(1e-3, light.falloff) / light.size;
-                if (dist > 1 + falloff) return 0.0;
-                if (dist < 1) return 1.0;
-                return smoothStep((1 + falloff - dist) / falloff);
-            } else if (light.innerShadow > 0) {
-                if (dist > 1) return 0.0;
-                if (dist < 1 - light.innerShadow) return 1.0;
-                const t = (1 - dist) / light.innerShadow;
-                return 0.1 + 0.9 * smoothStep(t);
-            }
-            return dist <= 1 ? 1.0 : 0.0;
-        }
-
-        function computeRectAttenuation(x, y, light) {
-            const { scaleX, scaleY } = getProjectionFactors(light);
-            const r_rad = (light.rotation || 0) * Math.PI / 180;
-            const cos_r = Math.cos(-r_rad);
-            const sin_r = Math.sin(-r_rad);
-
-            let localX = x - light.x;
-            let localY = y - light.y;
-
-            const rx = localX * cos_r - localY * sin_r;
-            const ry = localX * sin_r + localY * cos_r;
+            const pixelPos = pixelsToSpherical(x, y, HDR_WIDTH, HDR_HEIGHT);
+            const lightPos = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            const angularRadius = (light.size / HDR_WIDTH) * TWO_PI;
             
-            const urx = rx / scaleX;
-            const ury = ry / scaleY;
-
-            const halfW = light.width / 2;
-            const halfH = light.height / 2;
-            const q = { x: Math.abs(urx) - halfW, y: Math.abs(ury) - halfH };
-            const signedDist = Math.sqrt(Math.max(q.x,0)**2 + Math.max(q.y,0)**2) + Math.min(Math.max(q.x,q.y), 0);
-
+            const dist = angularDistance(pixelPos.lon, pixelPos.lat, lightPos.lon, lightPos.lat);
+            
             if (light.falloff > 0) {
-                return smoothStep(1.0 - signedDist / light.falloff);
+                const falloffRadius = angularRadius + (light.falloff / HDR_WIDTH) * TWO_PI;
+                if (dist > falloffRadius) return 0.0;
+                if (dist < angularRadius) return 1.0;
+                return smoothStep((falloffRadius - dist) / (falloffRadius - angularRadius));
             } else if (light.innerShadow > 0) {
-                const softnessWidth = Math.min(halfW, halfH) * light.innerShadow;
-                if (signedDist > 0) return 0.0; 
-                if (signedDist < -softnessWidth) return 1.0;
-                const t = (-signedDist) / softnessWidth;
+                if (dist > angularRadius) return 0.0;
+                if (dist < angularRadius * (1 - light.innerShadow)) return 1.0;
+                const t = (angularRadius - dist) / (angularRadius * light.innerShadow);
                 return 0.1 + 0.9 * smoothStep(t);
             }
-            return signedDist <= 0 ? 1.0 : 0.0;
+            return dist <= angularRadius ? 1.0 : 0.0;
         }
-        
-        function computeOctagonAttenuation(x, y, light) {
-            const { scaleX, scaleY } = getProjectionFactors(light);
-            const r_rad = (light.rotation || 0) * Math.PI / 180;
-            const cos_r = Math.cos(r_rad);
-            const sin_r = Math.sin(r_rad);
 
-            const dx = x - light.x;
-            const dy = y - light.y;
-            const urx = dx * cos_r + dy * sin_r;
-            const ury = -dx * sin_r + dy * cos_r;
-            const localX = urx / scaleX;
-            const localY = ury / scaleY;
-
-            const N = 8;
-            const R = light.size;
-            const slice = Math.PI / N;
-            const apothem = R * Math.cos(slice);
-
-            let angle = Math.atan2(localY, localX);
-            angle = (angle + 10 * PI) % (2 * slice);
-            angle = Math.abs(angle - slice);
-
-            const distToCenter = Math.sqrt(localX * localX + localY * localY);
-            const edgeDistOnRay = apothem / Math.cos(angle);
-            const signedDistFromEdge = distToCenter - edgeDistOnRay;
-
-            if (light.falloff > 0) {
-                const t = 1.0 - signedDistFromEdge / light.falloff;
-                return smoothStep(t);
-            } else if (light.innerShadow > 0) {
-                const softness = R * light.innerShadow;
-                if (signedDistFromEdge > 0) return 0.0;
-                if (signedDistFromEdge < -softness) return 1.0;
-                const t = (-signedDistFromEdge) / softness;
-                return 0.1 + 0.9 * smoothStep(t);
-            }
-            return signedDistFromEdge <= 0 ? 1.0 : 0.0;
-        }
         function computeRingAttenuation(x, y, light) {
-            const { scaleX, scaleY } = getProjectionFactors(light);
-            const thicknessRatio = (light.thickness || (light.size * 0.3)) / light.size;
+            const pixelPos = pixelsToSpherical(x, y, HDR_WIDTH, HDR_HEIGHT);
+            const lightPos = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+            const angularOuterRadius = (light.size / HDR_WIDTH) * TWO_PI;
+            const angularInnerRadius = angularOuterRadius - (light.thickness / HDR_WIDTH) * TWO_PI;
 
-            const r_rad = (light.rotation || 0) * Math.PI / 180;
-            const cos_r = Math.cos(-r_rad);
-            const sin_r = Math.sin(-r_rad);
-            let localX = x - light.x;
-            let localY = y - light.y;
-            const rx = (localX * cos_r - localY * sin_r) / scaleX;
-            const ry = (localX * sin_r + localY * cos_r) / scaleY;
-
-            const dist = Math.sqrt(rx * rx + ry * ry);
+            const dist = angularDistance(pixelPos.lon, pixelPos.lat, lightPos.lon, lightPos.lat);
             
-            const outerRadius = light.size;
-            const innerRadius = outerRadius * (1 - thicknessRatio);
-            const thickness = outerRadius - innerRadius;
+            if (dist < angularInnerRadius || dist > angularOuterRadius) {
+                return 0.0;
+            }
             
-            const falloff = Math.max(1e-3, light.falloff);
-
-            const distToRingCenter = Math.abs(dist - (innerRadius + thickness / 2));
-            const signedDist = distToRingCenter - thickness / 2;
-
-            return smoothStep(1.0 - signedDist / falloff);
+            if (light.falloff <= 0) {
+                return 1.0;
+            }
+            
+            const angularFalloff = (light.falloff / HDR_WIDTH) * TWO_PI;
+            const distToInner = Math.max(0, dist - angularInnerRadius);
+            const distToOuter = Math.max(0, angularOuterRadius - dist);
+            const minDist = Math.min(distToInner, distToOuter);
+            
+            if (minDist >= angularFalloff) {
+                return 0.0;
+            }
+            
+            return smoothStep(1.0 - minDist / angularFalloff);
         }
+
+// 计算点到线段的距离
+function pointToSegmentDistance(px, py, ax, ay, bx, by) {
+    const vx = bx - ax, vy = by - ay;
+    const wx = px - ax, wy = py - ay;
+    const c1 = vx * wx + vy * wy;
+    const c2 = vx * vx + vy * vy;
+    const t = Math.max(0, Math.min(1, c1 / (c2 || 1e-8)));
+    const qx = ax + t * vx, qy = ay + t * vy;
+    const dx = px - qx, dy = py - qy;
+    return Math.hypot(dx, dy);
+}
+
+// 计算点到凸多边形（这里是规则八边形）的“有符号距离”
+// 约定：inside 时返回负值（到边界的最近距离），outside 时返回正值
+function signedDistanceToConvexPolygon(p, verts) {
+    let inside = true;
+    let minEdgeDist = Infinity;
+
+    for (let i = 0; i < verts.length; i++) {
+        const a = verts[i];
+        const b = verts[(i + 1) % verts.length];
+
+        // 计算外法线（假设顶点按逆时针）
+        const ex = b.x - a.x, ey = b.y - a.y;
+        const nx =  ey, ny = -ex; // 外法线（与边旋转 90°）
+        const len = Math.hypot(nx, ny) || 1e-8;
+        const s = ((p.x - a.x) * nx + (p.y - a.y) * ny) / len;
+
+        if (s > 0) inside = false;
+
+        // 到边线段的欧氏最短距离
+        const segDist = pointToSegmentDistance(p.x, p.y, a.x, a.y, b.x, b.y);
+        if (segDist < minEdgeDist) minEdgeDist = segDist;
+    }
+    return inside ? -minEdgeDist : minEdgeDist;
+}
+
+/**
+ * [新增] 计算两个球面坐标点之间的初始方位角
+ * @param {number} φ1 - 起点纬度 (弧度)
+ * @param {number} λ1 - 起点经度 (弧度)
+ * @param {number} φ2 - 终点纬度 (弧度)
+ * @param {number} λ2 - 终点经度 (弧度)
+ * @returns {number} - 方位角 (弧度)
+ */
+function bearing(φ1, λ1, φ2, λ2) {
+    const y = Math.sin(λ2 - λ1) * Math.cos(φ2);
+    const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2 - λ1);
+    return Math.atan2(y, x);
+}
+
+// === 替换为这个新的、基于球面几何的八边形衰减函数 ===
+function computeOctagonAttenuation(x, y, light) {
+    // 1. 将像素和灯光中心转换为球面坐标 (弧度)
+    const pixelPos = pixelsToSpherical(x + 0.5, y + 0.5, HDR_WIDTH, HDR_HEIGHT);
+    const lightPos = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+
+    // 2. 计算从灯光中心到当前像素的球面角距离和方位角
+    const angularDist = angularDistance(lightPos.lon, lightPos.lat, pixelPos.lon, pixelPos.lat);
+    const bearingFromLight = bearing(lightPos.lat, lightPos.lon, pixelPos.lat, pixelPos.lon);
+
+    // 3. 根据方位角，计算出八边形在该方向上的球面半径
+    const lightRotation = (light.rotation || 0) * Math.PI / 180;
+    const angularVertexRadius = (light.size / HDR_WIDTH) * TWO_PI; // 灯光尺寸定义为到顶点的角距离
+    const numSegments = 8;
+
+    // 计算像素相对于灯光旋转后的方位角
+    let relativeAngle = bearingFromLight - lightRotation;
+    // 将角度归一化到 [0, 2*PI]
+    relativeAngle = (relativeAngle % TWO_PI + TWO_PI) % TWO_PI;
+    
+    // 计算该角度在八边形的一个 45度(PI/4) 切片内的位置
+    const segmentAngle = TWO_PI / numSegments;
+    const angleInSegment = relativeAngle % segmentAngle;
+    const beta = angleInSegment - (segmentAngle / 2); // 将角度中心化到 [-PI/8, PI/8]
+
+    // 八边形内切圆半径（角距离）
+    const apothem = angularVertexRadius * Math.cos(PI / numSegments);
+    // 使用几何公式计算出在 beta 角方向上，从中心到边缘的角距离
+    const octagonRadiusAtAngle = apothem / Math.cos(beta);
+
+    // 4. 计算像素到八边形边缘的“有符号角距离”
+    // > 0 表示在外部, < 0 表示在内部
+    const angularDistToEdge = angularDist - octagonRadiusAtAngle;
+
+    // 5. 根据有符号距离，应用外侧衰减或内侧柔化效果
+    if (light.falloff > 0) {
+        if (angularDistToEdge <= 0) return 1.0; // 在内部，强度为1
+        // 将像素单位的 falloff 值转换为等效的角距离
+        const angularFalloff = (light.falloff / HDR_WIDTH) * TWO_PI;
+        // 使用 smoothStep 实现平滑衰减
+        return smoothStep(1.0 - angularDistToEdge / angularFalloff);
+
+    } else if (light.innerShadow > 0) {
+        if (angularDistToEdge >= 0) return 0.0; // 在外部，强度为0
+        // 内侧柔化的范围，正比于灯光大小
+        const angularInnerShadowSize = octagonRadiusAtAngle * light.innerShadow;
+        if (-angularDistToEdge >= angularInnerShadowSize) return 1.0; // 在内部的纯色区域
+        
+        const t = (-angularDistToEdge) / (angularInnerShadowSize || 1e-8);
+        return 0.1 + 0.9 * smoothStep(t); // 从 0.1 平滑过渡到 1.0
+    }
+
+    // 无衰减/柔化效果：内部为1，外部为0
+    return angularDistToEdge <= 0 ? 1.0 : 0.0;
+}
+
 
         function frexp(value) {
             if (value === 0) return [0, 0];
@@ -2156,7 +2161,7 @@ function handleHorizontalResize(e) {
         }
 
         async function generateHdrFile() {
-            console.log("Generating true HDR data...");
+            console.log("Generating true HDR data with spherical projection...");
             const unrotatedFloatData = new Float32Array(HDR_WIDTH * HDR_HEIGHT * 3);
             const bgCanvas = document.createElement('canvas');
             bgCanvas.width = HDR_WIDTH;
@@ -2207,37 +2212,65 @@ function handleHorizontalResize(e) {
             }
 
             for (const light of lights) {
-                if (!light.visible) continue; // 跳过不可见的灯光
+                if (!light.visible) continue;
                 const linearColor = hexToLinear(light.color);
                 const lr = linearColor.r * light.intensity;
                 const lg = linearColor.g * light.intensity;
                 const lb = linearColor.b * light.intensity;
                 
-                const positions = [light.x];
-                if (light.x < light.size) positions.push(light.x + HDR_WIDTH);
-                if (light.x > HDR_WIDTH - light.size) positions.push(light.x - HDR_WIDTH);
-                
-                for (const posX of positions) {
-                    for (let y = 0; y < HDR_HEIGHT; y++) {
-                        for (let x = 0; x < HDR_WIDTH; x++) {
-                            const idx = (y * HDR_WIDTH + x) * 3;
-                            let attenuation = 0;
+                for (let y = 0; y < HDR_HEIGHT; y++) {
+                    for (let x = 0; x < HDR_WIDTH; x++) {
+                        const idx = (y * HDR_WIDTH + x) * 3;
+                        let attenuation = 0;
+                        
+                        if (light.type === 'circle') {
+                            attenuation = computeCircleAttenuation(x+0.5, y+0.5, light);
+                        } else if (light.type === 'octagon') {
+                            attenuation = computeOctagonAttenuation(x+0.5, y+0.5, light);
+                        } else if (light.type === 'ring') {
+                            attenuation = computeRingAttenuation(x+0.5, y+0.5, light);
+                        } else {
+                            // 矩形灯仍然使用2D平面投影
+                            const { scaleX, scaleY } = getProjectionFactors(light);
+                            const rotation = light.rotation || 0;
+                            const r_rad = rotation * Math.PI / 180;
+                            const cos_r = Math.cos(-r_rad);
+                            const sin_r = Math.sin(-r_rad);
                             
-                            if (light.type === 'circle') {
-                                attenuation = computeCircleAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                            } else if (light.type === 'rect') {
-                                attenuation = computeRectAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                            } else if (light.type === 'octagon') {
-                                attenuation = computeOctagonAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                            } else if (light.type === 'ring') {
-                                attenuation = computeRingAttenuation(x + 0.5, y + 0.5, { ...light, x: posX });
-                            }
+                            let localX = x - light.x;
+                            let localY = y - light.y;
                             
-                            if (attenuation > 0) {
-                                unrotatedFloatData[idx] += lr * attenuation;
-                                unrotatedFloatData[idx + 1] += lg * attenuation;
-                                unrotatedFloatData[idx + 2] += lb * attenuation;
+                            const rx = localX * cos_r - localY * sin_r;
+                            const ry = localX * sin_r + localY * cos_r;
+                            
+                            const urx = rx / scaleX;
+                            const ury = ry / scaleY;
+                            
+                            const halfW = light.width / 2;
+                            const halfH = light.height / 2;
+                            
+                            const qx = Math.abs(urx) - halfW;
+                            const qy = Math.abs(ury) - halfH;
+                            
+                            const signedDist = Math.sqrt(Math.max(qx,0)**2 + Math.max(qy,0)**2) + Math.min(Math.max(qx,qy), 0);
+                            
+                            if (light.falloff > 0) {
+                                attenuation = smoothStep(1.0 - signedDist / light.falloff);
+                            } else if (light.innerShadow > 0) {
+                                const softnessWidth = Math.min(halfW, halfH) * light.innerShadow;
+                                if (signedDist > 0) return 0.0; 
+                                if (signedDist < -softnessWidth) return 1.0;
+                                const t = (-signedDist) / softnessWidth;
+                                attenuation = 0.1 + 0.9 * smoothStep(t);
+                            } else {
+                                attenuation = signedDist <= 0 ? 1.0 : 0.0;
                             }
+                        }
+                        
+                        if (attenuation > 0) {
+                            unrotatedFloatData[idx] += lr * attenuation;
+                            unrotatedFloatData[idx + 1] += lg * attenuation;
+                            unrotatedFloatData[idx + 2] += lb * attenuation;
                         }
                     }
                 }
@@ -2281,12 +2314,109 @@ function handleHorizontalResize(e) {
             updateStatus("HDRI导出成功！", true);
         }
 
+        function initApp() {
+            try {
+                init3DScene();
+                resetCanvas(HDR_WIDTH, HDR_HEIGHT);
+                initResizeEvents();
+
+                document.getElementById('resolutionSelector').addEventListener('change', (e) => {
+                    const [w, h] = e.target.value.split('x').map(Number);
+                    resetCanvas(w, h);
+                });
+                
+                const canvasWrapper = document.getElementById('hdr-canvas-wrapper');
+                const listPanel = document.getElementById('light-list-panel');
+                if (!canvasWrapper.dataset.ratio) {
+                    canvasWrapper.dataset.ratio = "0.75";
+                    listPanel.dataset.ratio = "0.25";
+                }
+                
+                const addButtons = ['addCircleLight', 'addRectLight', 'addOctagonLight', 'addRingLight'];
+                addButtons.forEach(id => {
+                    const btn = document.getElementById(id);
+                    btn.addEventListener('click', (e) => {
+                        hdrCanvas.classList.remove('cursor-dashed', 'cursor-square', 'cursor-octagon', 'cursor-ring');
+                        addingLightType = id.replace('add', '').replace('Light', '').toLowerCase();
+                        addButtons.forEach(bid => document.getElementById(bid).classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        hdrCanvas.style.cursor = 'crosshair';
+                    });
+                });
+
+                hdrCanvas.addEventListener('mousedown', handleCanvasMouseDown);
+                hdrCanvas.addEventListener('mousemove', handleCanvasMouseMove);
+                window.addEventListener('mouseup', handleMouseUp);
+                hdrCanvas.addEventListener('mouseleave', () => { if (!addingLightType) handleMouseUp(); });
+
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const tabId = btn.dataset.tab;
+                        background.type = tabId;
+                        document.querySelectorAll('.tab-button, .tab-content').forEach(el => el.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.getElementById(tabId + 'Tab').classList.add('active');
+                        drawHdrPreview();
+                    });
+                });
+
+                document.getElementById('bgColor').addEventListener('input', e => { background.color = e.target.value; drawHdrPreview(); });
+                document.getElementById('gradientColor1').addEventListener('input', e => { background.gradient.color1 = e.target.value; drawHdrPreview(); });
+                document.getElementById('gradientColor2').addEventListener('input', e => { background.gradient.color2 = e.target.value; drawHdrPreview(); });
+                const gradientAngleSlider = document.getElementById('gradientAngle');
+                const gradientAngleValue = document.getElementById('gradientAngleValue');
+                gradientAngleSlider.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleValue.value = e.target.value; drawHdrPreview(); });
+                gradientAngleValue.addEventListener('input', e => { background.gradient.angle = e.target.value; gradientAngleSlider.value = e.target.value; drawHdrPreview(); });
+                
+                const bgRotationSlider = document.getElementById('bgRotation');
+                const bgRotationValue = document.getElementById('bgRotationValue');
+                bgRotationSlider.addEventListener('input', e => { background.rotation = e.target.value; bgRotationValue.value = e.target.value; drawHdrPreview(); });
+                bgRotationValue.addEventListener('input', e => { background.rotation = e.target.value; bgRotationSlider.value = e.target.value; drawHdrPreview(); });
+
+                const bgBrightnessSlider = document.getElementById('bgBrightness');
+                const bgBrightnessValue = document.getElementById('bgBrightnessValue');
+                bgBrightnessSlider.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessValue.value = e.target.value; drawHdrPreview(); });
+                bgBrightnessValue.addEventListener('input', e => { background.brightness = e.target.value; bgBrightnessSlider.value = e.target.value; drawHdrPreview(); });
+
+                document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+                document.getElementById('exportHdri').addEventListener('click', generateHdrFile);
+                
+                document.getElementById('importModelBtn').addEventListener('click', () => document.getElementById('modelUpload').click());
+                document.getElementById('modelUpload').addEventListener('change', handleModelUpload);
+                addModelControlListeners();
+
+                lightTypeCounters['circle'] = 1;
+                lights.push({
+                    id: Date.now(),
+                    displayId: 1,
+                    type: 'circle',
+                    visible: true,
+                    x: HDR_WIDTH * 0.85,
+                    y: HDR_HEIGHT * 0.4,
+                    size: 120,
+                    color: '#ffffff',
+                    intensity: 10.0,
+                    falloff: 30,
+                    innerShadow: 0,
+                    useTemperature: false,
+                    temperature: 6500
+                });
+                
+                selectedLight = lights[0];
+
+                updateControlsUI();
+                drawHdrPreview();
+                updateStatus("HDRI编辑器已就绪", true);
+            } catch (e) {
+                console.error("初始化失败:", e);
+                updateStatus(`初始化错误: ${e.message}`, false);
+            }
+        }
+
         window.addEventListener('load', initApp);
         window.addEventListener('resize', () => {
             resize3DCanvas();
-            // 在窗口大小变化时也需要重新绘制2D画布以适应新的容器尺寸
             drawHdrPreview();
-    adjustCanvasAndListWidths(); // 添加这行
         });
 
     </script>
