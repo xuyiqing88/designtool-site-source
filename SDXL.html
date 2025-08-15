@@ -567,6 +567,7 @@
                     <!-- 表格内容将通过JS动态生成 -->
                 </tbody>
             </table>
+    <div id="ad-container" class="adsbygoogle" style="text-align:center;"></div>
         </div>
         
         <footer>
@@ -661,101 +662,123 @@
         }
         
         // 渲染样式表格
-        function renderStylesTable(stylesToRender, searchTerm = '') {
-            const tableBody = document.getElementById('stylesTable');
-            tableBody.innerHTML = '';
-            
-            if (stylesToRender.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td colspan="5" style="text-align: center; padding: 40px; color: var(--gray);">未找到匹配的风格</td>`;
-                tableBody.appendChild(row);
-                return;
-            }
-            
-            stylesToRender.forEach(style => {
-                const row = document.createElement('tr');
-                
-                // 根据风格名称自动生成图片路径
-                const imgPath = `img/style-preview/${style.name}.png`;
-                
-                // 高亮处理搜索关键词
-                const highlightSearchTerm = (text) => {
-                    if (!searchTerm || searchTerm.trim() === '') return text;
-                    
-                    const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
-                    return text.replace(regex, '<span class="highlight">$1</span>');
-                };
-                
-                row.innerHTML = `
-                    <td class="style-name">${highlightSearchTerm(style.name)}</td>
-                    <td class="prompt-cell">
-                        <div class="prompt-text" data-prompt="${encodeURIComponent(style.prompt)}">
-                            ${highlightSearchTerm(style.prompt)}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="translation">${highlightSearchTerm(style.translation)}</div>
-                    </td>
-                    <td class="prompt-cell">
-                        <div class="prompt-text negative-prompt" data-prompt="${encodeURIComponent(style.negative_prompt)}">
-                            ${highlightSearchTerm(style.negative_prompt)}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="example-image">
-                            <img src="${imgPath}" alt="${style.name}" title="点击查看大图" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\"></div>
-                        </div>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // 添加提示词复制功能
-            document.querySelectorAll('.prompt-text').forEach(el => {
-                el.addEventListener('click', copyPromptToClipboard);
-                el.addEventListener('touchend', copyPromptToClipboard);
-            });
-            
-            // 添加图片点击事件（使用新的防误触处理）
-            document.querySelectorAll('.example-image img').forEach(img => {
-                // 为移动端添加触摸事件处理
-                let touchStartX = 0;
-                let touchStartY = 0;
-                let touchMoved = false;
-                
-                img.addEventListener('touchstart', (e) => {
-                    touchStartX = e.touches[0].clientX;
-                    touchStartY = e.touches[0].clientY;
-                    touchMoved = false;
-                });
-                
-                img.addEventListener('touchmove', (e) => {
-                    const touchEndX = e.touches[0].clientX;
-                    const touchEndY = e.touches[0].clientY;
-                    
-                    // 计算移动距离
-                    const diffX = Math.abs(touchEndX - touchStartX);
-                    const diffY = Math.abs(touchEndY - touchStartY);
-                    
-                    // 如果移动距离超过阈值，则认为是滑动操作
-                    if (diffX > 10 || diffY > 10) {
-                        touchMoved = true;
-                    }
-                });
-                
-                img.addEventListener('touchend', (e) => {
-                    // 如果是滑动操作，则忽略点击事件
-                    if (!touchMoved) {
-                        e.preventDefault(); // 防止触发默认行为
-                        showFullScreenImage(e);
-                    }
-                });
-                
-                // 桌面端仍然使用click事件
-                img.addEventListener('click', showFullScreenImage);
-            });
+function renderStylesTable(stylesToRender, searchTerm = '') {
+    const tableBody = document.getElementById('stylesTable');
+    tableBody.innerHTML = '';
+    
+    if (stylesToRender.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="5" style="text-align: center; padding: 40px; color: var(--gray);">未找到匹配的风格</td>`;
+        tableBody.appendChild(row);
+        return;
+    }
+    
+    // 辅助函数：转义正则表达式特殊字符
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+    
+    // 高亮处理搜索关键词
+    const highlightSearchTerm = (text) => {
+        if (!searchTerm || searchTerm.trim() === '') return text;
+        const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+        return text.replace(regex, '<span class="highlight">$1</span>');
+    };
+
+    stylesToRender.forEach((style, index) => {
+        const row = document.createElement('tr');
+        
+        // 根据风格名称自动生成图片路径
+        const imgPath = `img/style-preview/${style.name}.png`;
+        
+        row.innerHTML = `
+            <td class="style-name">${highlightSearchTerm(style.name)}</td>
+            <td class="prompt-cell">
+                <div class="prompt-text" data-prompt="${encodeURIComponent(style.prompt)}">
+                    ${highlightSearchTerm(style.prompt)}
+                </div>
+            </td>
+            <td>
+                <div class="translation">${highlightSearchTerm(style.translation)}</div>
+            </td>
+            <td class="prompt-cell">
+                <div class="prompt-text negative-prompt" data-prompt="${encodeURIComponent(style.negative_prompt)}">
+                    ${highlightSearchTerm(style.negative_prompt)}
+                </div>
+            </td>
+            <td>
+                <div class="example-image">
+                    <img src="${imgPath}" alt="${style.name}" title="点击查看大图" onerror="this.parentElement.innerHTML='<div class=\"placeholder-img\"></div>
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+
+        // 每隔10行插入广告
+        if ((index + 1) % 10 === 0) {
+            const adRow = document.createElement('tr');
+            adRow.innerHTML = `
+                <td colspan="5" style="padding: 15px 0; text-align: center;">
+                    <ins class="adsbygoogle" 
+                        style="display:block; text-align:center;" 
+                        data-ad-format="fluid" 
+                        data-ad-layout-key="-ff+4z+6v-ed+53" 
+                        data-ad-client="ca-pub-3983418855272291" 
+                        data-ad-slot="9637684776"></ins>
+                </td>
+            `;
+            tableBody.appendChild(adRow);
+            // 推送广告以渲染
+            (adsbygoogle = window.adsbygoogle || []).push({});
         }
+    });
+    
+    // 添加提示词复制功能
+    document.querySelectorAll('.prompt-text').forEach(el => {
+        el.addEventListener('click', copyPromptToClipboard);
+        el.addEventListener('touchend', copyPromptToClipboard);
+    });
+    
+    // 添加图片点击事件（使用新的防误触处理）
+    document.querySelectorAll('.example-image img').forEach(img => {
+        // 为移动端添加触摸事件处理
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchMoved = false;
+        
+        img.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchMoved = false;
+        });
+        
+        img.addEventListener('touchmove', (e) => {
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+            
+            // 计算移动距离
+            const diffX = Math.abs(touchEndX - touchStartX);
+            const diffY = Math.abs(touchEndY - touchStartY);
+            
+            // 如果移动距离超过阈值，则认为是滑动操作
+            if (diffX > 10 || diffY > 10) {
+                touchMoved = true;
+            }
+        });
+        
+        img.addEventListener('touchend', (e) => {
+            // 如果是滑动操作，则忽略点击事件
+            if (!touchMoved) {
+                e.preventDefault(); // 防止触发默认行为
+                showFullScreenImage(e);
+            }
+        });
+        
+        // 桌面端仍然使用click事件
+        img.addEventListener('click', showFullScreenImage);
+    });
+}
         
         // 设置事件监听器
         function setupEventListeners() {
