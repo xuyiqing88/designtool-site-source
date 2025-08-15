@@ -964,36 +964,7 @@
   padding: 0;
   line-height: 1;
 }
-        /* 新增广告样式 */
-        .ad-container {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin: 20px 0;
-            min-height: 250px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #f7f7ff, #e2e4ff);
-            border-radius: 10px;
-            border: 1px solid var(--border);
-        }
-        
-        .ad-container ins {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .ad-label {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.05);
-            color: var(--gray);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
+
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -1014,10 +985,7 @@
             .intro-title {
                 font-size: 1.35rem;
             }
-            .ad-container {
-                min-height: 200px;
-                margin: 10px 0;
-            }
+            
             .intro-text {
                 font-size: 0.95rem;
             }
@@ -1182,8 +1150,7 @@
             </div>  
         </header>
 
-    <div class="container">  
-     
+    <div class="container">       
         <div id="toolsContainer" style="padding: 8px 20px; background: #fff; border-radius: 10px;">
 
             <!-- 分类区域将由JS动态生成 -->
@@ -1323,9 +1290,6 @@
                 icon: "img/draw.png",
                 badge: ""
             }, 
-            // 广告位置标识
-            { type: "ad", id: 1 },
-
             {
                 title: "AI数字人(API版)",
                 description: "AI对话、提示词扩写、图像识别等功能，支持文件上传、模型切换",
@@ -1566,27 +1530,9 @@ window.addEventListener('resize', showAddToHomePrompt);
                     
                     container.appendChild(section);
                     
-            // 渲染该分类下的工具
-            const gridContainer = section.querySelector(`.tools-grid`);
-            toolsList.forEach(tool => {
-                if (tool.type === "ad") {
-                    // 渲染广告单元
-                    const adContainer = document.createElement('div');
-                    adContainer.className = 'ad-container';
-                    adContainer.innerHTML = `
-                        <span class="ad-label">广告</span>
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-format="fluid"
-                             data-ad-layout-key="-gg+19-5w-g7+1ft"
-                             data-ad-client="ca-pub-3983418855272291"
-                             data-ad-slot="5620432612"></ins>
-                    `;
-                    gridContainer.appendChild(adContainer);
-                    
-                    // 初始化广告
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                } else {
+                    // 渲染该分类下的工具
+                    const gridContainer = section.querySelector(`.tools-grid`);
+                    toolsList.forEach(tool => {
                         const toolCard = document.createElement('div');
                         toolCard.className = 'tool-card';
                         toolCard.setAttribute('data-category', tool.category);
@@ -1609,7 +1555,6 @@ window.addEventListener('resize', showAddToHomePrompt);
                         `;
                         
                         gridContainer.appendChild(toolCard);
-			}
                     });
                 }
             });
@@ -1634,9 +1579,8 @@ window.addEventListener('resize', showAddToHomePrompt);
             }
             
             const filteredTools = tools.filter(tool => 
-                tool.type !== "ad" && (  // 排除广告
                 tool.title.toLowerCase().includes(searchTerm) || 
-                tool.description.toLowerCase().includes(searchTerm))
+                tool.description.toLowerCase().includes(searchTerm)
             );
             
             // 按搜索结果显示
