@@ -2002,40 +2002,76 @@
             return dist <= angularRadius ? 1.0 : 0.0;
         }
 
-// ===== 替换 computeRingAttenuation 函数 =====
+// ===== 请将原有的 computeRingAttenuation 函数替换为下面的代码 =====
 function computeRingAttenuation(x, y, light) {
+    // 1. 将像素和灯光中心转换为球面坐标 (弧度)
     const pixelPos = pixelsToSpherical(x + 0.5, y + 0.5, HDR_WIDTH, HDR_HEIGHT);
     const lightPos = pixelsToSpherical(light.x, light.y, HDR_WIDTH, HDR_HEIGHT);
+
+    // 2. 计算灯光相关的角距离参数
     const angularOuterRadius = (light.size / HDR_WIDTH) * TWO_PI;
-    const angularInnerRadius = Math.max(0, angularOuterRadius - (light.thickness / HDR_WIDTH) * TWO_PI);
+    const angularThickness = (light.thickness / HDR_WIDTH) * TWO_PI;
+    const angularInnerRadius = Math.max(0, angularOuterRadius - angularThickness);
 
+    // 3. 计算当前像素到灯光中心的角距离
     const dist = angularDistance(pixelPos.lon, pixelPos.lat, lightPos.lon, lightPos.lat);
-    
-    // 计算柔化范围（角距离）
-    const innerSoftness = light.innerShadow > 0 ? angularInnerRadius * light.innerShadow : 0;
-    const outerSoftnessAngular = light.falloff > 0 ? (light.falloff / HDR_WIDTH) * TWO_PI : 0;
 
-    // 完全在柔化区域之外
-    if (dist < angularInnerRadius - innerSoftness || dist > angularOuterRadius + outerSoftnessAngular) {
-        return 0.0;
+    // 4. 根据效果类型（外侧衰减或内侧柔化）计算光照强度
+    let attenuation = 0.0;
+
+    if (light.falloff > 0) {
+        // --- 外侧衰减逻辑 ---
+        // 将 falloff 从像素单位转换为角距离
+        const angularFalloff = (light.falloff / HDR_WIDTH) * TWO_PI;
+        
+        // 计算外圆的外边缘 和 内圆的内边缘 (衰减的边界)
+        const outerBound = angularOuterRadius + angularFalloff;
+        const innerBound = Math.max(0, angularInnerRadius - angularFalloff);
+        
+        if (dist >= innerBound && dist <= outerBound) {
+             // 计算到外圆实体边缘的距离
+            const distToOuterEdge = Math.abs(dist - angularOuterRadius);
+             // 计算到内圆实体边缘的距离
+            const distToInnerEdge = Math.abs(dist - angularInnerRadius);
+            
+            // 取到最近实体边缘的距离
+            const minDistToEdge = Math.min(distToOuterEdge, distToInnerEdge);
+
+            // 如果像素点在环内，则强度为1，否则根据到最近边缘的距离进行平滑衰减
+            if (dist >= angularInnerRadius && dist <= angularOuterRadius) {
+                attenuation = 1.0;
+            } else {
+                attenuation = smoothStep(1.0 - minDistToEdge / angularFalloff);
+            }
+        }
+
+    } else if (light.innerShadow > 0) {
+        // --- 内侧柔化逻辑 ---
+        // 柔化范围不能超过环厚度的一半
+        const maxSoftness = angularThickness / 2;
+        const angularInnerSoftness = Math.min(maxSoftness, angularOuterRadius * light.innerShadow);
+
+        if (dist >= angularInnerRadius && dist <= angularOuterRadius) {
+            // 计算到外圆内边缘的距离 和 到内圆外边缘的距离
+            const distToOuterSoftnessBoundary = angularOuterRadius - dist;
+            const distToInnerSoftnessBoundary = dist - angularInnerRadius;
+            
+            // 取到最近柔化边界的距离
+            const minSoftnessDist = Math.min(distToOuterSoftnessBoundary, distToInnerSoftnessBoundary);
+
+            // 使用 smoothStep 实现向内平滑过渡
+            const t = minSoftnessDist / (angularInnerSoftness || 1e-8);
+            attenuation = 0.1 + 0.9 * smoothStep(t); // 从 0.1 平滑过渡到 1.0
+        }
+        
+    } else {
+        // --- 无效果的逻辑 ---
+        if (dist >= angularInnerRadius && dist <= angularOuterRadius) {
+            attenuation = 1.0;
+        }
     }
 
-    // 处理内侧柔化区域
-    if (dist < angularInnerRadius) {
-        if (innerSoftness <= 0) return 0.0;
-        const t = (angularInnerRadius - dist) / innerSoftness;
-        return 1 - smoothStep(t);
-    }
-
-    // 处理外侧衰减区域
-    if (dist > angularOuterRadius) {
-        if (outerSoftnessAngular <= 0) return 0.0;
-        const t = (dist - angularOuterRadius) / outerSoftnessAngular;
-        return 1 - smoothStep(t);
-    }
-
-    // 实心环形部分
-    return 1.0;
+    return Math.max(0, Math.min(1, attenuation));
 }
 
 // 计算点到线段的距离
