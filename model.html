@@ -56,14 +56,6 @@ body {
     height: 100%;
 	display: flex;
 	background: var(--lightbg);}
-.ad-container {
-    grid-column: 1 / -1; /* 让广告跨满所有列 */
-    width: 100%;
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    min-height: 200px;
-}
 .chzhzu {
 	display: flex;
 	flex-wrap: nowrap;
@@ -925,10 +917,6 @@ button:hover {
     padding: 70px 10px;
 	margin-bottom: 50px;
   }
-    .ad-container {
-        margin: 15px 0;
-        min-height: 150px;
-    }
 .upimg {
 	width: 100%;
     gap: 10px;
@@ -1157,11 +1145,6 @@ window.addEventListener('load', () => {
     applyDarkMode();
     updateCounter();
     adjustContainerWidth(); 
-
-    // 初始化广告
-    if (typeof adsbygoogle !== 'undefined') {
-        adsbygoogle.push({});
-    }
   
   // 添加深色模式切换事件
   document.querySelector('.bt-icon').addEventListener('click', toggleDarkMode);
@@ -2620,31 +2603,6 @@ document.getElementById('triggerWord').addEventListener('input', function() {
     }, 500);
 });
 
-// 创建插入广告的函数
-function insertAdElement() {
-    const adContainer = document.createElement('div');
-    adContainer.className = 'ad-container';
-    adContainer.innerHTML = `
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
-             crossorigin="anonymous"></script>
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-format="fluid"
-             data-ad-layout-key="-gb+12-5n-cm+18p"
-             data-ad-client="ca-pub-3983418855272291"
-             data-ad-slot="4793062958"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    `;
-    
-    document.getElementById('imageContainer').appendChild(adContainer);
-    
-    // 重新初始化广告
-    if (typeof adsbygoogle !== 'undefined') {
-        adsbygoogle.push({});
-    }
-}
 
 // 图片上传处理
 function handleFiles(event) {
