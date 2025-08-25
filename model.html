@@ -45,13 +45,7 @@
 
 .dark-mode .alert {
     background: #42424280;}
-.ad-container {
-    margin: 20px 0;
-    padding: 10px;
-    background: var(--mainbg);
-    border-radius: 8px;
-    border: 1px solid var(--line);
-}
+
 body {
     font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
     margin: 0;
@@ -1087,7 +1081,6 @@ display: flex;
 	</div>
 </div>
     <div class="image-container" id="imageContainer"></div>
-
 </div>
 </div>
 <div class="buttons">
@@ -1107,8 +1100,6 @@ let isDeleteMode = false;
 let timeoutId;
 let currentTriggerWord = "";
 let currentImageItem = null; // 用于存储当前操作的图片项
-// 全局变量，跟踪已插入的广告数量
-let adCount = 0;
 
 // 全局API_KEY存储
 let API_KEY = localStorage.getItem('GEMINI_API_KEY') || 'AIXXxxxxxxxxxxxxxxxxxxxxx-xxxxxXXXXxxx';
@@ -1149,45 +1140,6 @@ const DEFAULT_PROMPT = "You are creating a prompt for Stable Diffusion. First: d
 let wordStatsEnabled = localStorage.getItem('WORD_STATS_ENABLED') !== 'false';
 let selectedWord = null; // 当前选中的词汇
 
-// 修改后的插入广告函数
-function insertAdAfterImage(index) {
-    // 每3张图片插入一个广告（可根据需要调整）
-    if ((index + 1) % 3 === 0) {
-        adCount++;
-        
-        // 创建广告容器
-        const adContainer = document.createElement('div');
-        adContainer.className = 'ad-container';
-        adContainer.style.gridColumn = '1 / -1'; // 跨所有列
-        adContainer.style.textAlign = 'center';
-        adContainer.style.margin = '20px 0';
-        
-        // 创建广告元素
-        const insElement = document.createElement('ins');
-        insElement.className = 'adsbygoogle';
-        insElement.style.display = 'block';
-        insElement.setAttribute('data-ad-format', 'fluid');
-        insElement.setAttribute('data-ad-layout-key', '-hq-18-1y-3r+o2');
-        insElement.setAttribute('data-ad-client', 'ca-pub-3983418855272291');
-        insElement.setAttribute('data-ad-slot', '1924175279');
-        
-        // 创建脚本元素
-        const scriptElement = document.createElement('script');
-        scriptElement.textContent = '(adsbygoogle = window.adsbygoogle || []).push({});';
-        
-        // 将元素添加到容器
-        adContainer.appendChild(insElement);
-        adContainer.appendChild(scriptElement);
-        
-        // 将广告插入到图片容器中
-        document.getElementById('imageContainer').appendChild(adContainer);
-        
-        // 重新初始化广告
-        if (typeof adsbygoogle !== 'undefined') {
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        }
-    }
-}
 // 创建词汇统计容器
 const statsContainer = document.createElement('div');
 statsContainer.id = 'wordStatsContainer';
@@ -2606,10 +2558,6 @@ document.addEventListener('keydown', function(e) {
     updateCounter();
     adjustContainerWidth(); // 新增调用
     updateWordStats();
-
-    // 插入广告 - 新增代码
-    const imageItems = document.querySelectorAll('.image-item');
-    insertAdAfterImage(imageItems.length - 1); // 传递当前图片索引
 }
 
 // 触发词处理
@@ -2929,16 +2877,6 @@ function exitDeleteMode() {
     document.querySelectorAll('.image-wrapper').forEach(wrapper => {
         wrapper.style.pointerEvents = 'auto';
     });
-
-    // 删除所有现有广告
-    document.querySelectorAll('.ad-container').forEach(ad => ad.remove());
-    
-    // 重新插入广告
-    const imageItems = document.querySelectorAll('.image-item');
-    imageItems.forEach((item, index) => {
-        insertAdAfterImage(index);
-    });
-
     updateWordStats();
 }
 
