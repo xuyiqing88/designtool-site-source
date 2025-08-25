@@ -921,14 +921,14 @@ button:hover {
 	display: flex;
     align-items: center;}
 @media (max-width: 768px) {
-    .ad-container {
-        margin: 15px 0;
-        min-height: 150px;
-    }
   .container {
     padding: 70px 10px;
 	margin-bottom: 50px;
   }
+    .ad-container {
+        margin: 15px 0;
+        min-height: 150px;
+    }
 .upimg {
 	width: 100%;
     gap: 10px;
@@ -1093,6 +1093,17 @@ display: flex;
 	</div>
 </div>
     <div class="image-container" id="imageContainer"></div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="fluid"
+     data-ad-layout-key="-gb+12-5n-cm+18p"
+     data-ad-client="ca-pub-3983418855272291"
+     data-ad-slot="4793062958"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 </div>
 </div>
 <div class="buttons">
@@ -2588,6 +2599,27 @@ document.addEventListener('keydown', function(e) {
     updateWordStats();
 }
 
+// 触发词处理
+document.getElementById('triggerWord').addEventListener('input', function() {
+    debounce(() => {
+        const newTriggerWord = this.value.trim();
+        const previousTrigger = currentTriggerWord;
+        currentTriggerWord = newTriggerWord;
+
+        document.querySelectorAll('.input-box').forEach(input => {
+            let content = input.value;
+            if (previousTrigger && content.startsWith(`${previousTrigger}, `)) {
+                content = content.replace(`${previousTrigger}, `, '');
+            }
+            if (newTriggerWord && !content.startsWith(`${newTriggerWord}, `)) {
+                content = `${newTriggerWord}, ${content}`;
+            }
+            input.value = content;
+        });
+        updateWordStats();
+    }, 500);
+});
+
 // 创建插入广告的函数
 function insertAdElement() {
     const adContainer = document.createElement('div');
@@ -2613,27 +2645,6 @@ function insertAdElement() {
         adsbygoogle.push({});
     }
 }
-
-// 触发词处理
-document.getElementById('triggerWord').addEventListener('input', function() {
-    debounce(() => {
-        const newTriggerWord = this.value.trim();
-        const previousTrigger = currentTriggerWord;
-        currentTriggerWord = newTriggerWord;
-
-        document.querySelectorAll('.input-box').forEach(input => {
-            let content = input.value;
-            if (previousTrigger && content.startsWith(`${previousTrigger}, `)) {
-                content = content.replace(`${previousTrigger}, `, '');
-            }
-            if (newTriggerWord && !content.startsWith(`${newTriggerWord}, `)) {
-                content = `${newTriggerWord}, ${content}`;
-            }
-            input.value = content;
-        });
-        updateWordStats();
-    }, 500);
-});
 
 // 图片上传处理
 function handleFiles(event) {
