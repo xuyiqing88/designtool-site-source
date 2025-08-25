@@ -45,7 +45,13 @@
 
 .dark-mode .alert {
     background: #42424280;}
-
+.ad-container {
+    margin: 20px 0;
+    padding: 10px;
+    background: var(--mainbg);
+    border-radius: 8px;
+    border: 1px solid var(--line);
+}
 body {
     font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
     margin: 0;
@@ -1081,17 +1087,7 @@ display: flex;
 	</div>
 </div>
     <div class="image-container" id="imageContainer"></div>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-gb+12-5n-cm+18p"
-     data-ad-client="ca-pub-3983418855272291"
-     data-ad-slot="4793062958"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+
 </div>
 </div>
 <div class="buttons">
@@ -1111,15 +1107,13 @@ let isDeleteMode = false;
 let timeoutId;
 let currentTriggerWord = "";
 let currentImageItem = null; // 用于存储当前操作的图片项
+// 全局变量，跟踪已插入的广告数量
+let adCount = 0;
 
 // 全局API_KEY存储
 let API_KEY = localStorage.getItem('GEMINI_API_KEY') || 'AIXXxxxxxxxxxxxxxxxxxxxxx-xxxxxXXXXxxx';
 // 初始化深色模式状态
 let darkMode = localStorage.getItem('darkMode') === 'true';
-
-// 在全局变量区域添加广告计数器
-let adCounter = 0;
-const AD_FREQUENCY = 10; // 每3张图片插入一个广告
 
 // 应用深色模式
 function applyDarkMode() {
@@ -1154,6 +1148,40 @@ const DEFAULT_PROMPT = "You are creating a prompt for Stable Diffusion. First: d
 // 词汇统计功能
 let wordStatsEnabled = localStorage.getItem('WORD_STATS_ENABLED') !== 'false';
 let selectedWord = null; // 当前选中的词汇
+
+// 插入广告的函数
+function insertAdAfterImage(index) {
+    // 每3张图片插入一个广告（可根据需要调整）
+    if ((index + 1) % 3 === 0) {
+        adCount++;
+        
+        // 创建广告容器
+        const adContainer = document.createElement('div');
+        adContainer.className = 'ad-container';
+        adContainer.style.gridColumn = '1 / -1'; // 跨所有列
+        adContainer.style.textAlign = 'center';
+        adContainer.style.margin = '20px 0';
+        adContainer.innerHTML = `
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-format="fluid"
+                 data-ad-layout-key="-hq-18-1y-3r+o2"
+                 data-ad-client="ca-pub-3983418855272291"
+                 data-ad-slot="1924175279"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            <\/script>
+        `;
+        
+        // 将广告插入到图片容器中
+        document.getElementById('imageContainer').appendChild(adContainer);
+        
+        // 重新初始化广告
+        if (typeof adsbygoogle !== 'undefined') {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+    }
+}
 
 // 创建词汇统计容器
 const statsContainer = document.createElement('div');
@@ -2570,16 +2598,13 @@ document.addEventListener('keydown', function(e) {
     
     container.append(checkbox, imgWrapper, inputContainer);
     document.getElementById('imageContainer').appendChild(container);
-
-    // 广告插入逻辑
-    adCounter++;
-    if (adCounter % AD_FREQUENCY === 0) {
-        insertAdElement();
-    }
-
     updateCounter();
     adjustContainerWidth(); // 新增调用
     updateWordStats();
+
+    // 插入广告 - 新增代码
+    const imageItems = document.querySelectorAll('.image-item');
+    insertAdAfterImage(imageItems.length - 1); // 传递当前图片索引
 }
 
 // 触发词处理
@@ -2602,7 +2627,6 @@ document.getElementById('triggerWord').addEventListener('input', function() {
         updateWordStats();
     }, 500);
 });
-
 
 // 图片上传处理
 function handleFiles(event) {
@@ -2900,6 +2924,16 @@ function exitDeleteMode() {
     document.querySelectorAll('.image-wrapper').forEach(wrapper => {
         wrapper.style.pointerEvents = 'auto';
     });
+
+    // 删除所有现有广告
+    document.querySelectorAll('.ad-container').forEach(ad => ad.remove());
+    
+    // 重新插入广告
+    const imageItems = document.querySelectorAll('.image-item');
+    imageItems.forEach((item, index) => {
+        insertAdAfterImage(index);
+    });
+
     updateWordStats();
 }
 
