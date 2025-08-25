@@ -467,7 +467,7 @@
 }
 
 .table-container {
-    max-height: 250px;
+    max-height: 400px;
     overflow-y: auto;
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -1067,7 +1067,7 @@ max-width: 330px;
     }
     
     .table-container {
-        max-height: 200px;
+        max-height: 300px;
         font-size: 0.85rem;
     }
     
@@ -1849,7 +1849,7 @@ function populateDonationTable() {
         
         row.innerHTML = `
             <td>${donation.id}</td>
-            <td>${donation.amount}元</td>
+            <td>￥${donation.amount}</td>
             <td>${donation.data}</td>
             <td>${donation.message || '暂无留言'}</td>
         `;
