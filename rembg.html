@@ -319,7 +319,27 @@
       min-height: 300px;
       position: relative;
     }
+  /* 添加广告容器样式 */
+  .ad-container {
+    width: 100%;
+    margin: 20px 0;
+    text-align: center;
+    min-height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+  }
+  
+  .ad-container ins {
+    margin: 0 auto;
+  }
     @media (max-width: 768px) {
+    .ad-container {
+      min-height: 250px;
+    }
       .panel {
         padding: 16px;
 	width: 100vw;
@@ -663,31 +683,32 @@
       <!-- 输入面板 -->
       <div class="panel">
         <h2 class="panel-title"> 上传图片</h2>
-        
+       
         <div class="upload-area" id="drop-area">
           <i class="fas fa-cloud-upload-alt"></i>
           <h3>拖放图片到此处或点击上传</h3>
           <p>支持 JPG, PNG, WEBP 格式 | 单次最多处理 10 张图片</p>
           <input type="file" id="file-input" accept="image/*" multiple>
         </div>
-        
+
+   <!-- 广告容器 -->
+  <div class="ad-container">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
+       crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="fluid"
+         data-ad-layout-key="-hq-18-1y-3r+o2"
+         data-ad-client="ca-pub-3983418855272291"
+         data-ad-slot="1924175279"></ins>
+  </div>
+       
         <button id="process-btn" class="btn" disabled>
           开始抠图
         </button>
         
         <div class="image-preview-container" id="preview-container">
           <!-- 图片预览卡片将通过JS动态添加 -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-hq-18-1y-3r+o2"
-     data-ad-client="ca-pub-3983418855272291"
-     data-ad-slot="1924175279"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
         </div>
       </div>
       
@@ -1168,9 +1189,30 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
+  // 添加广告加载函数
+  function loadAds() {
+    // 确保广告脚本已加载
+    if (typeof adsbygoogle !== 'undefined') {
+      try {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        console.log('AdSense广告已初始化');
+      } catch (e) {
+        console.error('AdSense初始化错误:', e);
+        // 3秒后重试
+        setTimeout(loadAds, 3000);
+      }
+    } else {
+      // 如果AdSense脚本尚未加载，等待后重试
+      console.log('AdSense脚本未加载，等待后重试...');
+      setTimeout(loadAds, 1000);
+    }
+  }
+
     // 初始化
     window.addEventListener('DOMContentLoaded', () => {
       initEventListeners();
+    // 初始化广告
+    setTimeout(loadAds, 500);
     });
   </script>
 </body>
