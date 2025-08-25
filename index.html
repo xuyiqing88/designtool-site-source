@@ -427,7 +427,83 @@
             align-items: center;
             justify-content: center;
         }
-        
+        /* 支付方式区域样式 */
+.payment-methods {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.payment-option {
+    text-align: center;
+    flex: 1;
+    min-width: 250px;
+}
+
+.payment-option h4 {
+    margin-bottom: 12px;
+    color: #15BA11;
+    font-weight: 600;
+}
+
+.payment-option img {
+    max-width: 200px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 8px;
+    background: white;
+}
+
+/* 打赏名单表格样式 */
+.donation-list {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+
+.donation-list h4 {
+    margin-bottom: 15px;
+    color: var(--dark);
+    text-align: center;
+}
+
+.table-container {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+#donationTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+#donationTable th,
+#donationTable td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+#donationTable th {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#donationTable tr:last-child td {
+    border-bottom: none;
+}
+
+#donationTable tr:hover {
+    background-color: var(--light-gray);
+}
         .modal-content {
             background: white;
             padding: 30px;
@@ -976,6 +1052,31 @@
   }
 }
 @media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 20px 15px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .payment-option {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .payment-option img {
+        max-width: 180px;
+    }
+    
+    .table-container {
+        max-height: 200px;
+        font-size: 0.85rem;
+    }
+    
+    #donationTable th,
+    #donationTable td {
+        padding: 8px 10px;
+    }
             .intro-content {
                 padding: 25px 20px;
                 width: 90%;
@@ -1168,14 +1269,46 @@
 
     </div>
     
-    <div class="modal" id="qrModal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeModal">&times;</span>
-            <h3>微信扫一扫！</h3>
-            <img src="img/qrcode.webp" alt="捐赠二维码">
-            <p>您的支持是我持续更新的动力</p>
+<div class="modal" id="qrModal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        
+        <!-- 支付方式区域 -->
+        <div class="payment-methods">
+            <!-- 微信支付 -->
+            <div class="payment-option">
+                <h4>微信支付</h4>
+                <img src="img/qrcode.webp" alt="微信支付二维码">
+            </div>
+            
+            <!-- 支付宝支付 -->
+            <div class="payment-option">
+                <h4 style="color: #1678FE;">支付宝支付</h4>
+                <img src="img/alipay-qrcode.webp" alt="支付宝付款码" id="alipayQrCode">
+            </div>
+        </div>
+        
+        <!-- 打赏名单表格 -->
+        <div class="donation-list">
+            <h4>打赏名单</h4>
+            <div class="table-container">
+                <table id="donationTable">
+                    <thead>
+                        <tr>
+                            <th>用户ID</th>
+                            <th>金额</th>
+                            <th>日期</th>
+                            <th>留言</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据将通过JS动态填充 -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+</div>
 <div class="footer-bottom">
 © 2025 designtool.site 保留所有权利 | BY徐艺青 | 
 <a href="https://cloud.umami.is/share/0HTJCNc5eh5ILEs7/designtool.site" target="_blank" rel="noopener" class="footer-link" style="color: var(--gray);  text-decoration: none;">
@@ -1698,38 +1831,68 @@ gridContainer.appendChild(adContainer);
             });
         }
 
-        // 二维码弹窗控制
-        const donateBtn = document.getElementById('donateBtn');
-        const qrModal = document.getElementById('qrModal');
-        const closeModal = document.getElementById('closeModal');
+// 模拟打赏数据（实际应用中应从API获取）
+const donationData = [
+    { id: "匿名", amount: "1.00", data: "2025-08-25", message: "网站不错，加油！" },
+    { id: "年华", amount: "3.00", data: "2025-08-25", message: "艺青哥哥👦🏻" },
+    { id: "静候TEL", amount: "3.00", data: "2025-08-18", message: "您好，方便请教一下生成无缝工作流的问题吗？" },
+    { id: "射哥", amount: "0.01", data: "2025-07-08", message: "射哥打赏" },
+    { id: "射哥", amount: "0.01", data: "2025-07-08", message: "射哥打赏" },
+];
+
+// 填充打赏表格函数
+function populateDonationTable() {
+    const tableBody = document.querySelector('#donationTable tbody');
+    tableBody.innerHTML = ''; // 清空现有内容
+    
+    donationData.forEach(donation => {
+        const row = document.createElement('tr');
         
-        // 打开弹窗
-        donateBtn.addEventListener('click', function() {
-            qrModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        });
+        row.innerHTML = `
+            <td>${donation.id}</td>
+            <td>${donation.amount}元</td>
+            <td>${donation.data}</td>
+            <td>${donation.message || '暂无留言'}</td>
+        `;
         
-        // 关闭弹窗
-        closeModal.addEventListener('click', function() {
+        tableBody.appendChild(row);
+    });
+}
+
+// 在页面加载完成后执行
+document.addEventListener('DOMContentLoaded', function() {
+    // 初始化打赏表格
+    populateDonationTable();
+    
+    // 原有的二维码弹窗控制代码保持不变
+    const donateBtn = document.getElementById('donateBtn');
+    const qrModal = document.getElementById('qrModal');
+    const closeModal = document.getElementById('closeModal');
+    
+    donateBtn.addEventListener('click', function() {
+        qrModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    });
+    
+    closeModal.addEventListener('click', function() {
+        qrModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    });
+    
+    window.addEventListener('click', function(event) {
+        if (event.target === qrModal) {
             qrModal.style.display = 'none';
             document.body.style.overflow = 'auto';
-        });
-        
-        // 点击模态框外部关闭
-        window.addEventListener('click', function(event) {
-            if (event.target === qrModal) {
-                qrModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
-        
-        // 按ESC键关闭
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && qrModal.style.display === 'flex') {
-                qrModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
+        }
+    });
+    
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && qrModal.style.display === 'flex') {
+            qrModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+});
 // 在现有的JavaScript代码中添加（放在文件底部）
 document.getElementById('commentsBtn').addEventListener('click', function() {
     const commentsSection = document.getElementById('comments-section');
