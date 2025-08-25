@@ -455,9 +455,7 @@
 
 /* 打赏名单表格样式 */
 .donation-list {
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
-	margin-top: 10px;
+	margin-bottom: 20px;
 }
 
 .donation-list h4 {
@@ -467,7 +465,7 @@
 }
 
 .table-container {
-    max-height: 400px;
+    max-height: 397px;
     overflow-y: auto;
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -1271,24 +1269,9 @@ max-width: 330px;
     <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
         
-        <!-- 支付方式区域 -->
-        <div class="payment-methods">
-            <!-- 微信支付 -->
-            <div class="payment-option">
-                <h4>微信投喂</h4>
-                <img src="img/qrcode.webp" alt="微信支付二维码">
-            </div>
-            
-            <!-- 支付宝支付 -->
-            <div class="payment-option">
-                <h4 style="color: #1678FE;">支付宝投喂</h4>
-                <img src="img/alipay-qrcode.webp" alt="支付宝付款码" id="alipayQrCode">
-            </div>
-        </div>
-        
         <!-- 打赏名单表格 -->
         <div class="donation-list">
-            <h4>打赏名单</h4>
+            <h4>投喂名单</h4>
             <div class="table-container">
                 <table id="donationTable">
                     <thead>
@@ -1305,6 +1288,22 @@ max-width: 330px;
                 </table>
             </div>
         </div>
+        
+        <!-- 支付方式区域 -->
+        <div class="payment-methods">
+            <!-- 微信支付 -->
+            <div class="payment-option">
+                <h4>微信投喂</h4>
+                <img src="img/qrcode.webp" alt="微信支付二维码">
+            </div>
+            
+            <!-- 支付宝支付 -->
+            <div class="payment-option">
+                <h4 style="color: #1678FE;">支付宝投喂</h4>
+                <img src="img/alipay-qrcode.webp" alt="支付宝付款码" id="alipayQrCode">
+            </div>
+        </div>
+
     </div>
 </div>
 <div class="footer-bottom">
