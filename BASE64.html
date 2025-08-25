@@ -480,11 +480,6 @@ input[type="file"] {
         </div>
 </div>
 
-<div class="button-group">
-            <button class="clear-btn" onclick="clearUserInput()">清空</button>
-            <button class="action-bt2" onclick="convertToImage()">转换为图片</button>
-            <button class="action-btn" id="downloadBtn" style="display: none;" onclick="downloadImage()">下载图片</button>
-        </div>
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
      crossorigin="anonymous"></script>
@@ -498,7 +493,11 @@ input[type="file"] {
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
-
+<div class="button-group">
+            <button class="clear-btn" onclick="clearUserInput()">清空</button>
+            <button class="action-bt2" onclick="convertToImage()">转换为图片</button>
+            <button class="action-btn" id="downloadBtn" style="display: none;" onclick="downloadImage()">下载图片</button>
+        </div>
 </div>
     <!-- 图片转Base64 -->
     <div id="toBase64" class="tabcontent">
