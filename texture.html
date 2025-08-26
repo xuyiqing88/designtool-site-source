@@ -122,14 +122,14 @@
         }
 
         .preview-panel {
-            flex: 1;
             background: linear-gradient(135deg, #1e293b, #334155);
             border-radius: 6px;
             border: 1px solid #475569;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-	    flex: 1 1 50%; /* 默认各占50% */
+	    flex: 1 1 50%; 
+		height: calc(100vh - 160px);
         }
 
         .preview-header {
@@ -890,7 +890,7 @@ function initializeEventListeners() {
                 const percentage = (e.clientX - containerRect.left) / containerRect.width * 100;
                 
                 // 设置最小宽度限制为10%
-                const leftPercentage = Math.max(10, Math.min(90, percentage));
+                const leftPercentage = Math.max(25, Math.min(75, percentage));
                 
                 leftPanel.style.flex = `1 1 ${leftPercentage}%`;
                 rightPanel.style.flex = `1 1 ${100 - leftPercentage}%`;
