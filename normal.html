@@ -454,7 +454,7 @@
         
         .file-upload-area label {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             gap: 5px;
             cursor: pointer;
@@ -852,9 +852,10 @@
                 <div class="file-upload-area" id="inputUploadArea">
                     <label for="fileInput">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        <div style="display: flex; flex-direction: column; align-items: flex-start;">
 				<div>点击选择文件或拖放图像到此处</div>
                         	<div style="font-size: 0.9rem; color: var(--text3);">支持 JPG, PNG, BMP, TIFF, WEBP 等格式</div>
+                        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+				
 			</div>
                     </label>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;">
