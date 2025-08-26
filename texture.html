@@ -117,6 +117,7 @@
             flex: 1;
             display: flex;
             padding: 0.5rem;
+    display: flex;
     height: calc(100vh - 60px);
         }
 
@@ -141,28 +142,31 @@
 	height: 3rem;
         }
 
-.preview-content {
-    flex: 1; /* 确保它能占据剩余的所有空间 */
-    display: flex;
-    align-items: center; /* 垂直居中 */
-    justify-content: center; /* 水平居中 */
-    padding: 0.5rem;
-    background: 
-        linear-gradient(45deg, #374151 25%, transparent 25%), 
-        linear-gradient(-45deg, #374151 25%, transparent 25%), 
-        linear-gradient(45deg, transparent 75%, #374151 75%), 
-        linear-gradient(-45deg, transparent 75%, #374151 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-    cursor: pointer;
-}
+        .preview-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background: 
+                linear-gradient(45deg, #374151 25%, transparent 25%), 
+                linear-gradient(-45deg, #374151 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #374151 75%), 
+                linear-gradient(-45deg, transparent 75%, #374151 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            cursor: pointer;
+	overflow: hidden;
+        }
 
         canvas {
-            max-width: 100%;
-            max-height: 100%;
-	object-fit: contain;
-            border-radius: 4px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
 
         /* 文件上传区域 */
@@ -792,7 +796,7 @@
                 </div>
             </div>
         </div>
-<div style="display: flex; justify-content: center;">
+<div>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
      crossorigin="anonymous"></script>
 <ins class="adsbygoogle"
@@ -863,6 +867,27 @@ function initializeEventListeners() {
                 }
             });
 
+function adjustCanvasDisplay() {
+    if (!originalImageData) return;
+    
+    const container = document.querySelector('.preview-content');
+    const canvas = document.getElementById('processedCanvas');
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    const imgRatio = originalImageData.width / originalImageData.height;
+    const containerRatio = containerWidth / containerHeight;
+    
+    // 根据容器和图片比例调整canvas显示尺寸
+    if (imgRatio > containerRatio) {
+        // 图片更宽，以宽度为基准
+        canvas.style.width = '100%';
+        canvas.style.height = 'auto';
+    } else {
+        // 图片更高，以高度为基准
+        canvas.style.width = 'auto';
+        canvas.style.height = '100%';
+    }
+}
             // 【已修复】分隔条拖动功能
             const divider = document.getElementById('divider');
             const leftPanel = document.getElementById('leftPanel');
@@ -1015,78 +1040,22 @@ function initializeEventListeners() {
                         width: img.width,
                         height: img.height
                     };
-    // --- 关键代码片段开始 ---
-    const parent = document.querySelector('.preview-content');
-    const parentWidth = parent.clientWidth;
-    const parentHeight = parent.clientHeight;
-    
-    // 计算适应容器的等比例新尺寸
-    const imageRatio = originalImageData.width / originalImageData.height;
-    const containerRatio = parentWidth / parentHeight;
-    
-    let newWidth = originalImageData.width;
-    let newHeight = originalImageData.height;
-    
-    if (imageRatio > containerRatio) {
-        // 宽度是限制因素，按宽度等比缩放
-        newWidth = parentWidth;
-        newHeight = parentWidth / imageRatio;
-    } else {
-        // 高度是限制因素，按高度等比缩放
-        newHeight = parentHeight;
-        newWidth = parentHeight * imageRatio;
-    }
-    
-     // 重置画布尺寸为原始图像的尺寸，以便绘制
-    processedCanvas.width = originalImageData.width;
-    processedCanvas.height = originalImageData.height;
-    tiledCanvas.width = originalImageData.width * 3;
-    tiledCanvas.height = originalImageData.height * 3;
-    
-    setupCanvases();
-    drawOriginalImage();
-    applyImageAdjustments();
-    showControls();
-    updateImageDimensions();
-    enableRealTimePreview();
-    
-    // 在图像加载后和窗口调整大小时，确保图像适合容器
-    window.addEventListener('resize', fitCanvasToContainer);
-    fitCanvasToContainer();
-};
+                    
+                    setupCanvases();
+                    drawOriginalImage();
+                    applyImageAdjustments();
+                    showControls();
+                    updateImageDimensions();
+                    enableRealTimePreview();
+			adjustCanvasDisplay();
+                };
                 img.src = e.target.result;
             };
+
             reader.readAsDataURL(file);
         }
-
-function fitCanvasToContainer() {
-    if (!originalImageData) return;
-    
-    const parent = document.querySelector('.preview-content');
-    const parentWidth = parent.clientWidth;
-    const parentHeight = parent.clientHeight;
-    
-    const imageRatio = originalImageData.width / originalImageData.height;
-    const containerRatio = parentWidth / parentHeight;
-    
-    let displayWidth, displayHeight;
-    
-    if (imageRatio > containerRatio) {
-        // 以容器的宽度为基准，等比例缩放
-        displayWidth = parentWidth;
-        displayHeight = parentWidth / imageRatio;
-    } else {
-        // 以容器的高度为基准，等比例缩放
-        displayHeight = parentHeight;
-        displayWidth = parentHeight * imageRatio;
-    }
-    
-    // 设置画布的显示尺寸 (使用 style 而非 width/height 属性)
-    processedCanvas.style.width = `${displayWidth}px`;
-    processedCanvas.style.height = `${displayHeight}px`;
-    tiledCanvas.style.width = `${displayWidth}px`;
-    tiledCanvas.style.height = `${displayHeight}px`;
-}
+// 添加窗口大小改变时的监听
+window.addEventListener('resize', adjustCanvasDisplay);
 
         function loadTiffImage(file) {
             // 检查 UTIF 库是否已加载。如果未加载，说明 <script> 标签加载失败。
@@ -1629,8 +1598,8 @@ function fitCanvasToContainer() {
             document.getElementById('noTileMessage').style.display = 'block';
             
             // 隐藏控制面板
-            document.getElementById('imageControls').style.display = 'block';
-            document.getElementById('seamlessControls').style.display = 'block';
+            document.getElementById('imageControls').style.display = 'none';
+            document.getElementById('seamlessControls').style.display = 'none';
             document.getElementById('headerExport').style.display = 'none';
             document.getElementById('liveIndicator').style.display = 'none';
             
