@@ -26,6 +26,21 @@
             height: 100vh;
             overflow: hidden;
         }
+  /* 分隔条样式 */
+  .divider {
+    width: 8px;
+    background: none;
+    cursor: col-resize;
+    position: relative;
+    z-index: 10;
+    transition: background-color 0.2s;
+  }
+
+  .divider:hover {
+    
+  }
+
+
 
         /* 头部样式 */
         .header {
@@ -85,7 +100,7 @@
         /* 主容器 */
         .container {
             display: flex;
-            height: calc(100vh - 80px);
+            height: calc(100vh - 60px);
 	margin-left: 60px;
         }
 
@@ -101,18 +116,20 @@
         .main-content {
             flex: 1;
             display: flex;
-            gap: 1rem;
-            padding: 1rem;
+            padding: 0.5rem;
+    display: flex;
+    height: calc(100vh - 60px);
         }
 
         .preview-panel {
             flex: 1;
             background: linear-gradient(135deg, #1e293b, #334155);
-            border-radius: 12px;
+            border-radius: 6px;
             border: 1px solid #475569;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+	    flex: 1 1 50%; /* 默认各占50% */
         }
 
         .preview-header {
@@ -144,14 +161,14 @@
         canvas {
             max-width: 100%;
             max-height: 100%;
-            border-radius: 8px;
+            border-radius: 4px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
 
         /* 文件上传区域 */
         .upload-area {
             border: 2px dashed #475569;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 2rem;
             text-align: center;
             margin-bottom: 1rem;
@@ -185,7 +202,7 @@
             margin-bottom: 1rem;
             padding: 20px;
             background: linear-gradient(135deg, #0f172a, #1e293b);
-            border-radius: 12px;
+            border-radius: 8px;
             border: 1px solid #334155;
         }
 
@@ -737,9 +754,9 @@
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
         </div>
-
+<div style="display: flex; flex-direction: column; flex: 1;">
         <div class="main-content">
-            <div class="preview-panel">
+            <div class="preview-panel" id="leftPanel">
                 <div class="preview-header">
                     <span>
                         <i class="fas fa-image fa-icon"></i>
@@ -764,8 +781,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="preview-panel">
+<div class="divider" id="divider"></div>
+            <div class="preview-panel" id="rightPanel">
                 <div class="preview-header">
                     <span>
                         <i class="fas fa-th fa-icon"></i>
@@ -785,7 +802,11 @@
                 </div>
             </div>
         </div>
-    </div>
+<div></div>
+</div>
+
+
+
 
     <div class="modal" id="imageModal">
         <div class="modal-close" onclick="closeModal()">×</div>
@@ -813,7 +834,7 @@
             initializeSliders();
         });
 
-        function initializeEventListeners() {
+function initializeEventListeners() {
             // 文件上传
             const uploadArea = document.getElementById('uploadArea');
             const fileInput = document.getElementById('fileInput');
@@ -837,6 +858,59 @@
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
                     loadImage(files[0]);
+                }
+            });
+
+            // 【已修复】分隔条拖动功能
+            const divider = document.getElementById('divider');
+            const leftPanel = document.getElementById('leftPanel');
+            const rightPanel = document.getElementById('rightPanel');
+            const container = document.querySelector('.main-content');
+            
+            let isResizing = false;
+            
+            divider.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                // 阻止拖动时选中文本
+                leftPanel.style.userSelect = 'none';
+                leftPanel.style.pointerEvents = 'none';
+                rightPanel.style.userSelect = 'none';
+                rightPanel.style.pointerEvents = 'none';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                if (containerRect.width === 0) return; // 避免除以零错误
+                
+                const percentage = (e.clientX - containerRect.left) / containerRect.width * 100;
+                
+                // 设置最小宽度限制为10%
+                const leftPercentage = Math.max(10, Math.min(90, percentage));
+                
+                leftPanel.style.flex = `1 1 ${leftPercentage}%`;
+                rightPanel.style.flex = `1 1 ${100 - leftPercentage}%`;
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (!isResizing) return;
+                isResizing = false;
+                document.body.style.cursor = '';
+                // 恢复面板的正常交互
+                leftPanel.style.userSelect = '';
+                leftPanel.style.pointerEvents = '';
+                rightPanel.style.userSelect = '';
+                rightPanel.style.pointerEvents = '';
+            });
+
+            // 【已修复】模态框点击空白区域关闭
+            const imageModal = document.getElementById('imageModal');
+            imageModal.addEventListener('click', function(event) {
+                // 检查点击事件的目标是否是模态框背景本身 (而不是图片)
+                if (event.target === this) {
+                    closeModal();
                 }
             });
 
