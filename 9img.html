@@ -6,6 +6,7 @@
     <title>朋友圈九宫格工具 - 朋友圈图片切割器</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
@@ -144,9 +145,9 @@
         }
 
         .upload-icon {
-            font-size: 64px;
-            color: var(--main-color);
-            margin-bottom: 20px;
+            font-size: 3rem;
+            color: #5a64ff80;
+            margin-bottom: 10px;
             transition: transform 0.3s;
         }
 
@@ -333,7 +334,9 @@
                     <div class="upload-area" id="uploadArea">
                         <div class="upload-content" id="uploadContent">
                             <div class="image-placeholder" id="imagePlaceholder">
-                                <div class="upload-icon">📁</div>
+                                <div class="upload-icon">
+					<i class="fas fa-cloud-upload-alt"></i>
+				</div>
                                 <p class="upload-text">点击或拖拽上传图片</p>
                                 <p class="upload-hint">支持 JPG、PNG 格式，建议尺寸大于 900×900 像素</p>
                             </div>

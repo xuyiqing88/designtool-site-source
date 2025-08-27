@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/upng-js@2.1.0/UPNG.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/upng-js@2.1.0/UPNG.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
@@ -188,8 +189,8 @@
         }
 
         .drop-icon {
-            font-size: 3.8rem;
-            color: var(--main-color);
+            font-size: 3rem;
+            color: #5a64ff80;
             opacity: 0.7;
             margin-bottom: 15px;
         }
@@ -754,7 +755,9 @@
                 
                 <div class="form-group">
                     <div class="drop-area" id="dropArea">
-                        <div class="drop-icon">📁</div>
+                        <div class="drop-icon">
+				<i class="fas fa-cloud-upload-alt"></i>
+			</div>
                         <p class="drop-text">拖放图片到此处 或 <u>点击选择图片</u></p>
                         <p class="drop-hint">支持 JPG, PNG, WebP 格式 (不支持GIF)</p>
                         <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple>
@@ -852,7 +855,7 @@
 		</div>
                 <div class="preview-container" id="previewContainer">
                     <div class="no-preview" id="noPreviewMessage">
-                        <i>🖼️</i>
+                        <i class="fas fa-image" style="font-size: 5rem; color: #d7d9e5;"></i>
                         <p>上传图片后将显示压缩结果</p>
                         <p style="margin-top:15px;font-size:0.95rem;">每张图片都会显示压缩前后的对比信息</p>
                     </div>
