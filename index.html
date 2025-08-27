@@ -1801,11 +1801,11 @@ gridContainer.appendChild(adContainer);
                 }
                 
                 toolCard.innerHTML = `
-                    <a class="tool-cover">
+                    <a class="tool-cover" href="${tool.link}">
                         <img src="${tool.icon}" alt="${tool.title}" loading="lazy">
                     </a>
                     <div class="tool-content">
-                        <h3>${badgeHtml}${tool.title}</h3>
+                        <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
                         <p>${tool.description}</p>
                         <a href="${tool.link}" title="${tool.title}" class="tool-link">打开工具</a>
                     </div>
