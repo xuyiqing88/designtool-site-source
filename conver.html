@@ -514,17 +514,21 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="outputFormat">选择输出格式</label>
-                <select id="outputFormat">
-                    <option value="jpeg">JPG</option>
-                    <option value="png">PNG</option>
-                    <option value="webp">WebP</option>
-                    <option value="bmp">BMP</option>
-                    <option value="tiff">TIFF</option>
-                    <option value="gif">GIF (静态)</option>
-                </select>
-            </div>
+<div class="form-group">
+    <label for="outputFormat">选择输出格式</label>
+    <select id="outputFormat">
+        <option value="" selected disabled>请选择</option>
+        <option value="jpeg">JPG</option>
+        <option value="png">PNG</option>
+        <option value="webp">WebP</option>
+        <option value="bmp">BMP</option>
+        <option value="tiff">TIFF</option>
+        <option value="gif">GIF (静态)</option>
+    </select>
+    <div id="formatError" style="color: red; display: none; margin-top: 5px; font-size: 0.9rem;">
+        请先选择输出格式
+    </div>
+</div>
             
             <div class="form-group" id="qualitySection">
                 <label for="quality">图片质量 (适用于JPG/WebP)</label>
@@ -591,6 +595,8 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
     const downloadAllContainer = document.getElementById('downloadAllContainer');
     const downloadAllBtn = document.getElementById('downloadAllBtn');
+// 获取错误提示元素
+const formatError = document.getElementById('formatError');
 
     let fileQueue = [];
     let convertedFiles = {};
@@ -621,26 +627,56 @@
         e.stopPropagation();
     }
     
-    function handleDrop(e) {
-        handleFiles(e.dataTransfer.files);
+function handleDrop(e) {
+    // 检查是否选择了输出格式
+    if (!outputFormatSelect.value) {
+        formatError.style.display = 'block';
+        preventDefaults(e);
+        return;
     }
     
-    async function handleFiles(files) {
-        if (files.length === 0) return;
-        noPreviewMessage.style.display = 'none';
-        
-        const newFiles = Array.from(files).map(file => ({
-            id: uniqueId++,
-            file: file,
-            status: 'pending' // pending, success, error
-        }));
-        
-        fileQueue.push(...newFiles);
-        await Promise.all(newFiles.map(createPreviewRow));
-        
-        updateUI();
-        processQueue();
+    // 隐藏错误提示
+    formatError.style.display = 'none';
+    handleFiles(e.dataTransfer.files);
+}
+
+// 添加输出格式改变事件，隐藏错误提示
+outputFormatSelect.addEventListener('change', () => {
+    const format = outputFormatSelect.value;
+    qualitySection.style.display = (format === 'jpeg' || format === 'webp') ? 'block' : 'none';
+    
+    // 当用户选择格式后，隐藏错误提示
+    if (format) {
+        formatError.style.display = 'none';
     }
+});
+
+// 修改handleFiles函数，添加格式验证
+async function handleFiles(files) {
+    // 检查是否选择了输出格式
+    if (!outputFormatSelect.value) {
+        formatError.style.display = 'block';
+        return;
+    }
+    
+    // 隐藏错误提示（如果之前显示）
+    formatError.style.display = 'none';
+    
+    if (files.length === 0) return;
+    noPreviewMessage.style.display = 'none';
+    
+    const newFiles = Array.from(files).map(file => ({
+        id: uniqueId++,
+        file: file,
+        status: 'pending' // pending, success, error
+    }));
+    
+    fileQueue.push(...newFiles);
+    await Promise.all(newFiles.map(createPreviewRow));
+    
+    updateUI();
+    processQueue();
+}
 
     async function createPreviewRow(fileData) {
         const { id, file } = fileData;
