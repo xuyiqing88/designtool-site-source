@@ -299,6 +299,7 @@ const menuData = [
         title: "轻易设计",
         icon: "fa-solid fa-compass-drafting",
         submenu: [
+            { title: "图片格式转换器", link: "conver.html" },
             { title: "AI生成UI界面", link: "AI-UI.html" },
             { title: "AI一键抠图", link: "rembg.html" },
             { title: "图片对比工具", link: "diff.html" },

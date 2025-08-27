@@ -224,6 +224,15 @@
         "applicationCategory": "3DModelingApplication"
       }
     },
+    {
+      "@type": "ListItem",
+      "position": 22,
+      "item": {
+        "@type": "SoftwareApplication",
+        "name": "图片格式转换器",
+        "applicationCategory": "PhotoEditor"
+      }
+    },
   ]
 }
 </script>
@@ -1350,19 +1359,27 @@ max-width: 330px;
         // Tool data - 确保每个工具都有badge属性
         const tools = [
             {
+                title: "图片格式转换器",
+                description: "支持JPG、PNG、BMP、GIF、WEBP、SVG、TIFF格式",
+                category: "design",
+                link: "conver.html",
+                icon: "img/conver.webp",
+                badge: "NEW"
+            },
+            {
                 title: "AI生成UI界面",
                 description: "AI一键生成原型UI界面，支持下载源文件",
                 category: "design",
                 link: "AI-UI.html",
-                icon: "img/AI-UI.png",
-                badge: "NEW"
+                icon: "img/AI-UI.webp",
+                badge: ""
             },
             {
                 title: "AI一键抠图",
                 description: "支持批量一键抠图、一键打包下载",
                 category: "design",
                 link: "rembg.html",
-                icon: "img/rembg.png",
+                icon: "img/rembg.webp",
                 badge: ""
             },
             {
@@ -1370,7 +1387,7 @@ max-width: 330px;
                 description: "滑动分割线对比两张图片差异",
                 category: "design",
                 link: "diff.html",
-                icon: "img/diff.png",
+                icon: "img/diff.webp",
                 badge: ""
             },
             {
@@ -1378,7 +1395,7 @@ max-width: 330px;
                 description: "免费在线图片压缩工具，支持JPG/PNG格式，不限尺寸数量",
                 category: "design",
                 link: "comp.html",
-                icon: "img/comp.png",
+                icon: "img/comp.webp",
                 badge: ""
             },
             {
@@ -1386,7 +1403,7 @@ max-width: 330px;
                 description: "快速生成各类测试数据，用于表单填充和UI设计验证",
                 category: "design",
                 link: "data.html",
-                icon: "img/数据模拟.png",
+                icon: "img/数据模拟.webp",
                 badge: ""
             }, 
             {
@@ -1394,7 +1411,7 @@ max-width: 330px;
                 description: "免费的在线版Photoshop，无惧版权风险问题",
                 category: "design",
                 link: "PS.html",
-                icon: "img/PS.png",
+                icon: "img/PS.webp",
                 badge: "荐"
             }, 
             {
@@ -1402,7 +1419,7 @@ max-width: 330px;
                 description: "创建漂亮独特的矢量花朵，包括玫瑰、雏菊、郁金香，支持下载svg矢量源文件",
                 category: "design",
                 link: "flower.html",
-                icon: "img/flower.png",
+                icon: "img/flower.webp",
                 badge: ""
             },   
             {
@@ -1410,7 +1427,7 @@ max-width: 330px;
                 description: "创建独特的扁平矢量化的城市天际线，支持下载svg矢量源文件",
                 category: "design",
                 link: "city.html",
-                icon: "img/city.png",
+                icon: "img/city.webp",
                 badge: ""
             },   
 
@@ -1419,7 +1436,7 @@ max-width: 330px;
                 description: "无需API，可进行AI对话（支持图片上传）、提示词扩写、图像识别、文本转语音等功能",
                 category: "dev",
                 link: "freeAI.html",
-                icon: "img/freeAI.png",
+                icon: "img/freeAI.webp",
                 badge: ""
             }, 
             {
@@ -1427,7 +1444,7 @@ max-width: 330px;
                 description: "AI绘图，支持模型选择、一键翻译、历史记录查看，出图无水印",
                 category: "dev",
                 link: "draw.html",
-                icon: "img/draw.png",
+                icon: "img/draw.webp",
                 badge: ""
             }, 
             {
@@ -1435,7 +1452,7 @@ max-width: 330px;
                 description: "AI对话、提示词扩写、图像识别等功能，支持文件上传、模型切换",
                 category: "dev",
                 link: "AI.html",
-                icon: "img/AI.png",
+                icon: "img/AI.webp",
                 badge: ""
             }, 
             {
@@ -1443,7 +1460,7 @@ max-width: 330px;
                 description: "整理和编辑模型训练数据集，支持批量AI反推提示词、一键翻译、修改尺寸、修改背景、打包下载等功能",
                 category: "dev",
                 link: "model.html",
-                icon: "img/model.png",
+                icon: "img/model.webp",
                 badge: "荐"
             }, 
             {
@@ -1451,7 +1468,7 @@ max-width: 330px;
                 description: "588种风格，支持SDXL及以上版本大模型，可筛选和一键复制提示词",
                 category: "dev",
                 link: "SDXL.html",
-                icon: "img/SDXL.png",
+                icon: "img/SDXL.webp",
                 badge: ""
             },
             {
@@ -1459,7 +1476,7 @@ max-width: 330px;
                 description: "支持导入外部模型，提供多种灯光选择，4k HDR格式导出",
                 category: "3D",
                 link: "hdr.html",
-                icon: "img/hdr.png",
+                icon: "img/hdr.webp",
                 badge: "更新"
             },
             {
@@ -1467,7 +1484,7 @@ max-width: 330px;
                 description: "全流程贴图生成。一键生成多种PBR贴图，支持法线、置换、AO、反射、光泽度",
                 category: "3D",
                 link: "normal.html",
-                icon: "img/法线.png",
+                icon: "img/法线.webp",
                 badge: "荐"
             },
             {
@@ -1475,7 +1492,7 @@ max-width: 330px;
                 description: "无缝贴图制作工具，支持PNG、JPG、TIFF等格式",
                 category: "3D",
                 link: "texture.html",
-                icon: "img/texture.png",
+                icon: "img/texture.webp",
                 badge: ""
             },    
             {
@@ -1483,7 +1500,7 @@ max-width: 330px;
                 description: "预览和测试无缝贴图效果，支持百分比缩放",
                 category: "3D",
                 link: "map.html",
-                icon: "img/贴图.png",
+                icon: "img/贴图.webp",
                 badge: ""
             },
 
@@ -1492,7 +1509,7 @@ max-width: 330px;
                 description: "上传AO、粗糙度和金属度贴图自动合成ORM纹理贴图，或上传ORM贴图拆解为独立通道",
                 category: "3D",
                 link: "ORM.html",
-                icon: "img/body4orm.png",
+                icon: "img/body4orm.webp",
                 badge: "" 
             },
             {
@@ -1500,7 +1517,7 @@ max-width: 330px;
                 description: "非线性颜色转线性颜色，用于C4D、blender，颜色格式互转（HEX, RGB, HSL, HSV）",
                 category: "3D",
                 link: "color.html",
-                icon: "img/颜色.png",
+                icon: "img/颜色.webp",
                 badge: ""
             },
             {
@@ -1508,7 +1525,7 @@ max-width: 330px;
                 description: "开源视频剪辑工具，浏览器在线剪辑。功能逐步完善中",
                 category: "utility",
                 link: "opencut.html",
-                icon: "img/opencut.png",
+                icon: "img/opencut.webp",
                 badge: "NEW"
             },
             {
@@ -1516,7 +1533,7 @@ max-width: 330px;
                 description: "ikun躲避球小游戏，移动坤坤躲避砸下来的篮球",
                 category: "utility",
                 link: "jntm.html",
-                icon: "img/ikun.png",
+                icon: "img/ikun.webp",
                 badge: "NEW"
             },
             {
@@ -1524,7 +1541,7 @@ max-width: 330px;
                 description: "在线收听收音机，精选全球优质音乐电台",
                 category: "utility",
                 link: "radio.html",
-                icon: "img/radio.png",
+                icon: "img/radio.webp",
                 badge: ""
             },
             {
@@ -1532,7 +1549,7 @@ max-width: 330px;
                 description: "上传图片裁剪成九宫格，按照9张图顺序进行排列",
                 category: "utility",
                 link: "9img.html",
-                icon: "img/9img.png",
+                icon: "img/9img.webp",
                 badge: ""
             },
 
@@ -1541,7 +1558,7 @@ max-width: 330px;
                 description: "支持30多种语言互译，根据文本匹配度提供其他建议",
                 category: "utility",
                 link: "translation.html",
-                icon: "img/翻译.png",
+                icon: "img/翻译.webp",
                 badge: ""
             },
             {
@@ -1549,7 +1566,7 @@ max-width: 330px;
                 description: "将图片转换为Base64编码，或从Base64编码还原为图片",
                 category: "utility",
                 link: "BASE64.html",
-                icon: "img/base64.png",
+                icon: "img/base64.webp",
                 badge: ""
             },
 
