@@ -509,8 +509,9 @@
         }
 
         .search-container { 
-            padding: 0 24px 16px; 
+            padding: 0 0 16px; 
             background: var(--card-bg);  
+	border-radius: 16px 16px 0 0;
         }
         
         .search-box { 
@@ -519,6 +520,7 @@
             background: var(--background); 
             border-radius: 12px; 
             padding: 2px 16px; 
+	margin: 0 20px;
         }
         
         .search-box i { 
@@ -672,8 +674,9 @@
             </div>
 
             <div class="radio-list">
-                <h2><i class="fas fa-broadcast-tower"></i> 电台列表</h2>
+                
                 <div class="search-container">
+			<h2><i class="fas fa-broadcast-tower"></i> 电台列表</h2>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="search-input" placeholder="搜索电台...">
