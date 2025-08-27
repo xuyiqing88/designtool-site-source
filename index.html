@@ -265,6 +265,14 @@
             min-height: 100vh;
             line-height: 1.6;
         }
+	.imgball {	
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    margin: -16px 0 0 -16px;
+    border-radius: 50%;
+    box-shadow: -5px -5px 0 #eeeeff;
+}
         /* 新增介绍弹窗样式 */
         .intro-modal {
             display: none; /* 默认隐藏 */
@@ -745,6 +753,7 @@ max-width: 330px;
             justify-content: center;
             flex-shrink: 0;
             overflow: hidden;
+	border-radius: 0 0 10px;
         }
         .tool-cover:hover {
 	}
@@ -782,7 +791,8 @@ max-width: 330px;
             align-items: flex-start;
             gap: 8px;
 		text-decoration: none;
-    		font-weight: 600;}
+    		font-weight: 600;
+		margin-top: -6px;}
 	.h3:hover {
 		color: var(--primary);
 		}
@@ -1066,6 +1076,8 @@ max-width: 330px;
   }
 }
 @media (max-width: 768px) {
+	.imgball {
+	    margin: -10px 0 0 -10px;}
     .modal-content {
         width: 95%;
         padding: 20px 15px;
@@ -1183,6 +1195,7 @@ max-width: 330px;
     	overflow: hidden;
     	text-overflow: ellipsis;
 	        font-size: 14px;
+	        margin-top: -10px;
 	}
 	.tool-link {
 		display: none;}
@@ -1705,6 +1718,7 @@ window.addEventListener('resize', showAddToHomePrompt);
 				<img src="${tool.icon}" alt="${tool.title}">
 				</a>
                             <div class="tool-content">
+				<div class="imgball"></div>
                                 <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
                                 <p>${tool.description}</p>
                                 <a href="${tool.link}" class="tool-link">打开工具</a>
@@ -1805,6 +1819,7 @@ gridContainer.appendChild(adContainer);
                         <img src="${tool.icon}" alt="${tool.title}" loading="lazy">
                     </a>
                     <div class="tool-content">
+			<div class="imgball"></div>
                         <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
                         <p>${tool.description}</p>
                         <a href="${tool.link}" title="${tool.title}" class="tool-link">打开工具</a>
