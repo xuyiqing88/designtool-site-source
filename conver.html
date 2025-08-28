@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全能图片格式转换器 - 支持jpg/png/bmp/gif/webp/svg/TIFF格式</title>
+    <title>全能图片格式转换器 - 支持jpg/png/bmp/gif/webp/svg/TIFF/HEIC格式</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://unpkg.com/heic-decode@1.1.2/dist/heic-decode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/psd.js@3.2.1/dist/psd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.js"></script>
-<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <script src="menu.js" defer></script>
+    <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     
     <style>
-        /* CSS样式与参考文件保持高度一致，并为新功能做了微调 */
         :root {
             --main-color: #5a64ff;
             --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
@@ -65,7 +63,7 @@
 
         .subtitle {
             color: var(--text2);
-            font-size: 0.9rem;
+            font-size: 1rem;
             margin: 0 auto;
         }
 
@@ -230,6 +228,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
         }
 
         .thumbnail img {
@@ -466,10 +465,86 @@
             color: var(--text3);
         }
 
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 10;
+            transition: background 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-image {
+            display: block;
+            max-width: 100%;
+            max-height: 80vh;
+            margin: 0 auto;
+        }
+
+        .modal-caption {
+            padding: 15px;
+            text-align: center;
+            color: var(--text1);
+            font-weight: 600;
+            background: white;
+        }
+
         @media (max-width: 768px) {
-	.settings-panel, .preview-panel {    
-		flex: 1;
-    		width: 100%;}
+            .settings-panel, .preview-panel {    
+                flex: 1;
+                width: 100%;
+            }
             .container {
                 width: 100%;
                 padding: 0 10px;
@@ -490,6 +565,10 @@
                 display: inline-flex;
                 align-items: center;
             }
+            .modal-content {
+                max-width: 95%;
+                max-height: 95%;
+            }
         }
     </style>
 </head>
@@ -497,7 +576,7 @@
 <div class="container">
     <header>
         <h1>全能图片格式转换器</h1>
-        <p class="subtitle">所有转换均在您的浏览器本地完成，安全且快速。支持批量处理。</p>
+        <p class="subtitle">支持jpg/jpeg、png、bmp、gif、webp、svg、tif/tiff、heic/heif（苹果设备照片）格式的批量转换</p>
     </header>
 
     <div class="tool-container">
@@ -507,29 +586,30 @@
             <div class="form-group">
                 <div class="drop-area" id="dropArea">
                     <div class="drop-icon">
-			<i class="fas fa-cloud-upload-alt"></i>
-		</div>
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
                     <p class="drop-text">拖放图片到此处 或 <u>点击选择</u></p>
-                    <p class="drop-hint">支持jpg, png, bmp, gif, webp, svg, TIFF格式</p>
-                    <input type="file" id="fileInput" accept="image/*,.psd,.heic,.heif,.tif,.tiff" multiple>
+                    <input type="file" id="fileInput" accept="image/*,.heic,.heif,.tif,.tiff" multiple>
                 </div>
             </div>
 
-<div class="form-group">
-    <label for="outputFormat">选择输出格式</label>
-    <select id="outputFormat">
-        <option value="" selected disabled>请选择</option>
-        <option value="jpeg">JPG</option>
-        <option value="png">PNG</option>
-        <option value="webp">WebP</option>
-        <option value="bmp">BMP</option>
-        <option value="tiff">TIFF</option>
-        <option value="gif">GIF (静态)</option>
-    </select>
-    <div id="formatError" style="color: red; display: none; margin-top: 5px; font-size: 0.9rem;">
-        请先选择输出格式
-    </div>
-</div>
+            <div class="form-group">
+                <label for="outputFormat">选择输出格式</label>
+                <select id="outputFormat">
+                    <option value="" selected disabled>请选择</option>
+                    <option value="jpeg">JPEG (体积小)</option>
+                    <option value="jpg">JPG (体积大)</option>
+                    <option value="png">PNG</option>
+                    <option value="webp">WebP</option>
+                    <option value="bmp">BMP</option>
+                    <option value="tif">TIF (体积小)</option>
+                    <option value="tiff">TIFF (体积大)</option>
+                    <option value="gif">GIF (静态)</option>
+                </select>
+                <div id="formatError" style="color: red; display: none; margin-top: 5px; font-size: 0.9rem;">
+                    请先选择输出格式
+                </div>
+            </div>
             
             <div class="form-group" id="qualitySection">
                 <label for="quality">图片质量 (适用于JPG/WebP)</label>
@@ -556,17 +636,9 @@
                     <i class="fas fa-image" style="font-size: 5rem; color: #d7d9e5;"></i>
                     <p>上传图片后将在此处开始转换</p>
                 </div>	
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:none"
-     data-ad-format="fluid"
-     data-ad-layout-key="-hq-18-1y-3r+o2"
-     data-ad-client="ca-pub-3983418855272291"
-     data-ad-slot="1924175279"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291" crossorigin="anonymous"></script>
+                <ins class="adsbygoogle" style="display:none" data-ad-format="fluid" data-ad-layout-key="-hq-18-1y-3r+o2" data-ad-client="ca-pub-3983418855272291" data-ad-slot="1924175279"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
 
             <div class="download-all-container" id="downloadAllContainer" style="display:none;">
@@ -576,6 +648,16 @@
                 </button>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="imageModal">
+    <div class="modal-content">
+        <div class="modal-close" id="modalClose">
+            <i class="fas fa-times"></i>
+        </div>
+        <img class="modal-image" id="modalImage" src="" alt="预览图">
+        <div class="modal-caption" id="modalCaption"></div>
     </div>
 </div>
 
@@ -596,8 +678,13 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
     const downloadAllContainer = document.getElementById('downloadAllContainer');
     const downloadAllBtn = document.getElementById('downloadAllBtn');
-// 获取错误提示元素
-const formatError = document.getElementById('formatError');
+    const formatError = document.getElementById('formatError');
+    
+    // 模态框元素
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    const modalClose = document.getElementById('modalClose');
 
     let fileQueue = [];
     let convertedFiles = {};
@@ -607,7 +694,16 @@ const formatError = document.getElementById('formatError');
     qualitySlider.addEventListener('input', () => { qualityValue.textContent = `${qualitySlider.value}%`; });
     outputFormatSelect.addEventListener('change', () => {
         const format = outputFormatSelect.value;
-        qualitySection.style.display = (format === 'jpeg' || format === 'webp') ? 'block' : 'none';
+        qualitySection.style.display = (format === 'jpeg' || format === 'jpg' || format === 'webp') ? 'block' : 'none';
+        if (format) {
+            formatError.style.display = 'none';
+        }
+    });
+
+    // 模态框事件
+    modalClose.addEventListener('click', closeModal);
+    imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) closeModal();
     });
 
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -628,56 +724,39 @@ const formatError = document.getElementById('formatError');
         e.stopPropagation();
     }
     
-function handleDrop(e) {
-    // 检查是否选择了输出格式
-    if (!outputFormatSelect.value) {
-        formatError.style.display = 'block';
-        preventDefaults(e);
-        return;
-    }
-    
-    // 隐藏错误提示
-    formatError.style.display = 'none';
-    handleFiles(e.dataTransfer.files);
-}
-
-// 添加输出格式改变事件，隐藏错误提示
-outputFormatSelect.addEventListener('change', () => {
-    const format = outputFormatSelect.value;
-    qualitySection.style.display = (format === 'jpeg' || format === 'webp') ? 'block' : 'none';
-    
-    // 当用户选择格式后，隐藏错误提示
-    if (format) {
+    function handleDrop(e) {
+        if (!outputFormatSelect.value) {
+            formatError.style.display = 'block';
+            return;
+        }
         formatError.style.display = 'none';
+        handleFiles(e.dataTransfer.files);
     }
-});
 
-// 修改handleFiles函数，添加格式验证
-async function handleFiles(files) {
-    // 检查是否选择了输出格式
-    if (!outputFormatSelect.value) {
-        formatError.style.display = 'block';
-        return;
+    async function handleFiles(files) {
+        if (!outputFormatSelect.value) {
+            formatError.style.display = 'block';
+            return;
+        }
+        formatError.style.display = 'none';
+        
+        if (files.length === 0) return;
+        noPreviewMessage.style.display = 'none';
+        
+        const newFiles = Array.from(files).map(file => ({
+            id: uniqueId++,
+            file: file,
+            status: 'pending', // pending, success, error
+            previewUrl: null, // 用于存储原始图片预览URL
+            convertedPreviewUrl: null // 用于存储转换后图片预览URL
+        }));
+        
+        fileQueue.push(...newFiles);
+        await Promise.all(newFiles.map(createPreviewRow));
+        
+        updateUI();
+        processQueue();
     }
-    
-    // 隐藏错误提示（如果之前显示）
-    formatError.style.display = 'none';
-    
-    if (files.length === 0) return;
-    noPreviewMessage.style.display = 'none';
-    
-    const newFiles = Array.from(files).map(file => ({
-        id: uniqueId++,
-        file: file,
-        status: 'pending' // pending, success, error
-    }));
-    
-    fileQueue.push(...newFiles);
-    await Promise.all(newFiles.map(createPreviewRow));
-    
-    updateUI();
-    processQueue();
-}
 
     async function createPreviewRow(fileData) {
         const { id, file } = fileData;
@@ -705,26 +784,15 @@ async function handleFiles(files) {
         `;
         previewContainer.appendChild(row);
         
-        // --- 异步生成预览图 ---
         try {
             const thumbImg = document.getElementById(`thumb-${id}`);
-            const buffer = await file.arrayBuffer();
             let previewUrl;
-
+            
             if (['heic', 'heif'].includes(fileExt)) {
-                const decoded = await heicDecode({ buffer });
-                const canvas = document.createElement('canvas');
-                canvas.width = decoded.width;
-                canvas.height = decoded.height;
-                const ctx = canvas.getContext('2d');
-                const imageData = new ImageData(new Uint8ClampedArray(decoded.data), decoded.width, decoded.height);
-                ctx.putImageData(imageData, 0, 0);
-                previewUrl = canvas.toDataURL();
-            } else if (fileExt === 'psd') {
-                const psd = PSD.fromArrayBuffer(buffer);
-                psd.parse();
-                previewUrl = psd.image.toBase64();
+                const conversionResult = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.7 });
+                previewUrl = URL.createObjectURL(conversionResult);
             } else if (['tif', 'tiff'].includes(fileExt)) {
+                 const buffer = await file.arrayBuffer();
                  const ifds = UTIF.decode(buffer);
                  UTIF.decodeImage(buffer, ifds[0]);
                  const rgba = UTIF.toRGBA8(ifds[0]);
@@ -739,11 +807,35 @@ async function handleFiles(files) {
                 previewUrl = URL.createObjectURL(file);
             }
             thumbImg.src = previewUrl;
-            thumbImg.onload = () => { if (!['heic', 'heif', 'psd', 'tif', 'tiff'].includes(fileExt)) URL.revokeObjectURL(thumbImg.src); };
+            
+            // 【修复预览问题的关键-1】保存预览URL，而不是用完即毁
+            fileData.previewUrl = previewUrl;
+            
+            // 添加点击预览事件。这个监听器会动态地使用最新的预览URL
+            thumbImg.parentElement.addEventListener('click', () => {
+                const urlToShow = fileData.convertedPreviewUrl || fileData.previewUrl;
+                const nameToShow = convertedFiles[id] ? convertedFiles[id].name : file.name;
+                openModal(urlToShow, nameToShow);
+            });
+            
         } catch (e) {
             console.error(`预览生成失败 for ${file.name}:`, e);
             document.getElementById(`thumb-${id}`).alt = "预览失败";
         }
+    }
+
+    // 打开模态框预览图片
+    function openModal(imageSrc, fileName) {
+        modalImage.src = imageSrc;
+        modalCaption.textContent = fileName;
+        imageModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // 防止背景滚动
+    }
+
+    // 关闭模态框
+    function closeModal() {
+        imageModal.classList.remove('active');
+        document.body.style.overflow = ''; // 恢复背景滚动
     }
 
     async function processQueue() {
@@ -766,40 +858,56 @@ async function handleFiles(files) {
     async function convertImage(fileData) {
         const { id, file } = fileData;
         const fileExt = file.name.split('.').pop().toLowerCase();
-        
+        const outputFormat = outputFormatSelect.value;
+        let resultBlob;
+
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        const buffer = await file.arrayBuffer();
+        
+        // 【修复透明背景问题的关键】定义一个绘图函数，在绘图前填充白色背景
+        const drawImageToCanvas = (img) => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            // 如果目标格式不支持透明度，则填充白色背景
+            if (outputFormat === 'jpeg' || outputFormat === 'jpg' || outputFormat === 'bmp') {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            ctx.drawImage(img, 0, 0);
+        };
 
-        // --- Step 1: 解码到 Canvas ---
+        // Step 1: 解码图片并绘制到canvas
         if (['heic', 'heif'].includes(fileExt)) {
-            const decoded = await heicDecode({ buffer });
-            canvas.width = decoded.width;
-            canvas.height = decoded.height;
-            const imageData = new ImageData(new Uint8ClampedArray(decoded.data), decoded.width, decoded.height);
-            ctx.putImageData(imageData, 0, 0);
-        } else if (fileExt === 'psd') {
-            const psd = PSD.fromArrayBuffer(buffer);
-            psd.parse();
-            const composite = psd.image.toCanvas();
-            canvas.width = composite.width;
-            canvas.height = composite.height;
-            ctx.drawImage(composite, 0, 0);
-        } else if (['tif', 'tiff'].includes(fileExt)) {
-            const ifds = UTIF.decode(buffer);
-            UTIF.decodeImage(buffer, ifds[0]);
-            const rgba = UTIF.toRGBA8(ifds[0]); // Returns Uint8Array
-            canvas.width = ifds[0].width;
-            canvas.height = ifds[0].height;
-            const imageData = new ImageData(new Uint8ClampedArray(rgba), canvas.width, canvas.height);
-            ctx.putImageData(imageData, 0, 0);
-        } else { // Standard browser formats
+            const convertedBlob = await heic2any({ blob: file, toType: 'image/png' });
             await new Promise((resolve, reject) => {
                 const img = new Image();
                 img.onload = () => {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
+                    drawImageToCanvas(img); // 使用新函数
+                    URL.revokeObjectURL(img.src);
+                    resolve();
+                };
+                img.onerror = reject;
+                img.src = URL.createObjectURL(convertedBlob);
+            });
+        } else if (['tif', 'tiff'].includes(fileExt)) {
+            const buffer = await file.arrayBuffer();
+            const ifds = UTIF.decode(buffer);
+            UTIF.decodeImage(buffer, ifds[0]);
+            const rgba = UTIF.toRGBA8(ifds[0]);
+            canvas.width = ifds[0].width;
+            canvas.height = ifds[0].height;
+            // 如果目标格式不支持透明度，则填充白色背景
+            if (outputFormat === 'jpeg' || outputFormat === 'jpg' || outputFormat === 'bmp') {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            const imageData = new ImageData(new Uint8ClampedArray(rgba), canvas.width, canvas.height);
+            ctx.putImageData(imageData, 0, 0);
+        } else { // 标准浏览器格式
+            await new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    drawImageToCanvas(img); // 使用新函数
                     URL.revokeObjectURL(img.src);
                     resolve();
                 };
@@ -807,12 +915,10 @@ async function handleFiles(files) {
                 img.src = URL.createObjectURL(file);
             });
         }
-        
-        // --- Step 2: 从 Canvas 编码到目标格式 ---
-        const outputFormat = outputFormatSelect.value;
+
+        // Step 2: 将canvas编码为目标格式
         const mimeType = `image/${outputFormat}`;
         const quality = parseInt(qualitySlider.value) / 100;
-        let resultBlob;
 
         if (outputFormat === 'tiff') {
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -844,6 +950,13 @@ async function handleFiles(files) {
             statusBadge.className = 'status-badge success';
             downloadBtn.disabled = false;
             downloadBtn.onclick = () => saveAs(convertedFiles[id]);
+
+            // 【修复预览问题的关键-2】为转换后的文件创建一个新的预览URL
+            const convertedFile = convertedFiles[id];
+            if (convertedFile && !fileData.convertedPreviewUrl) {
+                fileData.convertedPreviewUrl = URL.createObjectURL(convertedFile);
+            }
+            
         } else if (status === 'error') {
             statusBadge.textContent = '转换失败';
             statusBadge.className = 'status-badge error';
@@ -879,6 +992,16 @@ async function handleFiles(files) {
     }
 
     function clearQueue() {
+        // 【修复预览问题的关键-3】清空队列时，释放所有创建的预览URL，防止内存泄漏
+        fileQueue.forEach(fileData => {
+            if (fileData.previewUrl && fileData.previewUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(fileData.previewUrl);
+            }
+            if (fileData.convertedPreviewUrl && fileData.convertedPreviewUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(fileData.convertedPreviewUrl);
+            }
+        });
+
         fileQueue = [];
         convertedFiles = {};
         previewContainer.innerHTML = '';
