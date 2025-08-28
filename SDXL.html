@@ -716,12 +716,12 @@ function renderStylesTable(stylesToRender, searchTerm = '') {
         tableBody.appendChild(row);
 
         // 每隔10行插入广告
-        if ((index + 1) % 10 === 0) {
+        if ((index + 1) % 1000 === 0) {
             const adRow = document.createElement('tr');
             adRow.innerHTML = `
                 <td colspan="5" style="padding: 0; text-align: center;">
                     <ins class="adsbygoogle"
-     style="display:none"
+     style="display:block"
      data-ad-format="fluid"
      data-ad-layout-key="-ez+1c-3l-ls+1gn"
      data-ad-client="ca-pub-3983418855272291"
