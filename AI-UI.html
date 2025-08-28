@@ -123,7 +123,7 @@
 
         .device-toggle {
             display: flex;
-            background-color: var(--line);
+            background: linear-gradient(115deg, #f0edff, #dcedff);
             border-radius: 30px;
             padding: 4px;
             margin-bottom: 20px;
@@ -138,17 +138,19 @@
             font-size: 14px;
             font-weight: 500;
             transition: all 0.2s;
+	    color: var(--text2);
+    	opacity: 0.8;
         }
 
         .device-option.active {
             background-color: var(--card-bg);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	    opacity: 1;
         }
         
         .interface-settings {
-            background-color: var(--bg);
             border-radius: 8px;
-            padding: 16px;
+            padding: 16px 10px;
             margin-bottom: 20px;
 	    gap: 20px;
     display: flex;
@@ -791,9 +793,6 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
 
         // DOM元素引用
         const generateBtn = document.getElementById('generateBtn');
