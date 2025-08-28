@@ -282,8 +282,8 @@
 
         .download-btn-small {
             padding: 8px 16px;
-            color: white;
-            background: var(--btcolor);
+            color: var(--main-color);
+            background: none;
             border: none;
             border-radius: 20px;
             font-size: 0.9rem;
@@ -295,12 +295,11 @@
         }
 
         .download-btn-small:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(90, 100, 255, 0.3);
+            text-decoration: underline;
         }
         
         .download-btn-small:disabled {
-            background: #ccc;
+            color: var(--sidebar-text);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -468,6 +467,9 @@
         }
 
         @media (max-width: 768px) {
+	.settings-panel, .preview-panel {    
+		flex: 1;
+    		width: 100%;}
             .container {
                 width: 100%;
                 padding: 0 10px;
@@ -482,7 +484,6 @@
             .thumbnail { margin-bottom: 10px; }
             .image-info { width: calc(100% - 80px); margin-bottom: 10px; }
             .status-badge, .download-btn-small {
-                width: 100%;
                 margin: 10px 0 0 0;
                 box-sizing: border-box;
                 justify-content: center;
