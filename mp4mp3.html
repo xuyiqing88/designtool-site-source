@@ -31,7 +31,7 @@
             background-size: 20px 20px;
             color: var(--text1);
             min-height: 100vh;
-	        display: flex;
+            display: flex;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
@@ -112,8 +112,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-	        margin-top: 0;
-	        flex-wrap: wrap;
+            margin-top: 0;
+            flex-wrap: wrap;
         }
 
         .form-group { margin-bottom: 20px; }
@@ -180,7 +180,7 @@
             background: var(--bg-light);
             transition: all 0.3s;
             position: relative;
-		    overflow: hidden;
+            overflow: hidden;
         }
 
         .thumbnail {
@@ -273,6 +273,13 @@
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
         .modal-content video, .modal-content audio { width: 100%; border-radius: 8px; }
 
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .container { min-width: 100%; }
             .tool-container { flex-direction: column; }
@@ -306,6 +313,7 @@
                 <div class="form-group">
                     <label for="targetFormat">目标格式</label>
                     <select id="targetFormat">
+                        <option value="" selected disabled>请选择输出格式</option>
                         <optgroup label="视频格式">
                             <option value="mp4">MP4</option>
                             <option value="mkv">MKV</option>
@@ -320,9 +328,10 @@
                             <option value="flac">FLAC</option>
                         </optgroup>
                     </select>
+                    <div id="formatError" class="error-message">请先选择输出格式</div>
                 </div>
                 
-                <div id="videoSettings" class="form-group">
+                <div id="videoSettings" class="form-group" style="display:none;">
                     <label for="videoResolution">视频分辨率</label>
                     <select id="videoResolution">
                         <option value="-1">保持原始分辨率</option>
@@ -338,7 +347,7 @@
                     </div>
                 </div>
 
-                <div id="audioSettings" class="form-group">
+                <div id="audioSettings" class="form-group" style="display:none;">
                     <label for="audioBitrate">音频比特率</label>
                     <select id="audioBitrate">
                         <option value="320k">320 kbps</option>
@@ -407,6 +416,7 @@
         
         // 设置元素
         const targetFormatSelect = document.getElementById('targetFormat');
+        const formatError = document.getElementById('formatError');
         const videoSettings = document.getElementById('videoSettings');
         const audioSettings = document.getElementById('audioSettings');
         const videoResolutionSelect = document.getElementById('videoResolution');
@@ -426,17 +436,25 @@
         async function loadFFmpeg() {
             if (isFFmpegLoaded) return;
             statusText.textContent = '正在加载转换引擎 (FFmpeg.wasm)...';
-            ffmpeg = createFFmpeg({ 
-                log: true,
-                progress: ({ ratio }) => {
-                    const progress = Math.max(0, Math.min(1, ratio));
-                    progressBar.style.width = `${progress * 100}%`;
-                    statusText.textContent = `转换中... ${Math.round(progress * 100)}%`;
-                },
-            });
-            await ffmpeg.load();
-            isFFmpegLoaded = true;
-            statusText.textContent = '转换引擎加载完毕，请选择文件。';
+            
+            try {
+                ffmpeg = createFFmpeg({ 
+                    log: true,
+                    progress: ({ ratio }) => {
+                        const progress = Math.max(0, Math.min(1, ratio));
+                        progressBar.style.width = `${progress * 100}%`;
+                        statusText.textContent = `转换中... ${Math.round(progress * 100)}%`;
+                    },
+                });
+                
+                await ffmpeg.load();
+                isFFmpegLoaded = true;
+                statusText.textContent = '转换引擎加载完毕，请选择文件。';
+            } catch (error) {
+                console.error('FFmpeg加载失败:', error);
+                statusText.textContent = '转换引擎加载失败，请刷新页面重试。';
+                statusText.style.color = 'var(--error)';
+            }
         }
 
         // 拖放事件
@@ -461,12 +479,29 @@
             qualityValue.textContent = qualitySlider.value;
         });
         
-        targetFormatSelect.addEventListener('change', updateSettingsVisibility);
+        targetFormatSelect.addEventListener('change', () => {
+            updateSettingsVisibility();
+            formatError.style.display = 'none';
+        });
 
         // 处理文件
         async function handleFiles(files) {
             if (files.length === 0) return;
+            
+            // 检查是否已选择输出格式
+            if (!targetFormatSelect.value) {
+                formatError.style.display = 'block';
+                return;
+            }
+            
             await loadFFmpeg();
+            
+            // 确保FFmpeg已加载
+            if (!isFFmpegLoaded) {
+                statusText.textContent = '转换引擎尚未加载完成，请稍后再试。';
+                statusText.style.color = 'var(--error)';
+                return;
+            }
             
             noPreviewMessage.style.display = 'none';
 
@@ -651,6 +686,7 @@
         function updateSettingsVisibility() {
             const isVideo = ['mp4', 'mkv', 'mov', 'webm', 'avi'].includes(targetFormatSelect.value);
             videoSettings.style.display = isVideo ? 'block' : 'none';
+            audioSettings.style.display = !isVideo ? 'block' : 'none';
         }
 
         // 清空
