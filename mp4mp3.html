@@ -397,7 +397,7 @@
         </div>
     </div>
 
-    <script>
+<script>
         const { createFFmpeg, fetchFile } = FFmpeg;
         let ffmpeg;
 
@@ -432,30 +432,45 @@
         let processedFiles = [];
         let isFFmpegLoaded = false;
         
-        // 初始化FFmpeg实例
+        // --- 修改点 1: 将FFmpeg加载函数改造为页面加载时自动执行 ---
         async function loadFFmpeg() {
-            if (isFFmpegLoaded) return;
+            if (ffmpeg && ffmpeg.isLoaded()) {
+                isFFmpegLoaded = true;
+                return;
+            }
             statusText.textContent = '正在加载转换引擎 (FFmpeg.wasm)...';
+            // 禁用拖放区域，防止在加载时操作
+            dropArea.style.pointerEvents = 'none';
+            dropArea.style.opacity = '0.7';
             
             try {
                 ffmpeg = createFFmpeg({ 
                     log: true,
                     progress: ({ ratio }) => {
-                        const progress = Math.max(0, Math.min(1, ratio));
-                        progressBar.style.width = `${progress * 100}%`;
-                        statusText.textContent = `转换中... ${Math.round(progress * 100)}%`;
+                        // 进度条只在 ratio 为 0 到 1 之间时更新
+                        if (ratio >= 0 && ratio <= 1) {
+                            const progress = Math.max(0, Math.min(1, ratio));
+                            progressBar.style.width = `${progress * 100}%`;
+                            statusText.textContent = `转换中... ${Math.round(progress * 100)}%`;
+                        }
                     },
                 });
                 
                 await ffmpeg.load();
                 isFFmpegLoaded = true;
                 statusText.textContent = '转换引擎加载完毕，请选择文件。';
+                // 恢复拖放区域
+                dropArea.style.pointerEvents = 'auto';
+                dropArea.style.opacity = '1';
             } catch (error) {
                 console.error('FFmpeg加载失败:', error);
                 statusText.textContent = '转换引擎加载失败，请刷新页面重试。';
                 statusText.style.color = 'var(--error)';
             }
         }
+        
+        // 页面加载完成后立即开始加载FFmpeg
+        window.addEventListener('load', loadFFmpeg);
 
         // 拖放事件
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -488,22 +503,22 @@
         async function handleFiles(files) {
             if (files.length === 0) return;
             
-            // 检查是否已选择输出格式
             if (!targetFormatSelect.value) {
                 formatError.style.display = 'block';
                 return;
             }
             
-            await loadFFmpeg();
-            
             // 确保FFmpeg已加载
             if (!isFFmpegLoaded) {
                 statusText.textContent = '转换引擎尚未加载完成，请稍后再试。';
-                statusText.style.color = 'var(--error)';
-                return;
+                statusText.style.color = 'var(--warning)';
+                // 如果尚未加载，可以再次触发加载（以防万一）
+                await loadFFmpeg(); 
+                if(!isFFmpegLoaded) return; // 如果还是没加载好，就终止
             }
             
             noPreviewMessage.style.display = 'none';
+            statusText.style.color = 'var(--text2)'; // 恢复颜色
 
             for (const file of files) {
                 const fileIndex = processedFiles.length;
@@ -520,29 +535,39 @@
                 createPreviewRow(fileIndex);
                 
                 try {
-                    const convertedBlob = await convertFile(file);
-                    const convertedFile = new File([convertedBlob], getOutputFileName(file.name, targetFormatSelect.value), { type: convertedBlob.type });
+                    // 异步处理每个文件，这样UI不会卡顿
+                    convertFile(file).then(convertedBlob => {
+                        const convertedFile = new File([convertedBlob], getOutputFileName(file.name, targetFormatSelect.value), { type: convertedBlob.type });
 
-                    processedFiles[fileIndex].convertedFile = convertedFile;
-                    processedFiles[fileIndex].convertedSize = convertedFile.size;
-                    processedFiles[fileIndex].status = 'done';
-                    updatePreviewRow(fileIndex);
+                        processedFiles[fileIndex].convertedFile = convertedFile;
+                        processedFiles[fileIndex].convertedSize = convertedFile.size;
+                        processedFiles[fileIndex].status = 'done';
+                        updatePreviewRow(fileIndex);
+                        updateUIState();
+                    }).catch(err => {
+                        console.error('Conversion failed:', err);
+                        processedFiles[fileIndex].status = 'error';
+                        updatePreviewRow(fileIndex);
+                        updateUIState();
+                    });
                 } catch (err) {
-                    console.error('Conversion failed:', err);
-                    processedFiles[fileIndex].status = 'error';
-                    updatePreviewRow(fileIndex);
+                     console.error('Immediate error during conversion setup:', err);
+                     processedFiles[fileIndex].status = 'error';
+                     updatePreviewRow(fileIndex);
+                     updateUIState();
                 }
             }
             updateUIState();
         }
 
-        // 核心转换函数
+        // --- 修改点 2: 改造核心转换函数，使其能动态选择编码器 ---
         async function convertFile(file) {
             statusText.textContent = `准备转换: ${file.name}`;
             progressBar.style.width = '0%';
             
-            const outputFileName = getOutputFileName(file.name, targetFormatSelect.value);
-            const isVideoOutput = ['mp4', 'mkv', 'mov', 'webm', 'avi'].includes(targetFormatSelect.value);
+            const targetFormat = targetFormatSelect.value;
+            const outputFileName = getOutputFileName(file.name, targetFormat);
+            const isVideoOutput = ['mp4', 'mkv', 'mov', 'webm', 'avi'].includes(targetFormat);
 
             ffmpeg.FS('writeFile', file.name, await fetchFile(file));
 
@@ -551,28 +576,56 @@
             // 视频相关参数
             if(isVideoOutput) {
                 const resolution = videoResolutionSelect.value;
-                if(resolution != "-1") {
+                if(resolution !== "-1") {
                     args.push('-vf', `scale=-2:${resolution}`);
                 }
-                args.push('-c:v', 'libx264', '-crf', qualitySlider.value);
+                // 为webm使用不同的视频编码器
+                const videoCodec = targetFormat === 'webm' ? 'libvpx' : 'libx264';
+                args.push('-c:v', videoCodec, '-crf', qualitySlider.value);
             }
 
-            // 音频相关参数
+            // --- 修改点 3: 动态选择音频编码器 ---
             const audioBitrate = audioBitrateSelect.value;
-            args.push('-c:a', 'aac', '-b:a', audioBitrate);
+            let audioCodec = 'aac'; // 默认 AAC
+            switch(targetFormat) {
+                case 'mp3':
+                    audioCodec = 'libmp3lame';
+                    break;
+                case 'ogg':
+                    audioCodec = 'libopus';
+                    break;
+                case 'flac':
+                    audioCodec = 'flac';
+                    break;
+                case 'wav':
+                    audioCodec = 'pcm_s16le';
+                    break;
+            }
+            args.push('-c:a', audioCodec);
+            // FLAC 和 WAV 不需要设置比特率
+            if(targetFormat !== 'flac' && targetFormat !== 'wav') {
+                 args.push('-b:a', audioBitrate);
+            }
             
             args.push(outputFileName);
-
+            
+            console.log("Running FFmpeg with args:", args); // 调试信息
             await ffmpeg.run(...args);
 
             const data = ffmpeg.FS('readFile', outputFileName);
-            ffmpeg.FS('unlink', file.name);
-            ffmpeg.FS('unlink', outputFileName);
+            
+            // 清理FFmpeg虚拟文件系统中的文件
+            try {
+                ffmpeg.FS('unlink', file.name);
+                ffmpeg.FS('unlink', outputFileName);
+            } catch (e) {
+                console.warn("Could not unlink files, they may not exist.", e);
+            }
 
-            return new Blob([data.buffer], { type: isVideoOutput ? `video/${targetFormatSelect.value}` : `audio/${targetFormatSelect.value}` });
+            const mimeType = isVideoOutput ? `video/${targetFormat}` : `audio/${targetFormat}`;
+            return new Blob([data.buffer], { type: mimeType });
         }
         
-        // 创建预览行
         function createPreviewRow(index) {
             const fileData = processedFiles[index];
             const row = document.createElement('div');
@@ -609,7 +662,6 @@
             previewContainer.appendChild(row);
         }
 
-        // 更新预览行信息
         function updatePreviewRow(index) {
             const fileData = processedFiles[index];
             if (!fileData || !fileData.dom) return;
@@ -624,15 +676,16 @@
                 statusEl.textContent = '转换成功';
                 statusEl.style.color = 'var(--success)';
                 convertedSizeEl.textContent = formatSize(fileData.convertedSize);
-                previewBtn.style.display = 'block';
-                downloadBtn.style.display = 'block';
+                previewBtn.style.display = 'inline-block';
+                downloadBtn.style.display = 'inline-block';
 
                 previewBtn.onclick = () => showPreview(fileData.convertedFile);
-                downloadBtn.onclick = () => saveAs(fileData.convertedFile);
+                downloadBtn.onclick = () => saveAs(fileData.convertedFile, fileData.convertedFile.name);
                 statusText.textContent = `转换成功: ${fileData.originalFile.name}`;
             } else if (fileData.status === 'error') {
                 statusEl.textContent = '转换失败';
                 statusEl.style.color = 'var(--error)';
+                convertedSizeEl.textContent = '-';
                 statusText.textContent = `转换失败: ${fileData.originalFile.name}`;
             }
         }
@@ -643,24 +696,41 @@
             if(file.type.startsWith('video')) {
                 player = document.createElement('video');
                 player.controls = true;
+                player.autoplay = true;
             } else {
                 player = document.createElement('audio');
                 player.controls = true;
+                player.autoplay = true;
             }
             player.src = url;
+            
+            // 释放之前可能创建的URL
+            const oldPlayer = modalPlayerContainer.querySelector('video, audio');
+            if (oldPlayer && oldPlayer.src.startsWith('blob:')) {
+                URL.revokeObjectURL(oldPlayer.src);
+            }
+
             modalPlayerContainer.innerHTML = '';
             modalPlayerContainer.appendChild(player);
             previewModal.style.display = 'flex';
         }
 
-        closeModalBtn.onclick = () => {
+        function closeModal() {
             previewModal.style.display = 'none';
-            modalPlayerContainer.innerHTML = ''; // 停止播放
+            const player = modalPlayerContainer.querySelector('video, audio');
+            if (player) {
+                player.pause();
+                if (player.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(player.src);
+                }
+            }
+            modalPlayerContainer.innerHTML = '';
         }
+
+        closeModalBtn.onclick = closeModal;
         window.onclick = (event) => {
             if (event.target == previewModal) {
-                previewModal.style.display = "none";
-                modalPlayerContainer.innerHTML = '';
+                closeModal();
             }
         }
 
@@ -675,8 +745,10 @@
             downloadAllContainer.style.display = doneCount > 0 ? 'block' : 'none';
             
             if (!hasFiles) {
-                noPreviewMessage.style.display = 'block';
-                statusText.textContent = '请选择文件开始转换...';
+                noPreviewMessage.style.display = 'flex'; // 使用flex使其居中
+                if(isFFmpegLoaded) {
+                    statusText.textContent = '请选择文件开始转换...';
+                }
                 progressBar.style.width = '0%';
             } else {
                 noPreviewMessage.style.display = 'none';
@@ -684,24 +756,27 @@
         }
         
         function updateSettingsVisibility() {
-            const isVideo = ['mp4', 'mkv', 'mov', 'webm', 'avi'].includes(targetFormatSelect.value);
+            const targetFormat = targetFormatSelect.value;
+            const isVideo = ['mp4', 'mkv', 'mov', 'webm', 'avi'].includes(targetFormat);
+            const isAudio = ['mp3', 'ogg', 'wav', 'flac'].includes(targetFormat);
+            
             videoSettings.style.display = isVideo ? 'block' : 'none';
-            audioSettings.style.display = !isVideo ? 'block' : 'none';
+            // 显示音频比特率的条件是：目标是音频格式，或者目标是视频格式（视频也包含音轨）
+            audioSettings.style.display = (isAudio || isVideo) ? 'block' : 'none';
         }
 
-        // 清空
         clearAllBtn.addEventListener('click', () => {
             processedFiles = [];
             previewContainer.innerHTML = '';
             updateUIState();
         });
         
-        // 打包下载
         downloadAllBtn.addEventListener('click', () => {
             const doneFiles = processedFiles.filter(f => f.status === 'done');
             if (doneFiles.length === 0) return;
 
             statusText.textContent = `正在打包 ${doneFiles.length} 个文件...`;
+            progressBar.style.width = '0%';
             const zip = new JSZip();
             doneFiles.forEach(item => {
                 zip.file(item.convertedFile.name, item.convertedFile); 
@@ -710,18 +785,21 @@
             zip.generateAsync({type:"blob"}).then(function(content) {
                 saveAs(content, "converted_files.zip");
                 statusText.textContent = `打包完成！`;
+            }, function(error) {
+                statusText.textContent = `打包失败: ${error}`;
             });
         });
 
-        // 辅助函数
         const formatSize = (bytes) => {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         };
 
         const getOutputFileName = (originalName, targetExt) => {
-            const nameWithoutExt = originalName.substring(0, originalName.lastIndexOf('.'));
+            const nameWithoutExt = originalName.lastIndexOf('.') > 0 ? originalName.substring(0, originalName.lastIndexOf('.')) : originalName;
             return `${nameWithoutExt}.${targetExt}`;
         };
 
