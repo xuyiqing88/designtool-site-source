@@ -442,7 +442,7 @@
                 isFFmpegLoaded = true;
                 return;
             }
-            statusText.textContent = '正在加载转换引擎，推荐使用 Chrome、Firefox 和 Edge 主流浏览器...';
+            statusText.textContent = '正在加载转换引擎...';
             // 禁用拖放区域，防止在加载时操作
             dropArea.style.pointerEvents = 'none';
             dropArea.style.opacity = '0.7';
@@ -468,7 +468,7 @@
                 dropArea.style.opacity = '1';
             } catch (error) {
                 console.error('FFmpeg加载失败:', error);
-                statusText.textContent = '转换引擎加载失败，请刷新页面重试。';
+                statusText.textContent = '转换引擎加载失败，请更换 Chrome、Firefox 和 Edge 等主流浏览器加载重试。';
                 statusText.style.color = 'var(--error)';
             }
         }
