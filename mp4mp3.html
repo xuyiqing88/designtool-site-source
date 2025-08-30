@@ -298,7 +298,7 @@
     <div class="container">
         <header>
             <h1>高效视频/音频格式转换工具</h1>
-            <p class="subtitle">所有转换均在您的浏览器本地完成，基于 <code>FFmpeg.wasm</code> 技术。您的文件不会被上传到任何服务器。大型文件转换可能需要数分钟，请勿关闭页面。</p>
+            <p class="subtitle">所有转换均在您的浏览器本地完成，支持主流格式的音视频格式批量转换。大型文件转换可能需要数分钟，请勿关闭页面。</p>
         </header>
         
         <div class="tool-container">
@@ -318,14 +318,14 @@
                     <label for="targetFormat">目标格式</label>
                     <select id="targetFormat">
                         <option value="" selected disabled>请选择输出格式</option>
-                        <optgroup label="视频格式">
+                        <optgroup label="——视频格式——">
                             <option value="mp4">MP4</option>
                             <option value="mkv">MKV</option>
                             <option value="mov">MOV</option>
                             <option value="webm">WebM</option>
                             <option value="avi">AVI</option>
                         </optgroup>
-                        <optgroup label="音频格式">
+                        <optgroup label="——音频格式——">
                             <option value="mp3">MP3</option>
                             <option value="ogg">OGG (Opus)</option>
                             <option value="wav">WAV</option>
@@ -442,7 +442,7 @@
                 isFFmpegLoaded = true;
                 return;
             }
-            statusText.textContent = '正在加载转换引擎 (FFmpeg.wasm)...';
+            statusText.textContent = '正在加载转换引擎，推荐使用 Chrome、Firefox 和 Edge 主流浏览器...';
             // 禁用拖放区域，防止在加载时操作
             dropArea.style.pointerEvents = 'none';
             dropArea.style.opacity = '0.7';
