@@ -1385,14 +1385,6 @@ max-width: 330px;
         // Tool data - 确保每个工具都有badge属性
         const tools = [
             {
-                title: "图片格式转换器",
-                description: "支持HEIC、TIF、JPG、PNG、BMP、GIF、WEBP、SVG格式",
-                category: "cover",
-                link: "conver.html",
-                icon: "img/conver.webp",
-                badge: "NEW"
-            },
-            {
                 title: "AI生成UI界面",
                 description: "AI一键生成原型UI界面，支持下载源文件",
                 category: "design",
@@ -1539,11 +1531,27 @@ max-width: 330px;
                 badge: "" 
             },
             {
+                title: "图片格式转换器",
+                description: "支持HEIC、TIF、JPG、PNG、BMP、GIF、WEBP、SVG格式",
+                category: "cover",
+                link: "conver.html",
+                icon: "img/conver.webp",
+                badge: "NEW"
+            },
+            {
                 title: "线性颜色转换",
                 description: "非线性颜色转线性颜色，用于C4D、blender，颜色格式互转（HEX, RGB, HSL, HSV）",
-                category: "3D",
+                category: "cover",
                 link: "color.html",
                 icon: "img/颜色.webp",
+                badge: ""
+            },
+            {
+                title: "BASE64图片转换器",
+                description: "将图片转换为Base64编码，或从Base64编码还原为图片",
+                category: "cover",
+                link: "BASE64.html",
+                icon: "img/base64.webp",
                 badge: ""
             },
             {
@@ -1588,14 +1596,6 @@ max-width: 330px;
                 icon: "img/翻译.webp",
                 badge: ""
             },
-            {
-                title: "BASE64图片转换器",
-                description: "将图片转换为Base64编码，或从Base64编码还原为图片",
-                category: "utility",
-                link: "BASE64.html",
-                icon: "img/base64.webp",
-                badge: ""
-            },
 
         ];
 
@@ -1604,8 +1604,8 @@ max-width: 330px;
             'design': { name: '轻易设计工具', icon: 'fa-solid fa-compass-drafting' , scripts: 'UI设计/抠图/压缩/在线PS'},
             'dev': { name: '轻易AI工具', icon: 'fa-solid fa-microchip' , scripts: 'AI设计/绘画/提示词工具' },
             '3D': { name: '轻易3D工具', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR' },
-            'cover': { name: '轻易格式转换', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR' },
-            'utility': { name: '轻易实用工具', icon: 'fa-solid fa-swatchbook' , scripts: '游戏/音乐/翻译/Base64转换' },
+            'cover': { name: '轻易格式转换', icon: 'fa-solid fa-camera-rotate' , scripts: '图片/视频/音频/颜色/Base64' },
+            'utility': { name: '轻易实用工具', icon: 'fa-solid fa-swatchbook' , scripts: '游戏/广播/九宫格/翻译' },
 
         };
 
@@ -1863,7 +1863,7 @@ gridContainer.appendChild(adContainer);
                 const targetSection = document.getElementById(`category-${category}`);
                 if (targetSection) {
                     window.scrollTo({
-                        top: targetSection.offsetTop - 100,
+                        top: targetSection.offsetTop - 10,
                         behavior: 'smooth'
                     });
                 }
