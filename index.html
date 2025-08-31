@@ -271,9 +271,10 @@
 	.imgball {	
     width: 24px;
     height: 24px;
-    background: #fff;
+    background: transparent;
     border-radius: 50%;
-    box-shadow: -6px -6px 0 #eeeeff;
+        box-shadow: 10px 10px 0 #ffffff;
+    margin: -24px 0px -16px -40px;
 }
         /* 新增介绍弹窗样式 */
         .intro-modal {
@@ -741,7 +742,6 @@ max-width: 330px;
         }
         
         .tool-card:hover {
-            transform: translateY(-5px);
             box-shadow: 0 10px 25px rgb(134 144 209 / 17%);
         }
         
@@ -754,24 +754,27 @@ max-width: 330px;
             justify-content: center;
             flex-shrink: 0;
             overflow: hidden;
-	border-radius: 0 0 12px;
+	transition: 0.2s all ease;
         }
         .tool-cover:hover {
-	}
+	width: 160px;
+    	transition: 0.2s all ease;}
         .tool-cover img {
             width: auto;
             height: 100%;
             object-fit: contain;
 	transition: all ease 0.3s;
+	    margin-left: -10px;
         }
-        .tool-cover img:hover {
-		    transform: scale(1.15);
-		transition: all ease 0.3s;}
+
         .tool-content {
             padding: 16px 12px 16px 16px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+	border-radius: 10px;
+    margin-left: -10px;
+    background: #fff;
         }
         
         .tool-card h3 {
@@ -821,6 +824,7 @@ max-width: 330px;
             width: fit-content;
             font-size: 14px;
 	    border: 1px solid var(--gray);
+	    margin-bottom: 16px;
         }
         
         .tool-link:hover {
@@ -1077,8 +1081,9 @@ max-width: 330px;
   }
 }
 @media (max-width: 768px) {
-	.imgball-1 {
-	margin: -10px 0 0 -10px;}
+	.imgball {
+	margin-top: -98px;
+    margin-left: 127px;}
 
     .modal-content {
         width: 95%;
@@ -1166,7 +1171,9 @@ max-width: 330px;
 	margin-bottom: 30px;}
 
 	.tool-content {
-	    	padding: 10px;}
+	    	padding: 10px;
+	        margin-left: 0;
+        		margin-top: -10px;}
 	.comments-container {
                 border-radius: 12px;
             }
@@ -1188,7 +1195,7 @@ max-width: 330px;
             
 	.tool-card {
                 flex-direction: column;
-	        height: 190px;
+	        height: 180px;
             }
 	.h3 {
 	    display: -webkit-box;
@@ -1721,10 +1728,10 @@ window.addEventListener('resize', showAddToHomePrompt);
 				<img src="${tool.icon}" alt="${tool.title}">
 				</a>
                             <div class="tool-content">
-				<div class="imgball-1"><div class="imgball"></div></div>
                                 <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
                                 <p>${tool.description}</p>
                                 <a href="${tool.link}" class="tool-link">打开工具</a>
+			<div class="imgball"></div>
                             </div>
                         `;
                         
@@ -1822,10 +1829,10 @@ gridContainer.appendChild(adContainer);
                         <img src="${tool.icon}" alt="${tool.title}" loading="lazy">
                     </a>
                     <div class="tool-content">
-			<div class="imgball-1"><div class="imgball"></div></div>
                         <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
                         <p>${tool.description}</p>
                         <a href="${tool.link}" title="${tool.title}" class="tool-link">打开工具</a>
+			<div class="imgball"></div>
                     </div>
                 `;
                 
