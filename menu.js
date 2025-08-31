@@ -299,7 +299,6 @@ const menuData = [
         title: "轻易设计",
         icon: "fa-solid fa-compass-drafting",
         submenu: [
-            { title: "图片格式转换器", link: "conver.html" },
             { title: "AI生成UI界面", link: "AI-UI.html" },
             { title: "AI一键抠图", link: "rembg.html" },
             { title: "图片对比工具", link: "diff.html" },
@@ -322,7 +321,6 @@ const menuData = [
             { title: "AI画风提示词大全", link: "SDXL.html" },
         ]
     },
-
     {
         title: "轻易3D",
         icon: "fa-brands fa-codepen",
@@ -332,19 +330,27 @@ const menuData = [
             { title: "无缝贴图制作", link: "texture.html" },
             { title: "无缝贴图预览", link: "map.html" },
             { title: "ORM贴图合成与拆解", link: "ORM.html" },
+
+        ]
+    },
+    {
+        title: "轻易转换",
+        icon: "fa-solid fa-camera-rotate",
+        submenu: [
+            { title: "图片格式转换器", link: "conver.html" },
 	    { title: "线性颜色转换", link: "color.html" },
+            { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
     },
     {
         title: "轻易实用",
         icon: "fa-solid fa-swatchbook",
         submenu: [
+            { title: "青艺云广播", link: "radio.html" },
             { title: "在线视频剪辑", link: "opencut.html" },
             { title: "在线ikun小游戏", link: "jntm.html" },
-            { title: "青艺云广播", link: "radio.html" },
             { title: "朋友圈九宫格制作", link: "9img.html" },
             { title: "高级翻译工具", link: "translation.html" },
-            { title: "BASE64图片转换器", link: "BASE64.html" },
         ]
     },
 
