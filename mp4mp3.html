@@ -38,11 +38,13 @@
             display: flex;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-
+	.tips {
+	padding: 10px 0;
+    font-size: 14px;
+    color: var(--success);}
         .container {
             width: 1200px;
             margin: 0 auto;
-            padding: 0 15px;
         }
 
         header {
@@ -222,7 +224,7 @@
         .no-preview i { font-size: 5rem; color: var(--border); margin-bottom: 25px; }
         .no-preview p { font-size: 1.1rem; max-width: 400px; margin: 0 auto; line-height: 1.7; }
 
-        .status-area { text-align: right; color: var(--text2); font-size: 0.9rem; font-weight: 400; /*flex-basis: 100%;*/ margin: 10px 0; }
+        .status-area {  color: var(--text2); font-size: 0.9rem; font-weight: 400; /*flex-basis: 100%;*/ margin: 10px 0; }
         
         .progress-container { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 5px; }
         .progress-bar { height: 100%; background: var(--success); width: 0%; transition: width 0.3s ease; }
@@ -313,6 +315,7 @@
                         <p class="drop-hint">支持常见视频和音频格式</p>
                         <input type="file" id="fileInput" accept="video/*,audio/*" multiple>
                     </div>
+		<div class="tips">小技巧：上传视频后选择音频格式输出，可以提取音频</div>
                 </div>
                 
                 <div class="form-group">
