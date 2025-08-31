@@ -671,7 +671,7 @@ max-width: 330px;
         }
         
         .category-btn {
-            padding: 8px 12px;
+            padding: 8px;
             border-radius: 50px;
             background: none;
             color: #fff;
@@ -1259,7 +1259,7 @@ max-width: 330px;
 		<div class="shape shape-2"></div><div class="shape shape-4"></div><div class="shape shape-5"></div> 
 		</div>
 	<div class="logobt">
-	<img src="img/logo2.svg" alt="logo" class="logo">
+	<a href="index.html"><img src="img/logo2.svg" alt="logo" class="logo"></a>
 	<div class="category-filter">
                 <button class="category-btn" data-category="design">
                     <span>轻易设计</span>
@@ -1270,12 +1270,15 @@ max-width: 330px;
                 <button class="category-btn" data-category="3D">
                     <span>轻易3D</span>
                 </button>
+                <button class="category-btn" data-category="cover">
+                    <span>轻易转换</span>
+                </button>
                 <button class="category-btn" data-category="utility">
                     <span>轻易实用</span>
                 </button>
             </div>
 	</div>
-	<span>
+	<span style="padding: 8px 12px;">
 		<i class="fa-classic fa-solid fa-comment-dots" style="color: #fff;"></i>
 		<a class="donate-link" id="commentsBtn" style="margin-right: 25px;">评论反馈</a>
 		<i class="fa-classic fa-solid fa-bone" style="color: #fff;"></i>
@@ -1384,7 +1387,7 @@ max-width: 330px;
             {
                 title: "图片格式转换器",
                 description: "支持HEIC、TIF、JPG、PNG、BMP、GIF、WEBP、SVG格式",
-                category: "design",
+                category: "cover",
                 link: "conver.html",
                 icon: "img/conver.webp",
                 badge: "NEW"
@@ -1601,6 +1604,7 @@ max-width: 330px;
             'design': { name: '轻易设计工具', icon: 'fa-solid fa-compass-drafting' , scripts: 'UI设计/抠图/压缩/在线PS'},
             'dev': { name: '轻易AI工具', icon: 'fa-solid fa-microchip' , scripts: 'AI设计/绘画/提示词工具' },
             '3D': { name: '轻易3D工具', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR' },
+            'cover': { name: '轻易格式转换', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR' },
             'utility': { name: '轻易实用工具', icon: 'fa-solid fa-swatchbook' , scripts: '游戏/音乐/翻译/Base64转换' },
 
         };
