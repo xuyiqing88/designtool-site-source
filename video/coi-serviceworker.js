@@ -22,6 +22,16 @@ if (typeof window === 'undefined') {
     });
 
     self.addEventListener("fetch", function (event) {
+  const url = new URL(event.request.url);
+
+  // 跳过第三方域名（不拦截 giscus.app 和 umami）
+  if (url.hostname === "giscus.app" || url.hostname === "cloud.umami.is") {
+    return; // 直接放行
+  }
+
+  event.respondWith(
+    fetch(event.request).catch(() => new Response("Service worker error"))
+  );
         const r = event.request;
         if (r.cache === "only-if-cached" && r.mode !== "same-origin") {
             return;
