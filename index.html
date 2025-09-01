@@ -847,6 +847,11 @@ max-width: 330px;
             gap: 6px;
 		text-decoration: none;
     		font-weight: 600;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
 	}
 	.h3:hover {
 		color: var(--primary);
