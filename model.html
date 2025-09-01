@@ -5,6 +5,7 @@
 <title>lora训练数据集编辑器 - AI训练数据编辑管理工具</title>
 <script type="text/javascript" src="http://at.alicdn.com/t/c/font_4814134_gfwa6jjc3jq.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
@@ -327,8 +328,7 @@ input:checked + .slider:before {
 	font-size: 14px;
 	color: var(--text1);}
 .btico{
-	font-size: 14px;
-    	margin-right: 4px;}
+	font-size: 14px;}
 .gear-icon, .bt-icon {
     font-size: 40px;
 	cursor: pointer;
@@ -775,7 +775,8 @@ input:focus,
     background: var(--btcolor);
     color: white;
 	display: flex;
-    align-items: center;}
+    align-items: center;
+	gap: 4px;}
 .bt:hover{ 
     opacity: 86%;
     box-shadow: 0px 14px 10px -7px #5353dc5c;}  
@@ -846,7 +847,11 @@ button:hover {
     color: var(--text2); 
     cursor: pointer;
     font-size: 13px;
-	margin-right: 10px;}
+	margin-right: 10px;
+	    gap: 4px;
+    display: flex;
+    align-items: center;
+}
 .checkbtn:hover, .checkbtn2:hover, .checkbtn3:hover, .checkbtn4:hover {
 	color: var(--text2); 
     background: var(--mainbg);}
@@ -1068,9 +1073,9 @@ display: flex;
 </div>
 <div class="anniuzu">
 	<button class="checkbtn4"><img class="btico" src="img/AIrengongzhineng.svg">一键反推</button>
-	<button class="checkbtn2"><img class="btico" src="img/chicun.svg">统一尺寸</button>
-	<button class="checkbtn3"><img class="btico" src="img/paint.svg">填充背景</button>
-	<button class="checkbtn"><img class="btico" src="img/sousuo.svg">查找/替换</button>
+	<button class="checkbtn2"><i class="fa-solid fa-expand"></i>统一尺寸</button>
+	<button class="checkbtn3"><i class="fa-solid fa-fill-drip"></i>填充背景</button>
+	<button class="checkbtn"><i class="fa-solid fa-magnifying-glass"></i>查找/替换</button>
 <div class="column-select">
         <button class="column-btn" data-cols="1" style="border-radius: 4px 0 0 4px; border-left: 1px solid var(--line);">1列</button>
         <button class="column-btn" data-cols="2">2列</button>
@@ -1089,7 +1094,7 @@ display: flex;
 	<button id="cancelDeleteBtn" style="display: none;" class="btcancer">取消删除</button> 
     	<button id="batchDeleteBtn" class="btdel">批量删除</button>
    </div>
-    <button id="downloadBtn" class="bt"><img class="btico" src="img/xiazai.svg">打包下载</button>
+    <button id="downloadBtn" class="bt"><i class="fa-solid fa-download"></i>打包下载</button>
 </div>
 <input type="file" id="fileInput" style="display:none;" multiple accept="image/png, image/jpeg">
 
@@ -3075,7 +3080,7 @@ async function analyzeImage(file) {
     <div class="settings-item">
       <div class="prompt-header">
         <span class="settitle">默认提问语
-        <button type="button" class="bt reset-btn"><img class="btico" src="img/zhongzhi.svg">恢复默认</button></span>
+        <button type="button" class="bt reset-btn"><i class="fa-solid fa-rotate"></i>恢复默认</button></span>
       </div>
       <textarea class="settings-input prompt-textarea"
                 id="promptTextarea"></textarea>
