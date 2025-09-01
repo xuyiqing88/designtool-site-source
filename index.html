@@ -263,6 +263,60 @@
             min-height: 100vh;
             line-height: 1.6;
         }
+/* 添加清空按钮样式 */
+.search-box {
+    position: relative;
+    margin-bottom: -30px;
+}
+
+.search-box input {
+    padding: 14px 20px 14px 45px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--dark);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 99%;
+    margin-left: -20px;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 2px 15px rgba(89, 99, 255, 0.2);
+}
+
+.search-box i.fa-search {
+    position: relative;
+    left: 25px;
+    top: 50%;
+    color: var(--gray);
+    z-index: 999;
+}
+
+/* 清空按钮样式 */
+.clear-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    cursor: pointer;
+    display: none;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    font-size: 14px;
+	background: #0000004d;
+}
+
+.clear-search:hover {
+    background: rgb(0 0 0 / 60%);
+}
 
 	.imgball {	
     width: 24px;
@@ -1082,7 +1136,9 @@ max-width: 330px;
 	.imgball {
 	margin-top: -98px;
     margin-left: 126px;}
-
+    .clear-search {
+        right: 10px;
+    }
     .modal-content {
         width: 95%;
         padding: 20px 15px;
@@ -1772,83 +1828,107 @@ gridContainer.appendChild(adContainer);
         // 搜索功能
         const searchInput = document.getElementById('searchInput');
         
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
+// 创建清空按钮
+const clearButton = document.createElement('span');
+clearButton.className = 'clear-search';
+clearButton.innerHTML = '×';
+clearButton.addEventListener('click', function() {
+    searchInput.value = '';
+    searchInput.focus();
+    clearButton.style.display = 'none';
+    // 触发input事件以更新搜索结果
+    const event = new Event('input', { bubbles: true });
+    searchInput.dispatchEvent(event);
+});
+
+// 将清空按钮添加到搜索框容器
+document.querySelector('.search-box').appendChild(clearButton);
+
+// 监听输入事件，控制清空按钮显示/隐藏
+searchInput.addEventListener('input', function() {
+    if (this.value.length > 0) {
+        clearButton.style.display = 'block';
+    } else {
+        clearButton.style.display = 'none';
+    }
+    
+    // 原有的搜索功能代码保持不变
+    const searchTerm = this.value.toLowerCase();
+    
+    if (!searchTerm) {
+        // 清空搜索，显示所有分类
+        renderCategorySections();
+        return;
+    }
+    
+    const filteredTools = tools.filter(tool => 
+        tool.title.toLowerCase().includes(searchTerm) || 
+        tool.description.toLowerCase().includes(searchTerm)
+    );
+    
+    // 按搜索结果显示
+    const container = document.getElementById('toolsContainer');
+    container.innerHTML = '';
+    
+    if (filteredTools.length === 0) {
+        container.innerHTML = `
+            <div class="no-results" style="text-align: center; padding: 50px;">
+                <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                <h3>未找到匹配的工具</h3>
+                <p>请尝试不同的搜索关键词</p>
+            </div>
+        `;
+        return;
+    }
             
-            if (!searchTerm) {
-                // 清空搜索，显示所有分类
-                renderCategorySections();
-                return;
-            }
-            
-            const filteredTools = tools.filter(tool => 
-                tool.title.toLowerCase().includes(searchTerm) || 
-                tool.description.toLowerCase().includes(searchTerm)
-            );
-            
-            // 按搜索结果显示
-            const container = document.getElementById('toolsContainer');
-            container.innerHTML = '';
-            
-            if (filteredTools.length === 0) {
-                container.innerHTML = `
-                    <div class="no-results" style="text-align: center; padding: 50px;">
-                        <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
-                        <h3>未找到匹配的工具</h3>
-                        <p>请尝试不同的搜索关键词</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // 为搜索结果创建临时分类
-            const section = document.createElement('section');
-            section.className = 'category-section';
-            section.id = 'search-results';
-            
-            section.innerHTML = `
-                <div class="category-header">
-                    <div class="category-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h2 class="category-title">搜索结果 (${filteredTools.length})</h2>
-                </div>
-                <div class="tools-grid" id="tools-search"></div>
-            `;
-            
-            container.appendChild(section);
-            
-            // 渲染搜索结果
-            const gridContainer = section.querySelector(`.tools-grid`);
-            filteredTools.forEach(tool => {
-                const toolCard = document.createElement('div');
-                toolCard.className = 'tool-card';
-                toolCard.setAttribute('data-category', tool.category);
-                
-                // 添加状态标签（放在标题前面）
-                let badgeHtml = '';
-                if (tool.badge) {
-                    badgeHtml = `<span class="tool-badge">${tool.badge}</span>`;
-                }
-                
-                toolCard.innerHTML = `
-                    <a class="tool-cover" href="${tool.link}">
-                        <img src="${tool.icon}" alt="${tool.title}" loading="lazy">
-                    </a>
-                    <div class="tool-content">
-                        <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
-                        <p>${tool.description}</p>
-                        <a href="${tool.link}" title="${tool.title}" class="tool-link">打开工具</a>
-			<div class="imgball"></div>
-                    </div>
-                `;
-                
-                gridContainer.appendChild(toolCard);
-            });
-            
-            // 重新附加悬停效果
-            attachHoverEffects();
-        });
+    // 为搜索结果创建临时分类
+    const section = document.createElement('section');
+    section.className = 'category-section';
+    section.id = 'search-results';
+    
+    section.innerHTML = `
+        <div class="category-header">
+            <div class="category-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h2 class="category-title">搜索结果 (${filteredTools.length})</h2>
+        </div>
+        <div class="tools-grid" id="tools-search"></div>
+    `;
+    
+    container.appendChild(section);
+    
+    // 渲染搜索结果
+    const gridContainer = section.querySelector(`.tools-grid`);
+    filteredTools.forEach(tool => {
+        const toolCard = document.createElement('div');
+        toolCard.className = 'tool-card';
+        toolCard.setAttribute('data-category', tool.category);
+        
+        // 添加状态标签（放在标题前面）
+        let badgeHtml = '';
+        if (tool.badge) {
+            badgeHtml = `<span class="tool-badge">${tool.badge}</span>`;
+        }
+        
+        toolCard.innerHTML = `
+            <a class="tool-cover" href="${tool.link}">
+                <img src="${tool.icon}" alt="${tool.title}" loading="lazy">
+            </a>
+            <div class="tool-content">
+                <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
+                <p>${tool.description}</p>
+                <a href="${tool.link}" title="${tool.title}" class="tool-link">打开工具</a>
+                <div class="imgball"></div>
+            </div>
+        `;
+        
+        gridContainer.appendChild(toolCard);
+    });
+    
+    // 重新附加悬停效果
+    attachHoverEffects();
+});
         
         // 分类筛选功能
         const categoryBtns = document.querySelectorAll('.category-btn');
