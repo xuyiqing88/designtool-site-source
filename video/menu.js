@@ -292,21 +292,21 @@ const menuData = [
     {
         title: "首页",
         icon: "fa-solid fa-house-chimney",
-        link: "index.html",
+        link: "../index.html",
         active: true
     },
     {
         title: "轻易设计",
         icon: "fa-solid fa-compass-drafting",
         submenu: [
-            { title: "AI生成UI界面", link: "AI-UI.html" },
-            { title: "AI一键抠图", link: "rembg.html" },
-            { title: "图片对比工具", link: "diff.html" },
-            { title: "图片压缩工具", link: "comp.html" },
-            { title: "UI设计数据生成器", link: "data.html"},
-            { title: "在线PS", link: "PS.html" },
-            { title: "矢量花朵生成器", link: "flower.html" },
-            { title: "城市天际线生成器", link: "city.html" },
+            { title: "AI生成UI界面", link: "../AI-UI.html" },
+            { title: "AI一键抠图", link: "../rembg.html" },
+            { title: "图片对比工具", link: "../diff.html" },
+            { title: "图片压缩工具", link: "../comp.html" },
+            { title: "UI设计数据生成器", link: "../data.html"},
+            { title: "在线PS", link: "../PS.html" },
+            { title: "矢量花朵生成器", link: "../flower.html" },
+            { title: "城市天际线生成器", link: "../city.html" },
         ]
     },
 
@@ -314,22 +314,22 @@ const menuData = [
         title: "轻易AI",
         icon: "fa-solid fa-microchip",
         submenu: [
-	    { title: "AI数字人（免费版）", link: "freeAI.html" },
-	    { title: "AI绘画", link: "draw.html" },
-	    { title: "AI数字人（API版）", link: "AI.html" },
-            { title: "lora训练数据集编辑", link: "model.html" },
-            { title: "AI画风提示词大全", link: "SDXL.html" },
+	    { title: "AI数字人（免费版）", link: "../freeAI.html" },
+	    { title: "AI绘画", link: "../draw.html" },
+	    { title: "AI数字人（API版）", link: "../AI.html" },
+            { title: "lora训练数据集编辑", link: "../model.html" },
+            { title: "AI画风提示词大全", link: "../SDXL.html" },
         ]
     },
     {
         title: "轻易3D",
         icon: "fa-brands fa-codepen",
         submenu: [
-            { title: "HDR编辑器", link: "hdr.html" },
-            { title: "PBR贴图生成", link: "normal.html" },
-            { title: "无缝贴图制作", link: "texture.html" },
-            { title: "无缝贴图预览", link: "map.html" },
-            { title: "ORM贴图合成与拆解", link: "ORM.html" },
+            { title: "HDR编辑器", link: "../hdr.html" },
+            { title: "PBR贴图生成", link: "../normal.html" },
+            { title: "无缝贴图制作", link: "../texture.html" },
+            { title: "无缝贴图预览", link: "../map.html" },
+            { title: "ORM贴图合成与拆解", link: "../ORM.html" },
 
         ]
     },
@@ -337,21 +337,21 @@ const menuData = [
         title: "轻易转换",
         icon: "fa-solid fa-camera-rotate",
         submenu: [
-            { title: "音视频格式转换", link: "video/mp4mp3.html" },
-            { title: "图片格式转换", link: "conver.html" },
-	    { title: "线性颜色转换", link: "color.html" },
-            { title: "BASE64图片转换器", link: "BASE64.html" },
+            { title: "音视频格式转换", link: "mp4mp3.html" },
+            { title: "图片格式转换", link: "../conver.html" },
+	    { title: "线性颜色转换", link: "../color.html" },
+            { title: "BASE64图片转换器", link: "../BASE64.html" },
         ]
     },
     {
         title: "轻易实用",
         icon: "fa-solid fa-swatchbook",
         submenu: [
-            { title: "青艺云广播", link: "radio.html" },
-            { title: "在线视频剪辑", link: "opencut.html" },
-            { title: "在线ikun小游戏", link: "jntm.html" },
-            { title: "朋友圈九宫格制作", link: "9img.html" },
-            { title: "高级翻译工具", link: "translation.html" },
+            { title: "青艺云广播", link: "../radio.html" },
+            { title: "在线视频剪辑", link: "../opencut.html" },
+            { title: "在线ikun小游戏", link: "../jntm.html" },
+            { title: "朋友圈九宫格制作", link: "../9img.html" },
+            { title: "高级翻译工具", link: "../translation.html" },
         ]
     },
 
@@ -378,7 +378,7 @@ function initMenu() {
     let menuHTML = `
         <div class="sidebar-header">
             <div class="logo-icon">
-                <img src="img/gongjuxiang.svg" alt="logo" style="width: 30px;">
+                <img src="../img/gongjuxiang.svg" alt="logo" style="width: 30px;">
             </div>
             <div class="logo-text">青艺设计</div>
         </div>
