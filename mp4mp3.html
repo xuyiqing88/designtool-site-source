@@ -12,7 +12,9 @@
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+  <script src="menu.js" defer></script>
+  <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     
     <style>
         :root {
@@ -45,6 +47,9 @@
         .container {
             width: 1200px;
             margin: 0 auto;
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
         }
 
         header {
@@ -323,9 +328,9 @@
                     <select id="targetFormat">
                         <option value="" selected disabled>请选择输出格式</option>
                         <optgroup label="——视频格式——">
-                            <option value="mp4">MP4</option>
+                            <option value="mp4">MP4 (H.264)</option>
                             <option value="mkv">MKV</option>
-                            <option value="mov">MOV</option>
+                            <option value="mov">MOV (QuickTime)</option>
                             <option value="webm">WebM</option>
                             <option value="avi">AVI</option>
                         </optgroup>
