@@ -347,7 +347,6 @@ const menuData = [
         icon: "fa-solid fa-swatchbook",
         submenu: [
             { title: "青艺云广播", link: "radio.html" },
-            { title: "在线视频剪辑", link: "opencut.html" },
             { title: "在线ikun小游戏", link: "jntm.html" },
             { title: "朋友圈九宫格制作", link: "9img.html" },
             { title: "高级翻译工具", link: "translation.html" },
