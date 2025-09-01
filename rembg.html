@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>AI一键抠图 - 在线免费去除图片背景 | 支持批量抠图</title>
+  <title>AI一键抠图工具 - 在线免费去除图片背景 | 支持批量抠图</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="menu.js" defer></script>
   <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
@@ -39,6 +39,7 @@
       color: var(--text1);
       position: relative;
 	background-color: #f5f7ff;
+
     }
     .download-all-container {
 	text-align: center;
@@ -323,13 +324,20 @@ margin-bottom: 60px;
       position: relative;
     }
     @media (max-width: 768px) {
-	
+	.container {    width: 100%; }
       .panel {
         padding: 16px;
 	width: 100vw;
-	.container {    
-	width: auto;}
       }
+  
+  .results-container {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  
+  .btn {
+    padding: 10px 60px;
+    font-size: 0.9rem;
+  }
 	}  
     @media (min-width: 768px) {
       .results-container {
@@ -339,7 +347,7 @@ margin-bottom: 60px;
         grid-template-columns: 40% 60%;
         align-items: stretch;
       }
-
+	.container { width: auto;}
     }
     .result-item {
       display: flex;
