@@ -329,6 +329,7 @@ const menuData = [
             { title: "HDR编辑器", link: "../hdr.html" },
             { title: "PBR贴图生成", link: "../normal.html" },
             { title: "无缝贴图制作", link: "../texture.html" },
+            { title: "AI生成无缝贴图", link: "../aimap.html" },
             { title: "无缝贴图预览", link: "../map.html" },
             { title: "ORM贴图合成与拆解", link: "../ORM.html" },
 
