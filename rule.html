@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <script src="menu.js" defer></script>
+    <title>AI生成无缝贴图-ComfyUI一键生成</title>
+    <style>
+        :root {
+            --main-color: #5a64ff;
+            --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
+            --text1: #1a1d2e;
+            --text2: #4a4e6d;
+            --text3: #8d8fa3;
+            --bg-light: #f8f9ff;
+            --border: #e1e4f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7ff;
+            color: var(--text2);
+            line-height: 1.6;
+            padding: 10px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        header {	
+            width: 1200px;
+            padding: 20px 10px;   
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: auto;
+        }
+
+        h1 {
+            color: var(--text1);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .date {
+            color: var(--text3);
+            font-size: 0.9rem;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .main-content {
+            flex: 3;
+            min-width: 300px;
+            padding: 30px 40px;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .download-section {
+            flex: 1;
+            min-width: 250px;
+            border-radius: 10px;
+            background: #fff;
+            padding: 20px;
+        }
+
+        h2 {
+            color: var(--text1);
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        h3 {
+            color: var(--text1);
+            margin: 25px 0 15px;
+            font-size: 1.4rem;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        .feature-list {
+            list-style-type: none;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 16px;
+        }
+
+        .image-placeholder {
+            background: linear-gradient(45deg, #e6e9ff, #f0f2ff);
+            border-radius: 8px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            font-style: italic;
+            overflow: hidden;
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* 视频容器样式 */
+        .video-container {
+            margin: 25px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .video-title {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text1);
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .download-card {
+            background: white;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .download-card:hover {
+            box-shadow: 0px 5px 10px #0000000f;
+        }
+        
+        .download-card h3 {
+            margin-top: 0;
+            color: var(--text1);
+        }
+
+        .download-btn {
+            background: var(--btcolor);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: auto;
+        }
+
+        .download-btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 5px 15px rgba(90, 100, 255, 0.3);
+        }
+
+        .version-info {
+            color: var(--text3);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .system-req {
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text3);
+        }
+
+        .system-req h3 {
+            margin-top: 0;
+            color: var(--main-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text3);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0;
+            }
+            
+            header {
+                width: auto;
+                flex-direction: column;
+            }
+            
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .main-content {
+                padding: 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            /* 移动端视频适配 */
+            .video-container iframe {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI生成无缝贴图</h1>
+        <div class="date">更新日期: 2025年09月02日</div>
+    </header>
+    
+    <div class="container">        
+        <div class="content-wrapper">
+            <div class="main-content">
+                <p><h2>一、ComfyUI-无缝贴图一键生成</h2></p>
+                <p>此工作流可以与AI<strong>「无缝贴图素材修复」</strong>工作流配合使用（第二部分介绍），它可以一键生成无缝贴图，只需输入想要的材质描述（英文），工作流即可生成无缝贴图，生成过程中AI自动拼接并修复缝隙。也可生成法线图和深度图，用于3D模型贴图创作（工作流和模型点击右侧按钮下载）。注意事项：</p>
+
+                <ul class="feature-list">
+                    <li>1.模型默认使用lightning 8步大模型，可以自行修改（也可以是flux或其他大模型），模型修改后记得修改相应的采样和步数；</li>
+                    <li>2.新版本更新了对法线、深度图、曲率图的支持，修复了之前生成法线图不是无缝的bug（通过插件实现），需要用到的插件4个：<span style="color: rgb(231, 95, 51);"><strong>external tooling、效率节点、CR节点、mtb插件</strong></span>（插件需要安装模型，下载地址见右侧）；</li>
+                </ul>
+                
+                <div class="image-placeholder">
+                    <img src="img/无缝生成.webp" alt="软件界面展示">
+                </div>
+                
+                <!-- 添加B站视频 -->
+                <div class="video-container">
+                    <iframe src="//player.bilibili.com/player.html?aid=YOUR_VIDEO_AID&bvid=YOUR_BVID&cid=YOUR_CID&page=1" 
+                            scrolling="no" 
+                            frameborder="no" 
+                            framespacing="0" 
+                            allowfullscreen="true">
+                    </iframe>
+                    <div class="video-title">ComfyUI无缝贴图生成教程</div>
+                </div>
+
+                <p><h2>二、ComfyUI-无缝贴图素材修复</h2></p>
+                <p>此工作流可以与AI<strong>「无缝贴图一键生成」</strong>工作流（第一部分介绍）配合使用。它可以一键把网上随便下载的素材修复成无缝贴图，只需上传你现有的素材（尺寸最好大点，比例无所谓，AI会自动裁剪），工作流即可进行无缝修复，关键词输入非必需。生成的过程中AI会模仿原图的风格，此处会用到IPadapter插件。也可生成法线图和深度图，用于3D模型贴图创作（工作流和模型点击右侧按钮下载）。注意事项：</p>
+
+                <ul class="feature-list">
+                    <li>1.模型默认使用lightning 8步大模型，可以自行修改（也可以是flux或其他大模型），模型修改后记得修改相应的采样和步数；</li>
+                    <li>2.新版本更新了对法线、深度图、曲率图的支持，修复了之前生成法线图不是无缝的bug（通过插件实现），需要用到的插件4个：<span style="color: rgb(231, 95, 51);"><strong>external tooling、效率节点、CR节点、IPadapter插件</strong></span>（需要下载对应模型）、 mtb插件（插件需要安装模型，下载地址见右侧）；</li>
+                </ul>
+                
+                <div class="image-placeholder">
+                    <img src="img/无缝修复.webp" alt="软件界面展示">
+                </div>
+                
+                <!-- 添加B站视频 -->
+                <div class="video-container">
+                    <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=315277413&bvid=BV1gP411i7zw&cid=1178609401&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+                    <div class="video-title">ComfyUI无缝贴图修复教程</div>
+                </div>
+            </div>
+            
+            <div class="download-section">
+                <div class="system-req">
+                    <h3>下载地址</h3>
+                    <p>工作流版权所有</p>
+                </div>
+                <div class="download-card">
+                    <div class="logo">
+                        <h2>Comfyui通用下载地址</h2>
+                    </div>
+                    <p>支持Windows+Mac系统</p>
+                    <a class="download-btn" href="https://pan.quark.cn/s/6890059cd647" target="_blank">立即下载</a>
+                </div>
+                
+                <!-- 添加视频下载卡片 -->
+                <div class="download-card">
+                    <div class="logo">
+                        <h2>教程视频下载</h2>
+                    </div>
+                    <p>高清视频教程离线观看</p>
+                    <a class="download-btn" href="#" target="_blank">下载视频</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            © 2025 designtool.site 保留所有权利 | 
+            <a href="https://cloud.umami.is/share/0HTJCNc5eh5ILEs7/designtool.site" target="_blank" rel="noopener" class="footer-link" style="color: var(--gray); text-decoration: none;">
+                <i class="fas fa-chart-bar"></i> 网站统计
+            </a>
+        </footer>
+    </div>
+</body>
+</html>
