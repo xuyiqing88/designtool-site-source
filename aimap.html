@@ -32,6 +32,29 @@
             line-height: 1.6;
             padding: 10px;
         }
+        /* 视频容器样式 */
+        .video-container {
+            margin: 25px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .video-title {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text1);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
 	.logo {
 	display: flex;
     align-items: center;
@@ -224,6 +247,15 @@
     <div class="container">        
         <div class="content-wrapper">
             <div class="main-content">
+                <!-- 添加B站视频 -->
+                <div class="video-container">
+                    <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=315277413&bvid=BV1gP411i7zw&cid=1178609401&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+                    <div class="video-title">C4D测量工具免费下载</div>
+                </div>
+                                
+                <div class="image-placeholder">
+                    <img src="img/rule.webp" alt="软件界面展示">
+                </div>
                 <p><h2>一、ComfyUI-无缝贴图一键生成</h2> </p>
 	<p>此工作流可以与AI<strong>“无缝贴图素材修复”</strong>工作流配合使用（第二部分介绍），它可以一键生成无缝贴图，只需输入想要的材质描述（英文），工作流即可生成无缝贴图，生成过程中AI自动拼接并修复缝隙。也可生成法线图和深度图，用于3D模型贴图创作（工作流和模型点击右侧按钮下载）。注意事项： </p>
 
