@@ -467,8 +467,10 @@ body {
 	top: 10px;
         left: 10px;
     }
-	.titleh1 {font-size: 1.5rem;
-    margin-bottom: 0;}
+	.video-container iframe {height: auto;}
+	.titleh1 {
+		font-size: 1.5rem;
+    		margin-bottom: 0;}
 	.topheader {    width: auto; flex-direction: column; gap: 10px;}
         .content-wrapper {
            flex-direction: column;
