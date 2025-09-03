@@ -294,7 +294,7 @@ body {
 
         .titleh1 {
             color: var(--text1);
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 10px;
 	font-weight: 600;
         }
@@ -469,7 +469,6 @@ body {
     }
 	.video-container iframe {height: auto;}
 	.titleh1 {
-		font-size: 1.8rem;
     		margin-bottom: 0;}
 	.topheader {    width: auto; flex-direction: column; gap: 10px;}
         .content-wrapper {
