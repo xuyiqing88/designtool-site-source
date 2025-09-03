@@ -332,7 +332,7 @@ const menuData = [
             { title: "AI生成无缝贴图", link: "../aimap.html" },
             { title: "无缝贴图预览", link: "../map.html" },
             { title: "ORM贴图合成与拆解", link: "../ORM.html" },
-            { title: "C4D地板预设下载", link: "../weaving.html" },
+            { title: "C4D地板预设下载", link: "../floor.html" },
             { title: "C4D测量工具下载", link: "../c4drule.html" },
             { title: "C4D编织预设下载", link: "../weaving.html" },
 
