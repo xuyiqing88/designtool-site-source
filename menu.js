@@ -248,6 +248,197 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     display: none;
 }
+        /* 视频容器样式 */
+        .video-container {
+            margin: 25px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .video-title {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text1);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+	.downlogo {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;}
+        .container1 {
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+	    line-height: 1.6;
+        }
+
+        .topheader {	
+    		width: 1200px;
+            padding: 20px 10px;   
+    	display: flex;
+    	align-items: center;
+    	gap: 10px;
+	 margin: auto;
+        }
+
+        .titleh1 {
+            color: var(--text1);
+            font-size: 2rem;
+            margin-bottom: 10px;
+	font-weight: 600;
+        }
+
+        .date {
+            color: var(--text3);
+            font-size: 0.9rem;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+	gap: 20px;
+        }
+
+        .main-content1 {
+            flex: 3;
+            min-width: 300px;
+            padding: 30px 40px;
+            border-radius: 10px;
+    		background: #fff;
+        }
+
+        .download-section {
+            flex: 1;
+            min-width: 310px;
+    border-radius: 10px;
+	background: #fff;
+	padding: 20px;
+        }
+
+        h2 {
+            color: var(--text1);
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        h3 {
+            color: var(--text1);
+            margin: 25px 0 15px;
+            font-size: 1.4rem;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        .feature-list {
+            list-style-type: none;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+	font-size: 16px;
+        }
+
+
+        .image-placeholder {
+            background: linear-gradient(45deg, #e6e9ff, #f0f2ff);
+            border-radius: 8px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            font-style: italic;
+            overflow: hidden;
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .download-card {
+            background: white;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+	    border: 1px solid var(--border);
+        }
+	.download-card:hover {box-shadow: 0px 5px 10px #0000000f;}
+        .download-card h3 {
+            margin-top: 0;
+            color: var(--text1);
+        }
+
+        .download-btn {
+            background: var(--btcolor);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            width: 100%;
+	    display: flex;
+    justify-content: center;
+    align-items: center;
+	text-decoration: auto;
+        }
+
+        .download-btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 5px 15px rgba(90, 100, 255, 0.3);
+        }
+
+        .version-info {
+            color: var(--text3);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .system-req {
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	color: var(--text3);
+        }
+
+        .system-req h3 {
+            margin-top: 0;
+            color: var(--main-color);
+        }
+
+        .btfooter {
+            text-align: center;
+            padding: 25px;
+            color: var(--text3);
+            font-size: 0.9rem;
+        }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
@@ -277,6 +468,18 @@ body {
 	top: 10px;
         left: 10px;
     }
+	.titleh1 {font-size: 1.5rem;
+    margin-bottom: 0;}
+	header {    width: auto; flex-direction: column;}
+        .content-wrapper {
+           flex-direction: column;
+            }
+            
+       .main-content1 {
+	padding: 20px ;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+            }
 }
 `;
 document.head.appendChild(menuStyles);
