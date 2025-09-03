@@ -349,7 +349,6 @@ body {
 
         .feature-list li {
             margin-bottom: 12px;
-            padding-left: 25px;
             position: relative;
 	font-size: 16px;
         }
