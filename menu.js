@@ -253,7 +253,7 @@ body {
             margin: 25px 0;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
         }
 
         .video-container iframe {
@@ -453,7 +453,6 @@ body {
     #global-sidebar:hover {
         width: var(--sidebar-expanded-width);
     }
-    
     .content {
         margin-left: 0;
     }
@@ -470,7 +469,7 @@ body {
     }
 	.titleh1 {font-size: 1.5rem;
     margin-bottom: 0;}
-	header {    width: auto; flex-direction: column;}
+	.topheader {    width: auto; flex-direction: column;}
         .content-wrapper {
            flex-direction: column;
             }
