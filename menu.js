@@ -469,7 +469,7 @@ body {
     }
 	.video-container iframe {height: auto;}
 	.titleh1 {
-		font-size: 1.5rem;
+		font-size: 1.8rem;
     		margin-bottom: 0;}
 	.topheader {    width: auto; flex-direction: column; gap: 10px;}
         .content-wrapper {
