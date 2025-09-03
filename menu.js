@@ -288,7 +288,7 @@ body {
             padding: 20px 10px;   
     	display: flex;
     	align-items: center;
-    	gap: 10px;
+    	gap: 20px;
 	 margin: auto;
         }
 
@@ -469,7 +469,7 @@ body {
     }
 	.titleh1 {font-size: 1.5rem;
     margin-bottom: 0;}
-	.topheader {    width: auto; flex-direction: column;}
+	.topheader {    width: auto; flex-direction: column; gap: 10px;}
         .content-wrapper {
            flex-direction: column;
             }
