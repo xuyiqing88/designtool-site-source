@@ -3,409 +3,552 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 图像放大工具</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
-    <!-- 使用正确的 UpscalerJS CDN 链接 -->
-    <script src="https://cdn.jsdelivr.net/npm/upscaler@1.0.0-beta.21/dist/umd/upscaler.min.js"></script>
+    <title>AI图像放大工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/upscaler@0.12.0/dist/upscaler.min.js"></script>
+    <style>
+        :root {
+            --main-color: #5a64ff;
+            --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
+            --text1: #1a1d2e;
+            --text2: #4a4e6d;
+            --text3: #8d8fa3;
+            --bg-light: #f8f9ff;
+            --border: #e1e4f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7ff;
+            color: var(--text1);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--btcolor);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+        }
+
+        .upload-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+
+        .preview-section {
+            flex: 1.5;
+            min-width: 400px;
+            padding: 20px;
+        }
+
+        .upload-box {
+            background: var(--bg-light);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .upload-box:hover {
+            border-color: var(--main-color);
+            background: rgba(90, 100, 255, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--main-color);
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: var(--text2);
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: var(--btcolor);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(90, 100, 255, 0.3);
+        }
+
+        .btn:disabled {
+            background: var(--text3);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .options-panel {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .option-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text2);
+            font-weight: 500;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--text1);
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .preview-box {
+            flex: 1;
+            min-width: 250px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .preview-title {
+            color: var(--text2);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 250px;
+            background-color: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .image-info {
+            margin-top: 10px;
+            color: var(--text3);
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid rgba(90, 100, 255, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid var(--main-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text3);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .error-message {
+            color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .success-message {
+            color: #2ed573;
+            background: rgba(46, 213, 115, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .preview-container {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
-<style>
-:root {
-    --main-color: #5a64ff;
-    --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
-    --text1: #1a1d2e;
-    --text2: #4a4e6d;
-    --text3: #8d8fa3;
-    --bg-light: #f8f9ff;
-    --border: #e1e4f9;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--bg-light);
-    color: var(--text2);
-    margin: 0;
-    padding: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-.container {
-    width: 100%;
-    max-width: 900px;
-    background-color: white;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(90, 100, 255, 0.1);
-    border: 1px solid var(--border);
-    padding: 2rem 2.5rem;
-    box-sizing: border-box;
-}
-
-header {
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-header h1 {
-    color: var(--text1);
-    font-size: 2rem;
-    margin: 0 0 0.5rem 0;
-}
-
-header p {
-    color: var(--text3);
-    font-size: 1rem;
-    margin: 0;
-}
-
-.upload-section {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-#upload-button {
-    background: var(--btcolor);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-#upload-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 115, 255, 0.3);
-}
-
-.file-info {
-    margin-top: 1rem;
-    color: var(--text3);
-    height: 1.2em;
-}
-
-.image-display {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.image-box {
-    border: 2px dashed var(--border);
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    min-height: 250px;
-}
-
-.image-box h3 {
-    color: var(--text1);
-    margin: 0 0 1rem 0;
-    font-weight: 600;
-}
-
-.image-box img {
-    max-width: 100%;
-    max-height: 300px;
-    object-fit: contain;
-    border-radius: 8px;
-    display: none; /* Initially hidden */
-}
-
-.placeholder {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: var(--text3);
-}
-
-.loader {
-    border: 4px solid var(--border);
-    border-top: 4px solid var(--main-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.button {
-    background: var(--btcolor);
-    color: white;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-decoration: none;
-    display: block;
-    width: fit-content;
-    margin: 1rem auto 0;
-}
-
-.button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 115, 255, 0.3);
-}
-
-.button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-}
-
-.error-message {
-    color: #ff4757;
-    margin-top: 1rem;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .image-display {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
 <body>
     <div class="container">
         <header>
-            <h1>AI 图像放大工具</h1>
-            <p>使用浏览器内置的 AI 模型，将您的图片分辨率提升 2-4 倍。</p>
+            <h1>AI图像放大工具</h1>
+            <p class="subtitle">使用先进的AI技术放大图像，保持清晰度和细节</p>
         </header>
-        
-        <main>
+
+        <div class="main-content">
             <div class="upload-section">
-                <input type="file" id="image-input" accept="image/*" hidden>
-                <button id="upload-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                    <span>选择图片</span>
-                </button>
-                <p id="file-name" class="file-info"></p>
-                <p id="error-message" class="error-message"></p>
+                <div class="upload-box" id="dropArea">
+                    <div class="upload-icon">📁</div>
+                    <p class="upload-text">拖放图像到这里或点击上传</p>
+                    <button class="btn" id="uploadBtn">选择图像</button>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+
+                <div class="options-panel">
+                    <div class="option-group">
+                        <label for="modelSelect">AI模型</label>
+                        <select id="modelSelect">
+                            <option value="default">默认模型 (平衡质量和速度)</option>
+                            <option value="esrgan-small">ESRGAN小型 (较快处理)</option>
+                            <option value="esrgan-medium">ESRGAN中型 (平衡质量)</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="scaleSelect">放大倍数</label>
+                        <select id="scaleSelect">
+                            <option value="2">2倍</option>
+                            <option value="3">3倍</option>
+                            <option value="4">4倍</option>
+                        </select>
+                    </div>
+
+                    <button class="btn" id="upscaleBtn" disabled>放大图像</button>
+                </div>
             </div>
 
-            <div class="image-display">
-                <div class="image-box" id="original-image-box">
-                    <h3>原图</h3>
-                    <img id="original-image" src="" alt="Original Image">
-                    <div id="original-placeholder" class="placeholder">
-                        <p>原图将显示在这里</p>
-                    </div>
-                </div>
-                <div class="image-box" id="upscaled-image-box">
-                    <h3>放大后 (2x)</h3>
-                    <div id="upscaled-placeholder" class="placeholder">
-                        <div class="loader" id="loader" style="display: none;"></div>
-                        <p id="status-text">处理完成后结果将显示在此</p>
-                    </div>
-                    <img id="upscaled-image" src="" alt="Upscaled Image">
-                    <a id="download-link" href="#" download="upscaled_image.png" class="button" style="display: none;">下载图片</a>
-                </div>
-            </div>
-
-            <button id="upscale-button" class="button main-button" disabled>开始放大</button>
-        </main>
-    </div>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    // 获取 DOM 元素
-    const imageInput = document.getElementById('image-input');
-    const uploadButton = document.getElementById('upload-button');
-    const fileNameDisplay = document.getElementById('file-name');
-    const errorMessage = document.getElementById('error-message');
-    const originalImage = document.getElementById('original-image');
-    const originalPlaceholder = document.getElementById('original-placeholder');
-    const upscaledImage = document.getElementById('upscaled-image');
-    const upscaledPlaceholder = document.getElementById('upscaled-placeholder');
-    const upscaleButton = document.getElementById('upscale-button');
-    const downloadLink = document.getElementById('download-link');
-    const loader = document.getElementById('loader');
-    const statusText = document.getElementById('status-text');
-    
-    let selectedFile = null;
-    let upscaler = null;
-
-    // 清除错误信息
-    function clearError() {
-        errorMessage.textContent = '';
-    }
-
-    // 显示错误信息
-    function showError(message) {
-        errorMessage.textContent = message;
-    }
-
-    // 初始化 UpscalerJS
-    async function initializeUpscaler() {
-        try {
-            statusText.textContent = '正在加载 AI 模型...';
-            loader.style.display = 'block';
-            
-            // 使用可用的模型
-            upscaler = new Upscaler({
-                model: 'div2k/rdn-C3-D10-G64-G064-x2' // 使用可用的模型
-            });
-            
-            // 等待模型预热
-            await upscaler.warmup([{ patchSize: 32, padding: 4 }]);
-            
-            loader.style.display = 'none';
-            statusText.textContent = 'AI 模型已加载，请上传图片';
-            console.log('UpscalerJS 初始化成功');
-            
-        } catch (error) {
-            console.error('初始化 UpscalerJS 时出错:', error);
-            showError('AI 模型加载失败: ' + error.message);
-            statusText.textContent = '模型加载失败，请刷新页面重试';
-            loader.style.display = 'none';
-        }
-    }
-
-    // 初始化应用
-    try {
-        // 检查 TensorFlow.js 和 Upscaler 是否已加载
-        if (typeof tf === 'undefined') {
-            throw new Error('TensorFlow.js 未正确加载');
-        }
-        
-        if (typeof Upscaler === 'undefined') {
-            throw new Error('UpscalerJS 未正确加载');
-        }
-        
-        // 初始化 Upscaler
-        await initializeUpscaler();
-        
-    } catch (error) {
-        console.error('初始化失败:', error);
-        showError('初始化失败: ' + error.message + '。请检查网络连接并刷新页面。');
-        upscaleButton.disabled = true;
-        return;
-    }
-
-    // 触发文件选择
-    uploadButton.addEventListener('click', () => {
-        clearError();
-        imageInput.click();
-    });
-
-    // 当用户选择文件后
-    imageInput.addEventListener('change', (event) => {
-        clearError();
-        const file = event.target.files[0];
-        
-        if (!file) return;
-        
-        // 检查文件类型
-        if (!file.type.match('image.*')) {
-            showError('请选择图像文件 (JPEG, PNG, GIF 等)');
-            return;
-        }
-        
-        // 检查文件大小 (限制为5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            showError('图像文件太大，请选择小于5MB的文件');
-            return;
-        }
-        
-        selectedFile = file;
-        fileNameDisplay.textContent = file.name;
-        
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            originalImage.src = e.target.result;
-            originalImage.onload = () => {
-                originalImage.style.display = 'block';
-                originalPlaceholder.style.display = 'none';
-                upscaleButton.disabled = false;
+            <div class="preview-section">
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
                 
-                // 重置放大后的状态
-                upscaledImage.src = '';
-                upscaledImage.style.display = 'none';
-                downloadLink.style.display = 'none';
-                upscaledPlaceholder.style.display = 'flex';
-                statusText.textContent = '点击"开始放大"按钮处理图片';
-            };
-        };
-        
-        reader.onerror = () => {
-            showError('读取文件时出错，请重试');
-        };
-        
-        reader.readAsDataURL(file);
-    });
+                <div class="preview-container">
+                    <div class="preview-box">
+                        <h3 class="preview-title">原始图像</h3>
+                        <div class="image-preview" id="originalPreview">
+                            <span style="color: var(--text3);">图像预览</span>
+                        </div>
+                        <div class="image-info" id="originalInfo"></div>
+                    </div>
 
-    // 点击放大按钮
-    upscaleButton.addEventListener('click', async () => {
-        if (!selectedFile) {
-            showError('请先选择一张图片！');
-            return;
-        }
+                    <div class="preview-box">
+                        <h3 class="preview-title">放大图像</h3>
+                        <div class="image-preview" id="upscaledPreview">
+                            <span style="color: var(--text3);">放大后将显示在这里</span>
+                        </div>
+                        <div class="image-info" id="upscaledInfo"></div>
+                    </div>
+                </div>
 
-        if (!upscaler) {
-            showError('AI 模型未正确初始化，请刷新页面重试');
-            return;
-        }
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>AI正在处理图像，请稍候...</p>
+                    <p>处理时间取决于图像大小和放大倍数</p>
+                </div>
 
-        // 开始处理，显示加载动画
-        clearError();
-        upscaleButton.disabled = true;
-        upscaleButton.textContent = '正在处理中...';
-        loader.style.display = 'block';
-        statusText.textContent = 'AI 正在努力放大图片，请稍候...';
-        upscaledPlaceholder.style.display = 'flex';
-        upscaledImage.style.display = 'none';
-        downloadLink.style.display = 'none';
+                <div class="action-buttons">
+                    <button class="btn" id="downloadBtn" disabled>下载放大图像</button>
+                    <button class="btn" id="resetBtn">重置</button>
+                </div>
+            </div>
+        </div>
 
-        try {
-            // 使用 UpscalerJS 进行放大
-            const upscaledSrc = await upscaler.upscale(originalImage, {
-                output: 'base64', // 输出 base64 格式
-                patchSize: 64,
-                padding: 4,
-                scale: 2 // 放大倍数
+        <footer>
+            <p>基于 UpscalerJS 技术 | 使用AI技术提升图像质量</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const dropArea = document.getElementById('dropArea');
+            const upscaleBtn = document.getElementById('upscaleBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const originalPreview = document.getElementById('originalPreview');
+            const upscaledPreview = document.getElementById('upscaledPreview');
+            const originalInfo = document.getElementById('originalInfo');
+            const upscaledInfo = document.getElementById('upscaledInfo');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            let originalImage = null;
+            let upscaledImage = null;
+            let upscaler = null;
+
+            // 初始化 UpscalerJS
+            function initUpscaler() {
+                try {
+                    if (typeof Upscaler === 'undefined') {
+                        throw new Error('UpscalerJS库加载失败，请检查网络连接');
+                    }
+                    
+                    upscaler = new Upscaler();
+                    console.log('UpscalerJS初始化成功');
+                    showSuccess('AI引擎初始化成功，可以开始处理图像');
+                } catch (error) {
+                    console.error('UpscalerJS初始化失败:', error);
+                    showError('AI引擎初始化失败: ' + error.message);
+                }
+            }
+
+            // 显示错误消息
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+            }
+
+            // 显示成功消息
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+
+            // 隐藏所有消息
+            function hideMessages() {
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+            }
+
+            // 上传按钮点击事件
+            uploadBtn.addEventListener('click', () => {
+                fileInput.click();
             });
-            
-            // 显示结果
-            upscaledImage.src = upscaledSrc;
-            upscaledImage.style.display = 'block';
-            upscaledPlaceholder.style.display = 'none';
-            downloadLink.href = upscaledSrc;
-            downloadLink.style.display = 'block';
-            
-        } catch (error) {
-            console.error('放大图片时出错:', error);
-            showError('处理失败: ' + error.message);
-            statusText.textContent = '处理失败，请尝试其他图片';
-        } finally {
-            // 恢复按钮状态
-            upscaleButton.disabled = false;
-            upscaleButton.textContent = '开始放大';
-            loader.style.display = 'none';
-        }
-    });
-});
-</script>
 
+            // 文件选择事件
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // 拖放事件
+            dropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropArea.style.borderColor = 'var(--main-color)';
+                dropArea.style.backgroundColor = 'rgba(90, 100, 255, 0.1)';
+            });
+
+            dropArea.addEventListener('dragleave', () => {
+                dropArea.style.borderColor = 'var(--border)';
+                dropArea.style.backgroundColor = 'var(--bg-light)';
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropArea.style.borderColor = 'var(--border)';
+                dropArea.style.backgroundColor = 'var(--bg-light)';
+                
+                if (e.dataTransfer.files.length) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            // 放大按钮点击事件
+            upscaleBtn.addEventListener('click', async () => {
+                if (!originalImage || !upscaler) return;
+                
+                const scaleFactor = parseInt(document.getElementById('scaleSelect').value);
+                const modelType = document.getElementById('modelSelect').value;
+                
+                loadingIndicator.style.display = 'block';
+                upscaleBtn.disabled = true;
+                hideMessages();
+                
+                try {
+                    // 使用 UpscalerJS 进行图像放大
+                    const startTime = Date.now();
+                    upscaledImage = await upscaler.upscale(originalImage, {
+                        scale: scaleFactor,
+                        model: modelType
+                    });
+                    
+                    const processTime = ((Date.now() - startTime) / 1000).toFixed(1);
+                    
+                    // 显示放大后的图像
+                    const upscaledImg = document.createElement('img');
+                    upscaledImg.src = upscaledImage;
+                    upscaledPreview.innerHTML = '';
+                    upscaledPreview.appendChild(upscaledImg);
+                    
+                    // 更新图像信息
+                    upscaledImg.onload = () => {
+                        upscaledInfo.textContent = `尺寸: ${upscaledImg.naturalWidth} × ${upscaledImg.naturalHeight} | 放大: ${scaleFactor}倍 | 处理时间: ${processTime}秒`;
+                    };
+                    
+                    // 启用下载按钮
+                    downloadBtn.disabled = false;
+                    
+                    showSuccess(`图像放大成功！处理时间: ${processTime}秒`);
+                } catch (error) {
+                    console.error('图像放大失败:', error);
+                    showError('图像放大失败: ' + error.message);
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                    upscaleBtn.disabled = false;
+                }
+            });
+
+            // 下载按钮点击事件
+            downloadBtn.addEventListener('click', () => {
+                if (!upscaledImage) return;
+                
+                const a = document.createElement('a');
+                a.href = upscaledImage;
+                a.download = 'upscaled-image.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+
+            // 重置按钮点击事件
+            resetBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                originalPreview.innerHTML = '<span style="color: var(--text3);">图像预览</span>';
+                upscaledPreview.innerHTML = '<span style="color: var(--text3);">放大后将显示在这里</span>';
+                originalInfo.textContent = '';
+                upscaledInfo.textContent = '';
+                upscaleBtn.disabled = true;
+                downloadBtn.disabled = true;
+                originalImage = null;
+                upscaledImage = null;
+                hideMessages();
+            });
+
+            function handleFileSelect(e) {
+                if (e.target.files.length) {
+                    handleFile(e.target.files[0]);
+                }
+            }
+
+            function handleFile(file) {
+                if (!file.type.match('image.*')) {
+                    showError('请选择图像文件（JPEG、PNG等）！');
+                    return;
+                }
+
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('图像文件大小不能超过10MB！');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    originalImage = new Image();
+                    originalImage.onload = function() {
+                        // 显示原始图像
+                        originalPreview.innerHTML = '';
+                        originalPreview.appendChild(originalImage);
+                        
+                        // 显示原始图像信息
+                        originalInfo.textContent = `尺寸: ${originalImage.naturalWidth} × ${originalImage.naturalHeight} | 格式: ${file.type} | 大小: ${(file.size/1024/1024).toFixed(2)}MB`;
+                        
+                        // 启用放大按钮
+                        upscaleBtn.disabled = false;
+                        
+                        // 重置放大图像区域
+                        upscaledPreview.innerHTML = '<span style="color: var(--text3);">放大后将显示在这里</span>';
+                        upscaledInfo.textContent = '';
+                        downloadBtn.disabled = true;
+                        
+                        hideMessages();
+                    };
+                    originalImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // 初始化应用
+            initUpscaler();
+        });
+    </script>
 </body>
 </html>
