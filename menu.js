@@ -332,10 +332,11 @@ body {
             font-size: 18px;
         }
 
-        h3 {
-            color: var(--text1);
-            margin: 25px 0 15px;
+        .downh3 {
+            color: var(--main-color);
+            margin: 0 0 15px;
             font-size: 1.4rem;
+	font-weight: 600;
         }
 
         p {
