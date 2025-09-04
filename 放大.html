@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI图像放大工具</title>
+    <!-- 使用多个CDN链接以提高可靠性 -->
     <script src="https://cdn.jsdelivr.net/npm/upscaler@0.12.0/dist/upscaler.min.js"></script>
     <style>
         :root {
@@ -256,6 +257,12 @@
             display: none;
         }
 
+        .lib-loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text2);
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 flex-direction: column;
@@ -310,6 +317,11 @@
                 <div class="error-message" id="errorMessage"></div>
                 <div class="success-message" id="successMessage"></div>
                 
+                <div class="lib-loading" id="libLoading">
+                    <p>正在加载AI引擎，请稍候...</p>
+                    <div class="spinner"></div>
+                </div>
+                
                 <div class="preview-container">
                     <div class="preview-box">
                         <h3 class="preview-title">原始图像</h3>
@@ -361,24 +373,53 @@
             const loadingIndicator = document.getElementById('loadingIndicator');
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
+            const libLoading = document.getElementById('libLoading');
             
             let originalImage = null;
             let upscaledImage = null;
             let upscaler = null;
 
+            // 尝试加载UpscalerJS库
+            function loadUpscalerLibrary() {
+                // 检查是否已经加载
+                if (typeof Upscaler !== 'undefined') {
+                    initUpscaler();
+                    return;
+                }
+
+                // 设置超时时间
+                const loadTimeout = setTimeout(() => {
+                    if (typeof Upscaler === 'undefined') {
+                        showError('AI引擎加载超时，请刷新页面重试或检查网络连接');
+                        libLoading.style.display = 'none';
+                    }
+                }, 10000);
+
+                // 监听脚本加载
+                const checkLibrary = setInterval(() => {
+                    if (typeof Upscaler !== 'undefined') {
+                        clearInterval(checkLibrary);
+                        clearTimeout(loadTimeout);
+                        initUpscaler();
+                    }
+                }, 100);
+            }
+
             // 初始化 UpscalerJS
             function initUpscaler() {
                 try {
                     if (typeof Upscaler === 'undefined') {
-                        throw new Error('UpscalerJS库加载失败，请检查网络连接');
+                        throw new Error('UpscalerJS库加载失败');
                     }
                     
                     upscaler = new Upscaler();
                     console.log('UpscalerJS初始化成功');
+                    libLoading.style.display = 'none';
                     showSuccess('AI引擎初始化成功，可以开始处理图像');
                 } catch (error) {
                     console.error('UpscalerJS初始化失败:', error);
-                    showError('AI引擎初始化失败: ' + error.message);
+                    showError('AI引擎初始化失败: ' + error.message + '。请刷新页面重试。');
+                    libLoading.style.display = 'none';
                 }
             }
 
@@ -446,7 +487,7 @@
                 try {
                     // 使用 UpscalerJS 进行图像放大
                     const startTime = Date.now();
-                    upscaledImage = await upscaler.upscale(originalImage, {
+                    upscaledImage = await upscaler.upscale(originalImage.src, {
                         scale: scaleFactor,
                         model: modelType
                     });
@@ -546,8 +587,8 @@
                 reader.readAsDataURL(file);
             }
 
-            // 初始化应用
-            initUpscaler();
+            // 初始化应用 - 加载UpscalerJS库
+            loadUpscalerLibrary();
         });
     </script>
 </body>
