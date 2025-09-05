@@ -714,34 +714,52 @@
             const args = ['-i', file.name];
             
             // 视频相关参数
-            if(isVideoOutput) {
-                const resolution = videoResolutionSelect.value;
-                if(resolution !== "-1") {
-                    args.push('-vf', `scale=-2:${resolution}`);
-                }
-                // 为webm使用不同的视频编码器
-                const videoCodec = targetFormat === 'webm' ? 'libvpx' : 'libx264';
-                args.push('-c:v', videoCodec, '-crf', qualitySlider.value);
-            }
+if(isVideoOutput) {
+    const resolution = videoResolutionSelect.value;
+    if(resolution !== "-1") {
+        args.push('-vf', `scale=-2:${resolution}`);
+    }
+    
+    // 为webm使用VP9编码器，其他格式使用H.264
+    let videoCodec, videoParams;
+    if (targetFormat === 'webm') {
+        videoCodec = 'libvpx-vp9';
+        // WebM使用不同的质量参数
+        args.push('-b:v', '0', '-crf', qualitySlider.value, '-deadline', 'good');
+    } else {
+        videoCodec = 'libx264';
+        args.push('-crf', qualitySlider.value);
+        // 添加H.264预设以提高兼容性
+        args.push('-preset', 'medium');
+    }
+    args.push('-c:v', videoCodec);
+}
 
             // --- 修改点 3: 动态选择音频编码器 ---
             const audioBitrate = audioBitrateSelect.value;
-            let audioCodec = 'aac'; // 默认 AAC
-            switch(targetFormat) {
-                case 'mp3':
-                    audioCodec = 'libmp3lame';
-                    break;
-                case 'ogg':
-                    audioCodec = 'libopus';
-                    break;
-                case 'flac':
-                    audioCodec = 'flac';
-                    break;
-                case 'wav':
-                    audioCodec = 'pcm_s16le';
-                    break;
-            }
-            args.push('-c:a', audioCodec);
+let audioCodec = 'aac'; // 默认AAC
+switch(targetFormat) {
+    case 'mp3':
+        audioCodec = 'libmp3lame';
+        break;
+    case 'ogg':
+    case 'webm': // WebM使用Opus音频编码
+        audioCodec = 'libopus';
+        break;
+    case 'flac':
+        audioCodec = 'flac';
+        break;
+    case 'wav':
+        audioCodec = 'pcm_s16le';
+        break;
+    case 'wma':
+        audioCodec = 'wmav2';
+        break;
+    case 'ac3':
+        audioCodec = 'ac3';
+        break;
+}
+args.push('-c:a', audioCodec);
             // FLAC 和 WAV 不需要设置比特率
             if(targetFormat !== 'flac' && targetFormat !== 'wav') {
                  args.push('-b:a', audioBitrate);
@@ -895,15 +913,20 @@
             }
         }
         
-        function updateSettingsVisibility() {
-            const targetFormat = targetFormatSelect.value;
-            const isVideo = ['mp4', 'mkv', 'mov', 'webm', 'avi'].includes(targetFormat);
-            const isAudio = ['mp3', 'ogg', 'wav', 'flac'].includes(targetFormat);
-            
-            videoSettings.style.display = isVideo ? 'block' : 'none';
-            // 显示音频比特率的条件是：目标是音频格式，或者目标是视频格式（视频也包含音轨）
-            audioSettings.style.display = (isAudio || isVideo) ? 'block' : 'none';
-        }
+function updateSettingsVisibility() {
+    const targetFormat = targetFormatSelect.value;
+    // 扩展视频格式列表
+    const videoFormats = ['mp4', 'mkv', 'mov', 'webm', 'avi', 'flv', 'wmv', 'm4v'];
+    // 扩展音频格式列表
+    const audioFormats = ['mp3', 'ogg', 'wav', 'flac', 'aac', 'wma', 'ac3'];
+    
+    const isVideo = videoFormats.includes(targetFormat);
+    const isAudio = audioFormats.includes(targetFormat);
+    
+    videoSettings.style.display = isVideo ? 'block' : 'none';
+    // 显示音频比特率的条件是：目标是音频格式，或者目标是视频格式（视频也包含音轨）
+    audioSettings.style.display = (isAudio || isVideo) ? 'block' : 'none';
+}
 
         clearAllBtn.addEventListener('click', () => {
             processedFiles = [];
