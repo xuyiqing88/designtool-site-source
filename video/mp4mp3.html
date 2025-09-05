@@ -343,6 +343,8 @@
         
         .custom-resolution-container {
             display: none;
+		align-items: center;
+    		gap: 10px;
         }
         
         .custom-resolution-input {
@@ -432,7 +434,7 @@
                     </select>
                     <div id="customResolutionContainer" class="custom-resolution-container">
                         <input type="number" id="customResolution" class="custom-resolution-input" 
-                               placeholder="输入自定义分辨率（最短边像素值）" min="1" max="3840">
+                               placeholder="输入自定义分辨率（最短边像素值）" min="1" max="3840"><span>p</span>
                     </div>
                     <br>
                     <label for="quality">视频质量 (CRF, 越小越好)</label>
@@ -628,7 +630,7 @@
         // 监听分辨率选择变化
         videoResolutionSelect.addEventListener('change', () => {
             if (videoResolutionSelect.value === 'custom') {
-                customResolutionContainer.style.display = 'block';
+                customResolutionContainer.style.display = 'flex';
             } else {
                 customResolutionContainer.style.display = 'none';
             }
