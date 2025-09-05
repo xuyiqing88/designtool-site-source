@@ -23,7 +23,7 @@
             --text1: #1a1d2e;
             --text2: #4a4e6d;
             --text3: #8d8fa3;
-            --bg-light: #f8f9ff;
+            --bg-light: #f9fafb;
             --border: #e1e4f9;
             --success: #33b763;
             --warning: #f59e0b;
@@ -33,12 +33,13 @@
 
         body {
             background-color: #f5f7ff;
-            background-image: radial-gradient(var(--border) 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: url(../img/download.webp);
+    	background-size: cover;
             color: var(--text1);
             min-height: 100vh;
             display: flex;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	padding: 10px;
         }
 	.type {
 		background: #ebeeff;
@@ -46,13 +47,30 @@
     		padding: 2px 10px;
     		color: var(--main-color);
 	    font-size: 14px;}
-
+	.arrow-r {
+		display: flex; 
+		align-items: center; 
+		color: #c4c7e7; 
+		font-size: 32px; 
+		justify-content: center;}
+        .type-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+	border-top: 1px solid var(--border);
+    padding-top: 20px;
+        }
+        .type-s {
+            display: block;
+    	color: var(--text3);
+    	font-size: 0.8rem;
+        }
         .type-panel {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
 	    display: flex;
 	    flex-direction: column;
         }
@@ -62,7 +80,7 @@
 	.type-cont {
 	    	background: var(--bg-light);
     		border-radius: 6px;
-    		padding: 20px;
+    		padding: 14px;
 	    	display: flex;
     		flex-direction: column;
     		flex-wrap: wrap;
@@ -72,7 +90,7 @@
 		gap: 10px;
     		display: flex;
     		flex-wrap: wrap;
-	    	margin: 10px 0 20px;}
+	    	margin: 10px 0;}
 	.tips {
 	padding: 10px 0;
     font-size: 14px;
@@ -121,23 +139,18 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            margin-bottom: 20px;
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border);
+            margin-bottom: 10px;
         }
 
         .settings-panel {
             flex: 1;
             min-width: 300px;
-            border-right: 1px solid var(--border);
-    align-self: flex-start;
-    height: -webkit-fill-available;
-    padding-right: 20px;
             align-self: flex-start;
+	background: #fff;
+    	border-radius: 10px;
+    	padding: 20px;
 	height: -webkit-fill-available;
+	box-shadow: 0 0 10px #b9cbda42;
         }
 
         .preview-panel {
@@ -145,12 +158,15 @@
             min-width: 300px;
             display: flex;
             flex-direction: column;
+	background: #fff;
+    	border-radius: 10px;
+    	padding: 20px;
+	box-shadow: 0 0 10px #b9cbda42;
         }
 
         .panel-title {
             font-size: 1.2rem;
             margin-bottom: 10px;
-            padding-bottom: 15px;
             color: var(--text1);
             font-weight: 700;
             display: flex;
@@ -256,7 +272,7 @@
         .preview-btn:hover, .download-btn-small:hover { text-decoration-line: underline; }
 
         .no-preview {
-            text-align: center; padding: 70px 20px; color: var(--text3); flex: 1;
+            text-align: center; padding: 20px; color: var(--text3); flex: 1;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .no-preview i { font-size: 5rem; color: var(--border); margin-bottom: 25px; }
@@ -326,12 +342,11 @@
         }
 
         @media (max-width: 768px) {
-	            .settings-panel {    
+	.arrow-r {    transform: rotate(90deg);}
+	       .settings-panel {    
                 flex: 1;
                 width: 100%;
-	        border-bottom: 1px solid var(--border);
-        border-right: none;
-        padding-right: 0;}
+        border-right: none;}
 		.type-group { flex-direction: column;}
 	.type-cont { width: 100%;}
             .container { min-width: 100%; }
@@ -370,16 +385,22 @@
                         <option value="" selected disabled>请选择输出格式</option>
                         <optgroup label="——视频格式——">
                             <option value="mp4">MP4 (H.264)</option>
-                            <option value="mkv">MKV</option>
+                            <option value="mkv">MKV（非压缩格式）</option>
                             <option value="mov">MOV (QuickTime)</option>
-                            <option value="webm">WebM</option>
-                            <option value="avi">AVI</option>
+                            <option value="webm">WebM（网络视频格式）</option>
+                            <option value="avi">AVI（Audio Video Interleaved）</option>
+                            <option value="flv">Flv（Flash Video）</option>
+                            <option value="wmv">wmv（Windows媒体视频）</option>
+                            <option value="m4v">M4V（苹果设备专用格式）</option>
                         </optgroup>
                         <optgroup label="——音频格式——">
-                            <option value="mp3">MP3</option>
+                            <option value="mp3">MP3（有损压缩格式）</option>
                             <option value="ogg">OGG (Opus)</option>
-                            <option value="wav">WAV</option>
-                            <option value="flac">FLAC（无损音频）</option>
+                            <option value="wav">WAV（无损音频未压缩）</option>
+                            <option value="flac">FLAC（无损音频压缩）</option>
+                            <option value="aac">AAC（苹果设备音频编码）</option>
+                            <option value="wma">WMA （Windows Media Audio）</option>
+                            <option value="ac3">AC3（Dolby Digital音频编码格式）</option>
                         </optgroup>
                     </select>
                     <div id="formatError" class="error-message">请先选择输出格式</div>
@@ -440,14 +461,12 @@
                         <span class="counter" id="fileCounter">0</span>
                     </button>
                 </div>
-            </div>
-        </div>
 
 <div class="type-panel">
-	<div class="panel-title">支持多种音视频格式转换</div>
+	<div class="type-title">支持多种音视频格式转换</div>
 <div class="type-group">
     <div class="type-cont">
-	<label>导入的视频文件格式</label>
+	<div class="type-s">导入的视频文件格式</div>
 	<div class="type-geshi">	
 		<span class="type">MP4</span>
 		<span class="type">MKV</span>
@@ -455,37 +474,59 @@
 		<span class="type">WebM</span>
 		<span class="type">AVI</span>
 		<span class="type">3gp</span>
+		<span class="type">Flv</span>
+		<span class="type">WMV</span>
+		<span class="type">F4V</span>
+		<span class="type">RMVB</span>
+		<span class="type">M4V</span>
+
 	</div>
-	<label>导入的音频文件格式</label>
+	<div class="type-s">导入的音频文件格式</div>
 	<div class="type-geshi">
 		<span class="type">MP3</span>
 		<span class="type">OGG</span>
 		<span class="type">WAV</span>
 		<span class="type">FLAC</span>
+		<span class="type">M4R</span>
+		<span class="type">AAC</span>
+		<span class="type">WMA</span>
+		<span class="type">AC3</span>
 	</div>
     </div>
-	<div style="display: flex; align-items: center; color: var(--sidebar-active-bg); font-size: 32px; justify-content: center;">
+	<div class="arrow-r">
 		<i class="fa-solid fa-circle-right"></i>
 	</div>
     <div class="type-cont">
-	<label>输出的视频文件格式</label>
+	<div class="type-s">输出的视频文件格式</div>
 	<div class="type-geshi">
 		<span class="type">MP4</span>
 		<span class="type">MKV</span>
 		<span class="type">MOV</span>
 		<span class="type">WebM</span>
 		<span class="type">AVI</span>
+		<span class="type">Flv</span>
+		<span class="type">WMV</span>
+		<span class="type">F4V</span>
+		<span class="type">M4V</span>
 	</div>
-	<label>输出的音频文件格式</label>
+	<div class="type-s">输出的音频文件格式</div>
 	<div class="type-geshi">
 		<span class="type">MP3</span>
 		<span class="type">OGG</span>
 		<span class="type">WAV</span>
 		<span class="type">FLAC</span>
+		<span class="type">AAC</span>
+		<span class="type">WMA</span>
+		<span class="type">AC3</span>
 	</div>
     </div>
 </div>
 </div>
+
+            </div>
+        </div>
+
+
 
     </div>
 

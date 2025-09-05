@@ -20,7 +20,7 @@
             --text1: #1a1d2e;
             --text2: #4a4e6d;
             --text3: #8d8fa3;
-            --bg-light: #f8f9ff;
+            --bg-light: #f9fafb;
             --border: #e1e4f9;
             --success: #33b763;
             --warning: #f59e0b;
@@ -30,8 +30,8 @@
 
         body {
             background-color: #f5f7ff;
-            background-image: radial-gradient(var(--border) 1px, transparent 1px);
-            background-size: 20px 20px;
+                background-image: url(img/download.webp);
+    		background-size: cover;
             color: var(--text1);
             min-height: 100vh;
             display: flex;
@@ -44,15 +44,32 @@
     		padding: 2px 10px;
     		color: var(--main-color);
 	    font-size: 14px;}
-
+	.arrow-r {
+		display: flex; 
+		align-items: center; 
+		color: #c4c7e7; 
+		font-size: 32px; 
+		justify-content: center;}
         .type-panel {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
 	    display: flex;
 	    flex-direction: column;
+        }
+        .type-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+	    border-top: 1px solid var(--border);
+    padding-top: 20px;
+        }
+        .type-s {
+            display: block;
+    	color: var(--text3);
+    	font-size: 0.8rem;
         }
 	.type-group {
 		display: flex; 
@@ -60,7 +77,7 @@
 	.type-cont {
 	    	background: var(--bg-light);
     		border-radius: 6px;
-    		padding: 20px;
+    		padding: 14px;
 	    	display: flex;
     		flex-direction: column;
     		flex-wrap: wrap;
@@ -70,7 +87,7 @@
 		gap: 10px;
     		display: flex;
     		flex-wrap: wrap;
-	    	margin: 10px 0 20px;}
+	    	margin: 10px 0;}
         .container {
             width: 1200px;
             margin: 0 auto;
@@ -99,31 +116,29 @@
 
         .subtitle {
             color: var(--text2);
-            font-size: 1rem;
+            font-size: 0.9rem;
             margin: 0 auto;
+	max-width: 600px;
         }
 
         .tool-container {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            margin-bottom: 20px;
-	    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border);
+            margin-bottom: 10px;
         }
 
         .settings-panel {
             flex: 1;
             min-width: 300px;
-            border-right: 1px solid var(--border);
-    align-self: flex-start;
-    height: -webkit-fill-available;
-    padding-right: 20px;
+    	align-self: flex-start;
+    	padding-right: 20px;
             align-self: flex-start;
-	    height: -webkit-fill-available;
+	background: #fff;
+    	border-radius: 10px;
+    	padding: 20px;
+	height: -webkit-fill-available;
+	box-shadow: 0 0 10px #b9cbda42;
         }
 
         .preview-panel {
@@ -131,12 +146,15 @@
             min-width: 300px;
             display: flex;
             flex-direction: column;
+	background: #fff;
+    	border-radius: 10px;
+    	padding: 20px;
+	box-shadow: 0 0 10px #b9cbda42;
         }
 
         .panel-title {
             font-size: 1.2rem;
             margin-bottom: 10px;
-            padding-bottom: 15px;
             color: var(--text1);
             font-weight: 700;
             display: flex;
@@ -341,7 +359,7 @@
 
         .no-preview {
             text-align: center;
-            padding: 70px 20px;
+            padding: 20px;
             color: var(--text3);
             flex: 1;
             display: flex;
@@ -576,14 +594,13 @@
         }
 
         @media (max-width: 768px) {
+	.arrow-r {    transform: rotate(90deg);}
 	.type-group { flex-direction: column;}
 	.type-cont { width: 100%;}
             .settings-panel {    
                 flex: 1;
                 width: 100%;
-	        border-bottom: 1px solid var(--border);
         border-right: none;
-        padding-right: 0;
             }
             .container {
                 width: 100%;
@@ -616,7 +633,7 @@
 <div class="container">
     <header>
         <h1>全能图片格式转换器</h1>
-        <p class="subtitle">支持tif/tiff、heic/heif（苹果设备照片）、jpg/jpeg、png、bmp、gif、webp、svg格式的批量转换</p>
+        <p class="subtitle">支持tif、heic（苹果设备照片）、jpg、png、bmp、gif、webp、svg等格式的批量转换，没有数量和尺寸限制</p>
     </header>
 
     <div class="tool-container">
@@ -688,45 +705,48 @@
                     <span class="counter" id="convertedFileCounter">0</span>
                 </button>
             </div>
-        </div>
-    </div>
+
 <div class="type-panel">
-	<div class="panel-title">支持多种图片格式转换</div>
+	<div class="type-title">支持多种图片格式转换</div>
 <div class="type-group">
     <div class="type-cont">
-	<label>导入的文件格式</label>
+	<div class="type-s">导入的文件格式</div>
 	<div class="type-geshi">	
-	<span class="type">tif</span>
-	<span class="type">tiff</span>
-	<span class="type">heic</span>
-	<span class="type">heif</span>
-	<span class="type">jpg</span>
-	<span class="type">jpeg</span>
-	<span class="type">png</span>
-	<span class="type">bmp</span>
-	<span class="type">gif</span>
-	<span class="type">webp</span>
-	<span class="type">svg</span>
+	<span class="type">TIF</span>
+	<span class="type">TIFF</span>
+	<span class="type">HEIC</span>
+	<span class="type">HEIF</span>
+	<span class="type">JPG</span>
+	<span class="type">JPEG</span>
+	<span class="type">PNG</span>
+	<span class="type">BMP</span>
+	<span class="type">GIF</span>
+	<span class="type">WEBP</span>
+	<span class="type">SVG</span>
 	</div>
     </div>
-	<div style="display: flex; align-items: center; color: var(--sidebar-active-bg); font-size: 32px; justify-content: center;">
+	<div class="arrow-r">
 		<i class="fa-solid fa-circle-right"></i>
 	</div>
     <div class="type-cont">
-	<label>输出的文件格式</label>
+	<div class="type-s">输出的文件格式</div>
 	<div class="type-geshi">
-	<span class="type">jpg</span>
-	<span class="type">jpeg</span>
-	<span class="type">png</span>
-	<span class="type">webp</span>
-	<span class="type">bmp</span>
-	<span class="type">tif</span>
-	<span class="type">tiff</span>
-	<span class="type">gif</span>
+	<span class="type">TIF</span>
+	<span class="type">TIFF</span>
+	<span class="type">JPG</span>
+	<span class="type">JPEG</span>
+	<span class="type">PNG</span>
+	<span class="type">BMP</span>
+	<span class="type">GIF</span>
+	<span class="type">WEBP</span>
 	</div>
     </div>
 </div>
 </div>
+
+        </div>
+    </div>
+
 
 </div>
 
