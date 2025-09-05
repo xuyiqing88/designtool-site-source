@@ -689,7 +689,7 @@ function renderStylesTable(stylesToRender, searchTerm = '') {
         const row = document.createElement('tr');
         
         // 根据风格名称自动生成图片路径
-        const imgPath = `img/style-preview/${style.name}.png`;
+        const imgPath = `img/style-preview/${style.name}.webp`;
         
         row.innerHTML = `
             <td class="style-name">${highlightSearchTerm(style.name)}</td>
