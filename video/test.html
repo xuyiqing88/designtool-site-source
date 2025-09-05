@@ -621,19 +621,20 @@
             qualityValue.textContent = qualitySlider.value;
         });
         
-        targetFormatSelect.addEventListener('change', () => {
-            updateSettingsVisibility();
-            formatError.style.display = 'none';
-        });
-
-        // 监听分辨率选择变化
-        videoResolutionSelect.addEventListener('change', () => {
-            if (videoResolutionSelect.value === 'custom') {
-                customResolutionContainer.style.display = 'block';
-            } else {
-                customResolutionContainer.style.display = 'none';
-            }
-        });
+targetFormatSelect.addEventListener('change', () => {
+    updateSettingsVisibility();
+    formatError.style.display = 'none';
+    
+    // 添加提示：如果选择相同格式，需要调整参数才能生效
+    const originalFile = processedFiles[0]?.originalFile;
+    if (originalFile) {
+        const originalExt = originalFile.name.split('.').pop().toLowerCase();
+        if (targetFormatSelect.value === originalExt) {
+            statusText.textContent = '注意：输出格式与原始格式相同，可能需要调整分辨率等参数才能生效';
+            statusText.style.color = 'var(--warning)';
+        }
+    }
+});
 
         // 处理文件
         async function handleFiles(files) {
@@ -780,50 +781,51 @@
 
             const args = ['-i', file.name];
             
-            // 视频相关参数
-            if(isVideoOutput) {
-                let resolutionValue = videoResolutionSelect.value;
-                
-                // 处理自定义分辨率
-                if (resolutionValue === 'custom' && customResolutionInput.value) {
-                    resolutionValue = customResolutionInput.value;
-                }
-                
-                // 如果选择了分辨率且不是保持原始
-                if (resolutionValue !== "-1") {
-                    // 获取视频尺寸信息
-                    const dimensions = videoDimensions[file.name] || { width: 1280, height: 720 };
-                    const width = dimensions.width;
-                    const height = dimensions.height;
-                    
-                    // 判断视频方向并计算缩放参数
-                    let scaleFilter;
-                    if (width >= height) {
-                        // 横屏视频：限制高度，宽度按比例缩放
-                        scaleFilter = `scale=-2:${resolutionValue}`;
-                    } else {
-                        // 竖屏视频：限制宽度，高度按比例缩放
-                        scaleFilter = `scale=${resolutionValue}:-2`;
-                    }
-                    
-                    args.push('-vf', scaleFilter);
-                }
-                
-                // 为webm使用VP9编码器，其他格式使用H.264
-                let videoCodec, videoParams;
-                if (targetFormat === 'webm') {
-                    videoCodec = 'libvpx-vp9';
-                    // WebM使用不同的质量参数
-                    args.push('-b:v', '0', '-crf', qualitySlider.value, '-deadline', 'good');
-                } else {
-                    videoCodec = 'libx264';
-                    args.push('-crf', qualitySlider.value);
-                    // 添加H.264预设以提高兼容性
-                    args.push('-preset', 'medium');
-                }
-                args.push('-c:v', videoCodec);
-            }
+// 添加强制重新编码参数
+if (file.type.startsWith('video')) {
+    args.push('-c:v', 'libx264'); // 强制使用H.264编码器重新编码
+    args.push('-preset', 'medium'); // 添加编码预设
+}
 
+// 保持原有的分辨率处理逻辑
+let resolutionValue = videoResolutionSelect.value;
+if (resolutionValue === 'custom' && customResolutionInput.value) {
+    resolutionValue = customResolutionInput.value;
+}
+
+if (resolutionValue !== "-1") {
+    // 获取视频尺寸信息
+    const dimensions = videoDimensions[file.name] || { width: 1280, height: 720 };
+    const width = dimensions.width;
+    const height = dimensions.height;
+    
+    // 判断视频方向并计算缩放参数
+    let scaleFilter;
+    if (width >= height) {
+        // 横屏视频：限制高度，宽度按比例缩放
+        scaleFilter = `scale=-2:${resolutionValue}`;
+    } else {
+        // 竖屏视频：限制宽度，高度按比例缩放
+        scaleFilter = `scale=${resolutionValue}:-2`;
+    }
+    
+    args.push('-vf', scaleFilter);
+}
+
+    // 为webm使用VP9编码器，其他格式使用H.264
+    let videoCodec, videoParams;
+    if (targetFormat === 'webm') {
+        videoCodec = 'libvpx-vp9';
+        // WebM使用不同的质量参数
+        args.push('-b:v', '0', '-crf', qualitySlider.value, '-deadline', 'good');
+    } else {
+        videoCodec = 'libx264';
+        args.push('-crf', qualitySlider.value);
+        // 添加H.264预设以提高兼容性
+        args.push('-preset', 'medium');
+    }
+    args.push('-c:v', videoCodec);
+}
             // 动态选择音频编码器
             const audioBitrate = audioBitrateSelect.value;
             let audioCodec = 'aac'; // 默认AAC
