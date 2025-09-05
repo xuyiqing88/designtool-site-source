@@ -340,22 +340,6 @@
             margin-top: 5px;
             display: none;
         }
-        
-        .custom-resolution-container {
-            display: none;
-            margin-top: 10px;
-        }
-        
-        .custom-resolution-input {
-            width: 100%;
-            padding: 10px 20px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 1rem;
-            color: var(--text1);
-            background: var(--bg-light);
-            box-sizing: border-box;
-        }
 
         @media (max-width: 768px) {
 	.arrow-r {    transform: rotate(90deg);}
@@ -426,15 +410,10 @@
                     <label for="videoResolution">视频分辨率</label>
                     <select id="videoResolution">
                         <option value="-1">保持原始分辨率</option>
-                        <option value="1080">1080p (最短边)</option>
-                        <option value="720">720p (最短边)</option>
-                        <option value="480">480p (最短边)</option>
-                        <option value="custom">自定义 (最短边)</option>
+                        <option value="1080">1080p</option>
+                        <option value="720">720p</option>
+                        <option value="480">480p</option>
                     </select>
-                    <div id="customResolutionContainer" class="custom-resolution-container">
-                        <input type="number" id="customResolution" class="custom-resolution-input" 
-                               placeholder="输入自定义分辨率（最短边像素值）" min="1" max="3840">
-                    </div>
                     <br>
                     <label for="quality">视频质量 (CRF, 越小越好)</label>
                     <div class="quality-control">
@@ -584,8 +563,6 @@
         const qualitySlider = document.getElementById('quality');
         const qualityValue = document.getElementById('qualityValue');
         const audioBitrateSelect = document.getElementById('audioBitrate');
-        const customResolutionContainer = document.getElementById('customResolutionContainer');
-        const customResolutionInput = document.getElementById('customResolution');
 
         // 预览模态框
         const previewModal = document.getElementById('previewModal');
@@ -594,7 +571,43 @@
 
         let processedFiles = [];
         let isFFmpegLoaded = false;
-        let videoDimensions = {}; // 存储视频尺寸信息
+        
+        // --- 修改点 1: 将FFmpeg加载函数改造为页面加载时自动执行 ---
+        async function loadFFmpeg() {
+            if (ffmpeg && ffmpeg.isLoaded()) {
+                isFFmpegLoaded = true;
+                return;
+            }
+            statusText.textContent = '正在加载转换引擎...';
+            // 禁用拖放区域，防止在加载时操作
+            dropArea.style.pointerEvents = 'none';
+            dropArea.style.opacity = '0.7';
+            
+            try {
+                ffmpeg = createFFmpeg({ 
+                    log: true,
+                    progress: ({ ratio }) => {
+                        // 进度条只在 ratio 为 0 到 1 之间时更新
+                        if (ratio >= 0 && ratio <= 1) {
+                            const progress = Math.max(0, Math.min(1, ratio));
+                            progressBar.style.width = `${progress * 100}%`;
+                            statusText.textContent = `转换中... ${Math.round(progress * 100)}%`;
+                        }
+                    },
+                });
+                
+                await ffmpeg.load();
+                isFFmpegLoaded = true;
+                statusText.textContent = '转换引擎加载完毕，请选择文件。';
+                // 恢复拖放区域
+                dropArea.style.pointerEvents = 'auto';
+                dropArea.style.opacity = '1';
+            } catch (error) {
+                console.error('FFmpeg加载失败:', error);
+                statusText.textContent = '转换引擎加载失败，请更换 Chrome、Firefox 和 Edge 等主流浏览器加载重试。';
+                statusText.style.color = 'var(--error)';
+            }
+        }
         
         // 页面加载完成后立即开始加载FFmpeg
         window.addEventListener('load', loadFFmpeg);
@@ -621,20 +634,10 @@
             qualityValue.textContent = qualitySlider.value;
         });
         
-targetFormatSelect.addEventListener('change', () => {
-    updateSettingsVisibility();
-    formatError.style.display = 'none';
-    
-    // 添加提示：如果选择相同格式，需要调整参数才能生效
-    const originalFile = processedFiles[0]?.originalFile;
-    if (originalFile) {
-        const originalExt = originalFile.name.split('.').pop().toLowerCase();
-        if (targetFormatSelect.value === originalExt) {
-            statusText.textContent = '注意：输出格式与原始格式相同，可能需要调整分辨率等参数才能生效';
-            statusText.style.color = 'var(--warning)';
-        }
-    }
-});
+        targetFormatSelect.addEventListener('change', () => {
+            updateSettingsVisibility();
+            formatError.style.display = 'none';
+        });
 
         // 处理文件
         async function handleFiles(files) {
@@ -672,11 +675,6 @@ targetFormatSelect.addEventListener('change', () => {
                 createPreviewRow(fileIndex);
                 
                 try {
-                    // 如果是视频文件，先获取视频尺寸信息
-                    if (file.type.startsWith('video')) {
-                        await getVideoDimensions(file);
-                    }
-                    
                     // 异步处理每个文件，这样UI不会卡顿
                     convertFile(file).then(convertedBlob => {
                         const convertedFile = new File([convertedBlob], getOutputFileName(file.name, targetFormatSelect.value), { type: convertedBlob.type });
@@ -702,73 +700,7 @@ targetFormatSelect.addEventListener('change', () => {
             updateUIState();
         }
 
-        // 获取视频尺寸信息
-        async function getVideoDimensions(file) {
-            return new Promise((resolve) => {
-                const video = document.createElement('video');
-                video.preload = 'metadata';
-                
-                video.onloadedmetadata = function() {
-                    window.URL.revokeObjectURL(video.src);
-                    videoDimensions[file.name] = {
-                        width: video.videoWidth,
-                        height: video.videoHeight
-                    };
-                    resolve();
-                };
-                
-                video.onerror = function() {
-                    window.URL.revokeObjectURL(video.src);
-                    // 如果无法获取尺寸，使用默认值
-                    videoDimensions[file.name] = {
-                        width: 1280,
-                        height: 720
-                    };
-                    resolve();
-                };
-                
-                video.src = URL.createObjectURL(file);
-            });
-        }
-
-        // 加载FFmpeg
-        async function loadFFmpeg() {
-            if (ffmpeg && ffmpeg.isLoaded()) {
-                isFFmpegLoaded = true;
-                return;
-            }
-            statusText.textContent = '正在加载转换引擎...';
-            // 禁用拖放区域，防止在加载时操作
-            dropArea.style.pointerEvents = 'none';
-            dropArea.style.opacity = '0.7';
-            
-            try {
-                ffmpeg = createFFmpeg({ 
-                    log: true,
-                    progress: ({ ratio }) => {
-                        // 进度条只在 ratio 为 0 到 1 之间时更新
-                        if (ratio >= 0 && ratio <= 1) {
-                            const progress = Math.max(0, Math.min(1, ratio));
-                            progressBar.style.width = `${progress * 100}%`;
-                            statusText.textContent = `转换中... ${Math.round(progress * 100)}%`;
-                        }
-                    },
-                });
-                
-                await ffmpeg.load();
-                isFFmpegLoaded = true;
-                statusText.textContent = '转换引擎加载完毕，请选择文件。';
-                // 恢复拖放区域
-                dropArea.style.pointerEvents = 'auto';
-                dropArea.style.opacity = '1';
-            } catch (error) {
-                console.error('FFmpeg加载失败:', error);
-                statusText.textContent = '转换引擎加载失败，请更换 Chrome、Firefox 和 Edge 等主流浏览器加载重试。';
-                statusText.style.color = 'var(--error)';
-            }
-        }
-
-        // 核心转换函数
+        // --- 修改点 2: 改造核心转换函数，使其能动态选择编码器 ---
         async function convertFile(file) {
             statusText.textContent = `准备转换: ${file.name}`;
             progressBar.style.width = '0%';
@@ -781,37 +713,13 @@ targetFormatSelect.addEventListener('change', () => {
 
             const args = ['-i', file.name];
             
-// 添加强制重新编码参数
-if (file.type.startsWith('video')) {
-    args.push('-c:v', 'libx264'); // 强制使用H.264编码器重新编码
-    args.push('-preset', 'medium'); // 添加编码预设
-}
-
-// 保持原有的分辨率处理逻辑
-let resolutionValue = videoResolutionSelect.value;
-if (resolutionValue === 'custom' && customResolutionInput.value) {
-    resolutionValue = customResolutionInput.value;
-}
-
-if (resolutionValue !== "-1") {
-    // 获取视频尺寸信息
-    const dimensions = videoDimensions[file.name] || { width: 1280, height: 720 };
-    const width = dimensions.width;
-    const height = dimensions.height;
-    
-    // 判断视频方向并计算缩放参数
-    let scaleFilter;
-    if (width >= height) {
-        // 横屏视频：限制高度，宽度按比例缩放
-        scaleFilter = `scale=-2:${resolutionValue}`;
-    } else {
-        // 竖屏视频：限制宽度，高度按比例缩放
-        scaleFilter = `scale=${resolutionValue}:-2`;
+            // 视频相关参数
+if(isVideoOutput) {
+    const resolution = videoResolutionSelect.value;
+    if(resolution !== "-1") {
+        args.push('-vf', `scale=-2:${resolution}`);
     }
     
-    args.push('-vf', scaleFilter);
-}
-
     // 为webm使用VP9编码器，其他格式使用H.264
     let videoCodec, videoParams;
     if (targetFormat === 'webm') {
@@ -826,32 +734,32 @@ if (resolutionValue !== "-1") {
     }
     args.push('-c:v', videoCodec);
 }
-            // 动态选择音频编码器
+
+            // --- 修改点 3: 动态选择音频编码器 ---
             const audioBitrate = audioBitrateSelect.value;
-            let audioCodec = 'aac'; // 默认AAC
-            switch(targetFormat) {
-                case 'mp3':
-                    audioCodec = 'libmp3lame';
-                    break;
-                case 'ogg':
-                case 'webm': // WebM使用Opus音频编码
-                    audioCodec = 'libopus';
-                    break;
-                case 'flac':
-                    audioCodec = 'flac';
-                    break;
-                case 'wav':
-                    audioCodec = 'pcm_s16le';
-                    break;
-                case 'wma':
-                    audioCodec = 'wmav2';
-                    break;
-                case 'ac3':
-                    audioCodec = 'ac3';
-                    break;
-            }
-            args.push('-c:a', audioCodec);
-            
+let audioCodec = 'aac'; // 默认AAC
+switch(targetFormat) {
+    case 'mp3':
+        audioCodec = 'libmp3lame';
+        break;
+    case 'ogg':
+    case 'webm': // WebM使用Opus音频编码
+        audioCodec = 'libopus';
+        break;
+    case 'flac':
+        audioCodec = 'flac';
+        break;
+    case 'wav':
+        audioCodec = 'pcm_s16le';
+        break;
+    case 'wma':
+        audioCodec = 'wmav2';
+        break;
+    case 'ac3':
+        audioCodec = 'ac3';
+        break;
+}
+args.push('-c:a', audioCodec);
             // FLAC 和 WAV 不需要设置比特率
             if(targetFormat !== 'flac' && targetFormat !== 'wav') {
                  args.push('-b:a', audioBitrate);
@@ -1005,20 +913,20 @@ if (resolutionValue !== "-1") {
             }
         }
         
-        function updateSettingsVisibility() {
-            const targetFormat = targetFormatSelect.value;
-            // 扩展视频格式列表
-            const videoFormats = ['mp4', 'mkv', 'mov', 'webm', 'avi', 'flv', 'wmv', 'm4v'];
-            // 扩展音频格式列表
-            const audioFormats = ['mp3', 'ogg', 'wav', 'flac', 'aac', 'wma', 'ac3'];
-            
-            const isVideo = videoFormats.includes(targetFormat);
-            const isAudio = audioFormats.includes(targetFormat);
-            
-            videoSettings.style.display = isVideo ? 'block' : 'none';
-            // 显示音频比特率的条件是：目标是音频格式，或者目标是视频格式（视频也包含音轨）
-            audioSettings.style.display = (isAudio || isVideo) ? 'block' : 'none';
-        }
+function updateSettingsVisibility() {
+    const targetFormat = targetFormatSelect.value;
+    // 扩展视频格式列表
+    const videoFormats = ['mp4', 'mkv', 'mov', 'webm', 'avi', 'flv', 'wmv', 'm4v'];
+    // 扩展音频格式列表
+    const audioFormats = ['mp3', 'ogg', 'wav', 'flac', 'aac', 'wma', 'ac3'];
+    
+    const isVideo = videoFormats.includes(targetFormat);
+    const isAudio = audioFormats.includes(targetFormat);
+    
+    videoSettings.style.display = isVideo ? 'block' : 'none';
+    // 显示音频比特率的条件是：目标是音频格式，或者目标是视频格式（视频也包含音轨）
+    audioSettings.style.display = (isAudio || isVideo) ? 'block' : 'none';
+}
 
         clearAllBtn.addEventListener('click', () => {
             processedFiles = [];
