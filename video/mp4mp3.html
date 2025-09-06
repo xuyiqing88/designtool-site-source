@@ -46,7 +46,7 @@
     		border-radius: 14px;
     		padding: 2px 10px;
     		color: var(--main-color);
-	    font-size: 14px;}
+	    font-size: 12px;}
 	.arrow-r {
 		display: flex; 
 		align-items: center; 
@@ -614,7 +614,15 @@
         
         // 页面加载完成后立即开始加载FFmpeg
         window.addEventListener('load', loadFFmpeg);
-
+// 在页面加载时添加自定义分辨率验证
+customResolutionInput.addEventListener('change', () => {
+    let value = parseInt(customResolutionInput.value);
+    if (isNaN(value) || value < 1) {
+        customResolutionInput.value = "480";
+    } else if (value > 3840) {
+        customResolutionInput.value = "3840";
+    }
+});
         // 拖放事件
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, e => {
@@ -784,27 +792,34 @@
         }
 
         // 核心转换函数
-        async function convertFile(file) {
-            statusText.textContent = `准备转换: ${file.name}`;
-            progressBar.style.width = '0%';
-            
-            const targetFormat = targetFormatSelect.value;
-            const outputFileName = getOutputFileName(file.name, targetFormat);
-                // 扩展视频格式检测
+// 核心转换函数
+async function convertFile(file) {
+    statusText.textContent = `准备转换: ${file.name}`;
+    progressBar.style.width = '0%';
+    
+    const targetFormat = targetFormatSelect.value;
+    const outputFileName = getOutputFileName(file.name, targetFormat);
+    // 扩展视频格式检测
     const isVideoOutput = [
         'mp4', 'mkv', 'mov', 'webm', 'avi', 
         'flv', 'f4v', 'wmv', 'm4v', '3gp', 'mpeg', 'ts'
     ].includes(targetFormat);
 
-            ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+    ffmpeg.FS('writeFile', file.name, await fetchFile(file));
 
-            const args = ['-i', file.name];
-            
+    const args = ['-i', file.name];
+    
     // 视频相关参数
     if(isVideoOutput) {
-        const resolution = videoResolutionSelect.value;
-        if(resolution !== "-1") {
-            args.push('-vf', `scale=-2:${resolution}`);
+        let resolutionValue;
+        if (videoResolutionSelect.value === 'custom') {
+            resolutionValue = customResolutionInput.value;
+        } else {
+            resolutionValue = videoResolutionSelect.value;
+        }
+        
+        if(resolutionValue !== "-1") {
+            args.push('-vf', `scale=-2:${resolutionValue}`);
         }
         
         // 根据不同格式选择合适的视频编码器
@@ -814,22 +829,22 @@
                 videoCodec = 'libvpx-vp9';
                 args.push('-b:v', '0', '-crf', qualitySlider.value, '-deadline', 'good');
                 break;
-    case 'mpeg':
-        // 使用mpeg2video编码器，这是MPEG-2的标准编码器
-        videoCodec = 'mpeg2video';
-        // MPEG使用比特率控制而不是CRF
-        args.push('-b:v', '2M'); // 设置视频比特率为2Mbps
-        args.push('-maxrate', '2M'); // 最大比特率
-        args.push('-minrate', '2M'); // 最小比特率
-        args.push('-bufsize', '1M'); // 缓冲区大小
-        // 设置GOP大小和帧率
-        args.push('-g', '15'); // 每15帧一个关键帧
-        break;
+            case 'mpeg':
+                // 使用mpeg2video编码器，这是MPEG-2的标准编码器
+                videoCodec = 'mpeg2video';
+                // 使用比特率计算函数而不是固定值
+                const bitrate = calculateMpegBitrate(qualitySlider.value);
+                args.push('-b:v', `${bitrate}M`);
+                args.push('-maxrate', `${bitrate}M`);
+                args.push('-minrate', `${bitrate}M`);
+                args.push('-bufsize', '1M');
+                args.push('-g', '15'); // 每15帧一个关键帧
+                break;
             case '3gp':
                 videoCodec = 'h263';
                 args.push('-qscale:v', qualitySlider.value);
                 // 3GP通常需要特定的分辨率
-                if(resolution === "-1") {
+                if(resolutionValue === "-1") {
                     args.push('-s', '176x144'); // 默认QCIF分辨率
                 }
                 break;
@@ -841,9 +856,7 @@
         args.push('-c:v', videoCodec);
     }
 
-            // 动态选择音频编码器
-            const audioBitrate = audioBitrateSelect.value;
-     // 音频编码器选择
+    // 音频编码器选择
     let audioCodec = 'aac'; // 默认AAC
     switch(targetFormat) {
         case 'mp3':
@@ -871,55 +884,58 @@
         case 'm4a':
             audioCodec = 'aac';
             break;
-    case 'mpeg':
-        // MPEG格式通常使用MP2音频编码
-        audioCodec = 'mp2';
-        args.push('-b:a', '192k'); // 设置音频比特率
-        break;
+        case 'mpeg':
+            // MPEG格式通常使用MP2音频编码
+            audioCodec = 'mp2';
+            break;
     }
     args.push('-c:a', audioCodec);
-            
-            // FLAC 和 WAV 不需要设置比特率
-            if(targetFormat !== 'flac' && targetFormat !== 'wav') {
-    // 对于MPEG格式，设置特定的音频比特率
-    if (targetFormat === 'mpeg') {
-        args.push('-b:a', '192k');
-    } else {
-        args.push('-b:a', audioBitrateSelect.value);
-    }
-            }
-// 为特定格式添加额外参数
-if (targetFormat === 'mpeg') {
-    args.push('-f', 'mpeg'); // 强制输出格式为MPEG
-    args.push('-flags', '+ildct+ilme'); // 添加MPEG特定标志
-}
-            
-            args.push(outputFileName);
-            
-            console.log("Running FFmpeg with args:", args); // 调试信息
-            await ffmpeg.run(...args);
-
-            const data = ffmpeg.FS('readFile', outputFileName);
-            
-            // 清理FFmpeg虚拟文件系统中的文件
-            try {
-                ffmpeg.FS('unlink', file.name);
-                ffmpeg.FS('unlink', outputFileName);
-            } catch (e) {
-                console.warn("Could not unlink files, they may not exist.", e);
-            }
-
-   const mimeType = isVideoOutput ? 
-    (targetFormat === 'webm' ? 'video/webm' : 
-     targetFormat === 'mpeg' ? 'video/mpeg' : 
-     targetFormat === '3gp' ? 'video/3gpp' : 
-     `video/${targetFormat}`) : 
-    (targetFormat === 'm4a' ? 'audio/mp4' : 
-     targetFormat === 'amr' ? 'audio/amr' : 
-     `audio/${targetFormat}`);
-            return new Blob([data.buffer], { type: mimeType });
+    
+    // FLAC 和 WAV 不需要设置比特率
+    if(targetFormat !== 'flac' && targetFormat !== 'wav') {
+        if (targetFormat === 'mpeg') {
+            args.push('-b:a', '192k');
+        } else {
+            args.push('-b:a', audioBitrateSelect.value);
         }
+    }
+    
+    // 为特定格式添加额外参数
+    if (targetFormat === 'mpeg') {
+        args.push('-f', 'mpeg'); // 强制输出格式为MPEG
+        args.push('-flags', '+ildct+ilme'); // 添加MPEG特定标志
+    }
+    
+    args.push(outputFileName);
+    
+    try {
+        console.log("Running FFmpeg with args:", args);
+        await ffmpeg.run(...args);
+
+        const data = ffmpeg.FS('readFile', outputFileName);
         
+        // 清理FFmpeg虚拟文件系统中的文件
+        try {
+            ffmpeg.FS('unlink', file.name);
+            ffmpeg.FS('unlink', outputFileName);
+        } catch (e) {
+            console.warn("Could not unlink files, they may not exist.", e);
+        }
+
+        const mimeType = isVideoOutput ? 
+            (targetFormat === 'webm' ? 'video/webm' : 
+             targetFormat === 'mpeg' ? 'video/mpeg' : 
+             targetFormat === '3gp' ? 'video/3gpp' : 
+             `video/${targetFormat}`) : 
+            (targetFormat === 'm4a' ? 'audio/mp4' : 
+             targetFormat === 'amr' ? 'audio/amr' : 
+             `audio/${targetFormat}`);
+        return new Blob([data.buffer], { type: mimeType });
+    } catch (error) {
+        console.error('FFmpeg运行错误:', error);
+        throw new Error(`转换失败: ${error.message}`);
+    }
+}
         function createPreviewRow(index) {
             const fileData = processedFiles[index];
             const row = document.createElement('div');
