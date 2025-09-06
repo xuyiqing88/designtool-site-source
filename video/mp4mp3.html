@@ -793,7 +793,7 @@
                 // 扩展视频格式检测
     const isVideoOutput = [
         'mp4', 'mkv', 'mov', 'webm', 'avi', 
-        'flv', 'wmv', 'm4v', '3gp', 'mpeg', 'ts'
+        'flv', 'f4v', 'wmv', 'm4v', '3gp', 'mpeg', 'ts'
     ].includes(targetFormat);
 
             ffmpeg.FS('writeFile', file.name, await fetchFile(file));
@@ -814,10 +814,17 @@
                 videoCodec = 'libvpx-vp9';
                 args.push('-b:v', '0', '-crf', qualitySlider.value, '-deadline', 'good');
                 break;
-            case 'mpeg':
-                videoCodec = 'mpeg2video';
-                args.push('-qscale:v', qualitySlider.value); // MPEG使用不同的质量参数
-                break;
+    case 'mpeg':
+        // 使用mpeg2video编码器，这是MPEG-2的标准编码器
+        videoCodec = 'mpeg2video';
+        // MPEG使用比特率控制而不是CRF
+        args.push('-b:v', '2M'); // 设置视频比特率为2Mbps
+        args.push('-maxrate', '2M'); // 最大比特率
+        args.push('-minrate', '2M'); // 最小比特率
+        args.push('-bufsize', '1M'); // 缓冲区大小
+        // 设置GOP大小和帧率
+        args.push('-g', '15'); // 每15帧一个关键帧
+        break;
             case '3gp':
                 videoCodec = 'h263';
                 args.push('-qscale:v', qualitySlider.value);
@@ -864,13 +871,28 @@
         case 'm4a':
             audioCodec = 'aac';
             break;
+    case 'mpeg':
+        // MPEG格式通常使用MP2音频编码
+        audioCodec = 'mp2';
+        args.push('-b:a', '192k'); // 设置音频比特率
+        break;
     }
     args.push('-c:a', audioCodec);
             
             // FLAC 和 WAV 不需要设置比特率
             if(targetFormat !== 'flac' && targetFormat !== 'wav') {
-                 args.push('-b:a', audioBitrate);
+    // 对于MPEG格式，设置特定的音频比特率
+    if (targetFormat === 'mpeg') {
+        args.push('-b:a', '192k');
+    } else {
+        args.push('-b:a', audioBitrateSelect.value);
+    }
             }
+// 为特定格式添加额外参数
+if (targetFormat === 'mpeg') {
+    args.push('-f', 'mpeg'); // 强制输出格式为MPEG
+    args.push('-flags', '+ildct+ilme'); // 添加MPEG特定标志
+}
             
             args.push(outputFileName);
             
@@ -1087,6 +1109,15 @@ function updateSettingsVisibility() {
             const nameWithoutExt = originalName.lastIndexOf('.') > 0 ? originalName.substring(0, originalName.lastIndexOf('.')) : originalName;
             return `${nameWithoutExt}.${targetExt}`;
         };
+// 根据质量滑块值计算MPEG比特率
+function calculateMpegBitrate(qualityValue) {
+    // 将质量值(15-35)映射到比特率(1-5Mbps)
+    // 质量值越小，比特率越高
+    const minBitrate = 1;
+    const maxBitrate = 5;
+    const normalizedQuality = (35 - qualityValue) / 20; // 将15-35映射到0-1
+    return minBitrate + normalizedQuality * (maxBitrate - minBitrate);
+}
 
         // 初始化
         updateSettingsVisibility();
