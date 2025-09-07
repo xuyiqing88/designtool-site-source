@@ -12,600 +12,8 @@
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>    
     <style>
-        /* 全局样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
-            height: 100vh;
-            overflow: hidden;
-        }
-  /* 分隔条样式 */
-  .divider {
-    width: 8px;
-    background: none;
-    cursor: col-resize;
-    position: relative;
-    z-index: 10;
-    transition: background-color 0.2s;
-  }
-
-  .divider:hover {
-    
-  }
-
-
-
-        /* 头部样式 */
-        .header {
-            background: linear-gradient(135deg, #1e293b, #334155);
-            padding: 0rem 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            position: relative;
-	margin-left: 60px;
-        }
-	.selectpng {
-	}
-	.toptitle {
-	display: flex;  
-	align-items: center; 
-	gap: 10px;
-	}
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-	height: 60px;
-        }
-
-        .header h1 {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.65rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .header p {
-            color: #94a3b8;
-            margin-top: 0.25rem;
-        }
-
-        /* 导出控制面板 - 移到右上角 */
-        .header-export {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .export-select {
-            padding: 0.5rem;
-            background: #374151;
-            color: white;
-            border: 1px solid #4b5563;
-            border-radius: 6px;
-            font-size: 0.9rem;
-        }
-
-        /* 主容器 */
-        .container {
-            display: flex;
-            height: calc(100vh - 60px);
-	margin-left: 60px;
-        }
-
-        /* 左侧控制面板 */
-        .sidebar {
-            width: 320px;
-            background: linear-gradient(180deg, #1e293b, #0f172a);
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        /* 主预览区域 */
-        .main-content {
-            flex: 1;
-            display: flex;
-            padding: 1rem 1rem 0.5rem;
-    display: flex;
-    height: calc(100vh - 60px);
-        }
-
-        .preview-panel {
-            background: linear-gradient(135deg, #1e293b, #334155);
-            border-radius: 6px;
-            border: 1px solid #475569;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-	    flex: 1 1 50%; 
-		/*height: calc(100vh - 160px);*/
-        }
-
-        .preview-header {
-            background: linear-gradient(135deg, #374151, #4b5563);
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-	height: 3rem;
-        }
-
-        .preview-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem;
-            background: 
-                linear-gradient(45deg, #374151 25%, transparent 25%), 
-                linear-gradient(-45deg, #374151 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #374151 75%), 
-                linear-gradient(-45deg, transparent 75%, #374151 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            cursor: pointer;
-	overflow: hidden;
-        }
-
-        canvas {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    border-radius: 4px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        /* 文件上传区域 */
-        .upload-area {
-            border: 2px dashed #475569;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .upload-area:hover {
-            border-color: #3b82f6;
-            background: linear-gradient(135deg, #1e293b, #334155);
-        }
-
-        .upload-area.dragover {
-            border-color: #3b82f6;
-            background: linear-gradient(135deg, #1e3a8a, #3730a3);
-        }
-
-        .upload-icon {
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: flex;
-            justify-content: center;
-        }
-
-        /* 控制组 */
-        .control-group, .control-group1 {
-            margin-bottom: 1rem;
-            padding: 20px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            border-radius: 8px;
-            border: 1px solid #334155;
-        }
-
-        .control-group h3, .control-group1 h3 {
-            color: #f59e0b;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .control-item {
-            margin-bottom: 1rem;
-        }
-
-        .control-item label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-
-        .control-item input[type="range"] {
-            width: 100%;
-            height: 6px;
-            background: #374151;
-            border-radius: 3px;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .control-item input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
-        }
-
-        .control-item input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-        }
-
-        .value-display {
-            float: right;
-            background: #374151;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: #e2e8f0;
-        }
-
-        /* 按钮样式 */
-        .btn {
-            padding: 0.65rem 1.5rem;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.1s ease;
-            margin: 0.25rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #2563eb, #1e40af);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-secondary {
-            background: none;
-    	color: white;
-    	border: 1px solid #94a3b8;
-        }
-
-        .btn-secondary:hover {
-            border-color: #fff;
-	background: #404958;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: linear-gradient(135deg, #0d9668, #047857);
-        }
-
-        .btn-orange {
-            background: linear-gradient(113deg, #4c73ff, #6a52ff);
-            color: white;
-        }
-
-        .btn-orange:hover {
-            opacity: 0.92;
-    box-shadow: 0 7px 18px rgba(89, 99, 255, 0.35);
-        }
-
-        /* 无缝化方法选择 */
-        .method-selector {
-            display: grid;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .method-btn {
-            padding: 0.75rem;
-            background: #374151;
-            border: 2px solid #4b5563;
-            border-radius: 8px;
-            color: #e2e8f0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-            position: relative;
-        }
-
-        .method-btn:hover {
-            border-color: #6b7280;
-            background: #4b5563;
-        }
-
-        .method-btn.active {
-            border-color: #10b981;
-            background: linear-gradient(135deg, #065f46, #047857);
-            color: white;
-        }
-
-        .method-btn strong {
-            display: block;
-            margin-bottom: 0.25rem;
-            padding-right: 20px;
-        }
-
-        .method-btn small {
-            opacity: 0.8;
-            font-size: 0.8rem;
-            display: block;
-        }
-
-        .method-btn .order-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.3);
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-        }
-
-        /* 切换按钮样式 */
-        .toggle-btn {
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            background: none;
-            border: none;
-            color: #e2e8f0;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .toggle-btn:hover {
-            background: #334155;
-            border-color: #64748b;
-        }
-
-
-        /* 滚动条样式 */
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 3px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-
-        /* 隐藏文件输入 */
-        #fileInput {
-            display: none;
-        }
-
-        /* 加载状态 */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* 实时预览标识 */
-        .live-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.8rem;
-            color: #10b981;
-        }
-
-        .live-dot {
-            width: 6px;
-            height: 6px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* 模态框 - 放大查看 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-            cursor: zoom-out;
-            border-radius: 8px;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            background: rgba(0,0,0,0.5);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            body {
-                overflow-y: auto;
-                height: auto;
-            }
-	.selectpng {
-	display: none;}
-	.toptitle {
-		flex-direction: column;
-	        gap: 0;}
-	.control-group1 {
-		margin-bottom: 330px;}
-            .header {
-		margin-left: 0;
-	        padding: 0.5rem;
-		}
-            .container {
-                flex-direction: column;
-                height: auto;
-                overflow-y: visible;
-		margin-left: 0;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                border-right: none;
-                border-bottom: 2px solid #475569;
-            }
-            
-            .main-content {
-                flex-direction: column;
-                height: auto;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-	        height: auto;
-            }
-            
-            .header-export {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            .preview-panel {
-                max-height: 40vh;
-	        position: fixed;
-        bottom: 0;
-        width: 100%;
-        left: 0;
-            }
-            .preview-content {
-		height: 80%;}
-            .preview-header {
-                flex-direction: column;
-                gap: 0.5rem;
-		display: none;
-            }
-            
-            #toggleOriginalBtn {
-                margin-top: 0.5rem;
-            }
-        }
-        
-        /* 旋转控制样式 */
-        .rotation-control {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-        
-        .rotation-display {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #374151;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: #e2e8f0;
-        }
-        
-        /* 图标样式 */
-        .icon {
-            width: 1.2rem;
-            height: 1.2rem;
-        }
-        
-        .icon-large {
-            width: 3rem;
-            height: 3rem;
-	font-size: 3rem;
-        }
-        
-        .icon-xl {
-            width: 4rem;
-            height: 4rem;
-	font-size: 4rem;
-        }
-        
-        .fa-icon {
-        }
+        /* CSS样式与之前保持一致，此处省略以节约篇幅 */
+        * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: 'Arial', 'Microsoft YaHei', sans-serif; background: #0f172a; color: #e2e8f0; height: 100vh; overflow: hidden; } .divider { width: 8px; background: none; cursor: col-resize; position: relative; z-index: 10; transition: background-color: 0.2s; } .header { background: linear-gradient(135deg, #1e293b, #334155); padding: 0rem 1.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); position: relative; margin-left: 60px; } .selectpng { } .toptitle { display: flex; align-items: center; gap: 10px; } .header-content { display: flex; justify-content: space-between; align-items: center; height: 60px; } .header h1 { background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.65rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem; } .header p { color: #94a3b8; margin-top: 0.25rem; } .header-export { display: flex; align-items: center; gap: 1rem; } .export-select { padding: 0.5rem; background: #374151; color: white; border: 1px solid #4b5563; border-radius: 6px; font-size: 0.9rem; } .container { display: flex; height: calc(100vh - 60px); margin-left: 60px; } .sidebar { width: 320px; background: linear-gradient(180deg, #1e293b, #0f172a); overflow-y: auto; padding: 10px; } .main-content { flex: 1; display: flex; padding: 1rem 1rem 0.5rem; display: flex; height: calc(100vh - 60px); } .preview-panel { background: linear-gradient(135deg, #1e293b, #334155); border-radius: 6px; border: 1px solid #475569; overflow: hidden; display: flex; flex-direction: column; flex: 1 1 50%; } .preview-header { background: linear-gradient(135deg, #374151, #4b5563); padding: 0.75rem 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; height: 3rem; } .preview-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0.5rem; background: linear-gradient(45deg, #374151 25%, transparent 25%), linear-gradient(-45deg, #374151 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #374151 75%), linear-gradient(-45deg, transparent 75%, #374151 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; cursor: pointer; overflow: hidden; } canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 4px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); } .upload-area { border: 2px dashed #475569; border-radius: 8px; padding: 1rem; text-align: center; margin-bottom: 1rem; background: linear-gradient(135deg, #0f172a, #1e293b); transition: all 0.3s ease; cursor: pointer; } .upload-area:hover { border-color: #3b82f6; background: linear-gradient(135deg, #1e293b, #334155); } .upload-area.dragover { border-color: #3b82f6; background: linear-gradient(135deg, #1e3a8a, #3730a3); } .upload-icon { margin-bottom: 1rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; justify-content: center; } .control-group, .control-group1 { margin-bottom: 1rem; padding: 20px; background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 8px; border: 1px solid #334155; } .control-group h3, .control-group1 h3 { color: #f59e0b; margin-bottom: 1rem; padding-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; } .control-item { margin-bottom: 1rem; } .control-item label { display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: 500; } .control-item input[type="range"] { width: 100%; height: 6px; background: #374151; border-radius: 3px; outline: none; -webkit-appearance: none; } .control-item input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4); } .control-item input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; cursor: pointer; border: none; } .value-display { float: right; background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; color: #e2e8f0; } .btn { padding: 0.65rem 1.5rem; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.1s ease; margin: 0.25rem; display: inline-flex; align-items: center; gap: 0.5rem; } .btn-primary { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; } .btn-primary:hover { background: linear-gradient(135deg, #2563eb, #1e40af); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); } .btn-secondary { background: none; color: white; border: 1px solid #94a3b8; } .btn-secondary:hover { border-color: #fff; background: #404958; } .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; } .btn-success:hover { background: linear-gradient(135deg, #0d9668, #047857); } .btn-orange { background: linear-gradient(113deg, #4c73ff, #6a52ff); color: white; } .btn-orange:hover { opacity: 0.92; box-shadow: 0 7px 18px rgba(89, 99, 255, 0.35); } .method-selector { display: grid; gap: 0.5rem; margin-bottom: 1rem; } .method-btn { padding: 0.75rem; background: #374151; border: 2px solid #4b5563; border-radius: 8px; color: #e2e8f0; cursor: pointer; transition: all 0.3s ease; text-align: left; position: relative; } .method-btn:hover { border-color: #6b7280; background: #4b5563; } .method-btn.active { border-color: #10b981; background: linear-gradient(135deg, #065f46, #047857); color: white; } .method-btn strong { display: block; margin-bottom: 0.25rem; padding-right: 20px; } .method-btn small { opacity: 0.8; font-size: 0.8rem; display: block; } .method-btn .order-indicator { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.3); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; } .toggle-btn { padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; background: none; border: none; color: #e2e8f0; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 0.25rem; } .toggle-btn:hover { background: #334155; border-color: #64748b; } .sidebar::-webkit-scrollbar { width: 6px; } .sidebar::-webkit-scrollbar-track { background: #1e293b; } .sidebar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; } .sidebar::-webkit-scrollbar-thumb:hover { background: #64748b; } #fileInput { display: none; } .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; } @keyframes spin { to { transform: rotate(360deg); } } .live-indicator { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: #10b981; } .live-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; } @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } } .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 1000; justify-content: center; align-items: center; } .modal-content { max-width: 90%; max-height: 90%; object-fit: contain; cursor: zoom-out; border-radius: 8px; } .modal-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; z-index: 1001; } @media (max-width: 768px) { body { overflow-y: auto; height: auto; } .selectpng { display: none;} .toptitle { flex-direction: column; gap: 0;} .control-group1 { margin-bottom: 330px;} .header { margin-left: 0; padding: 0.5rem; } .container { flex-direction: column; height: auto; overflow-y: visible; margin-left: 0; } .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 2px solid #475569; } .main-content { flex-direction: column; height: auto; } .header-content { flex-direction: column; gap: 1rem; text-align: center; height: auto; } .header-export { width: 100%; justify-content: center; flex-wrap: wrap; } .preview-panel { max-height: 40vh; position: fixed; bottom: 0; width: 100%; left: 0; } .preview-content { height: 80%;} .preview-header { flex-direction: column; gap: 0.5rem; display: none; } #toggleOriginalBtn { margin-top: 0.5rem; } } .rotation-control { position: relative; margin-bottom: 1rem; } .rotation-display { position: absolute; top: 0; right: 0; background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; color: #e2e8f0; } .icon { width: 1.2rem; height: 1.2rem; } .icon-large { width: 3rem; height: 3rem; font-size: 3rem; } .icon-xl { width: 4rem; height: 4rem; font-size: 4rem; } .fa-icon { }
     </style>
 </head>
 <body>
@@ -662,25 +70,20 @@
                 </h3>
                 
                 <div class="method-selector">
-                    <div class="method-btn" data-method="poisson">
-                        <strong>智能融合 (泊松)</strong>
-                        <small>高级算法，平滑地匹配边缘内容</small>
-                        <span class="order-indicator">1</span>
-                    </div>
                     <div class="method-btn" data-method="mirror">
-                        <strong>镜像边缘</strong>
-                        <small>通过镜像边缘像素创建无缝效果</small>
-                        <span class="order-indicator">2</span>
+                        <strong>镜像边缘 (优化版)</strong>
+                        <small>单向融合，减少重复感</small>
+                        <span class="order-indicator">1</span>
                     </div>
                     <div class="method-btn" data-method="blend">
                         <strong>边缘混合</strong>
                         <small>混合相对边缘创建平滑过渡</small>
-                        <span class="order-indicator">3</span>
+                        <span class="order-indicator">2</span>
                     </div>
                     <div class="method-btn" data-method="offset">
                         <strong>偏移映射</strong>
                         <small>重新排列图像四象限实现无缝</small>
-                        <span class="order-indicator">4</span>
+                        <span class="order-indicator">3</span>
                     </div>
                 </div>
                 
@@ -688,16 +91,9 @@
                     <small>提示：可同时选择多个方法，按数字顺序应用</small>
                 </div>
                 
-                <div id="poissonControls" style="display: none;">
-                    <div class="control-item">
-                        <label>融合区域 <span class="value-display" id="poissonBlendSizeValue">15%</span></label>
-                        <input type="range" id="poissonBlendSize" min="5" max="40" value="15">
-                    </div>
-                </div>
-
                 <div id="mirrorControls" style="display: none;">
                     <div class="control-item">
-                        <label>镜像强度 <span class="value-display" id="mirrorStrengthValue">20%</span></label>
+                        <label>融合强度 <span class="value-display" id="mirrorStrengthValue">20%</span></label>
                         <input type="range" id="mirrorStrength" min="0" max="50" value="20">
                     </div>
                 </div>
@@ -831,76 +227,21 @@
         <img id="modalImage" class="modal-content" src="" alt="放大图像">
     </div>
 
-    <script src="clone.js"></script>
-
     <script>
         // 全局变量
         let originalImageData = null;
         let processedCanvas = document.getElementById('processedCanvas');
-        let processedCtx = processedCanvas.getContext('2d', { willReadFrequently: true }); // 性能优化
+        let processedCtx = processedCanvas.getContext('2d', { willReadFrequently: true });
         let tiledCanvas = document.getElementById('tiledCanvas');
         let tiledCtx = tiledCanvas.getContext('2d');
         let activeMethods = [];
         let isRealTimePreview = false;
         let showOriginal = false;
         let adjustCanvas = document.createElement('canvas');
-        let adjustCtx = adjustCanvas.getContext('2d', { willReadFrequently: true }); // 性能优化
+        let adjustCtx = adjustCanvas.getContext('2d', { willReadFrequently: true });
         let rotatedCanvas = document.createElement('canvas');
-        let rotatedCtx = rotatedCanvas.getContext('2d', { willReadFrequently: true }); // 性能优化
+        let rotatedCtx = rotatedCanvas.getContext('2d', { willReadFrequently: true });
 
-        // ====================================================================
-        // !! 核心修正 !! 新的 applyPoissonSeamless 函数
-        // ====================================================================
-        function applyPoissonSeamless(canvas) {
-            const { width, height } = canvas;
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            const blendSizePercent = parseInt(document.getElementById('poissonBlendSize').value) / 100;
-            const blendWidth = Math.max(1, Math.floor(width * blendSizePercent));
-            const blendHeight = Math.max(1, Math.floor(height * blendSizePercent));
-
-            if (typeof clone === 'undefined') {
-                console.error("clone.js library not loaded!");
-                alert("智能融合库加载失败，请检查网络连接或刷新页面。");
-                return;
-            }
-
-            // 创建一个临时画布来存储每次融合的中间结果
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = width;
-            tempCanvas.height = height;
-            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-            tempCtx.drawImage(canvas, 0, 0); // 复制当前画布内容到临时画布
-
-            // 1. 左右无缝处理 (将右边缘融合到左边缘)
-            if (blendWidth > 0) {
-                // 源贴片：从临时画布的右边缘切下的一小条 (这是需要融合到左边的)
-                const rightSliceData = tempCtx.getImageData(width - blendWidth, 0, blendWidth, height);
-                // 目标图像：当前的整个临时画布
-                const targetDataForLeft = tempCtx.getImageData(0, 0, width, height);
-                // 融合位置：将右侧切片融合到左侧边缘 (offsetX=0)
-                const resultData = clone(rightSliceData, targetDataForLeft, width, 'seamless', 0, 0);
-                tempCtx.putImageData(resultData, 0, 0); // 将融合结果画回临时画布
-            }
-
-            // 2. 上下无缝处理 (将下边缘融合到上边缘)
-            if (blendHeight > 0) {
-                // 源贴片：从处理过的临时画布底部切下的一小条 (这是需要融合到上面的)
-                const bottomSliceData = tempCtx.getImageData(0, height - blendHeight, width, blendHeight);
-                // 目标图像：当前左右无缝后的整个临时画布
-                const targetDataForTop = tempCtx.getImageData(0, 0, width, height);
-                // 融合位置：将底部切片融合到顶部边缘 (offsetY=0)
-                const resultData = clone(bottomSliceData, targetDataForTop, width, 'seamless', 0, 0);
-                tempCtx.putImageData(resultData, 0, 0); // 将融合结果画回临时画布
-            }
-            
-            // 将最终结果复制回原始 canvas
-            ctx.clearRect(0, 0, width, height);
-            ctx.drawImage(tempCanvas, 0, 0);
-        }
-
-        // ====================================================================
-        // 其他所有JS函数 (保持不变)
-        // ====================================================================
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventListeners();
             initializeSliders();
@@ -957,8 +298,6 @@
             });
             const blendSlider = document.getElementById('blendStrength');
             blendSlider.addEventListener('input', function() { document.getElementById('blendStrengthValue').textContent = this.value + '%'; if (isRealTimePreview && activeMethods.includes('blend')) applySeamlessEffect(); });
-            const poissonSlider = document.getElementById('poissonBlendSize');
-            poissonSlider.addEventListener('input', function() { document.getElementById('poissonBlendSizeValue').textContent = this.value + '%'; if (isRealTimePreview && activeMethods.includes('poisson')) applySeamlessEffect(); });
         }
 
         function handleFileSelect(event) { const file = event.target.files[0]; if (file) { loadImage(file); } }
@@ -1064,11 +403,10 @@
             tempCanvas.width = rotatedCanvas.width; tempCanvas.height = rotatedCanvas.height;
             tempCtx.drawImage(rotatedCanvas, 0, 0);
             if (activeMethods.length > 0) {
-                const methodOrder = ['poisson', 'offset', 'mirror', 'blend'];
+                const methodOrder = ['offset', 'mirror', 'blend'];
                 methodOrder.forEach(method => {
                     if (activeMethods.includes(method)) {
                         switch (method) {
-                            case 'poisson': applyPoissonSeamless(tempCanvas); break;
                             case 'mirror': applyMirrorSeamless(tempCanvas); break;
                             case 'offset': applyOffsetSeamless(tempCanvas); break;
                             case 'blend': applyBlendSeamless(tempCanvas); break;
@@ -1081,7 +419,67 @@
             updateTiledPreview();
         }
 
-        function applyMirrorSeamless(sourceCanvas) { const { width, height } = sourceCanvas; const ctx = sourceCanvas.getContext('2d', { willReadFrequently: true }); const imageData = ctx.getImageData(0, 0, width, height); const data = imageData.data; const newData = new Uint8ClampedArray(data); const strength = parseInt(document.getElementById('mirrorStrength').value); const edgeSize = Math.min(width, height) * strength / 100; for (let y = 0; y < height; y++) { for (let x = 0; x < width; x++) { const index = (y * width + x) * 4; const distLeft = x, distRight = width - 1 - x, distTop = y, distBottom = height - 1 - y; const minDistX = Math.min(distLeft, distRight), minDistY = Math.min(distTop, distBottom); if (minDistX < edgeSize || minDistY < edgeSize) { const weightX = minDistX < edgeSize ? minDistX / edgeSize : 1; const weightY = minDistY < edgeSize ? minDistY / edgeSize : 1; const weight = Math.min(weightX, weightY); const mirrorX = distLeft < distRight ? width - 1 - x : x; const mirrorY = distTop < distBottom ? height - 1 - y : y; const mirrorIndex = (mirrorY * width + mirrorX) * 4; for (let i = 0; i < 3; i++) { newData[index + i] = data[index + i] * weight + data[mirrorIndex + i] * (1 - weight); } } } } ctx.putImageData(new ImageData(newData, width, height), 0, 0); }
+        // ====================================================================
+        // !! 最终优化版 applyMirrorSeamless (镜像边缘) 函数 !!
+        // ====================================================================
+        function applyMirrorSeamless(sourceCanvas) {
+            const { width, height } = sourceCanvas;
+            const ctx = sourceCanvas.getContext('2d', { willReadFrequently: true });
+            const strength = parseInt(document.getElementById('mirrorStrength').value);
+            const edgeSize = Math.floor(Math.min(width, height) * strength / 100);
+
+            if (edgeSize <= 1) return;
+
+            // 获取画布的当前状态
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+
+            // 创建一个只读的副本，用于在融合过程中读取原始像素
+            const originalDataCopy = new Uint8ClampedArray(data);
+
+            // 1. 水平方向：从右边缘融合到左边缘
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < edgeSize; x++) {
+                    // 使用S形曲线权重，使过渡更平滑
+                    const alpha = 0.5 - 0.5 * Math.cos(Math.PI * x / (edgeSize - 1));
+
+                    const destIndex = (y * width + x) * 4; // 左边缘像素
+                    const srcIndex = (y * width + (width - 1 - x)) * 4; // 右边缘像素
+                    
+                    // 融合 R, G, B 三个通道
+                    for (let i = 0; i < 3; i++) {
+                        const destVal = originalDataCopy[destIndex + i];
+                        const srcVal = originalDataCopy[srcIndex + i];
+                        data[destIndex + i] = destVal * (1 - alpha) + srcVal * alpha;
+                    }
+                }
+            }
+            
+            // 水平融合完成后，创建一个新的只读副本，用于垂直融合
+            const horizontalResultCopy = new Uint8ClampedArray(data);
+
+            // 2. 垂直方向：从下边缘融合到上边缘
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < edgeSize; y++) {
+                    const alpha = 0.5 - 0.5 * Math.cos(Math.PI * y / (edgeSize - 1));
+
+                    const destIndex = (y * width + x) * 4; // 上边缘像素
+                    const srcIndex = ((height - 1 - y) * width + x) * 4;
+
+                    // 融合 R, G, B 三个通道
+                    for (let i = 0; i < 3; i++) {
+                        // 从水平融合后的结果中读取像素
+                        const destVal = horizontalResultCopy[destIndex + i];
+                        const srcVal = horizontalResultCopy[srcIndex + i];
+                        data[destIndex + i] = destVal * (1 - alpha) + srcVal * alpha;
+                    }
+                }
+            }
+
+            // 将最终处理过的像素数据放回画布
+            ctx.putImageData(imageData, 0, 0);
+        }
+        
         function applyOffsetSeamless(sourceCanvas) { const { width, height } = sourceCanvas; const ctx = sourceCanvas.getContext('2d', { willReadFrequently: true }); const offsetX = parseInt(document.getElementById('offsetX').value); const offsetY = parseInt(document.getElementById('offsetY').value); const actualOffsetX = Math.floor(width * offsetX / 100); const actualOffsetY = Math.floor(height * offsetY / 100); const tempCanvas = document.createElement('canvas'); tempCanvas.width = width; tempCanvas.height = height; tempCanvas.getContext('2d').drawImage(sourceCanvas, 0, 0); ctx.clearRect(0, 0, width, height); ctx.drawImage(tempCanvas, 0, 0, width - actualOffsetX, height - actualOffsetY, actualOffsetX, actualOffsetY, width - actualOffsetX, height - actualOffsetY); ctx.drawImage(tempCanvas, width - actualOffsetX, 0, actualOffsetX, height - actualOffsetY, 0, actualOffsetY, actualOffsetX, height - actualOffsetY); ctx.drawImage(tempCanvas, 0, height - actualOffsetY, width - actualOffsetX, actualOffsetY, actualOffsetX, 0, width - actualOffsetX, actualOffsetY); ctx.drawImage(tempCanvas, width - actualOffsetX, height - actualOffsetY, actualOffsetX, actualOffsetY, 0, 0, actualOffsetX, actualOffsetY); }
         function applyBlendSeamless(sourceCanvas) { const { width, height } = sourceCanvas; const ctx = sourceCanvas.getContext('2d', { willReadFrequently: true }); const imageData = ctx.getImageData(0, 0, width, height); const data = imageData.data; const newData = new Uint8ClampedArray(data); const strength = parseInt(document.getElementById('blendStrength').value); const blendSize = Math.floor(Math.min(width, height) * strength / 200); if (blendSize === 0) return; for (let y = 0; y < height; y++) { for (let x = 0; x < blendSize; x++) { const leftIndex = (y * width + x) * 4; const rightIndex = (y * width + (width - 1 - x)) * 4; const weight = (x + 1) / (blendSize + 1); for (let i = 0; i < 3; i++) { const leftOriginal = data[leftIndex + i]; const rightOriginal = data[rightIndex + i]; newData[leftIndex + i] = leftOriginal * weight + rightOriginal * (1 - weight); newData[rightIndex + i] = rightOriginal * weight + leftOriginal * (1 - weight); } } } for (let x = 0; x < width; x++) { for (let y = 0; y < blendSize; y++) { const topIndex = (y * width + x) * 4; const bottomIndex = ((height - 1 - y) * width + x) * 4; const weight = (y + 1) / (blendSize + 1); for (let i = 0; i < 3; i++) { const topOriginal = data[topIndex + i]; const bottomOriginal = data[bottomIndex + i]; newData[topIndex + i] = topOriginal * weight + bottomOriginal * (1 - weight); newData[bottomIndex + i] = bottomOriginal * weight + topOriginal * (1 - weight); } } } ctx.putImageData(new ImageData(newData, width, height), 0, 0); }
 
