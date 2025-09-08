@@ -44,6 +44,7 @@
 /* 添加在现有CSS中 */
 #mirrorControls, #blendControls, #offsetControls {
     display: none;
+	margin-bottom: 8px;
 }
 
         /* 头部样式 */
@@ -217,7 +218,6 @@
         .control-group h3, .control-group1 h3 {
             color: #f59e0b;
             margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
             font-size: 1.1rem;
             display: flex;
             align-items: center;
@@ -685,6 +685,13 @@
                         <small>通过镜像边缘像素创建无缝效果</small>
                         <span class="order-indicator">1</span>
                     </div>
+
+<div class="method-btn" data-method="gradient">
+    <strong>光影矫正</strong>
+    <small>通过渐变调整图像亮度</small>
+    <span class="order-indicator">2</span>
+</div>
+
                     <div class="method-btn" data-method="blend">
                         <strong>边缘混合</strong>
                         <small>混合相对边缘创建平滑过渡</small>
@@ -718,8 +725,33 @@
                         </div>
                     </div>
 </div>
+
+<!-- 在mirrorControls之后，blendControls之前添加 -->
+<div id="gradientControls" style="display: none; padding-top: 14px; border-top: 1px solid #374151;">
+    <div class="control-item">
+        <label>渐变角度</label>
+        <div class="slider-container">
+            <input type="range" id="gradientAngle" min="0" max="360" value="0">
+            <input type="number" id="gradientAngleInput" class="number-input" min="0" max="360" value="0">°
+        </div>
+    </div>
+    <div class="control-item">
+        <label>渐变延伸</label>
+        <div class="slider-container">
+            <input type="range" id="gradientExtend" min="0" max="100" value="20">
+            <input type="number" id="gradientExtendInput" class="number-input" min="0" max="100" value="20">%
+        </div>
+    </div>
+    <div class="control-item">
+        <label>渐变亮度</label>
+        <div class="slider-container">
+            <input type="range" id="gradientBrightness" min="-100" max="100" value="0">
+            <input type="number" id="gradientBrightnessInput" class="number-input" min="-100" max="100" value="0">%
+        </div>
+    </div>
+</div>
                 
-                <div id="blendControls">
+                <div id="blendControls" style="padding-top: 14px; border-top: 1px solid #374151;">
                     <div class="control-item">
                         <label>混合强度</label>
                         <div class="slider-container">
@@ -729,7 +761,7 @@
                     </div>
                 </div>
                 
-                <div id="offsetControls">
+                <div id="offsetControls" style="padding-top: 14px; border-top: 1px solid #374151;">
                     <div class="control-item">
                         <label>水平偏移</label>
                         <div class="slider-container">
@@ -900,8 +932,16 @@ let showTiledOriginal = false;
             initializeEventListeners();
             initializeSliders();
             initializeNumberInputs(); // 初始化数字输入框
+            // 确保所有方法控制面板初始状态为隐藏
+            hideAllMethodControls();
         });
-
+        // 新增函数：隐藏所有方法控制面板
+        function hideAllMethodControls() {
+            document.getElementById('mirrorControls').style.display = 'none';
+            document.getElementById('gradientControls').style.display = 'none';
+            document.getElementById('blendControls').style.display = 'none';
+            document.getElementById('offsetControls').style.display = 'none';
+        }
 function initializeEventListeners() {
             // 文件上传
             const uploadArea = document.getElementById('uploadArea');
@@ -1045,6 +1085,10 @@ function toggleMethodControls(method, isActive) {
         case 'offset':
             document.getElementById('offsetControls').style.display = isActive ? 'block' : 'none';
             break;
+// 在toggleMethodControls函数中添加case
+case 'gradient':
+    document.getElementById('gradientControls').style.display = isActive ? 'block' : 'none';
+    break;
     }
 }
 // 添加切换函数
@@ -1093,6 +1137,15 @@ gradientSlider.addEventListener('input', function() {
         applySeamlessEffect();
     }
 });
+// 光影矫正控制 - 实时预览
+['gradientAngle', 'gradientExtend', 'gradientBrightness'].forEach(id => {
+    const slider = document.getElementById(id);
+    slider.addEventListener('input', function() {
+        if (isRealTimePreview && activeMethods.includes('gradient') && originalImageData) {
+            applySeamlessEffect();
+        }
+    });
+});
             // 偏移控制 - 实时预览
             ['offsetX', 'offsetY'].forEach(id => {
                 const slider = document.getElementById(id);
@@ -1130,7 +1183,10 @@ gradientSlider.addEventListener('input', function() {
                 {id: 'gradientStrength', min: -100, max: 100, unit: '%'},
                 {id: 'blendStrength', min: 0, max: 50, unit: '%'},
                 {id: 'offsetX', min: 0, max: 100, unit: '%'},
-                {id: 'offsetY', min: 0, max: 100, unit: '%'}
+                {id: 'offsetY', min: 0, max: 100, unit: '%'},
+    {id: 'gradientAngle', min: 0, max: 360, unit: '°'},
+    {id: 'gradientExtend', min: 0, max: 100, unit: '%'},
+    {id: 'gradientBrightness', min: -100, max: 100, unit: '%'}
             ];
             
             // 为所有参数设置输入框事件
@@ -1190,11 +1246,12 @@ gradientSlider.addEventListener('input', function() {
                     showControls();
                     updateImageDimensions();
                     enableRealTimePreview();
-			adjustCanvasDisplay();
+                    
+                    // 新增：确保所有方法控制面板被隐藏
+                    hideAllMethodControls();
                 };
                 img.src = e.target.result;
             };
-
             reader.readAsDataURL(file);
         }
 // 添加窗口大小改变时的监听
@@ -1409,7 +1466,7 @@ window.addEventListener('resize', adjustCanvasDisplay);
             // 应用所有选中的无缝处理方法
             if (activeMethods.length > 0) {
                 // 按照预设顺序应用方法
-                const methodOrder = ['offset', 'mirror', 'blend'];
+                const methodOrder = ['offset', 'gradient', 'mirror', 'blend'];
                 
                 methodOrder.forEach(method => {
                     if (activeMethods.includes(method)) {
@@ -1417,6 +1474,9 @@ window.addEventListener('resize', adjustCanvasDisplay);
                             case 'mirror':
                                 applyMirrorSeamless(tempCanvas);
                                 break;
+case 'gradient':
+    applyGradientCorrection(tempCanvas);
+    break;
                             case 'offset':
                                 applyOffsetSeamless(tempCanvas);
                                 break;
@@ -1434,6 +1494,82 @@ window.addEventListener('resize', adjustCanvasDisplay);
             updateTiledPreview();
         }
 
+
+// 修改后的applyGradientCorrection函数
+function applyGradientCorrection(sourceCanvas) {
+    const { width, height } = sourceCanvas;
+    const ctx = sourceCanvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    
+    // 获取参数值
+    const angle = parseInt(document.getElementById('gradientAngle').value);
+    const extend = parseInt(document.getElementById('gradientExtend').value) / 100;
+    const brightness = parseInt(document.getElementById('gradientBrightness').value);
+    
+    // 计算角度对应的方向向量
+    const rad = angle * Math.PI / 180;
+    const dirX = Math.sin(rad);
+    const dirY = -Math.cos(rad); // 负号是因为图像坐标系Y轴向下
+    
+    // 计算图像对角线长度作为最大距离
+    const maxDist = Math.sqrt(width * width + height * height);
+    
+    // 计算图像中心
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 计算四个角点在方向向量上的投影值，找到最小和最大值
+    let minProjection = Infinity;
+    let maxProjection = -Infinity;
+    
+    // 检查四个角点
+    const corners = [
+        [0, 0],          // 左上
+        [width, 0],      // 右上
+        [0, height],     // 左下
+        [width, height]  // 右下
+    ];
+    
+    corners.forEach(([x, y]) => {
+        const relX = x - centerX;
+        const relY = y - centerY;
+        const projection = relX * dirX + relY * dirY;
+        minProjection = Math.min(minProjection, projection);
+        maxProjection = Math.max(maxProjection, projection);
+    });
+    
+    const projectionRange = maxProjection - minProjection;
+    
+    // 处理每个像素
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const index = (y * width + x) * 4;
+            
+            // 计算像素相对于图像中心的位置
+            const relX = x - centerX;
+            const relY = y - centerY;
+            
+            // 计算在渐变方向上的投影距离
+            const projection = relX * dirX + relY * dirY;
+            
+            // 归一化投影值到[0,1]范围
+            const normalizedProjection = (projection - minProjection) / projectionRange;
+            
+            // 应用延伸参数
+            const effectiveProjection = Math.max(0, Math.min(1, normalizedProjection * extend));
+            
+            // 应用亮度调整
+            const adjust = brightness * effectiveProjection;
+            
+            for (let i = 0; i < 3; i++) {
+                data[index + i] = Math.max(0, Math.min(255, data[index + i] + adjust));
+            }
+        }
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
+}
         // 渐变过渡参数处理函数 - 修改为处理亮度
         function applyMirrorSeamless(sourceCanvas) {
             const { width, height } = sourceCanvas;
@@ -1702,6 +1838,14 @@ function resetSeamlessParameters() {
     document.getElementById('offsetY').value = 50;
     document.getElementById('offsetYInput').value = 50;
     
+    // 新增光影矫正参数重置
+    document.getElementById('gradientAngle').value = 0;
+    document.getElementById('gradientAngleInput').value = 0;
+    document.getElementById('gradientExtend').value = 20;
+    document.getElementById('gradientExtendInput').value = 20;
+    document.getElementById('gradientBrightness').value = 0;
+    document.getElementById('gradientBrightnessInput').value = 0;
+    
     // 重置所有方法选择按钮
     activeMethods = [];
     document.querySelectorAll('.method-btn').forEach(btn => {
@@ -1824,6 +1968,9 @@ function resetSeamlessParameters() {
                 btn.classList.remove('active');
                 btn.querySelector('.order-indicator').style.display = 'none';
             });
+            
+            // 新增：确保所有方法控制面板被隐藏
+            hideAllMethodControls();
         }
     </script>
 </body>
