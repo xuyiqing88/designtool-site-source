@@ -11,6 +11,7 @@
     <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>    
+    
     <style>
         /* 全局样式重置 */
         * {
@@ -40,7 +41,10 @@
     
   }
 
-
+/* 添加在现有CSS中 */
+#mirrorControls, #blendControls, #offsetControls {
+    display: none;
+}
 
         /* 头部样式 */
         .header {
@@ -204,7 +208,7 @@
         /* 控制组 */
         .control-group, .control-group1 {
             margin-bottom: 1rem;
-            padding: 20px;
+            padding: 16px;
             background: linear-gradient(135deg, #0f172a, #1e293b);
             border-radius: 8px;
             border: 1px solid #334155;
@@ -259,15 +263,6 @@
             border: none;
         }
 
-        .value-display {
-            float: right;
-            background: #374151;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: #e2e8f0;
-        }
-
         /* 按钮样式 */
         .btn {
             padding: 0.65rem 1.5rem;
@@ -297,6 +292,8 @@
             background: none;
     	color: white;
     	border: 1px solid #94a3b8;
+	    padding: 0.5rem 0.8rem;
+	margin-left: auto;
         }
 
         .btn-secondary:hover {
@@ -400,6 +397,33 @@
             border-color: #64748b;
         }
 
+        /* 数字输入框样式 */
+        .number-input {
+            width: 60px;
+            padding: 0.25rem;
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 4px;
+            color: white;
+            text-align: center;
+            margin-left: 8px;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+        }
 
         /* 滚动条样式 */
         .sidebar::-webkit-scrollbar {
@@ -575,17 +599,6 @@
             margin-bottom: 1rem;
         }
         
-        .rotation-display {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #374151;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: #e2e8f0;
-        }
-        
         /* 图标样式 */
         .icon {
             width: 1.2rem;
@@ -652,14 +665,18 @@
             <input type="file" id="fileInput" accept="image/*,.tiff,.tif">
 
             <div class="control-group" id="seamlessControls" style="display: block;">
-                <h3>
-                    <i class="fas fa-sync-alt fa-icon"></i>
-                    无缝化处理
-                    <span class="live-indicator" id="liveIndicator" style="display: none;">
-                        <span class="live-dot"></span>
-                        实时预览
-                    </span>
-                </h3>
+    <h3>
+        <i class="fas fa-sync-alt fa-icon"></i>
+        无缝化处理
+        <span class="live-indicator" id="liveIndicator" style="display: none;">
+            <span class="live-dot"></span>
+            实时预览
+        </span>
+        <button class="btn btn-secondary" onclick="resetSeamlessParameters()" >
+            <i class="fas fa-redo fa-icon"></i>
+            重置参数
+        </button>
+    </h3>
                 
                 <div class="method-selector">
                     <div class="method-btn" data-method="mirror">
@@ -680,71 +697,106 @@
                 </div>
                 
                 <div style="margin-bottom:1rem; font-size:0.9rem; color:#94a3b8;">
-                    <small>提示：可同时选择多个方法，按1→2→3顺序应用</small>
+                    <small>提示：可同时选择多个方法，按顺序应用</small>
                 </div>
                 
-                <div id="mirrorControls">
+<div id="mirrorControls">
+    <div class="control-item">
+        <label>镜像强度</label>
+        <div class="slider-container">
+            <input type="range" id="mirrorStrength" min="0" max="50" value="20">
+            <input type="number" id="mirrorStrengthInput" class="number-input" min="0" max="50" value="20">%
+        </div>
+    </div>
+    <!-- 添加渐变控制 -->
                     <div class="control-item">
-                        <label>镜像强度 <span class="value-display" id="mirrorStrengthValue">20%</span></label>
-                        <input type="range" id="mirrorStrength" min="0" max="50" value="20">
+                        <label>边缘亮度调整</label>
+                        <div class="slider-container">
+                            <input type="range" id="gradientStrength" min="-100" max="100" value="0">
+                            <input type="number" id="gradientStrengthInput" class="number-input" min="-100" max="100" value="0">%
+                        </div>
                     </div>
-                </div>
+</div>
                 
                 <div id="blendControls">
                     <div class="control-item">
-                        <label>混合强度 <span class="value-display" id="blendStrengthValue">20%</span></label>
-                        <input type="range" id="blendStrength" min="0" max="50" value="20">
+                        <label>混合强度</label>
+                        <div class="slider-container">
+                            <input type="range" id="blendStrength" min="0" max="50" value="20">
+                            <input type="number" id="blendStrengthInput" class="number-input" min="0" max="50" value="20">%
+                        </div>
                     </div>
                 </div>
                 
                 <div id="offsetControls">
                     <div class="control-item">
-                        <label>水平偏移 <span class="value-display" id="offsetXValue">50%</span></label>
-                        <input type="range" id="offsetX" min="0" max="100" value="50">
+                        <label>水平偏移</label>
+                        <div class="slider-container">
+                            <input type="range" id="offsetX" min="0" max="100" value="50">
+                            <input type="number" id="offsetXInput" class="number-input" min="0" max="100" value="50">%
+                        </div>
                     </div>
                     <div class="control-item">
-                        <label>垂直偏移 <span class="value-display" id="offsetYValue">50%</span></label>
-                        <input type="range" id="offsetY" min="0" max="100" value="50">
+                        <label>垂直偏移</label>
+                        <div class="slider-container">
+                            <input type="range" id="offsetY" min="0" max="100" value="50">
+                            <input type="number" id="offsetYInput" class="number-input" min="0" max="100" value="50">%
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="control-group1" id="imageControls" style="display: block;">
-                <h3>
-                    <i class="fas fa-sliders-h fa-icon"></i>
-                    图像调整
-                </h3>
+<h3>
+    <i class="fas fa-sliders-h fa-icon"></i>
+    图像调整
+    <!-- 将重置按钮移到标题右侧 -->
+    <button class="btn btn-secondary" onclick="resetAdjustments()" >
+        <i class="fas fa-redo fa-icon"></i>
+        重置调整
+    </button>
+</h3>
 
                 <div class="control-item rotation-control">
                     <label>旋转</label>
-                    <span class="rotation-display" id="rotationValue">0°</span>
-                    <input type="range" id="rotation" min="0" max="360" value="0">
+                    <div class="slider-container">
+                        <input type="range" id="rotation" min="0" max="360" value="0">
+                        <input type="number" id="rotationInput" class="number-input" min="0" max="360" value="0">°
+                    </div>
                 </div>
                 
                 <div class="control-item">
-                    <label>亮度 <span class="value-display" id="brightnessValue">100%</span></label>
-                    <input type="range" id="brightness" min="0" max="200" value="100">
+                    <label>亮度</label>
+                    <div class="slider-container">
+                        <input type="range" id="brightness" min="0" max="200" value="100">
+                        <input type="number" id="brightnessInput" class="number-input" min="0" max="200" value="100">%
+                    </div>
                 </div>
                 
                 <div class="control-item">
-                    <label>对比度 <span class="value-display" id="contrastValue">100%</span></label>
-                    <input type="range" id="contrast" min="0" max="200" value="100">
+                    <label>对比度</label>
+                    <div class="slider-container">
+                        <input type="range" id="contrast" min="0" max="200" value="100">
+                        <input type="number" id="contrastInput" class="number-input" min="0" max="200" value="100">%
+                    </div>
                 </div>
                 
                 <div class="control-item">
-                    <label>饱和度 <span class="value-display" id="saturationValue">100%</span></label>
-                    <input type="range" id="saturation" min="0" max="200" value="100">
+                    <label>饱和度</label>
+                    <div class="slider-container">
+                        <input type="range" id="saturation" min="0" max="200" value="100">
+                        <input type="number" id="saturationInput" class="number-input" min="0" max="200" value="100">%
+                    </div>
                 </div>
                 
                 <div class="control-item">
-                    <label>色调 <span class="value-display" id="hueValue">0°</span></label>
-                    <input type="range" id="hue" min="-180" max="180" value="0">
+                    <label>色调</label>
+                    <div class="slider-container">
+                        <input type="range" id="hue" min="-180" max="180" value="0">
+                        <input type="number" id="hueInput" class="number-input" min="-180" max="180" value="0">°
+                    </div>
                 </div>
-                               
-                <button class="btn btn-secondary" onclick="resetAdjustments()">
-                    <i class="fas fa-redo fa-icon"></i>
-                    重置调整
-                </button>
+
             </div>
 
         </div>
@@ -777,13 +829,20 @@
             </div>
 <div class="divider" id="divider"></div>
             <div class="preview-panel" id="rightPanel">
-                <div class="preview-header">
-                    <span>
-                        <i class="fas fa-th fa-icon"></i>
-                        平铺预览
-                    </span>
-                    <span>3×3 网格</span>
-                </div>
+<div class="preview-header">
+    <span>
+        <i class="fas fa-th fa-icon"></i>
+        平铺预览
+    </span>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span>3×3 网格</span>
+        <!-- 添加这个切换按钮 -->
+        <button class="toggle-btn" id="toggleTiledBtn" onclick="toggleTiledPreview()">
+            <i class="fas fa-eye fa-icon"></i>
+            显示原图
+        </button>
+    </div>
+</div>
                 <div class="preview-content" onclick="zoomTiledImage()">
                     <canvas id="tiledCanvas" style="display: none;"></canvas>
                     <div id="noTileMessage">
@@ -821,6 +880,7 @@
 
     <script>
         // 全局变量
+let showTiledOriginal = false;
         let originalImageData = null;
         let processedCanvas = document.getElementById('processedCanvas');
         let processedCtx = processedCanvas.getContext('2d');
@@ -838,6 +898,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventListeners();
             initializeSliders();
+            initializeNumberInputs(); // 初始化数字输入框
         });
 
 function initializeEventListeners() {
@@ -866,7 +927,7 @@ function initializeEventListeners() {
                     loadImage(files[0]);
                 }
             });
-
+}
 function adjustCanvasDisplay() {
     if (!originalImageData) return;
     
@@ -941,64 +1002,101 @@ function adjustCanvasDisplay() {
                 }
             });
 
-            // 无缝化方法选择 - 改为多选
-            document.querySelectorAll('.method-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    const method = this.dataset.method;
-                    
-                    if (this.classList.contains('active')) {
-                        if (!activeMethods.includes(method)) {
-                            activeMethods.push(method);
-                        }
-                    } else {
-                        const index = activeMethods.indexOf(method);
-                        if (index > -1) {
-                            activeMethods.splice(index, 1);
-                        }
-                    }
-                    
-                    // 更新顺序指示器
-                    updateMethodOrderIndicators();
-                    
-                    // 如果启用实时预览，立即应用
-                    if (isRealTimePreview && originalImageData) {
-                        applySeamlessEffect();
-                    }
-                });
-            });
+// 替换现有的方法选择事件处理代码
+document.querySelectorAll('.method-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        const method = this.dataset.method;
+        
+        if (this.classList.contains('active')) {
+            if (!activeMethods.includes(method)) {
+                activeMethods.push(method);
+            }
+        } else {
+            const index = activeMethods.indexOf(method);
+            if (index > -1) {
+                activeMethods.splice(index, 1);
+            }
         }
+        
+        // 显示/隐藏对应的控制参数
+        toggleMethodControls(method, this.classList.contains('active'));
+        
+        // 更新顺序指示器
+        updateMethodOrderIndicators();
+        
+        // 如果启用实时预览，立即应用
+        if (isRealTimePreview && originalImageData) {
+            applySeamlessEffect();
+        }
+    });
+});
+
+// 添加这个新函数来控制参数显示/隐藏
+function toggleMethodControls(method, isActive) {
+    switch(method) {
+        case 'mirror':
+            document.getElementById('mirrorControls').style.display = isActive ? 'block' : 'none';
+            break;
+        case 'blend':
+            document.getElementById('blendControls').style.display = isActive ? 'block' : 'none';
+            break;
+        case 'offset':
+            document.getElementById('offsetControls').style.display = isActive ? 'block' : 'none';
+            break;
+    }
+}
+// 添加切换函数
+function toggleTiledPreview() {
+    showTiledOriginal = !showTiledOriginal;
+    const btn = document.getElementById('toggleTiledBtn');
+    
+    if (showTiledOriginal) {
+        btn.classList.add('active');
+        btn.innerHTML = `
+            <i class="fa-solid fa-eye-slash"></i>
+            显示修改
+        `;
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = `
+            <i class="fas fa-eye fa-icon"></i>
+            显示原图
+        `;
+    }
+    
+    updateTiledPreview();
+}
 
         function initializeSliders() {
             // 图像调整滑竿
             ['brightness', 'contrast', 'saturation', 'hue', 'rotation'].forEach(id => {
                 const slider = document.getElementById(id);
-                const valueDisplay = document.getElementById(id + 'Value');
                 
                 slider.addEventListener('input', function() {
-                    const unit = id === 'hue' || id === 'rotation' ? '°' : '%';
-                    valueDisplay.textContent = this.value + unit;
                     applyImageAdjustments();
                 });
             });
 
             // 镜像强度控制 - 实时预览
             const mirrorSlider = document.getElementById('mirrorStrength');
-            const mirrorValue = document.getElementById('mirrorStrengthValue');
             mirrorSlider.addEventListener('input', function() {
-                mirrorValue.textContent = this.value + '%';
                 if (isRealTimePreview && activeMethods.includes('mirror') && originalImageData) {
                     applySeamlessEffect();
                 }
             });
-
+// 渐变强度控制 - 实时预览
+const gradientSlider = document.getElementById('gradientStrength');
+gradientSlider.addEventListener('input', function() {
+    if (isRealTimePreview && activeMethods.includes('mirror') && originalImageData) {
+        applySeamlessEffect();
+    }
+});
             // 偏移控制 - 实时预览
             ['offsetX', 'offsetY'].forEach(id => {
                 const slider = document.getElementById(id);
-                const valueDisplay = document.getElementById(id + 'Value');
                 
                 slider.addEventListener('input', function() {
-                    valueDisplay.textContent = this.value + '%';
                     if (isRealTimePreview && activeMethods.includes('offset') && originalImageData) {
                         applySeamlessEffect();
                     }
@@ -1007,12 +1105,56 @@ function adjustCanvasDisplay() {
 
             // 混合强度 - 实时预览
             const blendSlider = document.getElementById('blendStrength');
-            const blendValue = document.getElementById('blendStrengthValue');
             blendSlider.addEventListener('input', function() {
-                blendValue.textContent = this.value + '%';
                 if (isRealTimePreview && activeMethods.includes('blend') && originalImageData) {
                     applySeamlessEffect();
                 }
+            });
+        }
+
+        // 初始化数字输入框
+        function initializeNumberInputs() {
+            // 图像调整参数
+            const adjustParams = [
+                {id: 'brightness', min: 0, max: 200, unit: '%'},
+                {id: 'contrast', min: 0, max: 200, unit: '%'},
+                {id: 'saturation', min: 0, max: 200, unit: '%'},
+                {id: 'hue', min: -180, max: 180, unit: '°'},
+                {id: 'rotation', min: 0, max: 360, unit: '°'}
+            ];
+            
+            // 无缝处理参数
+            const seamlessParams = [
+                {id: 'mirrorStrength', min: 0, max: 50, unit: '%'},
+                {id: 'gradientStrength', min: -100, max: 100, unit: '%'},
+                {id: 'blendStrength', min: 0, max: 50, unit: '%'},
+                {id: 'offsetX', min: 0, max: 100, unit: '%'},
+                {id: 'offsetY', min: 0, max: 100, unit: '%'}
+            ];
+            
+            // 为所有参数设置输入框事件
+            [...adjustParams, ...seamlessParams].forEach(param => {
+                const slider = document.getElementById(param.id);
+                const input = document.getElementById(param.id + 'Input');
+                
+                // 输入框变化时更新滑块
+                input.addEventListener('input', function() {
+                    let value = Math.max(param.min, Math.min(param.max, Number(this.value)));
+                    this.value = value;
+                    slider.value = value;
+                    
+                    // 触发相应的处理
+                    if (adjustParams.find(p => p.id === param.id)) {
+                        applyImageAdjustments();
+                    } else if (isRealTimePreview && originalImageData) {
+                        applySeamlessEffect();
+                    }
+                });
+                
+                // 滑块变化时更新输入框
+                slider.addEventListener('input', function() {
+                    input.value = this.value;
+                });
             });
         }
 
@@ -1244,7 +1386,7 @@ window.addEventListener('resize', adjustCanvasDisplay);
 
         function enableRealTimePreview() {
             isRealTimePreview = true;
-            document.getElementById('liveIndicator').style.display = 'flex';
+            document.getElementById('liveIndicator').style.display = 'none';
             
             // 立即应用无缝效果
             if (originalImageData) {
@@ -1291,6 +1433,7 @@ window.addEventListener('resize', adjustCanvasDisplay);
             updateTiledPreview();
         }
 
+        // 渐变过渡参数处理函数 - 修改为处理亮度
         function applyMirrorSeamless(sourceCanvas) {
             const { width, height } = sourceCanvas;
             const ctx = sourceCanvas.getContext('2d');
@@ -1299,7 +1442,12 @@ window.addEventListener('resize', adjustCanvasDisplay);
             const newData = new Uint8ClampedArray(data);
             
             const strength = parseInt(document.getElementById('mirrorStrength').value);
+            const gradientStrength = parseInt(document.getElementById('gradientStrength').value);
             const edgeSize = Math.min(width, height) * strength / 100;
+            
+            // 计算图像中心点
+            const centerX = width / 2;
+            const centerY = height / 2;
             
             for (let y = 0; y < height; y++) {
                 for (let x = 0; x < width; x++) {
@@ -1313,6 +1461,11 @@ window.addEventListener('resize', adjustCanvasDisplay);
                     
                     const minDistX = Math.min(distLeft, distRight);
                     const minDistY = Math.min(distTop, distBottom);
+                    
+                    // 计算到中心的归一化距离 (0-1)
+                    const distToCenterX = Math.abs(x - centerX) / centerX;
+                    const distToCenterY = Math.abs(y - centerY) / centerY;
+                    const distanceToCenter = Math.sqrt(distToCenterX * distToCenterX + distToCenterY * distToCenterY);
                     
                     // 处理边缘像素
                     if (minDistX < edgeSize || minDistY < edgeSize) {
@@ -1328,6 +1481,22 @@ window.addEventListener('resize', adjustCanvasDisplay);
                         // 混合像素
                         for (let i = 0; i < 3; i++) {
                             newData[index + i] = data[index + i] * weight + data[mirrorIndex + i] * (1 - weight);
+                        }
+                    }
+                    
+                    // 应用渐变亮度调整（如果有设置）
+                    if (gradientStrength !== 0) {
+                        // 计算边缘影响因子 (0-1)
+                        let edgeFactor = 0;
+                        if (minDistX < edgeSize) edgeFactor = Math.max(edgeFactor, 1 - (minDistX / edgeSize));
+                        if (minDistY < edgeSize) edgeFactor = Math.max(edgeFactor, 1 - (minDistY / edgeSize));
+                        
+                        // 应用亮度调整（基于边缘影响因子和渐变强度）
+                        const brightnessAdjustment = gradientStrength * edgeFactor;
+                        
+                        for (let i = 0; i < 3; i++) {
+                            let newValue = newData[index + i] + brightnessAdjustment;
+                            newData[index + i] = Math.max(0, Math.min(255, newValue));
                         }
                     }
                 }
@@ -1433,21 +1602,24 @@ window.addEventListener('resize', adjustCanvasDisplay);
             ctx.putImageData(finalImageData, 0, 0);
         }
 
-        function updateTiledPreview() {
-            if (!originalImageData) return;
-            
-            const { width, height } = processedCanvas;
-            
-            // 清空平铺画布
-            tiledCtx.clearRect(0, 0, tiledCanvas.width, tiledCanvas.height);
-            
-            // 绘制3x3网格
-            for (let y = 0; y < 3; y++) {
-                for (let x = 0; x < 3; x++) {
-                    tiledCtx.drawImage(processedCanvas, x * width, y * height);
-                }
-            }
+function updateTiledPreview() {
+    if (!originalImageData) return;
+    
+    const { width, height } = processedCanvas;
+    
+    // 清空平铺画布
+    tiledCtx.clearRect(0, 0, tiledCanvas.width, tiledCanvas.height);
+    
+    // 确定要绘制的源画布
+    const sourceCanvas = showTiledOriginal ? rotatedCanvas : processedCanvas;
+    
+    // 绘制3x3网格
+    for (let y = 0; y < 3; y++) {
+        for (let x = 0; x < 3; x++) {
+            tiledCtx.drawImage(sourceCanvas, x * width, y * height);
         }
+    }
+}
 
         function updateMethodOrderIndicators() {
             document.querySelectorAll('.method-btn').forEach(btn => {
@@ -1478,17 +1650,17 @@ window.addEventListener('resize', adjustCanvasDisplay);
         }
 
         function resetAdjustments() {
+            // 重置滑块和输入框的值
             document.getElementById('brightness').value = 100;
+            document.getElementById('brightnessInput').value = 100;
             document.getElementById('contrast').value = 100;
+            document.getElementById('contrastInput').value = 100;
             document.getElementById('saturation').value = 100;
+            document.getElementById('saturationInput').value = 100;
             document.getElementById('hue').value = 0;
+            document.getElementById('hueInput').value = 0;
             document.getElementById('rotation').value = 0;
-            
-            document.getElementById('brightnessValue').textContent = '100%';
-            document.getElementById('contrastValue').textContent = '100%';
-            document.getElementById('saturationValue').textContent = '100%';
-            document.getElementById('hueValue').textContent = '0°';
-            document.getElementById('rotationValue').textContent = '0°';
+            document.getElementById('rotationInput').value = 0;
             
             applyImageAdjustments();
         }
@@ -1516,7 +1688,33 @@ window.addEventListener('resize', adjustCanvasDisplay);
                 `;
             }
         }
-
+function resetSeamlessParameters() {
+    // 重置滑块和输入框为初始值
+    document.getElementById('mirrorStrength').value = 20;
+    document.getElementById('mirrorStrengthInput').value = 20;
+    document.getElementById('blendStrength').value = 20;
+    document.getElementById('blendStrengthInput').value = 20;
+    document.getElementById('gradientStrength').value = 0;
+    document.getElementById('gradientStrengthInput').value = 0;
+    document.getElementById('offsetX').value = 50;
+    document.getElementById('offsetXInput').value = 50;
+    document.getElementById('offsetY').value = 50;
+    document.getElementById('offsetYInput').value = 50;
+    
+    // 重置所有方法选择按钮
+    activeMethods = [];
+    document.querySelectorAll('.method-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.querySelector('.order-indicator').style.display = 'none';
+        // 隐藏所有控制面板
+        toggleMethodControls(btn.dataset.method, false);
+    });
+    
+    // 重新应用效果
+    if (originalImageData) {
+        applySeamlessEffect();
+    }
+}
         // 图像放大功能
         function zoomImage() {
             if (!originalImageData) return;
