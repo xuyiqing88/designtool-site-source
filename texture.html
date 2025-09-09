@@ -212,6 +212,7 @@
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
             cursor: pointer;
 	overflow: hidden;
+            position: relative; /* 为箭头画布提供定位上下文 */
         }
 
         canvas {
@@ -525,6 +526,7 @@
             gap: 0.25rem;
             font-size: 0.8rem;
             color: #10b981;
+            margin-bottom: 1rem;
         }
 
         .live-dot {
@@ -673,6 +675,15 @@
         
         .fa-icon {
         }
+        
+        /* 箭头画布样式 */
+        #arrowCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -740,7 +751,6 @@
             <i class="fas fa-redo fa-icon"></i>
             重置参数
         </button>
-    </h3>
                 
                 <div class="method-selector">
                     <div class="method-btn" data-method="mirror">
@@ -802,7 +812,7 @@
         <label>渐变延伸</label>
         <div class="slider-container">
             <input type="range" id="gradientExtend" min="0" max="100" value="20">
-            <input type="number" id="gradientExtendInput" class="number-input" min="0" max="100" value="20">%
+            <input type="number" id="gradientExtendInput" class="number-input" min="0, max="100" value="20">%
         </div>
     </div>
     <div class="control-item">
@@ -852,7 +862,6 @@
         <i class="fas fa-redo fa-icon"></i>
         重置调整
     </button>
-</h3>
 
                 <div class="control-item rotation-control">
                     <label>旋转</label>
@@ -866,7 +875,7 @@
                     <label>亮度</label>
                     <div class="slider-container">
                         <input type="range" id="brightness" min="0" max="200" value="100">
-                        <input type="number" id="brightnessInput" class="number-input" min="0" max="200" value="100">%
+                        <input type="number" id='brightnessInput' class="number-input" min="0" max="200" value="100">%
                     </div>
                 </div>
                 
@@ -917,6 +926,7 @@
                 </div>
                 <div class="preview-content" onclick="zoomImage()">
                     <canvas id="processedCanvas" style="display: none;"></canvas>
+                    <canvas id="arrowCanvas"></canvas>
                     <div id="noImageMessage">
                         <div style="text-align: center; opacity: 0.6;">
                             <i class="fas fa-star icon-xl" style="margin-bottom: 1rem;"></i>
@@ -979,19 +989,25 @@
 
     <script>
         // 全局变量
-let showTiledOriginal = false;
+        let showTiledOriginal = false;
         let originalImageData = null;
         let processedCanvas = document.getElementById('processedCanvas');
-        let processedCtx = processedCanvas.getContext('2d');
+        // 修复Canvas2D性能警告：设置willReadFrequently属性
+        let processedCtx = processedCanvas.getContext('2d', { willReadFrequently: true });
         let tiledCanvas = document.getElementById('tiledCanvas');
-        let tiledCtx = tiledCanvas.getContext('2d');
+        let tiledCtx = tiledCanvas.getContext('2d', { willReadFrequently: true });
         let activeMethods = []; // 存储选中的无缝处理方法
         let isRealTimePreview = false;
         let showOriginal = false; // 是否显示原图模式
         let adjustCanvas = document.createElement('canvas'); // 用于保存调整后的图像
-        let adjustCtx = adjustCanvas.getContext('2d');
+        let adjustCtx = adjustCanvas.getContext('2d', { willReadFrequently: true });
         let rotatedCanvas = document.createElement('canvas'); // 用于旋转后的图像
-        let rotatedCtx = rotatedCanvas.getContext('2d');
+        let rotatedCtx = rotatedCanvas.getContext('2d', { willReadFrequently: true });
+        
+        // 箭头画布相关变量
+        let arrowCanvas = document.getElementById('arrowCanvas');
+        let arrowCtx = arrowCanvas.getContext('2d');
+        let arrowTimeout = null; // 用于隐藏箭头的定时器
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -1001,6 +1017,7 @@ let showTiledOriginal = false;
             // 确保所有方法控制面板初始状态为隐藏
             hideAllMethodControls();
         });
+        
         // 新增函数：隐藏所有方法控制面板
         function hideAllMethodControls() {
             document.getElementById('mirrorControls').style.display = 'none';
@@ -1008,7 +1025,8 @@ let showTiledOriginal = false;
             document.getElementById('blendControls').style.display = 'none';
             document.getElementById('offsetControls').style.display = 'none';
         }
-function initializeEventListeners() {
+        
+        function initializeEventListeners() {
             // 文件上传
             const uploadArea = document.getElementById('uploadArea');
             const fileInput = document.getElementById('fileInput');
@@ -1034,43 +1052,35 @@ function initializeEventListeners() {
                     loadImage(files[0]);
                 }
             });
-    // 添加标签切换功能
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const tab = this.dataset.tab;
-            
-            // 更新按钮状态
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // 更新内容显示
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tab + 'Tab').classList.add('active');
-        });
-    });
-}
-function adjustCanvasDisplay() {
-    if (!originalImageData) return;
-    
-    const container = document.querySelector('.preview-content');
-    const canvas = document.getElementById('processedCanvas');
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-    const imgRatio = originalImageData.width / originalImageData.height;
-    const containerRatio = containerWidth / containerHeight;
-    
-    // 根据容器和图片比例调整canvas显示尺寸
-    if (imgRatio > containerRatio) {
-        // 图片更宽，以宽度为基准
-        canvas.style.width = '100%';
-        canvas.style.height = 'auto';
-    } else {
-        // 图片更高，以高度为基准
-        canvas.style.width = 'auto';
-        canvas.style.height = '100%';
+
+    window.addEventListener('resize', function() {
+    if (originalImageData) {
+        const previewContent = document.querySelector('.preview-content');
+        arrowCanvas.width = previewContent.clientWidth;
+        arrowCanvas.height = previewContent.clientHeight;
+        
+        // 如果当前正在显示箭头，重新绘制
+        if (arrowCanvas.style.display === 'block') {
+            drawArrow();
+        }
     }
-}
-            // 【已修复】分隔条拖动功能
+});
+            // 添加标签切换功能
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.dataset.tab;
+                    
+                    // 更新按钮状态
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 更新内容显示
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(tab + 'Tab').classList.add('active');
+                });
+            });
+            
+            // 分隔条拖动功能
             const divider = document.getElementById('divider');
             const leftPanel = document.getElementById('leftPanel');
             const rightPanel = document.getElementById('rightPanel');
@@ -1114,7 +1124,7 @@ function adjustCanvasDisplay() {
                 rightPanel.style.pointerEvents = '';
             });
 
-            // 【已修复】模态框点击空白区域关闭
+            // 模态框点击空白区域关闭
             const imageModal = document.getElementById('imageModal');
             imageModal.addEventListener('click', function(event) {
                 // 检查点击事件的目标是否是模态框背景本身 (而不是图片)
@@ -1123,75 +1133,76 @@ function adjustCanvasDisplay() {
                 }
             });
 
-// 替换现有的方法选择事件处理代码
-document.querySelectorAll('.method-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        this.classList.toggle('active');
-        const method = this.dataset.method;
-        
-        if (this.classList.contains('active')) {
-            if (!activeMethods.includes(method)) {
-                activeMethods.push(method);
-            }
-        } else {
-            const index = activeMethods.indexOf(method);
-            if (index > -1) {
-                activeMethods.splice(index, 1);
-            }
+            // 方法选择事件处理
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const method = this.dataset.method;
+                    
+                    if (this.classList.contains('active')) {
+                        if (!activeMethods.includes(method)) {
+                            activeMethods.push(method);
+                        }
+                    } else {
+                        const index = activeMethods.indexOf(method);
+                        if (index > -1) {
+                            activeMethods.splice(index, 1);
+                        }
+                    }
+                    
+                    // 显示/隐藏对应的控制参数
+                    toggleMethodControls(method, this.classList.contains('active'));
+                    
+                    // 更新顺序指示器
+                    updateMethodOrderIndicators();
+                    
+                    // 如果启用实时预览，立即应用
+                    if (isRealTimePreview && originalImageData) {
+                        applySeamlessEffect();
+                    }
+                });
+            });
         }
-        
-        // 显示/隐藏对应的控制参数
-        toggleMethodControls(method, this.classList.contains('active'));
-        
-        // 更新顺序指示器
-        updateMethodOrderIndicators();
-        
-        // 如果启用实时预览，立即应用
-        if (isRealTimePreview && originalImageData) {
-            applySeamlessEffect();
-        }
-    });
-});
 
-// 添加这个新函数来控制参数显示/隐藏
-function toggleMethodControls(method, isActive) {
-    switch(method) {
-        case 'mirror':
-            document.getElementById('mirrorControls').style.display = isActive ? 'block' : 'none';
-            break;
-        case 'blend':
-            document.getElementById('blendControls').style.display = isActive ? 'block' : 'none';
-            break;
-        case 'offset':
-            document.getElementById('offsetControls').style.display = isActive ? 'block' : 'none';
-            break;
-// 在toggleMethodControls函数中添加case
-case 'gradient':
-    document.getElementById('gradientControls').style.display = isActive ? 'block' : 'none';
-    break;
-    }
-}
-// 添加切换函数
-function toggleTiledPreview() {
-    showTiledOriginal = !showTiledOriginal;
-    const btn = document.getElementById('toggleTiledBtn');
-    
-    if (showTiledOriginal) {
-        btn.classList.add('active');
-        btn.innerHTML = `
-            <i class="fa-solid fa-eye-slash"></i>
-            显示修改
-        `;
-    } else {
-        btn.classList.remove('active');
-        btn.innerHTML = `
-            <i class="fas fa-eye fa-icon"></i>
-            显示原图
-        `;
-    }
-    
-    updateTiledPreview();
-}
+        // 添加这个新函数来控制参数显示/隐藏
+        function toggleMethodControls(method, isActive) {
+            switch(method) {
+                case 'mirror':
+                    document.getElementById('mirrorControls').style.display = isActive ? 'block' : 'none';
+                    break;
+                case 'blend':
+                    document.getElementById('blendControls').style.display = isActive ? 'block' : 'none';
+                    break;
+                case 'offset':
+                    document.getElementById('offsetControls').style.display = isActive ? 'block' : 'none';
+                    break;
+                case 'gradient':
+                    document.getElementById('gradientControls').style.display = isActive ? 'block' : 'none';
+                    break;
+            }
+        }
+        
+        // 添加切换函数
+        function toggleTiledPreview() {
+            showTiledOriginal = !showTiledOriginal;
+            const btn = document.getElementById('toggleTiledBtn');
+            
+            if (showTiledOriginal) {
+                btn.classList.add('active');
+                btn.innerHTML = `
+                    <i class="fa-solid fa-eye-slash"></i>
+                    显示修改
+                `;
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = `
+                    <i class="fas fa-eye fa-icon"></i>
+                    显示原图
+                `;
+            }
+            
+            updateTiledPreview();
+        }
 
         function initializeSliders() {
             // 图像调整滑竿
@@ -1210,22 +1221,36 @@ function toggleTiledPreview() {
                     applySeamlessEffect();
                 }
             });
-// 渐变强度控制 - 实时预览
-const gradientSlider = document.getElementById('gradientStrength');
-gradientSlider.addEventListener('input', function() {
-    if (isRealTimePreview && activeMethods.includes('mirror') && originalImageData) {
-        applySeamlessEffect();
-    }
-});
-// 光影矫正控制 - 实时预览
-['gradientAngle', 'gradientExtend', 'gradientBrightness'].forEach(id => {
-    const slider = document.getElementById(id);
-    slider.addEventListener('input', function() {
-        if (isRealTimePreview && activeMethods.includes('gradient') && originalImageData) {
-            applySeamlessEffect();
-        }
-    });
-});
+            
+            // 渐变强度控制 - 实时预览
+            const gradientSlider = document.getElementById('gradientStrength');
+            gradientSlider.addEventListener('input', function() {
+                if (isRealTimePreview && activeMethods.includes('mirror') && originalImageData) {
+                    applySeamlessEffect();
+                }
+            });
+            
+            // 光影矫正控制 - 实时预览
+            ['gradientAngle', 'gradientExtend', 'gradientBrightness'].forEach(id => {
+                const slider = document.getElementById(id);
+                slider.addEventListener('input', function() {
+                    if (isRealTimePreview && activeMethods.includes('gradient') && originalImageData) {
+                        applySeamlessEffect();
+                    }
+                });
+                
+                // 为渐变角度添加特殊处理 - 显示箭头
+                if (id === 'gradientAngle') {
+                    slider.addEventListener('input', function() {
+                        showArrowIndicator();
+                    });
+                    
+                    slider.addEventListener('change', function() {
+                        hideArrowIndicator();
+                    });
+                }
+            });
+            
             // 偏移控制 - 实时预览
             ['offsetX', 'offsetY'].forEach(id => {
                 const slider = document.getElementById(id);
@@ -1264,9 +1289,9 @@ gradientSlider.addEventListener('input', function() {
                 {id: 'blendStrength', min: 0, max: 50, unit: '%'},
                 {id: 'offsetX', min: 0, max: 100, unit: '%'},
                 {id: 'offsetY', min: 0, max: 100, unit: '%'},
-    {id: 'gradientAngle', min: 0, max: 360, unit: '°'},
-    {id: 'gradientExtend', min: 0, max: 100, unit: '%'},
-    {id: 'gradientBrightness', min: -100, max: 100, unit: '%'}
+                {id: 'gradientAngle', min: 0, max: 360, unit: '°'},
+                {id: 'gradientExtend', min: 0, max: 100, unit: '%'},
+                {id: 'gradientBrightness', min: -100, max: 100, unit: '%'}
             ];
             
             // 为所有参数设置输入框事件
@@ -1286,12 +1311,24 @@ gradientSlider.addEventListener('input', function() {
                     } else if (isRealTimePreview && originalImageData) {
                         applySeamlessEffect();
                     }
+                    
+                    // 如果是渐变角度，显示箭头
+                    if (param.id === 'gradientAngle') {
+                        showArrowIndicator();
+                    }
                 });
                 
                 // 滑块变化时更新输入框
                 slider.addEventListener('input', function() {
                     input.value = this.value;
                 });
+                
+                // 如果是渐变角度输入框，添加失去焦点事件隐藏箭头
+                if (param.id === 'gradientAngle') {
+                    input.addEventListener('blur', function() {
+                        hideArrowIndicator();
+                    });
+                }
             });
         }
 
@@ -1327,15 +1364,39 @@ gradientSlider.addEventListener('input', function() {
                     updateImageDimensions();
                     enableRealTimePreview();
                     
-                    // 新增：确保所有方法控制面板被隐藏
-                    hideAllMethodControls();
+		activeMethods.forEach(method => {
+            toggleMethodControls(method, true);
+        });
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
-// 添加窗口大小改变时的监听
-window.addEventListener('resize', adjustCanvasDisplay);
+
+        // 添加窗口大小改变时的监听
+        window.addEventListener('resize', adjustCanvasDisplay);
+        
+        function adjustCanvasDisplay() {
+            if (!originalImageData) return;
+            
+            const container = document.querySelector('.preview-content');
+            const canvas = document.getElementById('processedCanvas');
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            const imgRatio = originalImageData.width / originalImageData.height;
+            const containerRatio = containerWidth / containerHeight;
+            
+            // 根据容器和图片比例调整canvas显示尺寸
+            if (imgRatio > containerRatio) {
+                // 图片更宽，以宽度为基准
+                canvas.style.width = '100%';
+                canvas.style.height = 'auto';
+            } else {
+                // 图片更高，以高度为基准
+                canvas.style.width = 'auto';
+                canvas.style.height = '100%';
+            }
+        }
 
         function loadTiffImage(file) {
             // 检查 UTIF 库是否已加载。如果未加载，说明 <script> 标签加载失败。
@@ -1354,7 +1415,8 @@ window.addEventListener('resize', adjustCanvasDisplay);
                     UTIF.decodeImage(buffer, page);
                     
                     const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
+                    // 修复Canvas2D性能警告：设置willReadFrequently属性
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
                     canvas.width = page.width;
                     canvas.height = page.height;
                     
@@ -1411,6 +1473,11 @@ window.addEventListener('resize', adjustCanvasDisplay);
             // 设置旋转画布 - 保持原始尺寸
             rotatedCanvas.width = width;
             rotatedCanvas.height = height;
+            
+            // 设置箭头画布 - 修改为与显示尺寸一致，而不是图像原始尺寸
+    const previewContent = document.querySelector('.preview-content');
+    arrowCanvas.width = previewContent.clientWidth;
+    arrowCanvas.height = previewContent.clientHeight;
             
             // 显示画布
             processedCanvas.style.display = 'block';
@@ -1536,7 +1603,8 @@ window.addEventListener('resize', adjustCanvasDisplay);
             if (!originalImageData || showOriginal) return;
             
             const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
+            // 修复Canvas2D性能警告：设置willReadFrequently属性
+            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
             tempCanvas.width = rotatedCanvas.width;
             tempCanvas.height = rotatedCanvas.height;
             
@@ -1554,9 +1622,9 @@ window.addEventListener('resize', adjustCanvasDisplay);
                             case 'mirror':
                                 applyMirrorSeamless(tempCanvas);
                                 break;
-case 'gradient':
-    applyGradientCorrection(tempCanvas);
-    break;
+                            case 'gradient':
+                                applyGradientCorrection(tempCanvas);
+                                break;
                             case 'offset':
                                 applyOffsetSeamless(tempCanvas);
                                 break;
@@ -1574,82 +1642,82 @@ case 'gradient':
             updateTiledPreview();
         }
 
-
-// 修改后的applyGradientCorrection函数
-function applyGradientCorrection(sourceCanvas) {
-    const { width, height } = sourceCanvas;
-    const ctx = sourceCanvas.getContext('2d');
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const data = imageData.data;
-    
-    // 获取参数值
-    const angle = parseInt(document.getElementById('gradientAngle').value);
-    const extend = parseInt(document.getElementById('gradientExtend').value) / 100;
-    const brightness = parseInt(document.getElementById('gradientBrightness').value);
-    
-    // 计算角度对应的方向向量
-    const rad = angle * Math.PI / 180;
-    const dirX = Math.sin(rad);
-    const dirY = -Math.cos(rad); // 负号是因为图像坐标系Y轴向下
-    
-    // 计算图像对角线长度作为最大距离
-    const maxDist = Math.sqrt(width * width + height * height);
-    
-    // 计算图像中心
-    const centerX = width / 2;
-    const centerY = height / 2;
-    
-    // 计算四个角点在方向向量上的投影值，找到最小和最大值
-    let minProjection = Infinity;
-    let maxProjection = -Infinity;
-    
-    // 检查四个角点
-    const corners = [
-        [0, 0],          // 左上
-        [width, 0],      // 右上
-        [0, height],     // 左下
-        [width, height]  // 右下
-    ];
-    
-    corners.forEach(([x, y]) => {
-        const relX = x - centerX;
-        const relY = y - centerY;
-        const projection = relX * dirX + relY * dirY;
-        minProjection = Math.min(minProjection, projection);
-        maxProjection = Math.max(maxProjection, projection);
-    });
-    
-    const projectionRange = maxProjection - minProjection;
-    
-    // 处理每个像素
-    for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-            const index = (y * width + x) * 4;
+        // 修改后的applyGradientCorrection函数
+        function applyGradientCorrection(sourceCanvas) {
+            const { width, height } = sourceCanvas;
+            const ctx = sourceCanvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
             
-            // 计算像素相对于图像中心的位置
-            const relX = x - centerX;
-            const relY = y - centerY;
+            // 获取参数值
+            const angle = parseInt(document.getElementById('gradientAngle').value);
+            const extend = parseInt(document.getElementById('gradientExtend').value) / 100;
+            const brightness = parseInt(document.getElementById('gradientBrightness').value);
             
-            // 计算在渐变方向上的投影距离
-            const projection = relX * dirX + relY * dirY;
+            // 计算角度对应的方向向量
+            const rad = angle * Math.PI / 180;
+            const dirX = Math.sin(rad);
+            const dirY = -Math.cos(rad); // 负号是因为图像坐标系Y轴向下
             
-            // 归一化投影值到[0,1]范围
-            const normalizedProjection = (projection - minProjection) / projectionRange;
+            // 计算图像对角线长度作为最大距离
+            const maxDist = Math.sqrt(width * width + height * height);
             
-            // 应用延伸参数
-            const effectiveProjection = Math.max(0, Math.min(1, normalizedProjection * extend));
+            // 计算图像中心
+            const centerX = width / 2;
+            const centerY = height / 2;
             
-            // 应用亮度调整
-            const adjust = brightness * effectiveProjection;
+            // 计算四个角点在方向向量上的投影值，找到最小和最大值
+            let minProjection = Infinity;
+            let maxProjection = -Infinity;
             
-            for (let i = 0; i < 3; i++) {
-                data[index + i] = Math.max(0, Math.min(255, data[index + i] + adjust));
+            // 检查四个角点
+            const corners = [
+                [0, 0],          // 左上
+                [width, 0],      // 右上
+                [0, height],     // 左下
+                [width, height]  // 右下
+            ];
+            
+            corners.forEach(([x, y]) => {
+                const relX = x - centerX;
+                const relY = y - centerY;
+                const projection = relX * dirX + relY * dirY;
+                minProjection = Math.min(minProjection, projection);
+                maxProjection = Math.max(maxProjection, projection);
+            });
+            
+            const projectionRange = maxProjection - minProjection;
+            
+            // 处理每个像素
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = (y * width + x) * 4;
+                    
+                    // 计算像素相对于图像中心的位置
+                    const relX = x - centerX;
+                    const relY = y - centerY;
+                    
+                    // 计算在渐变方向上的投影距离
+                    const projection = relX * dirX + relY * dirY;
+                    
+                    // 归一化投影值到[0,1]范围
+                    const normalizedProjection = (projection - minProjection) / projectionRange;
+                    
+                    // 应用延伸参数
+                    const effectiveProjection = Math.max(0, Math.min(1, normalizedProjection * extend));
+                    
+                    // 应用亮度调整
+                    const adjust = brightness * effectiveProjection;
+                    
+                    for (let i = 0; i < 3; i++) {
+                        data[index + i] = Math.max(0, Math.min(255, data[index + i] + adjust));
+                    }
+                }
             }
+            
+            ctx.putImageData(imageData, 0, 0);
         }
-    }
-    
-    ctx.putImageData(imageData, 0, 0);
-}
+        
         // 渐变过渡参数处理函数 - 修改为处理亮度
         function applyMirrorSeamless(sourceCanvas) {
             const { width, height } = sourceCanvas;
@@ -1819,24 +1887,24 @@ function applyGradientCorrection(sourceCanvas) {
             ctx.putImageData(finalImageData, 0, 0);
         }
 
-function updateTiledPreview() {
-    if (!originalImageData) return;
-    
-    const { width, height } = processedCanvas;
-    
-    // 清空平铺画布
-    tiledCtx.clearRect(0, 0, tiledCanvas.width, tiledCanvas.height);
-    
-    // 确定要绘制的源画布
-    const sourceCanvas = showTiledOriginal ? rotatedCanvas : processedCanvas;
-    
-    // 绘制3x3网格
-    for (let y = 0; y < 3; y++) {
-        for (let x = 0; x < 3; x++) {
-            tiledCtx.drawImage(sourceCanvas, x * width, y * height);
+        function updateTiledPreview() {
+            if (!originalImageData) return;
+            
+            const { width, height } = processedCanvas;
+            
+            // 清空平铺画布
+            tiledCtx.clearRect(0, 0, tiledCanvas.width, tiledCanvas.height);
+            
+            // 确定要绘制的源画布
+            const sourceCanvas = showTiledOriginal ? rotatedCanvas : processedCanvas;
+            
+            // 绘制3x3网格
+            for (let y = 0; y < 3; y++) {
+                for (let x = 0; x < 3; x++) {
+                    tiledCtx.drawImage(sourceCanvas, x * width, y * height);
+                }
+            }
         }
-    }
-}
 
         function updateMethodOrderIndicators() {
             document.querySelectorAll('.method-btn').forEach(btn => {
@@ -1905,41 +1973,43 @@ function updateTiledPreview() {
                 `;
             }
         }
-function resetSeamlessParameters() {
-    // 重置滑块和输入框为初始值
-    document.getElementById('mirrorStrength').value = 20;
-    document.getElementById('mirrorStrengthInput').value = 20;
-    document.getElementById('blendStrength').value = 20;
-    document.getElementById('blendStrengthInput').value = 20;
-    document.getElementById('gradientStrength').value = 0;
-    document.getElementById('gradientStrengthInput').value = 0;
-    document.getElementById('offsetX').value = 50;
-    document.getElementById('offsetXInput').value = 50;
-    document.getElementById('offsetY').value = 50;
-    document.getElementById('offsetYInput').value = 50;
-    
-    // 新增光影矫正参数重置
-    document.getElementById('gradientAngle').value = 0;
-    document.getElementById('gradientAngleInput').value = 0;
-    document.getElementById('gradientExtend').value = 20;
-    document.getElementById('gradientExtendInput').value = 20;
-    document.getElementById('gradientBrightness').value = 0;
-    document.getElementById('gradientBrightnessInput').value = 0;
-    
-    // 重置所有方法选择按钮
-    activeMethods = [];
-    document.querySelectorAll('.method-btn').forEach(btn => {
-        btn.classList.remove('active');
-        btn.querySelector('.order-indicator').style.display = 'none';
-        // 隐藏所有控制面板
-        toggleMethodControls(btn.dataset.method, false);
-    });
-    
-    // 重新应用效果
-    if (originalImageData) {
-        applySeamlessEffect();
-    }
-}
+        
+        function resetSeamlessParameters() {
+            // 重置滑块和输入框为初始值
+            document.getElementById('mirrorStrength').value = 20;
+            document.getElementById('mirrorStrengthInput').value = 20;
+            document.getElementById('blendStrength').value = 20;
+            document.getElementById('blendStrengthInput').value = 20;
+            document.getElementById('gradientStrength').value = 0;
+            document.getElementById('gradientStrengthInput').value = 0;
+            document.getElementById('offsetX').value = 50;
+            document.getElementById('offsetXInput').value = 50;
+            document.getElementById('offsetY').value = 50;
+            document.getElementById('offsetYInput').value = 50;
+            
+            // 新增光影矫正参数重置
+            document.getElementById('gradientAngle').value = 0;
+            document.getElementById('gradientAngleInput').value = 0;
+            document.getElementById('gradientExtend').value = 20;
+            document.getElementById('gradientExtendInput').value = 20;
+            document.getElementById('gradientBrightness').value = 0;
+            document.getElementById('gradientBrightnessInput').value = 0;
+            
+            // 重置所有方法选择按钮
+            activeMethods = [];
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.querySelector('.order-indicator').style.display = 'none';
+                // 隐藏所有控制面板
+                toggleMethodControls(btn.dataset.method, false);
+            });
+            
+            // 重新应用效果
+            if (originalImageData) {
+                applySeamlessEffect();
+            }
+        }
+        
         // 图像放大功能
         function zoomImage() {
             if (!originalImageData) return;
@@ -2052,6 +2122,78 @@ function resetSeamlessParameters() {
             // 新增：确保所有方法控制面板被隐藏
             hideAllMethodControls();
         }
+        
+        // 箭头指示器相关函数
+        function showArrowIndicator() {
+            if (!originalImageData) return;
+            
+            // 清除之前的定时器
+            if (arrowTimeout) {
+                clearTimeout(arrowTimeout);
+                arrowTimeout = null;
+            }
+            
+            // 显示箭头画布
+            arrowCanvas.style.display = 'block';
+            
+            // 绘制箭头
+            drawArrow();
+        }
+        
+        function hideArrowIndicator() {
+            // 设置定时器，延迟隐藏箭头
+            arrowTimeout = setTimeout(() => {
+                arrowCanvas.style.display = 'none';
+                arrowTimeout = null;
+            }, 1000); // 1秒后隐藏
+        }
+        
+function drawArrow() {
+    const angle = parseInt(document.getElementById('gradientAngle').value);
+    const { width, height } = arrowCanvas;
+    
+    // 清除画布
+    arrowCtx.clearRect(0, 0, width, height);
+    
+    // 计算中心点 - 使用画布的中心而不是图像的中心
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 计算箭头长度（画布对角线的一半）
+    const arrowLength = Math.min(width, height) * 0.3;
+    
+    // 转换为弧度 - 注意：这里需要调整角度系统
+    // 画布的坐标系是Y轴向下，而角度系统是Y轴向上
+    // 所以需要将角度调整为从顶部开始，顺时针为正
+    const rad = (angle + 90) * Math.PI / 180; // 减去90度使0°指向顶部
+    
+    // 计算箭头终点
+    const endX = centerX + Math.cos(rad) * arrowLength;
+    const endY = centerY + Math.sin(rad) * arrowLength;
+    
+    // 设置箭头样式
+    arrowCtx.strokeStyle = '#fff';
+    arrowCtx.lineWidth = 2;
+    arrowCtx.lineCap = 'round';
+    
+    // 绘制箭头线
+    arrowCtx.beginPath();
+    arrowCtx.moveTo(centerX, centerY);
+    arrowCtx.lineTo(endX, endY);
+    arrowCtx.stroke();
+    
+    // 绘制箭头头部
+    const headLength = 15;
+    const angle1 = rad + Math.PI * 0.2; // 箭头角度1
+    const angle2 = rad - Math.PI * 0.2; // 箭头角度2
+    
+    arrowCtx.beginPath();
+    arrowCtx.moveTo(endX, endY);
+    arrowCtx.lineTo(endX - Math.cos(angle1) * headLength, endY - Math.sin(angle1) * headLength);
+    arrowCtx.moveTo(endX, endY);
+    arrowCtx.lineTo(endX - Math.cos(angle2) * headLength, endY - Math.sin(angle2) * headLength);
+    arrowCtx.stroke();
+}
     </script>
 </body>
 </html>
