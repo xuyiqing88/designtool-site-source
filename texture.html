@@ -27,6 +27,8 @@
             height: 100vh;
             overflow: hidden;
         }
+.vue {
+	width: 10px;}
 /* 标签页样式 */
 .tabs-container {
     margin-bottom: 1rem;
@@ -277,7 +279,7 @@
         }
 
         .control-item {
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .control-item label {
@@ -373,6 +375,7 @@
         .btn-orange:hover {
             opacity: 0.92;
     box-shadow: 0 7px 18px rgba(89, 99, 255, 0.35);
+	scale: 1.05;
         }
 
         /* 无缝化方法选择 */
@@ -654,7 +657,7 @@
         /* 旋转控制样式 */
         .rotation-control {
             position: relative;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
         
         /* 图标样式 */
@@ -786,7 +789,7 @@
         <label>镜像强度</label>
         <div class="slider-container">
             <input type="range" id="mirrorStrength" min="0" max="50" value="20">
-            <input type="number" id="mirrorStrengthInput" class="number-input" min="0" max="50" value="20">%
+            <input type="number" id="mirrorStrengthInput" class="number-input" min="0" max="50" value="20"><span class="vue">%</span>
         </div>
     </div>
     <!-- 添加渐变控制 -->
@@ -794,7 +797,7 @@
                         <label>边缘亮度调整</label>
                         <div class="slider-container">
                             <input type="range" id="gradientStrength" min="-100" max="100" value="0">
-                            <input type="number" id="gradientStrengthInput" class="number-input" min="-100" max="100" value="0">%
+                            <input type="number" id="gradientStrengthInput" class="number-input" min="-100" max="100" value="0"><span class="vue">%</span>
                         </div>
                     </div>
 </div>
@@ -805,21 +808,21 @@
         <label>渐变角度</label>
         <div class="slider-container">
             <input type="range" id="gradientAngle" min="0" max="360" value="180">
-            <input type="number" id="gradientAngleInput" class="number-input" min="0" max="360" value="180">°
+            <input type="number" id="gradientAngleInput" class="number-input" min="0" max="360" value="180"><span class="vue">°</span>
         </div>
     </div>
     <div class="control-item">
         <label>渐变延伸</label>
         <div class="slider-container">
             <input type="range" id="gradientExtend" min="0" max="100" value="50">
-            <input type="number" id="gradientExtendInput" class="number-input" min="0, max="100" value="50">%
+            <input type="number" id="gradientExtendInput" class="number-input" min="0, max="100" value="50"><span class="vue">%</span>
         </div>
     </div>
     <div class="control-item">
         <label>渐变亮度</label>
         <div class="slider-container">
             <input type="range" id="gradientBrightness" min="-100" max="100" value="50">
-            <input type="number" id="gradientBrightnessInput" class="number-input" min="-100" max="100" value="50">%
+            <input type="number" id="gradientBrightnessInput" class="number-input" min="-100" max="100" value="50"><span class="vue">%</span>
         </div>
     </div>
 </div>
@@ -829,7 +832,7 @@
                         <label>混合强度</label>
                         <div class="slider-container">
                             <input type="range" id="blendStrength" min="0" max="50" value="20">
-                            <input type="number" id="blendStrengthInput" class="number-input" min="0" max="50" value="20">%
+                            <input type="number" id="blendStrengthInput" class="number-input" min="0" max="50" value="20"><span class="vue">%</span>
                         </div>
                     </div>
                 </div>
@@ -839,14 +842,14 @@
                         <label>水平偏移</label>
                         <div class="slider-container">
                             <input type="range" id="offsetX" min="0" max="100" value="50">
-                            <input type="number" id="offsetXInput" class="number-input" min="0" max="100" value="50">%
+                            <input type="number" id="offsetXInput" class="number-input" min="0" max="100" value="50"><span class="vue">%</span>
                         </div>
                     </div>
                     <div class="control-item">
                         <label>垂直偏移</label>
                         <div class="slider-container">
                             <input type="range" id="offsetY" min="0" max="100" value="50">
-                            <input type="number" id="offsetYInput" class="number-input" min="0" max="100" value="50">%
+                            <input type="number" id="offsetYInput" class="number-input" min="0" max="100" value="50"><span class="vue">%</span>
                         </div>
                     </div>
                 </div>
@@ -867,7 +870,7 @@
                     <label>旋转</label>
                     <div class="slider-container">
                         <input type="range" id="rotation" min="0" max="360" value="0">
-                        <input type="number" id="rotationInput" class="number-input" min="0" max="360" value="0">°
+                        <input type="number" id="rotationInput" class="number-input" min="0" max="360" value="0"><span class="vue">°</span>
                     </div>
                 </div>
                 
@@ -875,7 +878,7 @@
                     <label>亮度</label>
                     <div class="slider-container">
                         <input type="range" id="brightness" min="0" max="200" value="100">
-                        <input type="number" id='brightnessInput' class="number-input" min="0" max="200" value="100">%
+                        <input type="number" id='brightnessInput' class="number-input" min="0" max="200" value="100"><span class="vue">%</span>
                     </div>
                 </div>
                 
@@ -883,7 +886,7 @@
                     <label>对比度</label>
                     <div class="slider-container">
                         <input type="range" id="contrast" min="0" max="200" value="100">
-                        <input type="number" id="contrastInput" class="number-input" min="0" max="200" value="100">%
+                        <input type="number" id="contrastInput" class="number-input" min="0" max="200" value="100"><span class="vue">%</span>
                     </div>
                 </div>
                 
@@ -891,7 +894,7 @@
                     <label>饱和度</label>
                     <div class="slider-container">
                         <input type="range" id="saturation" min="0" max="200" value="100">
-                        <input type="number" id="saturationInput" class="number-input" min="0" max="200" value="100">%
+                        <input type="number" id="saturationInput" class="number-input" min="0" max="200" value="100"><span class="vue">%</span>
                     </div>
                 </div>
                 
@@ -899,7 +902,7 @@
                     <label>色调</label>
                     <div class="slider-container">
                         <input type="range" id="hue" min="-180" max="180" value="0">
-                        <input type="number" id="hueInput" class="number-input" min="-180" max="180" value="0">°
+                        <input type="number" id="hueInput" class="number-input" min="-180" max="180" value="0"><span class="vue">%</span>
                     </div>
                 </div>
 
