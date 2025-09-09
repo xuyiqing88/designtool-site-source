@@ -804,22 +804,22 @@
     <div class="control-item">
         <label>渐变角度</label>
         <div class="slider-container">
-            <input type="range" id="gradientAngle" min="0" max="360" value="0">
-            <input type="number" id="gradientAngleInput" class="number-input" min="0" max="360" value="0">°
+            <input type="range" id="gradientAngle" min="0" max="360" value="180">
+            <input type="number" id="gradientAngleInput" class="number-input" min="0" max="360" value="180">°
         </div>
     </div>
     <div class="control-item">
         <label>渐变延伸</label>
         <div class="slider-container">
-            <input type="range" id="gradientExtend" min="0" max="100" value="20">
-            <input type="number" id="gradientExtendInput" class="number-input" min="0, max="100" value="20">%
+            <input type="range" id="gradientExtend" min="0" max="100" value="50">
+            <input type="number" id="gradientExtendInput" class="number-input" min="0, max="100" value="50">%
         </div>
     </div>
     <div class="control-item">
         <label>渐变亮度</label>
         <div class="slider-container">
-            <input type="range" id="gradientBrightness" min="-100" max="100" value="0">
-            <input type="number" id="gradientBrightnessInput" class="number-input" min="-100" max="100" value="0">%
+            <input type="range" id="gradientBrightness" min="-100" max="100" value="50">
+            <input type="number" id="gradientBrightnessInput" class="number-input" min="-100" max="100" value="50">%
         </div>
     </div>
 </div>
@@ -1988,12 +1988,12 @@
             document.getElementById('offsetYInput').value = 50;
             
             // 新增光影矫正参数重置
-            document.getElementById('gradientAngle').value = 0;
-            document.getElementById('gradientAngleInput').value = 0;
-            document.getElementById('gradientExtend').value = 20;
-            document.getElementById('gradientExtendInput').value = 20;
-            document.getElementById('gradientBrightness').value = 0;
-            document.getElementById('gradientBrightnessInput').value = 0;
+            document.getElementById('gradientAngle').value = 180;
+            document.getElementById('gradientAngleInput').value = 180;
+            document.getElementById('gradientExtend').value = 50;
+            document.getElementById('gradientExtendInput').value = 50;
+            document.getElementById('gradientBrightness').value = 50;
+            document.getElementById('gradientBrightnessInput').value = 50;
             
             // 重置所有方法选择按钮
             activeMethods = [];
