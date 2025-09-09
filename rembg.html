@@ -381,7 +381,7 @@ margin-bottom: 60px;
       transform: scale(1.05);
     }
     
-    .download-btn {
+    .download-bt {
       position: absolute;
       bottom: 10px;
       right: 10px;
@@ -398,7 +398,7 @@ margin-bottom: 60px;
       z-index: 2;
     }
     
-    .download-btn:hover {
+    .download-bt:hover {
       background: #000000a1;
       transform: scale(1.1);
     }
@@ -1063,7 +1063,7 @@ margin-bottom: 60px;
       resultItem.innerHTML = `
         <div class="preview-container">
           <img src="${resultUrl}" alt="${file.name} - 抠图结果">
-          <div class="download-btn" data-url="${resultUrl}" data-filename="${file.name}">
+          <div class="download-bt" data-url="${resultUrl}" data-filename="${file.name}">
             <i class="fas fa-download"></i>
           </div>
         </div>
@@ -1073,7 +1073,7 @@ margin-bottom: 60px;
       resultsContainer.appendChild(resultItem);
       
       // 添加下载事件监听器
-      const downloadBtn = resultItem.querySelector('.download-btn');
+      const downloadBtn = resultItem.querySelector('.download-bt');
       downloadBtn.addEventListener('click', (e) => {
         const url = e.currentTarget.dataset.url;
         const filename = e.currentTarget.dataset.filename || 'no-bg.png';
