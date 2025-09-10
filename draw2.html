@@ -1100,123 +1100,124 @@
             }
         });
         
-        // 更新: generateImage 函数
-        function generateImage() {
-            const prompt = drawingPrompt.value.trim();
-            const model = modelSelect.value;
-            const imageUrl = imageUrlInput.value.trim();
-            const useProxy = useProxyOption.checked;
+ // 更新: generateImage 函数 (修复代理URL双重编码问题)
+function generateImage() {
+    const prompt = drawingPrompt.value.trim();
+    const model = modelSelect.value;
+    const imageUrl = imageUrlInput.value.trim();
+    const useProxy = useProxyOption.checked;
 
-            if (!prompt) {
-                const alertMsg = model === 'kontext' ? '请输入修改指令' : '请输入图像描述';
-                return showAlert(alertMsg, 'error');
-            }
-            if (model === 'kontext' && !imageUrl) {
-                return showAlert('使用Kontext模型时，请输入图片URL', 'error');
-            }
-            
-            const style = styleSelect.value;
-            const [width, height] = sizeSelect.value.split('x');
-            const enhance = enhanceOption.checked;
-            
-            let finalPrompt = prompt;
-            if (style && stylePrefixes[style]) {
-                finalPrompt = stylePrefixes[style] + prompt;
-            }
-            
-            currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
-            
-            let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}`;
-            apiUrl += `?width=${width}&height=${height}&model=${model}`;
-            apiUrl += `&seed=${currentSeed}&nologo=true&safe=false`;
-            
-            if (enhance) {
-                apiUrl += '&enhance=true';
-            }
-            
-            if (style) {
-                apiUrl += `&style=${style}`;
-            }
+    if (!prompt) {
+        const alertMsg = model === 'kontext' ? '请输入修改指令' : '请输入图像描述';
+        return showAlert(alertMsg, 'error');
+    }
+    if (model === 'kontext' && !imageUrl) {
+        return showAlert('使用Kontext模型时，请输入图片URL', 'error');
+    }
+    
+    const style = styleSelect.value;
+    const [width, height] = sizeSelect.value.split('x');
+    const enhance = enhanceOption.checked;
+    
+    let finalPrompt = prompt;
+    if (style && stylePrefixes[style]) {
+        finalPrompt = stylePrefixes[style] + prompt;
+    }
+    
+    currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
+    
+    let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}`;
+    apiUrl += `?width=${width}&height=${height}&model=${model}`;
+    apiUrl += `&seed=${currentSeed}&nologo=true&safe=false`;
+    
+    if (enhance) {
+        apiUrl += '&enhance=true';
+    }
+    
+    if (style) {
+        apiUrl += `&style=${style}`;
+    }
 
-            // 如果是Kontext模型，添加专属参数
-            if (model === 'kontext') {
-                const negativePrompt = negativePromptInput.value.trim();
-                if (imageUrl) apiUrl += `&image=${encodeURIComponent(imageUrl)}`;
-                if (negativePrompt) apiUrl += `&negative_prompt=${encodeURIComponent(negativePrompt)}`;
+    // 如果是Kontext模型，添加专属参数
+    if (model === 'kontext') {
+        const negativePrompt = negativePromptInput.value.trim();
+        if (imageUrl) apiUrl += `&image=${encodeURIComponent(imageUrl)}`;
+        if (negativePrompt) apiUrl += `&negative_prompt=${encodeURIComponent(negativePrompt)}`;
+    }
+    
+    // 如果启用代理，不要再 encode 一次，直接拼接
+    if (useProxy) {
+        apiUrl = `https://corsproxy.io/?${apiUrl}`;
+    }
+    
+    setButtonLoading(generateImageBtn, true, '生成中...');
+    
+    drawingPlaceholder.style.display = 'flex';
+    drawingPlaceholder.innerHTML = `
+        <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
+        <p>正在生成图像，请稍候...</p>
+    `;
+    generatedImage.style.display = 'none';
+    imageActions.style.display = 'none';
+    
+    // 隐藏错误详情
+    errorDetails.classList.remove('show-error');
+    toggleErrorBtn.style.display = 'none';
+    
+    // 记录API URL用于调试
+    lastApiUrl = apiUrl;
+    
+    // 使用fetch API而不是直接设置img.src，以便捕获错误
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`服务器响应: ${response.status} ${response.statusText}`);
             }
+            return response.blob();
+        })
+        .then(blob => {
+            const imageUrl = URL.createObjectURL(blob);
+            generatedImage.src = imageUrl;
+            currentImageUrl = imageUrl;
             
-            // 如果启用代理，使用CORS代理
-            if (useProxy) {
-                apiUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
-            }
+            currentImageData = {
+                url: apiUrl, // 保存原始API URL而不是blob URL
+                prompt: prompt,
+                model: model,
+                style: style,
+                size: sizeSelect.value,
+                seed: currentSeed,
+                enhance: enhance,
+                timestamp: new Date().toLocaleString()
+            };
             
-            setButtonLoading(generateImageBtn, true, '生成中...');
+            drawingPlaceholder.style.display = 'none';
+            generatedImage.style.display = 'block';
+            imageActions.style.display = 'flex';
+            setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+            showAlert('图像生成成功！', 'success');
+            saveToHistory(currentImageData);
+        })
+        .catch(error => {
+            console.error("图像生成错误:", error);
+            
+            // 显示错误详情
+            errorDetails.textContent = `错误: ${error.message}\nAPI URL: ${lastApiUrl}`;
+            toggleErrorBtn.style.display = 'block';
             
             drawingPlaceholder.style.display = 'flex';
             drawingPlaceholder.innerHTML = `
-                <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
-                <p>正在生成图像，请稍候...</p>
+                <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                <p>图像生成失败，请重试</p>
+                <p style="font-size: 12px; color: var(--error-color);">提示: 尝试启用/禁用代理选项</p>
             `;
             generatedImage.style.display = 'none';
             imageActions.style.display = 'none';
-            
-            // 隐藏错误详情
-            errorDetails.classList.remove('show-error');
-            toggleErrorBtn.style.display = 'none';
-            
-            // 记录API URL用于调试
-            lastApiUrl = apiUrl;
-            
-            // 使用fetch API而不是直接设置img.src，以便捕获错误
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`服务器响应: ${response.status} ${response.statusText}`);
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const imageUrl = URL.createObjectURL(blob);
-                    generatedImage.src = imageUrl;
-                    currentImageUrl = imageUrl;
-                    
-                    currentImageData = {
-                        url: apiUrl, // 保存原始API URL而不是blob URL
-                        prompt: prompt,
-                        model: model,
-                        style: style,
-                        size: sizeSelect.value,
-                        seed: currentSeed,
-                        enhance: enhance,
-                        timestamp: new Date().toLocaleString()
-                    };
-                    
-                    drawingPlaceholder.style.display = 'none';
-                    generatedImage.style.display = 'block';
-                    imageActions.style.display = 'flex';
-                    setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
-                    showAlert('图像生成成功！', 'success');
-                    saveToHistory(currentImageData);
-                })
-                .catch(error => {
-                    console.error("图像生成错误:", error);
-                    
-                    // 显示错误详情
-                    errorDetails.textContent = `错误: ${error.message}\nAPI URL: ${lastApiUrl}`;
-                    toggleErrorBtn.style.display = 'block';
-                    
-                    drawingPlaceholder.style.display = 'flex';
-                    drawingPlaceholder.innerHTML = `
-                        <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-                        <p>图像生成失败，请重试</p>
-                        <p style="font-size: 12px; color: var(--error-color);">提示: 尝试启用/禁用代理选项</p>
-                    `;
-                    generatedImage.style.display = 'none';
-                    imageActions.style.display = 'none';
-                    setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
-                    showAlert('图像生成失败，请重试', 'error');
-                });
-        }
+            setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+            showAlert('图像生成失败，请重试', 'error');
+        });
+}
+
         
         function saveToHistory(imageData) {
             let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
@@ -1280,19 +1281,22 @@
             });
         }
         
-        function showHistoryImage(index) {
-            const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-            if (index >= 0 && index < history.length) {
-                // 对于历史记录中的URL，可能需要使用代理
-                let imageUrl = history[index].url;
-                if (useProxyOption.checked && !imageUrl.includes('corsproxy.io')) {
-                    imageUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
-                }
-                
-                modalImage.src = imageUrl;
-                imageModal.classList.add('show');
-            }
+// 修复: 历史图库图片显示函数，避免代理URL二次编码
+function showHistoryImage(index) {
+    const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+    if (index >= 0 && index < history.length) {
+        let imageUrl = history[index].url;
+
+        // 如果启用代理，并且URL不是代理过的，就拼接代理前缀
+        if (useProxyOption.checked && !imageUrl.startsWith('https://corsproxy.io/')) {
+            imageUrl = `https://corsproxy.io/?${imageUrl}`;
         }
+
+        modalImage.src = imageUrl;
+        imageModal.classList.add('show');
+    }
+}
+
         
         function deleteHistoryItem(index) {
             let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
@@ -1319,48 +1323,63 @@
             }
         }
         
-        async function downloadImage() {
-            if (!currentImageUrl) return;
-            
-            const button = downloadImageBtn;
-            const originalButtonHtml = button.innerHTML;
-            setButtonLoading(button, true, '下载中...');
-            
-            try {
-                // 如果当前显示的是blob URL，需要重新获取原始图像
-                let imageBlob;
-                if (currentImageUrl.startsWith('blob:')) {
-                    // 从原始API URL获取图像
-                    let apiUrl = currentImageData.url;
-                    if (useProxyOption.checked && !apiUrl.includes('corsproxy.io')) {
-                        apiUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
-                    }
-                    
-                    const response = await fetch(apiUrl);
-                    imageBlob = await response.blob();
-                } else {
-                    const response = await fetch(currentImageUrl);
-                    imageBlob = await response.blob();
-                }
-                
-                const url = window.URL.createObjectURL(imageBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                const prompt = drawingPrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
-                link.download = `ai-art-${prompt || 'image'}.png`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-                showAlert('图像开始下载...', 'success');
-            } catch (error) {
-                console.error("下载失败:", error);
-                showAlert('下载失败，请尝试右键保存', 'error');
-            } finally {
-                setButtonLoading(button, false, '');
-                button.innerHTML = originalButtonHtml;
+// 修复: 下载图片时的代理逻辑，避免URL二次编码
+async function downloadImage() {
+    if (!currentImageUrl) return;
+    
+    const button = downloadImageBtn;
+    const originalButtonHtml = button.innerHTML;
+    setButtonLoading(button, true, '下载中...');
+    
+    try {
+        let imageBlob;
+
+        if (currentImageUrl.startsWith('blob:')) {
+            // 如果是blob URL，需要重新从API URL获取
+            let apiUrl = currentImageData.url;
+
+            if (useProxyOption.checked && !apiUrl.startsWith('https://corsproxy.io/')) {
+                apiUrl = `https://corsproxy.io/?${apiUrl}`;
             }
+
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error(`下载失败: ${response.status} ${response.statusText}`);
+            }
+            imageBlob = await response.blob();
+        } else {
+            // 直接下载现有的URL
+            let downloadUrl = currentImageUrl;
+            if (useProxyOption.checked && !downloadUrl.startsWith('https://corsproxy.io/')) {
+                downloadUrl = `https://corsproxy.io/?${downloadUrl}`;
+            }
+
+            const response = await fetch(downloadUrl);
+            if (!response.ok) {
+                throw new Error(`下载失败: ${response.status} ${response.statusText}`);
+            }
+            imageBlob = await response.blob();
         }
+        
+        const url = window.URL.createObjectURL(imageBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        const prompt = drawingPrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
+        link.download = `ai-art-${prompt || 'image'}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        showAlert('图像开始下载...', 'success');
+    } catch (error) {
+        console.error("下载失败:", error);
+        showAlert('下载失败，请尝试右键保存', 'error');
+    } finally {
+        setButtonLoading(button, false, '');
+        button.innerHTML = originalButtonHtml;
+    }
+}
+
         
         // 更新: clearDrawing 函数
         function clearDrawing() {
