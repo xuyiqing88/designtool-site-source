@@ -1,4 +1,4 @@
-<!-- 文件名：menu.js -->
+
 // 创建并注入菜单样式
 const menuStyles = document.createElement('style');
 menuStyles.textContent = `
@@ -315,8 +315,8 @@ const menuData = [
         title: "轻易AI",
         icon: "fa-solid fa-microchip",
         submenu: [
-	    { title: "AI数字人（免费版）", link: "../freeAI.html" },
 	    { title: "AI绘画", link: "../draw.html" },
+	    { title: "AI数字人（免费版）", link: "../freeAI.html" },
 	    { title: "AI数字人（API版）", link: "../AI.html" },
             { title: "lora训练数据集编辑", link: "../model.html" },
             { title: "AI画风提示词大全", link: "../SDXL.html" },
