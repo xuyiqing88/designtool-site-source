@@ -841,7 +841,6 @@
                             
                             <div id="kontextOptions">
                                  <div class="drawing-control">
-
                                     <label for="imageUrlInput">输入图片URL</label>
                                     <input type="text" id="imageUrlInput" placeholder="粘贴可公开访问的图片链接" style="padding: 10px;">
                                 </div>
@@ -1011,13 +1010,17 @@
         }
 
         // 切换Kontext参数区域的可见性
-        function toggleKontextOptions() {
-            if (modelSelect.value === 'kontext') {
-                kontextOptions.classList.add('visible');
-            } else {
-                kontextOptions.classList.remove('visible');
-            }
-        }
+function toggleKontextOptions() {
+    if (modelSelect.value === 'kontext') {
+        kontextOptions.classList.add('visible');
+        // 添加这行代码修改placeholder
+        drawingPrompt.placeholder = "选用Kontext 模型时，提示词将作为修改指令，对您输入的图片进行编辑（例如：Add a hat to the cat（英文）)";
+    } else {
+        kontextOptions.classList.remove('visible');
+        // 添加这行代码恢复默认placeholder
+        drawingPrompt.placeholder = "输入详细描述以生成图像（例如：一只坐在太空船里的猫，科幻风格，超现实细节）";
+    }
+}
         
         function setupSeedButtons() {
             randomSeedBtn.addEventListener('click', () => {
