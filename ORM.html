@@ -260,7 +260,7 @@
             transform: scale(1.1);
         }
         
-        .download-btn {
+        .download-bt {
             position: absolute;
             right: 10px;
             bottom: 10px;
@@ -279,7 +279,7 @@
 	    align-content: center;
         }
         
-        .download-btn:hover {
+        .download-bt:hover {
             opacity: 1;
             background: rgba(50, 200, 50, 0.8);
             transform: scale(1.1);
@@ -681,7 +681,7 @@
                         <div class="preview-overlay">
                             <button class="delete-btn" data-type="ao" style="display: none;">×</button>
                         </div>
-                        <div class="download-btn" data-type="ao" style="display: none;">
+                        <div class="download-bt" data-type="ao" style="display: none;">
                             <i class="fas fa-download"></i>
                         </div>
                         <input type="file" id="ao-input" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp">
@@ -698,7 +698,7 @@
                         <div class="preview-overlay">
                             <button class="delete-btn" data-type="roughness" style="display: none;">×</button>
                         </div>
-                        <div class="download-btn" data-type="roughness" style="display: none;">
+                        <div class="download-bt" data-type="roughness" style="display: none;">
                             <i class="fas fa-download"></i>
                         </div>
                         <input type="file" id="roughness-input" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp">
@@ -715,7 +715,7 @@
                         <div class="preview-overlay">
                             <button class="delete-btn" data-type="metallic" style="display: none;">×</button>
                         </div>
-                        <div class="download-btn" data-type="metallic" style="display: none;">
+                        <div class="download-bt" data-type="metallic" style="display: none;">
                             <i class="fas fa-download"></i>
                         </div>
                         <input type="file" id="metallic-input" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp">
@@ -732,7 +732,7 @@
                         <div class="preview-overlay">
                             <button class="delete-btn" data-type="alpha" style="display: none;">×</button>
                         </div>
-                        <div class="download-btn" data-type="alpha" style="display: none;">
+                        <div class="download-bt" data-type="alpha" style="display: none;">
                             <i class="fas fa-download"></i>
                         </div>
                         <input type="file" id="alpha-input" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp">
@@ -780,7 +780,7 @@
                                 <i class="fas fa-cogs"></i> 拆解ORM
                             </button>
                         </div>
-                        <button id="download-btn" class="btn" disabled>
+                        <button id="download-bt" class="btn" disabled>
                             <i class="fas fa-download"></i> 下载贴图
                         </button>
                     </div>
@@ -824,7 +824,7 @@
             const resultContainer = document.getElementById('result-container');
             const decomposeOverlay = document.getElementById('decompose-overlay');
             
-            const downloadBtn = document.getElementById('download-btn');
+            const downloadBtn = document.getElementById('download-bt');
             const decomposeBtn = document.getElementById('decompose-btn');
             const status = document.getElementById('status');
             const ormUploadBtn = document.getElementById('orm-upload-btn');
@@ -1217,7 +1217,7 @@
                 document.querySelector(`.delete-btn[data-type="${type}"]`).style.display = 'none';
                 
                 // 隐藏下载按钮
-                document.querySelector(`.download-btn[data-type="${type}"]`).style.display = 'none';
+                document.querySelector(`.download-bt[data-type="${type}"]`).style.display = 'none';
                 
                 // 重置文件输入
                 document.getElementById(`${type}-input`).value = '';
@@ -1252,7 +1252,7 @@
                 };
                 
                 // 显示下载按钮
-                const downloadBtn = document.querySelector(`.download-btn[data-type="${type}"]`);
+                const downloadBtn = document.querySelector(`.download-bt[data-type="${type}"]`);
                 downloadBtn.style.display = 'block';
                 downloadBtn.onclick = (e) => {
                     e.stopPropagation();
@@ -1525,7 +1525,7 @@
                 };
                 
                 // 显示下载按钮
-                const downloadBtn = document.querySelector(`.download-btn[data-type="${type}"]`);
+                const downloadBtn = document.querySelector(`.download-bt[data-type="${type}"]`);
                 downloadBtn.style.display = 'block';
                 downloadBtn.onclick = (e) => {
                     e.stopPropagation();
