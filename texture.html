@@ -27,6 +27,11 @@
             height: 100vh;
             overflow: hidden;
         }
+.tabicon {position: absolute;
+    right: -5px;
+    bottom: -10px;
+    font-size: 28px;
+	color: #a0a7b230;}
 .vue {
 	width: 10px;}
 /* 标签页样式 */
@@ -397,6 +402,7 @@
             transition: all 0.3s ease;
             text-align: left;
             position: relative;
+	    overflow: hidden;
         }
 
         .method-btn:hover {
@@ -435,6 +441,7 @@
             align-items: center;
             justify-content: center;
             font-size: 0.75rem;
+	display: none;
         }
 
         /* 切换按钮样式 */
@@ -758,23 +765,27 @@
                 
                 <div class="method-selector">
                     <div class="method-btn" data-method="mirror">
+			<div class="tabicon"><i class="fa-solid fa-signs-post"></i></div>
                         <strong>镜像边缘</strong>
                         <small>镜像边缘像素</small>
                         <span class="order-indicator">1</span>
                     </div>
 
 <div class="method-btn" data-method="gradient">
+<div class="tabicon"><i class="fa-solid fa-circle-half-stroke"></i></div>
     <strong>光影矫正</strong>
     <small>渐变调整图像亮度</small>
     <span class="order-indicator">2</span>
 </div>
 
                     <div class="method-btn" data-method="blend">
+			<div class="tabicon"><i class="fa-solid fa-recycle"></i></div>
                         <strong>边缘混合</strong>
                         <small>混合相对边缘</small>
                         <span class="order-indicator">2</span>
                     </div>
                     <div class="method-btn" data-method="offset">
+			<div class="tabicon"><i class="fa-solid fa-arrow-down-up-across-line"></i></div>
                         <strong>偏移映射</strong>
                         <small>重新排列图像象限</small>
                         <span class="order-indicator">3</span>
