@@ -1044,11 +1044,11 @@ updateDeviceIcon(); // 确保初始状态正确
                 let fullPrompt;
 
                 if (isModificationMode) {
-                    fullPrompt = `请基于以下现有的SVG代码，并根据用户的修改要求，生成一个新的完整、有效、可预览的SVG代码。请仅返回SVG代码本身，不要包含任何其他说明文字或Markdown代码块标记。\n\n【现有SVG代码】:\n${generatedSVG}\n\n【修改要求】:\n${prompt}\n\n【其他设计参数】:\n设备: ${currentDevice}, 主色调: ${currentPrimaryColor}, 界面模式: ${currentInterfaceMode}, 布局风格: ${currentLayoutStyle}。请继续使用fontawesome图标库和picsum.photos图片库。`;
+                    fullPrompt = `请基于以下现有的SVG代码，并根据用户的修改要求，生成一个新的完整、有效、可预览的SVG代码。请仅返回SVG代码本身，不要包含任何其他说明文字或Markdown代码块标记。\n\n【现有SVG代码】:\n${generatedSVG}\n\n【修改要求】:\n${prompt}\n\n【其他设计参数】:\n设备: ${currentDevice}, 主色调: ${currentPrimaryColor}, 界面模式: ${currentInterfaceMode}, 布局风格: ${currentLayoutStyle}。请继续使用Lucide图标库和picsum.photos图片库。`;
                 } else {
                     // 如果是重新生成，在prompt中加入额外指令以确保API返回新的、不同的结果
                     const regenerationHint = isRegeneration ? '请为我生成一个不同于上一个的、全新的、有创意的版本。' : '';
-                    fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。${regenerationHint}设备：${currentDevice}，主色调：${currentPrimaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}，引入开源图片库picsum.photos进行随机填充, 使用fontawesome的图标库进行填充。`;
+                    fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。${regenerationHint}设备：${currentDevice}，主色调：${currentPrimaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}，引入开源图片库picsum.photos进行随机填充, 使用Lucide图标库进行填充。`;
                 }
                 
                 let response;
