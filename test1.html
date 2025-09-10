@@ -50,7 +50,9 @@
             color: var(--text1);
             transition: background 0.3s ease;
         }
-        
+.hidden {
+    display: none !important;
+}
         .advanced-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -264,7 +266,7 @@
             display: flex; 
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 20px;
+            padding-bottom: 60px;
         }
         
         @keyframes fadeIn {
@@ -421,7 +423,7 @@
             position: relative;
         }
         
-        #generatedImage {
+        #generatedImage, #generatedImageToImage {
             max-width: 100%;
             max-height: 500px;
             border-radius: 12px;
@@ -431,7 +433,7 @@
             border: 1px solid var(--line);
         }
         
-        #generatedImage:hover {
+        #generatedImage:hover, #generatedImageToImage:hover {
             transform: scale(1.03);
         }
         
@@ -659,9 +661,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 15px;
-            margin-top: 20px;
-            border-top: 1px solid var(--line);
-            padding-top: 20px;
+            padding-top: 10px;
         }
         
         .image-upload-area {
@@ -942,16 +942,16 @@
                             </p>
                             
                             <!-- 图片上传区域 -->
-                            <div class="image-upload-area" id="imageUploadArea">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <p>点击或拖拽图片到这里上传</p>
-                                <input type="file" id="imageUploadInput" accept="image/*">
-                                <img id="uploadedImagePreview" class="uploaded-image-preview" alt="上传的图片">
-                                <div class="upload-status" id="uploadStatus"></div>
-                            </div>
+<div class="image-upload-area" id="imageUploadArea">
+    <i class="fas fa-cloud-upload-alt" id="uploadIcon"></i>
+    <p id="uploadText">点击或拖拽图片到这里上传</p>
+    <input type="file" id="imageUploadInput" accept="image/*">
+    <img id="uploadedImagePreview" class="uploaded-image-preview" alt="上传的图片">
+    <div class="upload-status" id="uploadStatus"></div>
+</div>
                             
                             <div class="input-wrapper">
-                                <textarea id="imageToImagePrompt" placeholder="输入修改指令（例如：给猫戴上帽子，将背景改为海滩）" style="min-height: 120px;"></textarea>
+                                <textarea id="imageToImagePrompt" placeholder="输入修改指令（例如：Change background to beach（英文））" style="min-height: 120px;"></textarea>
                                 <button class="translate-btn" id="translateImageToImageBtn">
                                     译
                                 </button>
@@ -963,16 +963,7 @@
                                     <input type="text" id="negativePromptInput" placeholder="不希望在图像中出现的内容" style="padding: 10px;">
                                 </div>
                                 
-                                <div class="drawing-control">
-                                    <label for="imageToImageStrength">修改强度</label>
-                                    <input type="range" id="imageToImageStrength" min="0.1" max="1.0" step="0.1" value="0.7" style="padding: 0;">
-                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text3);">
-                                        <span>轻微</span>
-                                        <span id="strengthValue">0.7</span>
-                                        <span>强烈</span>
-                                    </div>
-                                </div>
-                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">                                
                                 <div class="drawing-control">
                                     <label for="imageToImageSizeSelect">图像尺寸</label>
                                     <select id="imageToImageSizeSelect">
@@ -983,6 +974,16 @@
                                         <option value="768x1152">2:3 (768x1152)</option>
                                     </select>
                                 </div>
+				<div class="drawing-control">
+                                    <label for="imageToImageStrength">修改强度</label>
+                                    <input type="range" id="imageToImageStrength" min="0.1" max="1.0" step="0.1" value="0.7" style="padding: 0;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text3);">
+                                        <span>轻微</span>
+                                        <span id="strengthValue">0.7</span>
+                                        <span>强烈</span>
+                                    </div>
+                                </div>
+			</div>
                             </div>
 
                             <div class="btn-group">
@@ -997,7 +998,7 @@
                         
                         <div class="drawing-preview-panel">
                             <div class="drawing-preview">
-                                <p class="panel-description">注意：生成裸露内容可能会导致图片变黑。</p>
+                                <p class="panel-description"></p>
                                 <div id="imageToImagePlaceholder" class="drawing-placeholder">
                                     <i class="fas fa-image"></i>
                                     <p>上传图片并输入修改指令</p>
@@ -1131,6 +1132,8 @@
             
             clearDrawingBtn.addEventListener('click', clearDrawing);
             generateImageBtn.addEventListener('click', generateImage);
+// 为图生图图片添加点击事件监听
+        generatedImageToImage.addEventListener('click', showImageModal);
             downloadImageBtn.addEventListener('click', downloadImage);
             regenerateImageBtn.addEventListener('click', generateImage);
             drawingPrompt.addEventListener('keydown', (e) => {
@@ -1222,11 +1225,15 @@
             
             // 显示预览
             const reader = new FileReader();
-            reader.onload = (e) => {
-                uploadedImagePreview.src = e.target.result;
-                uploadedImagePreview.style.display = 'block';
-                imageToImagePlaceholder.style.display = 'none';
-            };
+reader.onload = (e) => {
+    uploadedImagePreview.src = e.target.result;
+    uploadedImagePreview.style.display = 'block';
+    imageToImagePlaceholder.style.display = 'none';
+    
+    // 新增代码：隐藏上传提示图标和文字
+    document.getElementById('uploadIcon').classList.add('hidden');
+    document.getElementById('uploadText').classList.add('hidden');
+};
             reader.readAsDataURL(file);
             
             // 上传到ImgBB
@@ -1274,20 +1281,24 @@
         }
         
         // 清除图生图内容
-        function clearImageToImage() {
-            imageUploadInput.value = '';
-            uploadedImagePreview.src = '';
-            uploadedImagePreview.style.display = 'none';
-            imageToImagePrompt.value = '';
-            negativePromptInput.value = '';
-            imageToImageStrength.value = '0.7';
-            strengthValue.textContent = '0.7';
-            imageToImagePlaceholder.style.display = 'flex';
-            generatedImageToImage.style.display = 'none';
-            imageToImageActions.style.display = 'none';
-            uploadStatus.textContent = '';
-            uploadedImageUrl = '';
-        }
+function clearImageToImage() {
+    imageUploadInput.value = '';
+    uploadedImagePreview.src = '';
+    uploadedImagePreview.style.display = 'none';
+    imageToImagePrompt.value = '';
+    negativePromptInput.value = '';
+    imageToImageStrength.value = '0.7';
+    strengthValue.textContent = '0.7';
+    imageToImagePlaceholder.style.display = 'flex';
+    generatedImageToImage.style.display = 'none';
+    imageToImageActions.style.display = 'none';
+    uploadStatus.textContent = '';
+    uploadedImageUrl = '';
+    
+    // 新增代码：重新显示上传提示图标和文字
+    document.getElementById('uploadIcon').classList.remove('hidden');
+    document.getElementById('uploadText').classList.remove('hidden');
+}
         
         // 生成图生图
         function generateImageToImage() {
@@ -1342,27 +1353,29 @@
                 const blob = await response.blob();
                 const imageUrl = URL.createObjectURL(blob);
                 
-                generatedImageToImage.onload = () => {
-                    URL.revokeObjectURL(imageUrl); // 清除内存
-                    imageToImagePlaceholder.style.display = 'none';
-                    generatedImageToImage.style.display = 'block';
-                    imageToImageActions.style.display = 'flex';
-                    setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
-                    showAlert('图像生成成功！', 'success');
-                    
-                    currentImageUrl = apiUrl;
-                    currentImageData = {
-                        url: apiUrl,
-                        prompt: imageToImagePrompt.value.trim(),
-                        model: 'kontext',
-                        strength: imageToImageStrength.value,
-                        size: imageToImageSizeSelect.value,
-                        seed: Math.floor(Math.random() * 1000000).toString(),
-                        timestamp: new Date().toLocaleString()
-                    };
-                    
-                    saveToHistory(currentImageData);
-                };
+        // 在图像加载完成后设置currentImageUrl
+        generatedImageToImage.onload = () => {
+            URL.revokeObjectURL(imageUrl); // 清除内存
+            imageToImagePlaceholder.style.display = 'none';
+            generatedImageToImage.style.display = 'block';
+            imageToImageActions.style.display = 'flex';
+            setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+            showAlert('图像生成成功！', 'success');
+            
+            // 设置当前图片URL
+            currentImageUrl = imageUrl;
+            currentImageData = {
+                url: imageUrl, // 这里使用本地的blob URL而不是API URL
+                prompt: imageToImagePrompt.value.trim(),
+                model: 'kontext',
+                strength: imageToImageStrength.value,
+                size: imageToImageSizeSelect.value,
+                seed: Math.floor(Math.random() * 1000000).toString(),
+                timestamp: new Date().toLocaleString()
+            };
+            
+            saveToHistory(currentImageData);
+        };
                 
                 generatedImageToImage.onerror = () => {
                     throw new Error('图像加载失败');
@@ -1677,11 +1690,17 @@
         }
         
         function showImageModal() {
-            if (currentImageUrl) {
-                modalImage.src = currentImageUrl;
-                imageModal.classList.add('show');
-            }
+        // 判断当前激活的是哪个标签页
+        const activeTab = document.querySelector('.secondary-tab-btn.active').dataset.subtab;
+        
+        if (activeTab === 'textToImage' && currentImageUrl) {
+            modalImage.src = currentImageUrl;
+            imageModal.classList.add('show');
+        } else if (activeTab === 'imageToImage' && currentImageUrl) {
+            modalImage.src = currentImageUrl;
+            imageModal.classList.add('show');
         }
+    }
         
         async function downloadImage() {
             if (!currentImageUrl) return;
