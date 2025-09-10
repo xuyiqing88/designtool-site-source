@@ -50,7 +50,78 @@
             color: var(--text1);
             transition: background 0.3s ease;
         }
+         .advanced-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+        }
         
+        .option-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #d7d7df;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--main-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .option-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text2);
+        }
+        
+        .option-description {
+            font-size: 12px;
+            color: var(--text3);
+            margin-top: 4px;
+        }       
         .main-layout {
             display: flex;
             flex-grow: 1;
@@ -579,6 +650,9 @@
         }
         
         @media (max-width: 768px) {
+            .advanced-options {
+                grid-template-columns: 1fr;
+            }
             .drawing-layout {
                 grid-template-columns: 1fr;
             }
@@ -668,12 +742,27 @@
                                 </button>
                             </div>
                             
+
+                            <!-- 添加高级选项区域 -->
+                            <div class="advanced-options">
+                                <div class="option-toggle">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="enhanceOption">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <div>
+                                        <div class="option-label">增强提示</div>
+                                        <div class="option-description">使用AI优化提示词，添加更多细节</div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="drawing-controls">
                                 <div class="drawing-control">
                                     <label for="modelSelect">模型选择</label>
                                     <select id="modelSelect">
                                         <option value="flux">Flux</option>
-                                        <option value="turbo">SDXL Turbo</option>
+                                        <option value="turbo">Turbo（支持NSFW）</option>
                                     </select>
                                 </div>
                                 
@@ -719,6 +808,7 @@
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="btn-group">
                                 <button class="btn-secondary" id="clearDrawingBtn">
@@ -827,7 +917,9 @@
         const modalCloseBtn = document.getElementById('modalCloseBtn');
         const modalDownloadBtn = document.getElementById('modalDownloadBtn');
         const tabBtns = document.querySelectorAll('.secondary-tab-btn');
-        
+                // 获取新增的DOM元素
+        const enhanceOption = document.getElementById('enhanceOption');
+
         // 状态变量
         let currentImageUrl = null;
         let currentImageData = null;
@@ -953,6 +1045,7 @@ translateBtn.addEventListener('click', async () => {
 });
         
         // 生成图像
+        // 修改generateImage函数以包含新参数
         function generateImage() {
             const prompt = drawingPrompt.value.trim();
             if (!prompt) return showAlert('请输入图像描述', 'error');
@@ -960,6 +1053,7 @@ translateBtn.addEventListener('click', async () => {
             const model = modelSelect.value;
             const style = styleSelect.value;
             const [width, height] = sizeSelect.value.split('x');
+            const enhance = enhanceOption.checked;
             
             // 添加风格前缀
             let finalPrompt = prompt;
@@ -971,9 +1065,14 @@ translateBtn.addEventListener('click', async () => {
             currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
             
             // 构建API URL
-let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}`;
-apiUrl += `?width=${width}&height=${height}&model=${model}`;
-apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
+            let apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}`;
+            apiUrl += `?width=${width}&height=${height}&model=${model}`;
+            apiUrl += `&seed=${currentSeed}&nologo=true&safe=false`;
+            
+            // 添加enhance参数
+            if (enhance) {
+                apiUrl += '&enhance=true';
+            }
             
             if (style) {
                 apiUrl += `&style=${style}`;
@@ -1002,6 +1101,7 @@ apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
                 style: style,
                 size: sizeSelect.value,
                 seed: currentSeed,
+                enhance: enhance,
                 timestamp: new Date().toLocaleString()
             };
             
@@ -1067,12 +1167,19 @@ apiUrl += `&seed=${currentSeed}&nologo=true`; // 添加这个参数
             history.forEach((item, index) => {
                 const historyItem = document.createElement('div');
                 historyItem.className = 'history-item';
+                
+                // 添加状态图标
+                let statusIcons = '';
+                if (item.enhance) {
+                    statusIcons += '<i class="fas fa-sparkles" title="增强提示" style="color: #ffcc00; margin-right: 5px;"></i>';
+                }
+                
                 historyItem.innerHTML = `
                     <img src="${item.url}" alt="${item.prompt}" class="history-image" data-index="${index}">
                     <div class="history-info">
                         <div class="history-prompt" title="${item.prompt}">${item.prompt}</div>
                         <div class="history-date">
-                            <span>${formatDate(item.timestamp)}</span>
+                            <span>${formatDate(item.timestamp)} ${statusIcons}</span>
                             <i class="fas fa-trash delete-history" data-index="${index}"></i>
                         </div>
                     </div>
