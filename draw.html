@@ -449,6 +449,8 @@
             border: 2px dashed var(--line);
             border-radius: 12px;
             min-height: 300px;
+	max-width: 860px;
+    	overflow: hidden;
         }
         
         .drawing-placeholder i {
@@ -943,7 +945,7 @@
                             <!-- 图片上传区域 -->
 <div class="image-upload-area" id="imageUploadArea">
     <i class="fas fa-cloud-upload-alt" id="uploadIcon"></i>
-    <p id="uploadText">点击或拖拽图片到这里上传</p>
+    <p id="uploadText">点击或拖拽图片到这里上传（小于10MB）</p>
     <input type="file" id="imageUploadInput" accept="image/*">
     <img id="uploadedImagePreview" class="uploaded-image-preview" alt="上传的图片">
     <div class="upload-status" id="uploadStatus"></div>
