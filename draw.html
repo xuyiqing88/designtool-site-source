@@ -907,10 +907,7 @@
                     <div class="drawing-layout">
                         <div class="drawing-controls-panel">
                             <p class="panel-description">
-                    输入提示词，AI将根据您的描述生成图像。提示词过长请翻译成英文，
-                                <a href="SDXL.html" target="_blank" style="color: var(--main-color); text-decoration: none;">
-                                    点击查看更多风格 <i class="fas fa-external-link-alt"></i>
-                                </a>。
+                    输入提示词，AI将根据您的描述生成图像。提示词过长请翻译成英文。
                             </p>
                             <div class="input-wrapper">
                                 <textarea id="drawingPrompt" placeholder="输入详细描述以生成图像（例如：一只坐在太空船里的猫，科幻风格，超现实细节）" style="min-height: 160px;"></textarea>
@@ -944,7 +941,10 @@
                                 </div>
                                 
                                 <div class="drawing-control">
-                                    <label for="styleSelect">艺术风格</label>
+                                    <label for="styleSelect">艺术风格 
+                                <a href="SDXL.html" target="_blank" style="color: var(--main-color); text-decoration: none; font-weight: 400;">
+                                    查看更多风格 <i class="fas fa-external-link-alt"></i>
+                                </a></label>
                                     <select id="styleSelect">
                                         <option value="">默认</option>
                                         <option value="realistic">写实风格</option>
