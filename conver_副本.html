@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 图像放大工具</title>
+    <!-- 内联favicon避免404错误 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -239,6 +241,36 @@
             border: 1px solid #bbf7d0;
         }
 
+        .model-loading {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            color: var(--text3);
+        }
+
+        .model-loading .dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: var(--main-color);
+            margin: 0 2px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .model-loading .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .model-loading .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -269,6 +301,12 @@
                 <input type="file" id="image-input" accept="image/*" hidden>
                 <button id="upload-button"><i class="fas fa-upload"></i> 选择图像</button>
                 <p id="file-name">尚未选择文件</p>
+                <div id="model-status" class="model-loading">
+                    <span>模型加载中</span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
                 <div class="progress-bar">
                     <div class="progress" id="progress-bar"></div>
                 </div>
@@ -315,8 +353,10 @@
             const originalPlaceholder = document.getElementById('original-placeholder');
             const upscaledPlaceholder = document.getElementById('upscaled-placeholder');
             const statusMessage = document.getElementById('status-message');
+            const modelStatus = document.getElementById('model-status');
 
             let upscaler;
+            let isModelLoaded = false;
 
             // 显示状态消息
             function showStatus(message, isError = false) {
@@ -331,22 +371,41 @@
                 }
             }
 
+            // 更新模型加载状态
+            function updateModelStatus(loaded) {
+                isModelLoaded = loaded;
+                if (loaded) {
+                    modelStatus.innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i> 模型已加载';
+                    showStatus("AI模型加载成功！");
+                } else {
+                    modelStatus.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:var(--error)"></i> 模型加载失败';
+                }
+            }
+
             // 初始化 Upscaler
             async function initUpscaler() {
                 try {
-                    // 使用正确的模型配置格式
+                    // 使用jsDelivr的CDN，支持CORS
                     upscaler = new Upscaler({
                         model: {
                             scale: 4,
-                            path: 'https://unpkg.com/@upscalerjs/esrgan-legacy@1.0.0/dist/model.json',
+                            path: 'https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-legacy@1.0.0/dist/model.json',
                         }
                     });
                     
-                    showStatus("AI模型加载成功！");
+                    // 验证模型是否真的加载成功
+                    await tf.ready();
+                    updateModelStatus(true);
                     console.log("Upscaler initialized successfully");
                 } catch (error) {
                     console.error('Upscaler initialization failed:', error);
-                    showStatus("AI模型加载失败，请刷新页面重试", true);
+                    updateModelStatus(false);
+                    showStatus("AI模型加载失败，请刷新页面重试或检查网络连接", true);
+                    
+                    // 提供备用方案
+                    setTimeout(() => {
+                        showStatus("提示：如果模型持续加载失败，您可以尝试使用其他浏览器或网络环境", false);
+                    }, 3000);
                 }
             }
 
@@ -363,6 +422,12 @@
                     // 验证文件类型
                     if (!file.type.startsWith('image/')) {
                         showStatus("请选择有效的图像文件！", true);
+                        return;
+                    }
+
+                    // 检查模型是否已加载
+                    if (!isModelLoaded) {
+                        showStatus("AI模型尚未加载完成，请稍后再试", true);
                         return;
                     }
 
@@ -385,10 +450,6 @@
                         progressBar.style.width = '0%';
 
                         try {
-                            if (!upscaler) {
-                                throw new Error("AI模型尚未加载完成，请稍后再试");
-                            }
-
                             console.log('开始放大图像...');
                             showStatus("开始处理图像，这可能需要一些时间...");
                             
@@ -421,7 +482,15 @@
                         } catch (error) {
                             console.error('图像放大失败:', error);
                             fileNameElement.textContent = '放大失败，请重试';
-                            showStatus(`图像放大失败: ${error.message}`, true);
+                            
+                            let errorMsg = '图像放大失败';
+                            if (error.message.includes('Failed to fetch')) {
+                                errorMsg = '模型加载失败，请检查网络连接或刷新页面重试';
+                            } else if (error.message.includes('memory')) {
+                                errorMsg = '图像太大导致内存不足，请尝试较小的图像';
+                            }
+                            
+                            showStatus(`${errorMsg}: ${error.message}`, true);
                         } finally {
                             loader.style.display = 'none';
                         }
@@ -434,6 +503,7 @@
             originalImage.onerror = () => {
                 originalPlaceholder.style.display = 'block';
                 originalImage.style.display = 'none';
+                showStatus("原始图像加载失败", true);
             };
 
             upscaledImage.onerror = () => {
