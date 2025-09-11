@@ -582,8 +582,8 @@
             cursor: pointer;
             transition: transform 0.3s;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             padding: 7px 0 10px;
 	right: -50px;
     	z-index: 9;
@@ -1476,7 +1476,7 @@ function clearImageToImage() {
                 const params = new URLSearchParams();
                 params.append('width', width);
                 params.append('height', height);
-                params.append('model', 'kontext');
+                params.append('model', 'kontext（图生图）');
                 params.append('image', uploadedImageUrl);
                 params.append('strength', strength);
                 params.append('seed', Math.floor(Math.random() * 1000000));
@@ -1543,7 +1543,7 @@ function clearImageToImage() {
                         currentImageData = {
                             url: imageUrl,
                             prompt: imageToImagePrompt.value.trim(),
-                            model: 'kontext',
+                            model: 'kontext（图生图）',
                             strength: imageToImageStrength.value,
                             size: imageToImageSizeSelect.value,
                             seed: Math.floor(Math.random() * 1000000).toString(),
