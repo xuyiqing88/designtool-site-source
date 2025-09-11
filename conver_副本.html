@@ -386,12 +386,8 @@
             async function initUpscaler() {
                 try {
                     // 使用jsDelivr的CDN，支持CORS
-                    upscaler = new Upscaler({
-                        model: {
-                            scale: 4,
-                            path: 'https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-legacy@1.0.0/dist/model.json',
-                        }
-                    });
+                    // 使用默认模型配置，不指定特定的模型路径
+                    upscaler = new Upscaler();
                     
                     // 验证模型是否真的加载成功
                     await tf.ready();
