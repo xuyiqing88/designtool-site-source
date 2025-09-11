@@ -1417,19 +1417,21 @@ function clearImageToImage() {
                     
                     generatedImageToImage.src = imageUrl;
                     
-                } catch (error) {
-                    console.error('图像生成错误:', error);
-                    imageToImagePlaceholder.style.display = 'flex';
-                    imageToImagePlaceholder.innerHTML = `
-                        <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-                        <p>图像生成失败，请重试</p>
-                        <p style="font-size: 12px; margin-top: 10px;">错误详情: ${error.message}</p>
-                    `;
-                    generatedImageToImage.style.display = 'none';
-                    imageToImageActions.style.display = 'none';
-                    setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
-                    showAlert(`图像生成失败: ${error.message}`, 'error');
-                }
+} catch (error) {
+    console.error('图像生成错误:', error);
+    // 只显示第一行错误信息
+    const shortError = error.message.split('\n')[0];
+    imageToImagePlaceholder.style.display = 'flex';
+    imageToImagePlaceholder.innerHTML = `
+        <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+        <p>图像生成失败，请重试</p>
+        <p style="font-size: 12px; margin-top: 10px;">错误: ${shortError}</p>
+    `;
+    generatedImageToImage.style.display = 'none';
+    imageToImageActions.style.display = 'none';
+    setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+    showAlert(`图像生成失败: ${shortError}`, 'error');
+}
             }
         
         // 下载图生图图像
@@ -1580,46 +1582,48 @@ function clearImageToImage() {
         }
         
         // 使用fetch API获取图像
-        async function fetchImage(apiUrl) {
-            try {
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP错误: ${response.status}`);
-                }
-                
-                const blob = await response.blob();
-                const imageUrl = URL.createObjectURL(blob);
-                
-                generatedImage.onload = () => {
-                    URL.revokeObjectURL(imageUrl); // 清除内存
-                    drawingPlaceholder.style.display = 'none';
-                    generatedImage.style.display = 'block';
-                    imageActions.style.display = 'flex';
-                    setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
-                    showAlert('图像生成成功！', 'success');
-                    
-                    currentImageUrl = apiUrl;
-currentImageData = {
-    url: imageUrl, // 这里已经是Data URL
-    prompt: imageToImagePrompt.value.trim(),
-    model: 'kontext',
-    strength: imageToImageStrength.value,
-    size: imageToImageSizeSelect.value,
-    seed: Math.floor(Math.random() * 1000000).toString(),
-    timestamp: new Date().toLocaleString()
-};
-                    
-                    saveToHistory(currentImageData);
-                };
-                
-                generatedImage.onerror = () => {
-                    throw new Error('图像加载失败');
-                };
-                
-                generatedImage.src = imageUrl;
-                
-            } catch (error) {
+async function fetchImage(apiUrl) {
+    try {
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP错误: ${response.status}`);
+        }
+        
+        const blob = await response.blob();
+        // 将Blob转换为Data URL
+        const imageUrl = await blobToDataURL(blob);
+        
+        generatedImage.onload = () => {
+            drawingPlaceholder.style.display = 'none';
+            generatedImage.style.display = 'block';
+            imageActions.style.display = 'flex';
+            setButtonLoading(generateImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+            showAlert('图像生成成功！', 'success');
+            
+            // 使用Data URL而不是Blob URL
+            currentImageUrl = imageUrl;
+            currentImageData = {
+                url: imageUrl, // 这里保存Data URL
+                prompt: drawingPrompt.value.trim(),
+                model: modelSelect.value,
+                style: styleSelect.value,
+                size: sizeSelect.value,
+                seed: currentSeed,
+                timestamp: new Date().toLocaleString(),
+                enhance: enhanceOption.checked
+            };
+            
+            saveToHistory(currentImageData);
+        };
+        
+        generatedImage.onerror = () => {
+            throw new Error('图像加载失败');
+        };
+        
+        generatedImage.src = imageUrl;
+        
+    } catch (error) {
                 console.error('图像生成错误:', error);
                 drawingPlaceholder.style.display = 'flex';
                 drawingPlaceholder.innerHTML = `
