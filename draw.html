@@ -50,6 +50,77 @@
             color: var(--text1);
             transition: background 0.3s ease;
         }
+/* 图片详情面板样式 */
+.image-details-panel {
+    position: relative;
+    right: 0;
+    top: 0;
+    width: 300px;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    display: none;
+	height: -webkit-fill-available;
+}
+
+.image-details-panel h3 {
+    margin-bottom: 15px;
+    color: var(--text1);
+    font-size: 18px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+}
+
+.detail-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.detail-item span {
+    color: var(--text3);
+    font-size: 14px;
+}
+
+.prompt-text {
+    background: var(--mainbg);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text2);
+    border: 1px solid var(--line);
+}
+
+.copy-btn {
+    align-self: flex-end;
+    padding: 6px 12px;
+    background: var(--button);
+    color: var(--text2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.copy-btn:hover {
+    background: var(--main-color);
+    color: white;
+}
+
 .hidden {
     display: none !important;
 }
@@ -489,20 +560,24 @@
             position: relative;
             max-width: 90vw;
             max-height: 85vh;
+	display: flex;
+	    background: #fff;
+    border-radius: 10px;
         }
         
         .modal-content img {
             object-fit: contain;
             border-radius: 8px;
-            height: 86vh;
+            height: 85vh;
+	padding: 10px;
         }
         
         .modal-close-btn {
             position: absolute;
             top: -40px;
-            background: var(--card-bg);
-            border: none;
-            color: var(--text1);
+            background: #00000045;
+            border: 1px solid;;
+            color: var(--card-bg);
             font-size: 28px;
             cursor: pointer;
             transition: transform 0.3s;
@@ -510,6 +585,8 @@
             width: 50px;
             height: 50px;
             padding: 7px 0 10px;
+	right: -50px;
+    	z-index: 9;
         }
         
         .modal-close-btn:hover {
@@ -631,14 +708,16 @@
         .gallery-controls {
             display: flex;
             justify-content: space-between;
-            padding: 15px;
+            padding: 10px;
             border-top: 1px solid var(--line);
-            background: var(--card-bg);
+            background: #ffffffc2;
             bottom: 0;
             position: fixed;
             width: 93%;
             z-index: 9;
             align-items: center;
+	backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
         }
         
         .empty-gallery {
@@ -729,7 +808,17 @@
             .advanced-options, #imageToImageOptions {
                 grid-template-columns: 1fr;
             }
-            
+       .image-details-panel {
+        position: static;
+        width: 100%;
+        height: auto;
+        max-height: 40vh;
+        overflow-y: auto;
+    }
+    
+    .modal-content {
+        flex-direction: column;
+    }
             .drawing-layout {
                 grid-template-columns: 1fr;
             }
@@ -767,6 +856,7 @@
             
             .modal-content img {
                 width: 100%;
+		height: auto;
             }
             
             .modal-close-btn {
@@ -1038,15 +1128,47 @@
         </div>
     </div>
     
-        <div class="image-modal" id="imageModal">
-            <div class="modal-content">
-                <img src="" alt="Enlarged Image" id="modalImage">
-                <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
-                <button class="btn-primary modal-download-btn" id="modalDownloadBtn">
-                    <i class="fas fa-download"></i> 下载图片
+<div class="image-modal" id="imageModal">
+    <div class="modal-content">
+        <img src="" alt="Enlarged Image" id="modalImage">
+        <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
+        <button class="btn-primary modal-download-btn" id="modalDownloadBtn">
+            <i class="fas fa-download"></i> 下载图片
+        </button>
+        
+        <!-- 新增图片详情区域 -->
+        <div class="image-details-panel" id="imageDetailsPanel">
+            <h3>图片详情</h3>
+            <div class="detail-item">
+                <label>提示词:</label>
+                <div class="prompt-text" id="modalPromptText"></div>
+                <button class="copy-btn" id="copyPromptBtn" title="复制提示词">
+                    <i class="fas fa-copy"></i>
                 </button>
             </div>
+            <div class="detail-item">
+                <label>模型:</label>
+                <span id="modalModel"></span>
+            </div>
+            <div class="detail-item">
+                <label>风格:</label>
+                <span id="modalStyle"></span>
+            </div>
+            <div class="detail-item">
+                <label>尺寸:</label>
+                <span id="modalSize"></span>
+            </div>
+            <div class="detail-item">
+                <label>种子:</label>
+                <span id="modalSeed"></span>
+            </div>
+            <div class="detail-item">
+                <label>生成时间:</label>
+                <span id="modalTimestamp"></span>
+            </div>
         </div>
+    </div>
+</div>
     
     <div id="alertContainer"></div>
 
@@ -1111,7 +1233,7 @@
         let currentImageData = null;
         let currentSeed = '';
         let uploadedImageUrl = ''; // 存储上传图片的URL
-        const MAX_HISTORY = 50; // 最大历史记录数
+        const MAX_HISTORY = 100; // 最大历史记录数
         
         // ImgBB API密钥
         const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289'; // 示例密钥，需要替换为实际可用的密钥
@@ -1140,6 +1262,16 @@
                     const subtab = btn.dataset.subtab;
                     switchSecondaryTab(subtab);
                 });
+// 复制提示词功能
+document.getElementById('copyPromptBtn').addEventListener('click', function() {
+    const promptText = document.getElementById('modalPromptText').textContent;
+    navigator.clipboard.writeText(promptText).then(() => {
+        showAlert('提示词已复制到剪贴板', 'success');
+    }).catch(err => {
+        console.error('复制失败:', err);
+        showAlert('复制失败，请手动复制', 'error');
+    });
+});
             });
             
             clearDrawingBtn.addEventListener('click', clearDrawing);
@@ -1156,10 +1288,19 @@
             });
 
             generatedImage.addEventListener('click', showImageModal);
-            modalCloseBtn.addEventListener('click', () => imageModal.classList.remove('show'));
-            imageModal.addEventListener('click', (e) => {
-                if (e.target === imageModal) imageModal.classList.remove('show');
-            });
+modalCloseBtn.addEventListener('click', () => {
+    imageModal.classList.remove('show');
+    // 隐藏详情面板
+    document.getElementById('imageDetailsPanel').style.display = 'none';
+});
+
+imageModal.addEventListener('click', (e) => {
+    if (e.target === imageModal) {
+        imageModal.classList.remove('show');
+        // 隐藏详情面板
+        document.getElementById('imageDetailsPanel').style.display = 'none';
+    }
+});
             modalDownloadBtn.addEventListener('click', downloadImage);
             
             clearGalleryBtn.addEventListener('click', clearHistory);
@@ -1700,13 +1841,26 @@ async function fetchImage(apiUrl) {
             });
         }
         
-        function showHistoryImage(index) {
-            const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-            if (index >= 0 && index < history.length) {
-                modalImage.src = history[index].url;
-                imageModal.classList.add('show');
-            }
-        }
+function showHistoryImage(index) {
+    const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+    if (index >= 0 && index < history.length) {
+        const item = history[index];
+        modalImage.src = item.url;
+        
+        // 填充详情信息
+        document.getElementById('modalPromptText').textContent = item.prompt;
+        document.getElementById('modalModel').textContent = item.model || '未知';
+        document.getElementById('modalStyle').textContent = item.style || '默认';
+        document.getElementById('modalSize').textContent = item.size || '未知';
+        document.getElementById('modalSeed').textContent = item.seed || '随机';
+        document.getElementById('modalTimestamp').textContent = item.timestamp || '未知';
+        
+        // 显示详情面板
+        document.getElementById('imageDetailsPanel').style.display = 'block';
+        
+        imageModal.classList.add('show');
+    }
+}
         
         function deleteHistoryItem(index) {
             let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
