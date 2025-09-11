@@ -1498,7 +1498,7 @@ function clearImageToImage() {
                 const params = new URLSearchParams();
                 params.append('width', width);
                 params.append('height', height);
-                params.append('model', 'kontext（图生图）');
+                params.append('model', 'kontext');
                 params.append('image', uploadedImageUrl);
                 params.append('strength', strength);
                 params.append('seed', Math.floor(Math.random() * 1000000));
@@ -1565,7 +1565,7 @@ function clearImageToImage() {
                         currentImageData = {
                             url: imageUrl,
                             prompt: imageToImagePrompt.value.trim(),
-                            model: 'kontext（图生图）',
+                            model: 'kontext',
                             strength: imageToImageStrength.value,
                             size: imageToImageSizeSelect.value,
                             seed: Math.floor(Math.random() * 1000000).toString(),
