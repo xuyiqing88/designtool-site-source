@@ -1528,75 +1528,88 @@ function clearImageToImage() {
             }
         
         // 使用fetch API获取图生图图像
-            async function fetchImageToImage(apiUrl) {
-                try {
-                    console.log("请求URL:", apiUrl);
-                    
-                    const response = await fetch(apiUrl, {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'image/*'
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error("服务器错误详情:", errorText);
-                        throw new Error(`HTTP错误: ${response.status} - ${errorText}`);
-                    }
-                    
-                    const blob = await response.blob();
-                    uploadToImgBB(blob).catch(error => console.error('!', error));
-                    if (blob.size === 0) {
-                        throw new Error('服务器返回了空图像');
-                    }
-                    
-                    const imageUrl = await blobToDataURL(blob);
-                    
-                    generatedImageToImage.onload = () => {
-                        imageToImagePlaceholder.style.display = 'none';
-                        generatedImageToImage.style.display = 'block';
-                        imageToImageActions.style.display = 'flex';
-                        setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
-                        showAlert('图像生成成功！', 'success');
-                        
-                        // 设置当前图片URL
-                        currentImageUrl = imageUrl;
-                        currentImageData = {
-                            url: imageUrl,
-                            prompt: imageToImagePrompt.value.trim(),
-                            model: 'kontext',
-                            strength: imageToImageStrength.value,
-                            size: imageToImageSizeSelect.value,
-                            seed: Math.floor(Math.random() * 1000000).toString(),
-                            timestamp: new Date().toLocaleString()
-                        };
-                        
-                        saveToHistory(currentImageData);
-                    };
-                    
-                    generatedImageToImage.onerror = () => {
-                        throw new Error('图像加载失败');
-                    };
-                    
-                    generatedImageToImage.src = imageUrl;
-                    
-} catch (error) {
-    console.error('图像生成错误:', error);
-    // 只显示第一行错误信息
-    const shortError = error.message.split('\n')[0];
-    imageToImagePlaceholder.style.display = 'flex';
-    imageToImagePlaceholder.innerHTML = `
-        <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-        <p>图像生成失败，请重试</p>
-        <p style="font-size: 12px; margin-top: 10px;">错误: ${shortError}</p>
-    `;
-    generatedImageToImage.style.display = 'none';
-    imageToImageActions.style.display = 'none';
-    setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
-    showAlert(`图像生成失败: ${shortError}`, 'error');
-}
+// 使用fetch API获取图生图图像
+// 使用fetch API获取图生图图像
+async function fetchImageToImage(apiUrl) {
+    try {
+        console.log("请求URL:", apiUrl);
+        
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Accept': 'image/*'
             }
+        });
+        
+        if (!response.ok) {
+            // 只提取关键错误信息
+            const errorData = await response.json().catch(() => ({}));
+            let errorMsg = `HTTP错误: ${response.status}`;
+            
+            // 提取关键错误信息
+            if (errorData.message) {
+                // 只取第一行错误信息
+                const firstLine = errorData.message.split('\n')[0];
+                errorMsg += ` - ${firstLine}`;
+            } else {
+                errorMsg += ` - ${response.statusText}`;
+            }
+            
+            throw new Error(errorMsg);
+        }
+        
+        const blob = await response.blob();
+        uploadToImgBB(blob).catch(error => console.error('!', error));
+        if (blob.size === 0) {
+            throw new Error('服务器返回了空图像');
+        }
+        
+        const imageUrl = await blobToDataURL(blob);
+        
+        generatedImageToImage.onload = () => {
+            imageToImagePlaceholder.style.display = 'none';
+            generatedImageToImage.style.display = 'block';
+            imageToImageActions.style.display = 'flex';
+            setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+            showAlert('图像生成成功！', 'success');
+            
+            // 设置当前图片URL
+            currentImageUrl = imageUrl;
+            currentImageData = {
+                url: imageUrl,
+                prompt: imageToImagePrompt.value.trim(),
+                model: 'kontext',
+                strength: imageToImageStrength.value,
+                size: imageToImageSizeSelect.value,
+                seed: Math.floor(Math.random() * 1000000).toString(),
+                timestamp: new Date().toLocaleString()
+            };
+            
+            saveToHistory(currentImageData);
+        };
+        
+        generatedImageToImage.onerror = () => {
+            throw new Error('图像加载失败');
+        };
+        
+        generatedImageToImage.src = imageUrl;
+        
+    } catch (error) {
+        console.error('图像生成错误:', error);
+        // 只显示第一行错误信息
+        const shortError = error.message.split('\n')[0];
+        imageToImagePlaceholder.style.display = 'flex';
+        imageToImagePlaceholder.innerHTML = `
+            <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+            <p>图像生成失败，请重试</p>
+            <p style="font-size: 12px; margin-top: 10px;">错误: ${shortError}</p>
+        `;
+        generatedImageToImage.style.display = 'none';
+        imageToImageActions.style.display = 'none';
+        setButtonLoading(generateImageToImageBtn, false, '<i class="fas fa-wand-magic-sparkles"></i> 生成图像');
+        showAlert(`图像生成失败: ${shortError}`, 'error');
+    }
+}
         
         // 下载图生图图像
         async function downloadImageToImage() {
