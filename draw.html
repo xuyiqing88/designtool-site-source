@@ -596,8 +596,8 @@
         
         .modal-download-btn {
             position: absolute;
-            bottom: -50px;
-            left: 50%;
+            bottom: 10px;
+            right: 0%;
             transform: translateX(-50%);
             background: var(--btcolor);
         }
@@ -619,8 +619,8 @@
             gap: 12px;
         }
         
-        .alert.success { background: var(--success-color); }
-        .alert.error { background: var(--error-color); }
+        .alert.success { background: var(--success-color); z-index:2001; }
+        .alert.error { background: var(--error-color); z-index:2001; }
         
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translate(-50%, -20px); }
@@ -1133,12 +1133,12 @@
     <div class="modal-content">
         <img src="" alt="Enlarged Image" id="modalImage">
         <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
-        <button class="btn-primary modal-download-btn" id="modalDownloadBtn">
-            <i class="fas fa-download"></i> 下载图片
-        </button>
         
         <!-- 新增图片详情区域 -->
         <div class="image-details-panel" id="imageDetailsPanel">
+        <button class="btn-primary modal-download-btn" id="modalDownloadBtn">
+            <i class="fas fa-download"></i> 下载图片
+        </button>
             <h3>图片详情</h3>
             <div class="detail-item">
                 <label>提示词:</label>
@@ -1565,7 +1565,7 @@ function clearImageToImage() {
                         currentImageData = {
                             url: imageUrl,
                             prompt: imageToImagePrompt.value.trim(),
-                            model: 'kontext',
+                            model: 'kontext（图生图）',
                             strength: imageToImageStrength.value,
                             size: imageToImageSizeSelect.value,
                             seed: Math.floor(Math.random() * 1000000).toString(),
