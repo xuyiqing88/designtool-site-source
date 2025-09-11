@@ -1056,16 +1056,19 @@
                                 </div>
                                 
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">                                
-                                <div class="drawing-control">
-                                    <label for="imageToImageSizeSelect">图像尺寸</label>
-                                    <select id="imageToImageSizeSelect">
-                                        <option value="1024x1024">1:1 (1024×1024)</option>
-                                        <option value="1024x768">4:3 (1024×768)</option>
-                                        <option value="768x1024">3:4 (768×1024)</option>
-                                        <option value="1152x768">3:2 (1152x768)</option>
-                                        <option value="768x1152">2:3 (768x1152)</option>
-                                    </select>
-                                </div>
+<div class="drawing-control">
+    <label for="imageToImageSizeSelect" style="display: flex; justify-content: space-between; align-items: center;">
+        <span id="imageSizeLabel">图像尺寸</span>
+        <i id="getOriginalSizeBtn" class="fa-solid fa-ruler-combined" style="cursor: pointer; color: var(--text3);" title="获取原始图片尺寸"></i>
+    </label>
+    <select id="imageToImageSizeSelect">
+        <option value="1024x1024">1:1 (1024×1024)</option>
+        <option value="1024x768">4:3 (1024×768)</option>
+        <option value="768x1024">3:4 (768×1024)</option>
+        <option value="1152x768">3:2 (1152x768)</option>
+        <option value="768x1152">2:3 (768x1152)</option>
+    </select>
+</div>
 				<div class="drawing-control">
                                     <label for="imageToImageStrength">修改强度</label>
                                     <input type="range" id="imageToImageStrength" min="0.1" max="1.0" step="0.1" value="0.7" style="padding: 0;">
@@ -1252,6 +1255,33 @@
                 loadHistory();
                 setupSeedButtons();
                 setupImageToImageListeners();
+// 新增：为获取原图尺寸按钮添加点击事件
+            document.getElementById('getOriginalSizeBtn').addEventListener('click', () => {
+                const previewImage = document.getElementById('uploadedImagePreview');
+                // 检查是否有图片上传并且图片已加载完成
+                if (previewImage && previewImage.src && previewImage.naturalWidth > 0) {
+                    const width = previewImage.naturalWidth;
+                    const height = previewImage.naturalHeight;
+                    
+                    const imageSizeLabel = document.getElementById('imageSizeLabel');
+                    const sizeSelect = document.getElementById('imageToImageSizeSelect');
+                    
+                    // 更新标签文本
+                    imageSizeLabel.textContent = `图像尺寸 (${width}×${height}px)`;
+                    imageSizeLabel.style.color = 'var(--main-color)'; // 高亮显示
+                    
+                    // 动态创建一个新的option并选中它
+                    let newOption = new Option(`${width}×${height} (原图)`, `${width}x${height}`, true, true);
+                    sizeSelect.add(newOption, 0); // 添加到最前面
+
+                    // 禁用下拉选择框
+                    sizeSelect.disabled = true;
+                    
+                    showAlert('已成功获取原图尺寸', 'success');
+                } else {
+                    showAlert('请先上传一张图片', 'error');
+                }
+            });
             });
 
 // 上传图片到ImgBB函数
@@ -1468,6 +1498,18 @@ function clearImageToImage() {
     imageToImageActions.style.display = 'none';
     uploadStatus.textContent = '';
     uploadedImageUrl = '';
+// 新增：重置图像尺寸标签和选择框
+            const imageSizeLabel = document.getElementById('imageSizeLabel');
+            const sizeSelect = document.getElementById('imageToImageSizeSelect');
+            
+            imageSizeLabel.textContent = '图像尺寸';
+            imageSizeLabel.style.color = 'var(--text2)'; // 恢复默认颜色
+            sizeSelect.disabled = false;
+
+            // 如果存在我们动态添加的选项，就移除它
+            if (sizeSelect.options[0] && sizeSelect.options[0].text.includes('(原图)')) {
+                sizeSelect.remove(0);
+            }
     
     // 新增代码：重新显示上传提示图标和文字
     document.getElementById('uploadIcon').classList.remove('hidden');
