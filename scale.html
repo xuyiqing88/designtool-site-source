@@ -934,7 +934,7 @@
                             const modelFixedScale = 4; // 认定模型是固定的4倍，以获取最佳基础质量
                             const upscaledSrc = await upscaler.upscale(processedImageData, {
                                 patchSize: 64, // 64是这个旧版模型更稳定的参数
-                                padding: 6,
+                                padding: 0,
                                 progress: (progress) => {
                                     const percentage = (progress * 100).toFixed(2);
                                     fileNameElement.textContent = `正在放大... ${percentage}%`;
