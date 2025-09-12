@@ -888,16 +888,14 @@
                     originalImage.onload = async function() {
                         loader.style.display = 'block';
                         progressBar.style.width = '0%';
-                    try {
+ try {
                             console.log('开始放大图像...');
                             showStatus("开始处理图像，这可能需要一些时间...");
                             
-                            // 获取用户选择的放大倍数和去噪级别
+                            // 获取用户选择的放大倍数
                             const zoomFactor = parseInt(zoomFactorSelect.value);
-                            const denoiseLevel = parseInt(denoiseLevelSelect.value);
                             
-                            // --- 预处理图像 ---
-                            // 预处理图像：扩展而不是裁剪，以满足模型要求
+                            // --- 步骤1: 无损填充预处理 (恢复旧版高质量做法) ---
                             const canvas = document.createElement('canvas');
                             const ctx = canvas.getContext('2d');
                             let img = new Image();
@@ -910,9 +908,8 @@
                             
                             // 显示原始图像尺寸
                             document.getElementById('original-size').textContent = `原图：${img.width}x${img.height}px`;
-                            document.getElementById('original-size').style.display = 'block';
-                            
-                            // 计算需要扩展的尺寸（使其能被模型处理）
+
+                            // 计算需要填充的尺寸，使其能被模型处理（64的倍数），保留所有像素
                             const targetWidth = Math.ceil(img.width / 64) * 64;
                             const targetHeight = Math.ceil(img.height / 64) * 64;
                             
@@ -927,69 +924,57 @@
                             ctx.fillStyle = '#FFFFFF';
                             ctx.fillRect(0, 0, targetWidth, targetHeight);
                             
-                            // 将原始图像绘制到canvas中央
+                            // 将原始图像绘制到canvas中央，不裁剪
                             ctx.drawImage(img, paddingX, paddingY, img.width, img.height);
                             
                             const processedImageData = canvas.toDataURL('image/jpeg', 0.9);
-                            console.log(`图像已预处理: 原尺寸(${img.width}x${img.height}) -> 填充后尺寸(${targetWidth}x${targetHeight})`);
-
-                            // --- 调用AI模型进行放大 (模型固定为4倍) ---
-                            const modelFixedScale = 4; // 定义模型的固定放大倍数
+                            console.log(`图像已预处理(填充): 原尺寸(${img.width}x${img.height}) -> 填充后(${targetWidth}x${targetHeight})`);
+                            
+                            // --- 步骤2: 调用AI模型进行4倍放大 ---
+                            const modelFixedScale = 4; // 认定模型是固定的4倍，以获取最佳基础质量
                             const upscaledSrc = await upscaler.upscale(processedImageData, {
-                                patchSize: 64,
-                                padding: 0, 
+                                patchSize: 64, // 64是这个旧版模型更稳定的参数
+                                padding: 0,
                                 progress: (progress) => {
                                     const percentage = (progress * 100).toFixed(2);
-                                    console.log(`放大进度: ${percentage}%`);
                                     fileNameElement.textContent = `正在放大... ${percentage}%`;
                                     progressBar.style.width = `${percentage}%`;
                                 },
                             });
-
-                            // --- 【核心修复逻辑】裁剪并缩放至用户选择的倍数 ---
-                            showStatus(`模型已输出${modelFixedScale}倍图像，正在裁剪并调整至您选择的 ${zoomFactor} 倍...`);
-
+                            
+                            // --- 步骤3: 高质量裁剪与缩放 (恢复旧版高质量做法) ---
+                            showStatus(`模型已输出${modelFixedScale}倍图像，正在高精度处理至 ${zoomFactor} 倍...`);
                             const finalCanvas = document.createElement('canvas');
                             const finalCtx = finalCanvas.getContext('2d');
-                            finalCtx.imageSmoothingQuality = 'high';
-                            const tempImg = new Image();
+                            finalCtx.imageSmoothingQuality = 'high'; // 关键：开启高质量模式
 
-                            // 异步加载4倍放大的图片
+                            const tempImg = new Image();
                             await new Promise(resolve => {
                                 tempImg.onload = resolve;
                                 tempImg.src = upscaledSrc;
                             });
                             
-                            // 设置最终画布的尺寸为用户期望的尺寸
+                            // 最终画布尺寸 = 原始尺寸 * 用户选择倍数
                             finalCanvas.width = img.width * zoomFactor;
                             finalCanvas.height = img.height * zoomFactor;
 
-                            // 使用drawImage的九个参数版本，从4倍大图中裁剪出有效内容，并将其缩放绘制到最终画布上
-                            // 这一个操作同时完成了“裁剪”和“缩放”
+                            // 核心操作：从4倍大图中，精准裁剪出无填充部分，并高质量缩放到目标尺寸
                             finalCtx.drawImage(
                                 tempImg,
                                 paddingX * modelFixedScale,      // 源裁剪区X坐标 (跳过左边空白)
                                 paddingY * modelFixedScale,      // 源裁剪区Y坐标 (跳过顶部空白)
-                                img.width * modelFixedScale,     // 源裁剪区宽度 (原始图片内容在4倍图中的宽度)
-                                img.height * modelFixedScale,    // 源裁剪区高度 (原始图片内容在4倍图中的高度)
+                                img.width * modelFixedScale,     // 源裁剪区宽度 (原始内容在4倍图中的宽度)
+                                img.height * modelFixedScale,    // 源裁剪区高度 (原始内容在4倍图中的高度)
                                 0,                               // 目标绘制区X坐标
                                 0,                               // 目标绘制区Y坐标
                                 finalCanvas.width,               // 目标绘制区宽度
                                 finalCanvas.height               // 目标绘制区高度
                             );
 
-                            // 获取经过精确缩放和裁剪后的图像数据
-                            const correctlyScaledSrc = finalCanvas.toDataURL('image/png');
+                            const finalUpscaledSrc = finalCanvas.toDataURL('image/png'); // 使用PNG以保留最高质量
 
-                            // --- 后续处理：应用去噪并显示结果 ---
-                            let finalUpscaledSrc = correctlyScaledSrc;
-                            if (denoiseLevel > 0) {
-                                showStatus("正在应用去噪处理...");
-                                finalUpscaledSrc = await applyDenoise(correctlyScaledSrc, denoiseLevel);
-                            }
-                            
+                            // --- 步骤4: 显示最终结果 ---
                             loader.style.display = 'none';
-                            console.log('图像放大并修正成功！');
                             upscaledImage.src = finalUpscaledSrc;
                             upscaledImage.style.display = 'block';
                             upscaledImage.classList.add('clickable-image');
@@ -998,32 +983,21 @@
                             downloadButton.disabled = false;
                             fileNameElement.textContent = `${file.name} - 放大完成`;
                             progressBar.style.width = '100%';
-                            showStatus(`图像放大成功！已精确放大至 ${zoomFactor} 倍`);
+                            showStatus(`图像放大成功！已高质量处理至 ${zoomFactor} 倍`);
                             
-                            // 显示放大后的图像尺寸
                             document.getElementById('upscaled-size').textContent = `放大后：${finalCanvas.width}x${finalCanvas.height}px`;
-                            document.getElementById('upscaled-size').style.display = 'block';
-                            
-                            setTimeout(() => {
-                                progressBar.style.width = '0%';
-                            }, 1000);
+
+                            setTimeout(() => progressBar.style.width = '0%', 1000);
                             
                         } catch (error) {
                             loader.style.display = 'none';
                             console.error('图像放大失败:', error);
                             fileNameElement.textContent = '放大失败，请重试';
-                            
                             let errorMsg = '图像放大失败';
-                            if (error.message.includes('Failed to fetch')) {
-                                errorMsg = '模型加载失败，请检查网络连接或刷新页面重试';
-                            } else if (error.message.includes('memory')) {
-                                errorMsg = '图像太大导致内存不足，请尝试较小的图像';
-                            } else if (error.message.includes('concat4D') || error.message.includes('Shape of tensors')) {
-                                errorMsg = '图像尺寸不兼容，已尝试自动调整，但仍失败';
-                            } else if (error.message.includes('WebGL maximum') || error.message.includes('texture size')) {
-                                errorMsg = '图像尺寸超过WebGL限制，请尝试较小的图像或使用不同的浏览器';
-                            }
-                            
+                            if (error.message.includes('Failed to fetch')) errorMsg = '模型加载失败，请检查网络连接或刷新页面重试';
+                            else if (error.message.includes('memory')) errorMsg = '图像太大导致内存不足，请尝试较小的图像';
+                            else if (error.message.includes('concat4D') || error.message.includes('Shape of tensors')) errorMsg = '图像尺寸不兼容，已尝试自动调整，但仍失败';
+                            else if (error.message.includes('WebGL maximum') || error.message.includes('texture size')) errorMsg = '图像尺寸超过WebGL限制，请尝试较小的图像或使用不同的浏览器';
                             showStatus(`${errorMsg}: ${error.message}`, true);
                         }
                     };
