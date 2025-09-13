@@ -50,6 +50,17 @@
             color: var(--text1);
             transition: background 0.3s ease;
         }
+.ruler {
+	cursor: pointer; 
+	color: var(--main-color);
+    gap: 6px;
+    display: flex;
+    align-items: center;
+	text-decoration: none;
+}
+.ruler:hover {
+	text-decoration: underline;
+}
 /* 图片详情面板样式 */
 .image-details-panel {
     position: relative;
@@ -471,6 +482,8 @@
             font-size: 14px;
             font-weight: 500;
             color: var(--text2);
+	    display: flex;
+    justify-content: space-between;
         }
         
         .drawing-control select, .drawing-control input {
@@ -941,7 +954,7 @@
                                 
                                 <div class="drawing-control">
                                     <label for="styleSelect">艺术风格 
-                                <a href="SDXL.html" target="_blank" style="color: var(--main-color); text-decoration: none; font-weight: 400;">
+                                <a href="SDXL.html" target="_blank" class="ruler">
                                     更多风格 <i class="fas fa-external-link-alt"></i>
                                 </a></label>
                                     <select id="styleSelect">
@@ -1060,7 +1073,7 @@
 <div class="drawing-control">
     <label for="imageToImageSizeSelect" style="display: flex; justify-content: space-between; align-items: center;">
         <span id="imageSizeLabel">图像尺寸</span>
-        <i id="getOriginalSizeBtn" class="fa-solid fa-ruler-combined" style="cursor: pointer; color: var(--text3);" title="获取原始图片尺寸"></i>
+        <span id="getOriginalSizeBtn" class="ruler"><i class="fa-solid fa-ruler-combined"></i>原图尺寸</span>
     </label>
     <select id="imageToImageSizeSelect">
         <option value="1024x1024">1:1 (1024×1024)</option>
