@@ -892,27 +892,89 @@
                         loader.style.display = 'block';
                         progressBar.style.width = '0%';
 try {
-                            console.log('使用现代UpscalerJS引擎开始放大图像...');
-                            showStatus("开始处理图像，新引擎可能需要一些时间...");
+                            console.log('启动最终版手动分块引擎...');
+                            showStatus("开始处理图像，请稍候...");
                             
                             const zoomFactor = parseInt(zoomFactorSelect.value);
+                            const model = {
+                                path: 'https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-legacy/models/psnr-small/model.json',
+                                scale: 4,
+                            };
+                            const upscaler = new Upscaler({ model: model });
+                            
+                            let img = new Image();
+                            img.src = originalImage.src;
+                            await new Promise(resolve => { img.onload = resolve; });
 
-                            // 新版库可以直接处理图片src，无需手动绘制到canvas
-                            const imageData = originalImage.src;
+                            // --- 手动分块引擎核心参数 ---
+                            const patchSize = 128; // 使用更大的图块尺寸以提高效率
+                            const overlap = 16;   // 固定的重叠区域大小，确保无缝
+                            const scale = model.scale;
 
-                            // 初始化新版UpscalerJS，它会自动加载一个默认的高质量模型
-                            const upscaler = new Upscaler();
+                            // 最终输出画布
+                            const finalCanvas = document.createElement('canvas');
+                            finalCanvas.width = img.width * scale;
+                            finalCanvas.height = img.height * scale;
+                            const finalCtx = finalCanvas.getContext('2d');
 
-                            // 调用 upscale 方法，代码从未如此简单！
-                            // 它会自动处理分块、接缝，并根据需要进行缩放
-                            const finalUpscaledSrc = await upscaler.upscale(imageData, {
-                                progress: (progress) => {
-                                    const percentage = (progress * 100).toFixed(2);
-                                    fileNameElement.textContent = `正在处理... ${percentage}%`;
+                            const numTilesX = Math.ceil(img.width / patchSize);
+                            const numTilesY = Math.ceil(img.height / patchSize);
+                            const totalTiles = numTilesX * numTilesY;
+                            let processedTiles = 0;
+
+                            for (let y = 0; y < img.height; y += patchSize) {
+                                for (let x = 0; x < img.width; x += patchSize) {
+                                    // 1. 提取带重叠的图块
+                                    const tileCanvas = document.createElement('canvas');
+                                    const tileCtx = tileCanvas.getContext('2d');
+                                    
+                                    const sx = Math.max(0, x - overlap);
+                                    const sy = Math.max(0, y - overlap);
+                                    const sWidth = Math.min(img.width - sx, patchSize + overlap * 2);
+                                    const sHeight = Math.min(img.height - sy, patchSize + overlap * 2);
+                                    
+                                    tileCanvas.width = sWidth;
+                                    tileCanvas.height = sHeight;
+                                    tileCtx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+                                    // 2. 放大单个图块（不使用库的分块功能）
+                                    const upscaledTileSrc = await upscaler.upscale(tileCanvas);
+                                    const upscaledTileImg = new Image();
+                                    await new Promise(r => { upscaledTileImg.onload = r; upscaledTileImg.src = upscaledTileSrc; });
+
+                                    // 3.【修正版】精确裁剪并拼接回主画布
+                                    const coreTileWidth = Math.min(patchSize, img.width - x);
+                                    const coreTileHeight = Math.min(patchSize, img.height - y);
+                                    
+                                    const source_crop_x = (x > 0 ? overlap : 0) * scale;
+                                    const source_crop_y = (y > 0 ? overlap : 0) * scale;
+                                    
+                                    const dest_x = x * scale;
+                                    const dest_y = y * scale;
+                                    const dest_width = coreTileWidth * scale;
+                                    const dest_height = coreTileHeight * scale;
+
+                                    finalCtx.drawImage(upscaledTileImg, source_crop_x, source_crop_y, dest_width, dest_height, dest_x, dest_y, dest_width, dest_height);
+                                    
+                                    processedTiles++;
+                                    const percentage = (processedTiles / totalTiles * 100).toFixed(2);
+                                    fileNameElement.textContent = `正在拼接... (${processedTiles}/${totalTiles}) ${percentage}%`;
                                     progressBar.style.width = `${percentage}%`;
-                                },
-                                scale: zoomFactor, // 直接告诉它最终想要的倍数
-                            });
+                                }
+                            }
+                            
+                            const final4xSrc = finalCanvas.toDataURL('image/png');
+
+                            // --- 高质量缩放至用户选择的倍数 ---
+                            showStatus(`拼接完成，正在处理至 ${zoomFactor} 倍...`);
+                            const downscaleCanvas = document.createElement('canvas');
+                            const downscaleCtx = downscaleCanvas.getContext('2d');
+                            downscaleCtx.imageSmoothingQuality = 'high';
+                            downscaleCanvas.width = img.width * zoomFactor;
+                            downscaleCanvas.height = img.height * zoomFactor;
+                            downscaleCtx.drawImage(finalCanvas, 0, 0, downscaleCanvas.width, downscaleCanvas.height);
+                            
+                            const finalUpscaledSrc = downscaleCanvas.toDataURL('image/png');
 
                             // --- 显示最终结果 ---
                             loader.style.display = 'none';
@@ -924,14 +986,9 @@ try {
                             downloadButton.disabled = false;
                             fileNameElement.textContent = `${file.name} - 放大完成`;
                             showStatus(`图像放大成功！已高质量处理至 ${zoomFactor} 倍`);
-                            
-                            // 获取并显示正确的放大后尺寸
-                            const finalImg = new Image();
-                            await new Promise(resolve => { finalImg.onload = resolve; finalImg.src = finalUpscaledSrc; });
-                            document.getElementById('upscaled-size').textContent = `放大后：${finalImg.width}x${finalImg.height}px`;
-
+                            document.getElementById('upscaled-size').textContent = `放大后：${downscaleCanvas.width}x${downscaleCanvas.height}px`;
                             setTimeout(() => progressBar.style.width = '0%', 1000);
-                            
+
                         } catch (error) {
                             loader.style.display = 'none';
                             console.error('图像放大失败:', error);
