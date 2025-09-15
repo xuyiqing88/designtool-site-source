@@ -115,7 +115,7 @@
 .copy-btn {
     align-self: flex-end;
     padding: 6px 12px;
-    background: var(--button);
+    background: var(--copy-btn);
     color: var(--text2);
     border: 1px solid var(--line);
     border-radius: 6px;
@@ -124,6 +124,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    margin-bottom: 5px;
 }
 
 .copy-btn:hover {
@@ -282,7 +283,6 @@
             display: flex;
             background: transparent;
             border-radius: 0;
-            margin-bottom: 20px;
             padding: 0 4px;
             border-bottom: 1px solid var(--line);
         }
@@ -348,6 +348,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding-bottom: 60px;
+            padding-top: 20px;
         }
         
         @keyframes fadeIn {
@@ -1160,11 +1161,13 @@
         </button>
             <h3>图片详情</h3>
             <div class="detail-item">
-                <label>提示词:</label>
-                <div class="prompt-text" id="modalPromptText"></div>
-                <button class="copy-btn" id="copyPromptBtn" title="复制提示词">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>提示词:</label>
+                                <button class="copy-btn" id="copyPromptBtn" title="复制提示词">
                     <i class="fa-regular fa-clone"></i>
                 </button>
+                </div>
+                <div class="prompt-text" id="modalPromptText"></div>
             </div>
             <div class="detail-item">
                 <label>模型:</label>
