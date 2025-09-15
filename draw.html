@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -1134,7 +1134,7 @@
                 <div id="gallerySubTab" class="secondary-tab-pane">
                     <div class="gallery-controls">
                         <p class="panel-description" style=" margin-bottom: 0;">
-                            图片存储在您的浏览器本地，清除浏览器缓存将会导致图库被清空，暂时不能多设备间同步
+                            图片存储在您的浏览器本地（100张），清除浏览器缓存将会导致图库被清空，暂时不能多设备间同步
                         </p>
                         <button class="btn-secondary" id="clearGalleryBtn">
                             <i class="fas fa-trash-alt"></i> 清空历史记录
@@ -1291,9 +1291,8 @@
                     // 动态创建一个新的option并选中它
                     let newOption = new Option(`${width}×${height} (原图)`, `${width}x${height}`, true, true);
                     sizeSelect.add(newOption, 0); // 添加到最前面
-
-                    // 禁用下拉选择框
-                    sizeSelect.disabled = true;
+                    
+                    // 不再禁用下拉选择框，让用户可以自行选择
                     
                     showAlert('已成功获取原图尺寸', 'success');
                 } else {
