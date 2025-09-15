@@ -603,6 +603,39 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* 左右翻页按钮样式 */
+        .modal-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .modal-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .modal-prev-btn {
+            left: 20px;
+        }
+        
+        .modal-next-btn {
+            right: 20px;
+        }
         
         .modal-close-btn:hover {
             transform: scale(1.1);
@@ -1174,6 +1207,14 @@
         <img src="" alt="Enlarged Image" id="modalImage">
         <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
         
+        <!-- 左右翻页按钮 -->
+        <button class="modal-nav-btn modal-prev-btn" id="modalPrevBtn" title="上一张">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="modal-nav-btn modal-next-btn" id="modalNextBtn" title="下一张">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
         <!-- 新增图片详情区域 -->
         <div class="image-details-panel" id="imageDetailsPanel">
         <button class="btn-primary modal-download-btn" id="modalDownloadBtn">
@@ -1249,6 +1290,8 @@
         const modalImage = document.getElementById('modalImage');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
         const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+        const modalPrevBtn = document.getElementById('modalPrevBtn');
+        const modalNextBtn = document.getElementById('modalNextBtn');
         const tabBtns = document.querySelectorAll('.secondary-tab-btn');
         const enhanceOption = document.getElementById('enhanceOption');
 
@@ -1277,6 +1320,7 @@
         let currentSeed = '';
         let uploadedImageUrl = ''; // 存储上传图片的URL
         const MAX_HISTORY = 100; // 最大历史记录数
+        let currentHistoryIndex = -1; // 当前查看的历史图片索引
         
         // ImgBB API密钥
         const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289'; // 示例密钥，需要替换为实际可用的密钥
@@ -1383,6 +1427,8 @@ modalCloseBtn.addEventListener('click', () => {
     imageModal.classList.remove('show');
     // 隐藏详情面板
     document.getElementById('imageDetailsPanel').style.display = 'none';
+    // 重置当前索引
+    currentHistoryIndex = -1;
 });
 
 imageModal.addEventListener('click', (e) => {
@@ -1390,6 +1436,8 @@ imageModal.addEventListener('click', (e) => {
         imageModal.classList.remove('show');
         // 隐藏详情面板
         document.getElementById('imageDetailsPanel').style.display = 'none';
+        // 重置当前索引
+        currentHistoryIndex = -1;
     }
 });
             modalDownloadBtn.addEventListener('click', downloadImage);
@@ -1401,6 +1449,36 @@ imageModal.addEventListener('click', (e) => {
             translateBtn.addEventListener('click', () => translatePrompt(drawingPrompt));
             
             translateImageToImageBtn.addEventListener('click', () => translatePrompt(imageToImagePrompt));
+            
+            // 左右翻页按钮事件监听器
+            modalPrevBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 防止触发模态框关闭
+                showPrevImage();
+            });
+            
+            modalNextBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 防止触发模态框关闭
+                showNextImage();
+            });
+            
+            // 添加键盘左右键支持
+            document.addEventListener('keydown', (e) => {
+                // 只有在模态框显示时才响应键盘事件
+                if (imageModal.classList.contains('show')) {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        showPrevImage();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        showNextImage();
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        imageModal.classList.remove('show');
+                        document.getElementById('imageDetailsPanel').style.display = 'none';
+                        currentHistoryIndex = -1;
+                    }
+                }
+            });
         }
 
         // 设置图生图事件监听器
@@ -1976,7 +2054,41 @@ function showHistoryImage(index) {
         // 显示详情面板
         document.getElementById('imageDetailsPanel').style.display = 'block';
         
+        // 更新当前索引
+        currentHistoryIndex = parseInt(index);
+        
+        // 控制翻页按钮的显示状态
+        updateNavigationButtons();
+        
         imageModal.classList.add('show');
+    }
+}
+
+// 更新导航按钮状态
+function updateNavigationButtons() {
+    const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+    
+    // 检查是否有上一张和下一张图片
+    const hasPrev = currentHistoryIndex > 0;
+    const hasNext = currentHistoryIndex < history.length - 1;
+    
+    // 更新按钮的显示状态
+    modalPrevBtn.style.display = hasPrev ? 'flex' : 'none';
+    modalNextBtn.style.display = hasNext ? 'flex' : 'none';
+}
+
+// 查看上一张图片
+function showPrevImage() {
+    if (currentHistoryIndex > 0) {
+        showHistoryImage(currentHistoryIndex - 1);
+    }
+}
+
+// 查看下一张图片
+function showNextImage() {
+    const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+    if (currentHistoryIndex < history.length - 1) {
+        showHistoryImage(currentHistoryIndex + 1);
     }
 }
         
