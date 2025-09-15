@@ -597,8 +597,11 @@
             width: 40px;
             height: 40px;
             padding: 7px 0 10px;
-	right: -50px;
-    	z-index: 9;
+	        right: -50px;
+    	    z-index: 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .modal-close-btn:hover {
@@ -608,7 +611,7 @@
         
         .modal-download-btn {
             position: absolute;
-            bottom: 10px;
+            bottom: 20px;
             right: 0%;
             transform: translateX(-50%);
             background: var(--btcolor);
@@ -826,14 +829,14 @@
         	position: static;
         	width: 100%;
         	height: auto;
-        	max-height: 40vh;
+        	max-height: 65vh;
         	overflow-y: auto;
-    	}
+    }
     
     .modal-content {
         flex-direction: column;
-        width: 90vw;
-        max-height: 80vh;
+        width: 95vw;
+        max-height: 90vh;
     }
             .drawing-layout {
                 grid-template-columns: 1fr;
@@ -872,7 +875,22 @@
             
             .modal-content img {
                 width: 100%;
-		        max-height: 35vh;
+		        max-height: 50vh;
+            }
+            
+            .image-details-panel {
+                max-height: 35vh;
+            }
+            
+            .modal-download-btn {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                transform: none;
+                display: block;
+                margin: 0 auto 15px;
+                width: 80%;
+                max-width: 200px;
             }
             
             .modal-close-btn {
