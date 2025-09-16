@@ -185,7 +185,6 @@
             background-repeat: no-repeat;
             background-position: right 16px center;
             background-size: 16px;
-            box-shadow: var(--shadow-sm);
         }
 
         .options-group select:focus, .options-group input:focus {
@@ -221,7 +220,7 @@
 
         .image-container {
             width: 100%;
-            min-height: 500px;
+            height: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -285,6 +284,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .file-info {
@@ -527,10 +527,13 @@
             transform: scale(1.03);
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
             .container {
                 flex-direction: column;
                 padding: 0;
+            }
+            .download-section1 {
+                position: fixed;
             }
             .content-container {
                 padding: 20px;
@@ -538,23 +541,31 @@
             .left-panel {
                 width: 100%;
                 position: static;
+                height: auto;
+                top: 0;
+                box-shadow: none;
             }
             
             .image-preview {
                 grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .image-size {
+                margin-bottom: 60px;
+            }
+            .image-container {
+                height: 400px; /* 适配移动端的高度 */
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 左侧面板 -->
         <div class="left-panel">
             <header>
                 <h1>AI 图像放大工具</h1>
                 <p>使用先进 AI 模型，在您的浏览器中直接放大图像，保留更多细节</p>
             </header>
-            <!-- 上传区域移到左侧容器顶部 -->
             <div class="upload-section" id="upload-section">
                 <input type="file" id="image-input" accept="image/*" hidden>
                 <div class="upload-icon-text">
@@ -573,7 +584,6 @@
                 </select>
             </div>
             
-            <!-- 去噪选项 -->
             <div class="options-group">
                 <label for="denoise-level"> 去噪强度</label>
                 <select id="denoise-level">
@@ -584,29 +594,23 @@
                 </select>
             </div>
 
-            <!-- 模型状态 -->
             <div id="model-status" class="model-loading">
                 <span>模型加载中</span>
                 <span class="dot"></span>
                 <span class="dot"></span>
                 <span class="dot"></span>
             </div>
-                                        <!-- 下载按钮 -->
-                <div class="download-section1">
-                    <a id="download-link" href="#" download="upscaled-image.png">
+                                        <div class="download-section1">
+                    <a id="download-link" href="#">
                         <button id="download-button" disabled><i class="fas fa-download"></i> 下载放大图像</button>
                     </a>
                 </div>
         </div>
         
-        <!-- 右侧面板 -->
         <div class="right-panel">
          
-            <!-- 统一的内容容器 -->
             <div class="content-container">
-                             <!-- 状态消息 -->
-                <div id="status-message" class="status-message" style="display: none;"></div>  
-                <!-- 上传状态和操作按钮 -->
+                             <div id="status-message" class="status-message" style="display: none;"></div>  
                 <div class="upload-status">
                     <div class="file-info">
                         <span id="file-name">尚未选择文件</span>
@@ -621,13 +625,11 @@
                     </div>
                 </div>
                 
-                <!-- 进度条 -->
                 <div class="progress-bar">
                     <div class="progress" id="progress-bar"></div>
                 </div>
                 
                 
-                <!-- 图像预览 -->
                 <div class="image-preview">
                     <div class="image-wrapper">
                         <div class="image-container">
@@ -657,7 +659,6 @@
         </div>
     </div>
 
-    <!-- 图片放大模态框 -->
     <div id="image-modal" class="modal">
         <span class="close">&times;</span>
         <img class="modal-content" id="modal-image">
@@ -687,6 +688,8 @@
             const closeModal = document.getElementsByClassName('close')[0];
             const retryButton = document.getElementById('retry-button');
             const clearButton = document.getElementById('clear-button');
+            const originalSizeDiv = document.getElementById('original-size');
+            const upscaledSizeDiv = document.getElementById('upscaled-size');
 
             let upscaler;
             let isModelLoaded = false;
@@ -790,14 +793,17 @@
                 upscaledImage.style.display = 'none';
                 downloadButton.disabled = true;
                 downloadLink.href = '#';
+                downloadLink.removeAttribute('download');
                 progressBar.style.width = '0%';
                 statusMessage.style.display = 'none';
                 retryButton.style.display = 'none';
                 clearButton.style.display = 'none';
                 originalPlaceholder.style.display = 'block';
                 upscaledPlaceholder.style.display = 'block';
-                document.getElementById('original-size').textContent = '';
-                document.getElementById('upscaled-size').textContent = '';
+                originalSizeDiv.textContent = '';
+                originalSizeDiv.style.display = 'none';
+                upscaledSizeDiv.textContent = '';
+                upscaledSizeDiv.style.display = 'none';
                 isImageUploaded = false;
                 currentFile = null;
             }
@@ -878,6 +884,8 @@
                 // 显示原始图像
                 originalPlaceholder.style.display = 'none';
                 upscaledPlaceholder.style.display = 'block';
+                originalSizeDiv.style.display = 'none';
+                upscaledSizeDiv.style.display = 'none';
 
                 const reader = new FileReader();
                 reader.onload = async (e) => {
@@ -889,7 +897,7 @@
                     originalImage.onload = async function() {
                         loader.style.display = 'block';
                         progressBar.style.width = '0%';
- try {
+                        try {
                             console.log('开始放大图像...');
                             showStatus("开始处理图像，这可能需要一些时间...");
                             
@@ -908,7 +916,8 @@
                             });
                             
                             // 显示原始图像尺寸
-                            document.getElementById('original-size').textContent = `原图：${img.width}x${img.height}px`;
+                            originalSizeDiv.textContent = `原图：${img.width}x${img.height}px`;
+                            originalSizeDiv.style.display = 'block';
 
                             // 计算需要填充的尺寸，使其能被模型处理（64的倍数），保留所有像素
                             const targetWidth = Math.ceil(img.width / 64) * 64;
@@ -981,12 +990,17 @@
                             upscaledImage.classList.add('clickable-image');
                             upscaledPlaceholder.style.display = 'none';
                             downloadLink.href = finalUpscaledSrc;
+                            // 设置动态文件名
+                            const originalFileName = currentFile.name.split('.').slice(0, -1).join('.');
+                            downloadLink.download = `upscaled-${originalFileName}.png`;
+                            
                             downloadButton.disabled = false;
                             fileNameElement.textContent = `${file.name} - 放大完成`;
                             progressBar.style.width = '100%';
                             showStatus(`图像放大成功！已高质量处理至 ${zoomFactor} 倍`);
                             
-                            document.getElementById('upscaled-size').textContent = `放大后：${finalCanvas.width}x${finalCanvas.height}px`;
+                            upscaledSizeDiv.textContent = `放大后：${finalCanvas.width}x${finalCanvas.height}px`;
+                            upscaledSizeDiv.style.display = 'block';
 
                             setTimeout(() => progressBar.style.width = '0%', 1000);
                             
