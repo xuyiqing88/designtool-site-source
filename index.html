@@ -309,9 +309,7 @@
 }
 .h1-icon {
     margin-right: 10px;
-    background: linear-gradient(321deg, #6545ff, #58b2ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #5963ff;
 }
 
 
@@ -1766,11 +1764,11 @@ max-width: 330px;
 
         // 分类映射
         const categoryMap = {
-            'design': { name: '轻易设计工具', icon: 'fa-solid fa-compass-drafting' , scripts: 'UI设计/抠图/压缩/在线PS', gradient: '135deg, #6adaff, #477bff'},
-            'dev': { name: '轻易AI工具', icon: 'fa-solid fa-microchip' , scripts: 'AI设计/绘画/提示词工具', gradient: '135deg, #ef45ff, #58a4ff' },
-            '3D': { name: '轻易3D工具', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR', gradient: '135deg, #4583ff, #58edff' },
-            'cover': { name: '轻易格式转换', icon: 'fa-solid fa-camera-rotate' , scripts: '图片/视频/音频/颜色/Base64', gradient: '135deg, #ff886d, #ff3360' },
-            'utility': { name: '轻易实用工具', icon: 'fa-solid fa-swatchbook' , scripts: '游戏/广播/九宫格/翻译', gradient: '135deg, #27dcf9, #0c8cbd' },
+            'design': { name: '轻易设计工具', icon: 'fa-solid fa-compass-drafting' , scripts: 'UI设计/抠图/压缩/在线PS', gradient: '#5963ff;'},
+            'dev': { name: '轻易AI工具', icon: 'fa-solid fa-microchip' , scripts: 'AI设计/绘画/提示词工具', gradient: '#a045ff' },
+            '3D': { name: '轻易3D工具', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR', gradient: '#4583ff' },
+            'cover': { name: '轻易格式转换', icon: 'fa-solid fa-camera-rotate' , scripts: '图片/视频/音频/颜色/Base64', gradient: '#ff3360' },
+            'utility': { name: '轻易实用工具', icon: 'fa-solid fa-swatchbook' , scripts: '游戏/广播/九宫格/翻译', gradient: '#20b1e9' },
 
         };
 
@@ -1870,7 +1868,7 @@ window.addEventListener('resize', showAddToHomePrompt);
                     section.innerHTML = `
                         <div class="category-header">
                             <div class="category-icon">
-                                <div class="h1-icon" style="background: linear-gradient(${category.gradient}); background-clip: text;"><i class="${category.icon}"></i></div>
+                                <div class="h1-icon" style="color: ${category.gradient};"><i class="${category.icon}"></i></div>
 				                <h2 class="category-title">${category.name}</h2>
                             </div>
                              <small style="font-size:0.8rem;">${category.scripts}</small>
