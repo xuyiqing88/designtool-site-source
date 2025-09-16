@@ -1322,8 +1322,8 @@
         const MAX_HISTORY = 100; // 最大历史记录数
         let currentHistoryIndex = -1; // 当前查看的历史图片索引
         
-        // ImgBB API密钥
-        const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289'; // 示例密钥，需要替换为实际可用的密钥
+        // ImgBB API
+        const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289'; 
 
  	// blob转DataURL函数
             function blobToDataURL(blob) {
@@ -2126,9 +2126,17 @@ function showNextImage() {
         if (activeTab === 'textToImage' && currentImageUrl) {
             modalImage.src = currentImageUrl;
             imageModal.classList.add('show');
+            // 重置当前索引并隐藏翻页按钮
+            currentHistoryIndex = -1;
+            modalPrevBtn.style.display = 'none';
+            modalNextBtn.style.display = 'none';
         } else if (activeTab === 'imageToImage' && currentImageUrl) {
             modalImage.src = currentImageUrl;
             imageModal.classList.add('show');
+            // 重置当前索引并隐藏翻页按钮
+            currentHistoryIndex = -1;
+            modalPrevBtn.style.display = 'none';
+            modalNextBtn.style.display = 'none';
         }
     }
         
