@@ -577,9 +577,18 @@
     border-radius: 10px;
         }
         
+        /* 图片容器 - 包含图片和翻页按钮 */
+        .modal-image-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
         .modal-content img {
             object-fit: contain;
-            border-radius: 8px;
+            border-radius: 14px;
             height: 85vh;
 	        padding: 10px;
         }
@@ -604,7 +613,7 @@
             justify-content: center;
         }
 
-        /* 左右翻页按钮样式 */
+        /* 左右翻页按钮样式 - 精确位于图片边缘 */
         .modal-nav-btn {
             position: absolute;
             top: 50%;
@@ -630,11 +639,11 @@
         }
         
         .modal-prev-btn {
-            left: 20px;
+            left: 10px;
         }
         
         .modal-next-btn {
-            right: 20px;
+            right: 10px;
         }
         
         .modal-close-btn:hover {
@@ -908,7 +917,7 @@
             
             .modal-content img {
                 width: 100%;
-		        max-height: 50vh;
+		        height: -webkit-fill-available;
             }
             
             .image-details-panel {
@@ -928,6 +937,21 @@
             
             .modal-close-btn {
                 right: 0;
+            }
+            
+            /* 移动端翻页按钮样式 */
+            .modal-prev-btn {
+                left: 0;
+            }
+            
+            .modal-next-btn {
+                right: 0;
+            }
+            
+            /* 调整移动端的图片容器 */
+            .modal-image-container {
+                width: 100%;
+                max-height: 60vh;
             }
             
             .drawing-placeholder {
@@ -1204,16 +1228,20 @@
     
 <div class="image-modal" id="imageModal">
     <div class="modal-content">
-        <img src="" alt="Enlarged Image" id="modalImage">
-        <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
+        <!-- 将图片和翻页按钮放在一个容器中 -->
+        <div class="modal-image-container">
+            <img src="" alt="Enlarged Image" id="modalImage">
+            
+            <!-- 左右翻页按钮 -->
+            <button class="modal-nav-btn modal-prev-btn" id="modalPrevBtn" title="上一张">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="modal-nav-btn modal-next-btn" id="modalNextBtn" title="下一张">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
         
-        <!-- 左右翻页按钮 -->
-        <button class="modal-nav-btn modal-prev-btn" id="modalPrevBtn" title="上一张">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="modal-nav-btn modal-next-btn" id="modalNextBtn" title="下一张">
-            <i class="fas fa-chevron-right"></i>
-        </button>
+        <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
         
         <!-- 新增图片详情区域 -->
         <div class="image-details-panel" id="imageDetailsPanel">
