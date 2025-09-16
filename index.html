@@ -286,7 +286,7 @@
             --card-bg: #ffffff;
             --card-hover: #f7fafc;
             --border: #e2e8f0;
-            --badge: #ff6b6b; /* 统一为红色标签 */
+            --badge: #f74646; /* 统一为红色标签 */
         }
         
         * {
@@ -297,7 +297,7 @@
         }
         
         body {
-            background: #f8f9fa;
+            background: #fff;
             color: var(--dark);
             min-height: 100vh;
             line-height: 1.6;
@@ -307,18 +307,13 @@
     position: relative;
     margin-bottom: -30px;
 }
-
-.search-box input {
-    padding: 14px 20px 14px 45px;
-    border-radius: 50px;
-    border: 1px solid var(--border);
-    background: #fff;
-    color: var(--dark);
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    width: 99%;
-    margin-left: -20px;
+.h1-icon {
+    margin-right: 10px;
+    background: linear-gradient(321deg, #6545ff, #58b2ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
+
 
 .search-box input:focus {
     outline: none;
@@ -363,7 +358,7 @@
     background: transparent;
     border-radius: 50%;
         box-shadow: 10px 10px 0 #ffffff;
-    margin: -24px 0px -16px -40px;
+    margin: -24px 0px -16px -41px;
 }
         /* 新增介绍弹窗样式 */
         .intro-modal {
@@ -686,8 +681,8 @@ max-width: 330px;
             text-align: center;
             padding: 0 10% 10px;
             position: relative;
-	background: linear-gradient(113deg, #6472ff, #8352ff);
-	margin-bottom: 40px;
+	        background: linear-gradient(113deg, #6472ff, #8352ff);
+	        margin-bottom: 30px;
         }
         
         h1 {
@@ -734,10 +729,10 @@ max-width: 330px;
             color: var(--dark);
             font-size: 1rem;
             transition: all 0.3s ease;
-	    width: 99%;
-	margin-left: -20px;
+	        width: 99%;
+	        margin-left: -20px;
+            box-shadow: 0 0 15px rgba(89, 99, 255, 0.2);
         }
-        
         .search-box input:focus {
             outline: none;
             border-color: var(--primary);
@@ -826,16 +821,16 @@ max-width: 330px;
             position: relative;
             height: 100%;
             display: flex;
-            border: 1px solid var(--border);
             height: 150px;
+            box-shadow: 0 0 25px rgb(134 144 209 / 17%);
         }
         
         .tool-card:hover {
-            box-shadow: 0 10px 25px rgb(134 144 209 / 17%);
+            box-shadow: 0 10px 25px rgba(134, 144, 209, 0.30);
         }
         
         .tool-cover {
-            width: 130px;
+            width: 140px;
             height: auto;
             background: linear-gradient(135deg, #f7f7ff, #e2e4ff);
             display: flex;
@@ -843,28 +838,33 @@ max-width: 330px;
             justify-content: center;
             flex-shrink: 0;
             overflow: hidden;
-	transition: 0.2s all ease;
+	        transition: 0.2s all ease;
         }
         .tool-cover:hover {
-	width: 150px;
-    	transition: 0.2s all ease;}
+	        width: 160px;
+    	    transition: 0.2s all ease;}
         .tool-cover img {
             width: auto;
-            height: 100%;
+            height: 106%;
             object-fit: contain;
-	transition: all ease 0.3s;
-	    margin-left: -10px;
+	        transition: all ease 0.3s;
+	        margin-left: -10px;
         }
         .tool-cover img:hover {
-	margin-left: -5px;}
+	        margin-left: -5px;}
         .tool-content {
             padding: 16px 12px 16px 16px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-	border-radius: 10px;
-    margin-left: -10px;
-    background: #fff;
+	        border-radius: 10px;
+            margin-left: -10px;
+            background: linear-gradient(180deg, transparent, #fff 80%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid #fff;
+            border-top: 1px solid #fff;
+            box-shadow: 0 0 10px #0000001a;
         }
         
         .tool-card h3 {
@@ -1178,7 +1178,7 @@ max-width: 330px;
 	.category-filter {gap: 2px;}
 	.imgball {
 	position: absolute;
-        bottom: 104px;
+        bottom: 106px;
         right: 0;
     }
     .clear-search {
@@ -1273,7 +1273,9 @@ max-width: 330px;
 	.tool-content {
 	    	padding: 10px;
 	        margin-left: 0;
-        		margin-top: -10px;}
+        	margin-top: -10px;
+            background: linear-gradient(90deg, transparent, #fff 80%);
+            }
 	.comments-container {
                 border-radius: 12px;
             }
@@ -1398,7 +1400,7 @@ max-width: 330px;
         </header>
 
     <div class="container">       
-        <div id="toolsContainer" style="padding: 8px 20px; background: #fff; border-radius: 10px;">
+        <div id="toolsContainer" style="padding: 0 20px;">
 
             <!-- 分类区域将由JS动态生成 -->
         </div>
@@ -1764,11 +1766,11 @@ max-width: 330px;
 
         // 分类映射
         const categoryMap = {
-            'design': { name: '轻易设计工具', icon: 'fa-solid fa-compass-drafting' , scripts: 'UI设计/抠图/压缩/在线PS'},
-            'dev': { name: '轻易AI工具', icon: 'fa-solid fa-microchip' , scripts: 'AI设计/绘画/提示词工具' },
-            '3D': { name: '轻易3D工具', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR' },
-            'cover': { name: '轻易格式转换', icon: 'fa-solid fa-camera-rotate' , scripts: '图片/视频/音频/颜色/Base64' },
-            'utility': { name: '轻易实用工具', icon: 'fa-solid fa-swatchbook' , scripts: '游戏/广播/九宫格/翻译' },
+            'design': { name: '轻易设计工具', icon: 'fa-solid fa-compass-drafting' , scripts: 'UI设计/抠图/压缩/在线PS', gradient: '135deg, #6adaff, #477bff'},
+            'dev': { name: '轻易AI工具', icon: 'fa-solid fa-microchip' , scripts: 'AI设计/绘画/提示词工具', gradient: '135deg, #ef45ff, #58a4ff' },
+            '3D': { name: '轻易3D工具', icon: 'fa-brands fa-codepen' , scripts: 'PBR/无缝贴图/ORM贴图/HDR', gradient: '135deg, #4583ff, #58edff' },
+            'cover': { name: '轻易格式转换', icon: 'fa-solid fa-camera-rotate' , scripts: '图片/视频/音频/颜色/Base64', gradient: '135deg, #ff886d, #ff3360' },
+            'utility': { name: '轻易实用工具', icon: 'fa-solid fa-swatchbook' , scripts: '游戏/广播/九宫格/翻译', gradient: '135deg, #27dcf9, #0c8cbd' },
 
         };
 
@@ -1868,8 +1870,8 @@ window.addEventListener('resize', showAddToHomePrompt);
                     section.innerHTML = `
                         <div class="category-header">
                             <div class="category-icon">
-                                <i class="${category.icon}" style="margin-right: 10px;"></i>
-				<h2 class="category-title">${category.name}</h2>
+                                <div class="h1-icon" style="background: linear-gradient(${category.gradient}); background-clip: text;"><i class="${category.icon}"></i></div>
+				                <h2 class="category-title">${category.name}</h2>
                             </div>
                              <small style="font-size:0.8rem;">${category.scripts}</small>
                         </div>
