@@ -300,7 +300,6 @@ const menuData = [
         icon: "fa-solid fa-compass-drafting",
         submenu: [
             { title: "AI生成UI界面", link: "../AI-UI.html" },
-            { title: "AI一键抠图", link: "../rembg.html" },
             { title: "图片对比工具", link: "../diff.html" },
             { title: "图片压缩工具", link: "../comp.html" },
             { title: "UI设计数据生成器", link: "../data.html"},
@@ -315,9 +314,11 @@ const menuData = [
         title: "轻易AI",
         icon: "fa-solid fa-microchip",
         submenu: [
-	    { title: "AI绘画", link: "../draw.html" },
-	    { title: "AI数字人（免费版）", link: "../freeAI.html" },
-	    { title: "AI数字人（API版）", link: "../AI.html" },
+            { title: "AI高清放大", link: "scale.html" },
+            { title: "AI一键抠图", link: "rembg.html" },
+	        { title: "AI绘画", link: "../draw.html" },
+	        { title: "AI数字人（免费版）", link: "../freeAI.html" },
+	        { title: "AI数字人（API版）", link: "../AI.html" },
             { title: "lora训练数据集编辑", link: "../model.html" },
             { title: "AI画风提示词大全", link: "../SDXL.html" },
         ]

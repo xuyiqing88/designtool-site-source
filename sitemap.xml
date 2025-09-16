@@ -12,13 +12,13 @@
     <url>
         <loc>https://designtool.site/normal.html</loc>
         <lastmod>2025-07-18</lastmod>
-        <changefreq>weekly</changefreq>
+        <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://designtool.site/texture.html</loc>
-        <lastmod>2025-07-15</lastmod>
-        <changefreq>weekly</changefreq>
+        <lastmod>2025-09-10</lastmod>
+        <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     
@@ -67,7 +67,7 @@
     </url>
     <url>
         <loc>https://designtool.site/draw.html</loc>
-        <lastmod>2025-07-12</lastmod>
+        <lastmod>2025-09-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -173,5 +173,10 @@
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
-
+    <url>
+        <loc>https://designtool.site/video/scale.html</loc>
+        <lastmod>2025-09-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 </urlset>
