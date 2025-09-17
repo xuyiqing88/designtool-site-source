@@ -319,14 +319,6 @@
     box-shadow: 0 2px 15px rgba(89, 99, 255, 0.2);
 }
 
-.search-box i.fa-search {
-    position: relative;
-    left: 25px;
-    top: 50%;
-    color: var(--gray);
-    z-index: 999;
-}
-
 /* 清空按钮样式 */
 .clear-search {
     position: absolute;
@@ -715,7 +707,12 @@ max-width: 330px;
         
         .search-box {
             position: relative;
-	    margin-bottom: -30px;
+	        margin-bottom: -30px;
+        }
+        
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
         }
         
         .search-box input {
@@ -726,8 +723,7 @@ max-width: 330px;
             color: var(--dark);
             font-size: 1rem;
             transition: all 0.3s ease;
-	        width: 99%;
-	        margin-left: -20px;
+	        width: 100%;
             box-shadow: 0 0 15px rgba(89, 99, 255, 0.2);
         }
         .search-box input:focus {
@@ -737,11 +733,13 @@ max-width: 330px;
         }
         
         .search-box i {
-            position: relative;
-            left: 25px;
+            position: absolute;
+            left: 20px;
             top: 50%;
+            transform: translateY(-50%);
             color: var(--gray);
-            z-index: 999;
+            z-index: 1;
+            pointer-events: none;
         }
         
         .category-filter {
@@ -948,7 +946,8 @@ max-width: 330px;
         /* 评论区域样式 - 重点优化区域 */
         .comments-section {
             margin: 20px 0;
-            padding: 20px;
+            padding: 20px 10%;
+            border-top: 10px solid #f5f7fa;
         }
         
         .comments-header {
@@ -1171,13 +1170,16 @@ max-width: 330px;
 }
 @media (max-width: 768px) {
 	.category-filter {gap: 2px;}
+    .category-section {
+        padding: 10px 20px;
+    }
 	.imgball {
 	position: absolute;
         bottom: 106px;
         right: 0;
     }
     .comments-section {
-        border-top: 10px solid #f5f7fa;
+        padding: 10px 20px;
     }
     .clear-search {
         right: 15px;
@@ -1392,17 +1394,19 @@ max-width: 330px;
      </div>
         <header>
             <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="搜索工具...">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="搜索工具...">
+                </div>
             </div>  
         </header>
 
     <div class="container">       
-        <div id="toolsContainer" style="padding: 0 20px;">
+        <div id="toolsContainer" >
 
             <!-- 分类区域将由JS动态生成 -->
         </div>
-        
+    </div>        
         <!-- 评论区域 -->
 <section class="comments-section" id="comments-section">  <!-- 添加id -->
     <div class="comments-header">
@@ -1413,7 +1417,7 @@ max-width: 330px;
     <div class="giscus"></div>
 </section>
 
-    </div>
+
     
 <div class="modal" id="qrModal">
     <div class="modal-content">
