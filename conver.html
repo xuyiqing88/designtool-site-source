@@ -134,11 +134,12 @@
     	align-self: flex-start;
     	padding-right: 20px;
             align-self: flex-start;
-	background: #fff;
+	    background: #fff;
     	border-radius: 10px;
     	padding: 20px;
-	height: -webkit-fill-available;
-	box-shadow: 0 0 10px #b9cbda42;
+	    height: -webkit-fill-available;
+	    box-shadow: 0 0 10px #b9cbda42;
+        min-height: 580px;
         }
 
         .preview-panel {
@@ -255,6 +256,7 @@
 
         .preview-container {
             flex: 1;
+            display: flex;
         }
 
         .image-row {
@@ -377,7 +379,7 @@
         }
 
         .no-preview p {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             max-width: 400px;
             margin: 0 auto;
             line-height: 1.7;
@@ -676,6 +678,7 @@
                     <span id="qualityValue" class="quality-value">90%</span>
                 </div>
             </div>
+            <div class="drop-hint" style="margin: 0; max-width: fit-content;">注：只需选择输出格式即可，无需选择导入格式</div>
         </div>
 
         <div class="preview-panel">
