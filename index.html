@@ -336,7 +336,7 @@
         z-index: 1;
         border-top: 1px solid #fff;
         border-left: 1px solid #fff;
-        animation: slow-shake 10s ease-in-out infinite; /* 添加此行 */
+        animation: slow-shake 6s ease-in-out infinite; /* 添加此行 */
         }
         /* ▼▼▼ 新增的Banner样式 ▼▼▼ */
 /* 将图片作为背景应用到容器上 */
@@ -1185,38 +1185,17 @@ max-width: 330px;
     transform: translate(0, 0) rotate(0deg);
   }
   25% {
-    transform: translate(4px, -6px) rotate(5deg);
+    transform: translate(5px, -10px) rotate(8deg);
   }
   50% {
-    transform: translate(-5px, 5px) rotate(-2deg);
+    transform: translate(-10px, 10px) rotate(-5deg);
   }
   75% {
-    transform: translate(6px, 4px) rotate(3deg);
+    transform: translate(10px, 6px) rotate(6deg);
   }
 }
 
-/* 定义 arrow-top2 从左上移动到右下的动画 */
-@keyframes draw-border-arrow {
-  0% {
-    /* 动画开始时，箭头在“更轻易”文本的左上方，并且是透明的 */
-    top: 150px;
-    left: 35%;
-    opacity: 0;
-    transform: scaleX(-1) rotate(45deg);
-  }
-  30% {
-    /* 动画进行到30%时，箭头变得可见 */
-    opacity: 1;
-  }
-  100% {
-    /* 动画结束时，箭头到达其最终位置，完全不透明 */
-    top: 250px;
-    right: -12px;
-    opacity: 1;
-    transform: scaleX(-1) rotate(0deg);
-  }
-}
-/* ===== 开始：添加以下两个新的动画 ===== */
+
 
 /* 新的：虚线框从左上角到右下角生长的循环动画 */
 @keyframes looping-border-grow-tl {
@@ -1279,25 +1258,7 @@ max-width: 330px;
     }
 }
 
-/* ===== 结束：在这里添加新的动画代码 ===== */
-/* 随机移动动画 */
-@keyframes move {
-    0% {
-        transform: translate(0, 0) rotate(0deg);}
-    25% {
-        transform: translate(200px, -100px) rotate(90deg);}
-    50% {
-        transform: translate(-150px, 150px) rotate(180deg);}
-    75% {
-        transform: translate(100px, -200px) rotate(270deg);}
-    100% {
-        transform: translate(0, 0) rotate(360deg);}
-}
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
+
 
         /* 添加到桌面提示 */
 .add-to-home-screen {
