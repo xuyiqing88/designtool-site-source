@@ -289,24 +289,151 @@
             --badge: #f74646; /* 统一为红色标签 */
         }
         
-        * {
+    * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
         }
         
-        body {
+    body {
             background: #fff;
             color: var(--dark);
             min-height: 100vh;
             line-height: 1.6;
         }
-/* 添加清空按钮样式 */
-.search-box {
-    position: relative;
-    margin-bottom: -30px;
+    .arrow-top1, .arrow-top2 {
+        position: absolute;
+        color: #4884FF;}
+.arrow-top2 {
+    /* 移除固定的 top/right，因为动画会全程控制它的位置 */
+    transform: scaleX(-1);
+    font-size: 3.5rem;
+    position: absolute;
+    color: #4884FF;
+    opacity: 0; /* 初始透明，由动画控制 */
+    /* 应用与虚线框同步的循环动画 */
+    animation: looping-arrow-tl 2.5s ease-out infinite;
+    z-index: 1;
 }
+
+    .arrow-top1 {
+        top: 180px;
+        left: -40px;
+        font-size: 5rem;
+        animation: slow-shake 8s ease-in-out infinite reverse; 
+    }
+    .circle {
+            width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: rgb(255 255 255 / 10%);
+        position: relative;
+        top: 160px;
+        left: 0;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        z-index: 1;
+        border-top: 1px solid #fff;
+        border-left: 1px solid #fff;
+        animation: slow-shake 10s ease-in-out infinite; /* 添加此行 */
+        }
+        /* ▼▼▼ 新增的Banner样式 ▼▼▼ */
+/* 将图片作为背景应用到容器上 */
+#header-image {
+    width: 100%;
+    position: relative; /* 保持相对定位，以便子元素定位 */
+    z-index: 50;
+    height: 55vh; 
+    min-height: 400px; /* 设置一个最小高度，防止在很扁的窗口上内容被压缩 */
+
+    /* 核心修改：将图片设置为背景 */
+    background-image: url('img/back.webp');
+    background-size: cover; /* 确保图片铺满容器，不变形 */
+    background-position: center center; /* 图片居中显示 */
+    
+    /* 使用 Flexbox 居中内容 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* 内容包装器的样式 */
+.hero-content-wrapper {
+    position: relative; /* 不再需要绝对定位，因为父级已经是flex布局了 */
+    z-index: 1; /* 确保内容在背景之上 */
+}
+
+.hero-content {
+    color: #333; /* 文本颜色 */
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2); /* 半透明背景，增加磨砂玻璃效果 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-title {
+    font-size: 4rem; /* 调整主标题字体大小 */
+    font-weight: 800;
+    margin: 0;
+    color: #2d3748; /* 深色字体 */
+    -webkit-text-fill-color: initial; /* 取消原有的渐变色填充 */
+    background: none; /* 取消原有的渐变色背景 */
+    font-weight: bolder;
+}
+
+.hero-subtitle {
+    font-size: 4rem; /* 调整副标题字体大小 */
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #2d3748;
+    font-weight: bolder;
+}
+
+.highlight {
+    position: relative;
+    color: #35B3FC;
+}
+.highlight::after {
+    content: ''; 
+    position: absolute;
+    /* 定位到左上角 */
+    top: 0;
+    left: 0;
+    width: 0; 
+    height: 0;
+    border: 1px dashed #35B3FC;
+    /* 应用一个新的、从左上角开始的动画 */
+    animation: looping-border-grow-tl 2.5s ease-out infinite;
+}
+.hero-description {
+    font-size: 1.1rem;
+    color: var(--gray);
+    margin-bottom: 30px;
+}
+
+.hero-button {
+    padding: 12px 45px;
+    background: linear-gradient(113deg, #6472ff, #8352ff);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(89, 99, 255, 0.3);
+}
+
+.hero-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 25px rgba(89, 99, 255, 0.5);
+}
+
+/* 添加清空按钮样式 */
 .h1-icon {
     margin-right: 10px;
     color: #5963ff;
@@ -322,7 +449,7 @@
 /* 清空按钮样式 */
 .clear-search {
     position: absolute;
-    right: 20px;
+    right:10px;
     top: 50%;
     transform: translateY(-50%);
     color: #fff;
@@ -331,10 +458,10 @@
     z-index: 10;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
 	background: #0000004d;
 }
 
@@ -642,7 +769,7 @@ max-width: 330px;
         }
         
         .donate-link {
-            color: #fff;
+            color: var(--dark);
             cursor: pointer;
             text-decoration: none;
             margin-left: 2px;
@@ -662,13 +789,13 @@ max-width: 330px;
         }
         
         .container {
-                padding: 0 10%;
+                padding: 0 12%;
             margin: 0 auto;
         }
         
         header {
             text-align: center;
-            padding: 0 10% 10px;
+            padding: 0 12% 10px;
             position: relative;
 	        top: -25px;
             z-index: 100;
@@ -694,29 +821,26 @@ max-width: 330px;
         .controls {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
             flex-wrap: wrap;
             top: 0;
             z-index: 100;
 		overflow: hidden;
-	    background: linear-gradient(113deg, #6472ff, #8352ff);
+	    background: #ffffff70;
     	position: relative;	
 	    align-items: center;
-	    padding: 20px 10% 40px;
+	    padding: 10px 12%;
+        backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
         }
         
         .search-box {
-            position: relative;
-	        margin-bottom: -30px;
-        }
-        
-        .search-input-wrapper {
+            flex: 1;
             position: relative;
             width: 100%;
         }
         
         .search-box input {
-            padding: 14px 20px 14px 45px;
+            padding: 8px 20px 8px 35px;
             border-radius: 50px;
             border: 1px solid var(--border);
             background: #fff;
@@ -734,7 +858,7 @@ max-width: 330px;
         
         .search-box i {
             position: absolute;
-            left: 20px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray);
@@ -753,20 +877,17 @@ max-width: 330px;
             padding: 8px;
             border-radius: 50px;
             background: none;
-            color: #fff;
+            color: var(--dark);
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 500;
             display: flex;
             align-items: center;
 	font-size: 16px;
         }
         
         .category-btn:hover {
-            background: #fff;
-            color: var(--primary);
-            border-color: var(--primary);
+            text-decoration: underline;
         }
         
         .category-btn i {
@@ -783,8 +904,11 @@ max-width: 330px;
         .category-header {
             display: flex;
             align-items: center;
-            margin-bottom: 0;
+            margin-bottom: 10px;
             padding-bottom: 15px;
+            justify-content: center;
+            flex-direction: column;
+            margin-top: 10px;
         }
         
         .category-icon {
@@ -793,11 +917,11 @@ max-width: 330px;
             justify-content: center;
             margin-right: 10px;
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.8rem;
         }
         
         .category-title {
-            font-size: 1.2rem;
+            font-size: 1.8rem;
             font-weight: 600;
             color: var(--dark);
         }
@@ -817,11 +941,11 @@ max-width: 330px;
             height: 100%;
             display: flex;
             height: 150px;
-            box-shadow: 0 0 25px rgb(134 144 209 / 20%);
+            box-shadow: 0 0 25px rgb(132 137 171 / 20%);
         }
         
         .tool-card:hover {
-            box-shadow: 0 10px 25px rgba(134, 144, 209, 0.30);
+            box-shadow: 0 10px 25px rgba(132 137 171 / 35%);
         }
         
         .tool-cover {
@@ -946,7 +1070,7 @@ max-width: 330px;
         /* 评论区域样式 - 重点优化区域 */
         .comments-section {
             margin: 20px 0;
-            padding: 20px 10%;
+            padding: 20px 12%;
             border-top: 10px solid #f5f7fa;
         }
         
@@ -1053,41 +1177,109 @@ max-width: 330px;
             background: var(--primary);
             color: white;
         }
-        .bgt{
-	position: relative;
-	top: 0;
-    	left: 0;
-    	width: 100%;
-    	height: 100%;
-    	z-index: -1;
+/* ===== 开始：在这里添加新的动画代码 ===== */
+
+/* 定义一个慢速、小范围晃动的动画 */
+@keyframes slow-shake {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(4px, -6px) rotate(5deg);
+  }
+  50% {
+    transform: translate(-5px, 5px) rotate(-2deg);
+  }
+  75% {
+    transform: translate(6px, 4px) rotate(3deg);
+  }
 }
-/* 形状样式 */
-.shape {
-	position: absolute;
-	background: #ffffff12; /* 半透明白色 */
-	border-radius: 50%;
-	animation: move 10s infinite ease-in-out;
-	z-index: -2;}
 
-.shape-2 {
-	width: 200px;
-	height: 200px;
-	top: 50%;
-	left: 70%;
-	animation-duration: 12s;}
+/* 定义 arrow-top2 从左上移动到右下的动画 */
+@keyframes draw-border-arrow {
+  0% {
+    /* 动画开始时，箭头在“更轻易”文本的左上方，并且是透明的 */
+    top: 150px;
+    left: 35%;
+    opacity: 0;
+    transform: scaleX(-1) rotate(45deg);
+  }
+  30% {
+    /* 动画进行到30%时，箭头变得可见 */
+    opacity: 1;
+  }
+  100% {
+    /* 动画结束时，箭头到达其最终位置，完全不透明 */
+    top: 250px;
+    right: -12px;
+    opacity: 1;
+    transform: scaleX(-1) rotate(0deg);
+  }
+}
+/* ===== 开始：添加以下两个新的动画 ===== */
 
-.shape-4 {
-	width: 250px;
-	height: 250px;
-	top: 30%;
-	left: 60%;
-	animation-duration: 10s;}
-.shape-5 {
-	width: 120px;
-	height: 120px;
-	top: 60%;
-	left: 10%;
-	animation-duration: 14s;}
+/* 新的：虚线框从左上角到右下角生长的循环动画 */
+@keyframes looping-border-grow-tl {
+    0% {
+        width: 0%;
+        height: 0%;
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+}
+
+/* 新的：箭头跟随虚线框右下角移动的循环动画 */
+@keyframes looping-arrow-tl {
+    0% {
+        /* 起始位置：大致在“更轻易”文字的左上角 */
+        top: 180px;
+        left: 50%;
+        opacity: 0;
+        transform: scaleX(-1) rotate(45deg);
+    }
+    50% {
+        opacity: 1;
+    }
+    90% {
+        /* 在动画快结束时，保持可见 */
+         opacity: 1;
+    }
+    100% {
+        /* 结束位置：大致在“更轻易”文字的右下角，然后消失准备下一次循环 */
+        top: 260px;
+        left: 90%;
+        opacity: 0;
+        transform: scaleX(-1) rotate(0deg);
+    }
+}
+
+/* ===== 结束：新的动画添加完毕 ===== */
+/* 定义一个循环的、从小到大再消失的边框动画 */
+@keyframes looping-border-grow {
+    0% {
+        width: 0%;
+        height: 0%;
+        opacity: 0; /* 动画开始时完全透明 */
+    }
+    50% {
+        opacity: 1; /* 在动画中途完全显示 */
+    }
+    100% {
+        /* 动画结束时，尺寸略大于100%，以覆盖整个文字区域，然后完全透明，准备下一次循环 */
+        width: 110%; 
+        height: 140%;
+        opacity: 0;
+    }
+}
+
+/* ===== 结束：在这里添加新的动画代码 ===== */
 /* 随机移动动画 */
 @keyframes move {
     0% {
@@ -1169,11 +1361,59 @@ max-width: 330px;
   }
 }
 @media (max-width: 768px) {
+    .search-box {
+        width: 160px;
+    }
+    .circle,
+    .arrow-top1,
+    .arrow-top2  {
+        animation: none;
+    }
+    .circle {
+       top: 130px;
+        left: 40px;
+    }
+    .arrow-top2  {
+        top: 170px;
+        right: 50px;
+        opacity: 100%;
+        font-size: 3rem;
+    }
+    .arrow-top1  {
+        top: 140px;
+        left: 20px;
+        font-size: 4rem;
+    }
+    .highlight {
+        border: 1px dashed #35B3FC;
+    }
+        .highlight::after {
+        display: none;
+    }
 	.category-filter {gap: 2px;}
     .category-header {
         padding-bottom: 0;
         margin-left: 16px;
     }
+        .hero-title {
+        font-size: 2.5rem;
+    }
+    .hero-subtitle {
+        font-size: 2rem;
+    }
+    .hero-description {
+        font-size: 1rem;
+        padding: 0 20px;
+    }
+    .hero-button {
+        padding: 10px 35px;
+        font-size: 1rem;
+    }
+    #header-image {
+        height: 60vh; /* 在手机上可以适当减小高度 */
+        min-height: 350px;
+    }
+/* ▲▲▲ 新增的Banner样式 ▲▲▲ */
     .comments-section {
         margin-bottom: 0;
         padding: 16px;
@@ -1186,9 +1426,6 @@ max-width: 330px;
 	position: absolute;
         bottom: 106px;
         right: 0;
-    }
-    .clear-search {
-        right: 15px;
     }
     .modal-content {
         width: 95%;
@@ -1221,7 +1458,7 @@ max-width: 330px;
                 width: 90%;
             }
             .category-title, .category-icon {
-		    font-size: 1.1rem;}
+		    font-size: 1.4rem;}
             .intro-title {
                 font-size: 1.35rem;
             }
@@ -1259,8 +1496,8 @@ max-width: 330px;
 		font-size: 14px;}
 	.logobt {
 	flex-direction: column;}
-            h1 {
-                font-size: 1.8rem;
+    h1 {
+         font-size: 1.8rem;
             }
 	.logo {
 		width: 150px; }
@@ -1282,7 +1519,7 @@ max-width: 330px;
         flex-direction: column;
         align-items: center;
         position: relative;
-		padding: 24px 0 34px;
+		padding: 14px 0;
 	    gap: 0;
     }
 
@@ -1374,20 +1611,17 @@ max-width: 330px;
         </div>
     </div>
     
-    <!-- 新增说明按钮 -->
-    <button id="infoBtn" class="info-btn">
-        <i class="fas fa-info"></i>
-    </button>
+
 
 <button id="backToTop" class="back-to-top">
     <i class="fas fa-arrow-up"></i>
 </button>
+
+<div style="position: fixed; z-index: 99; width: 100%;">
 <div class="controls">
-		<div class="bgt">
-		<div class="shape shape-2"></div><div class="shape shape-4"></div><div class="shape shape-5"></div> 
-		</div>
-	<div class="logobt">
-	<a href="index.html"><img src="img/logo2.svg" alt="logo" class="logo"></a>
+    <div class="logobt">
+        <a href="index.html"><img src="img/logo.svg" alt="logo" class="logo"></a>
+
 	<div class="category-filter">
                 <button class="category-btn" data-category="design">
                     <span>轻易设计</span>
@@ -1405,24 +1639,34 @@ max-width: 330px;
                     <span>轻易实用</span>
                 </button>
             </div>
-	</div>
-	<span style="padding: 8px 12px;">
-		<i class="fa-classic fa-solid fa-comment-dots" style="color: #fff;"></i>
-		<a class="donate-link" id="commentsBtn" style="margin-right: 25px;">评论反馈</a>
-		<i class="fa-classic fa-solid fa-bone" style="color: #fff;"></i>
-		<a class="donate-link" id="donateBtn">向我投喂</a>
-	</span>
-     </div>
-        <header>
-            <div class="search-box">
-                <div class="search-input-wrapper">
+    </div>
+	
+    <div style="display: flex; align-items: center; gap: 10px;">
+	    <span style="padding: 8px 12px;">
+		    <a class="donate-link" id="commentsBtn" style="margin-right: 25px;">评论反馈</a>
+		    <a class="donate-link" id="donateBtn">向我投喂</a> 
+        </span>
+        <span class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="搜索工具...">
-                </div>
-            </div>  
-        </header>
+        </span> 
+	</div>
+</div>
+</div>
 
-    <div class="container">       
+<div id="header-image">
+    <div class="hero-content-wrapper">
+        <div class="circle"></div>
+        <div class="arrow-top1"><i class="fa-solid fa-location-arrow"></i></div>
+        <div class="arrow-top2"><i class="fa-solid fa-location-arrow"></i></div>
+        <h1 class="hero-title">青艺设计</h1>
+        <h2 class="hero-subtitle">让设计<span class="highlight">更轻易</span></h2>
+        <p class="hero-description">专业设计师推荐的免费设计工具网站，无需下载即用即走！</p>
+        <button class="hero-button" id="infoBtn">网站介绍</button>
+    </div>
+</div>
+
+    <div class="container" style="margin-top: 0; position: relative; z-index: 60;">       
         <div id="toolsContainer" >
 
             <!-- 分类区域将由JS动态生成 -->
@@ -1896,7 +2140,7 @@ window.addEventListener('resize', showAddToHomePrompt);
                                 <div class="h1-icon" style="color: ${category.gradient};"><i class="${category.icon}"></i></div>
 				                <h2 class="category-title">${category.name}</h2>
                             </div>
-                             <small style="font-size:0.8rem;">${category.scripts}</small>
+                             <small style="font-size:0.95rem; color: var(--gray);">${category.scripts}</small>
                         </div>
                         <div class="tools-grid" id="tools-${categoryKey}"></div>
                     `;
@@ -2003,7 +2247,7 @@ searchInput.addEventListener('input', function() {
     if (filteredTools.length === 0) {
         container.innerHTML = `
             <div class="no-results" style="text-align: center; padding: 50px;">
-                <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                <i class="fa-solid fa-glasses" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
                 <h3>未找到匹配的工具</h3>
                 <p>请尝试不同的搜索关键词</p>
             </div>
@@ -2019,9 +2263,11 @@ searchInput.addEventListener('input', function() {
     section.innerHTML = `
         <div class="category-header">
             <div class="category-icon">
-                <i class="fas fa-search"></i>
+                <div class="h1-icon">
+                    <i class="fa-solid fa-glasses"></i>
             </div>
             <h2 class="category-title">搜索结果 (${filteredTools.length})</h2>
+            </div>
         </div>
         <div class="tools-grid" id="tools-search"></div>
     `;
@@ -2074,8 +2320,12 @@ searchInput.addEventListener('input', function() {
                 // 滚动到对应分类
                 const targetSection = document.getElementById(`category-${category}`);
                 if (targetSection) {
+                    // 获取导航栏高度作为偏移量
+                    const controlsHeight = document.querySelector('.controls').offsetHeight;
+                    // 增加额外的偏移量以确保内容不被导航栏遮挡
+                    const offset = controlsHeight - 500;
                     window.scrollTo({
-                        top: targetSection.offsetTop - 10,
+                        top: targetSection.offsetTop - offset,
                         behavior: 'smooth'
                     });
                 }
