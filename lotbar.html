@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>最终优化版批量条形码生成工具</title>
+    <title>批量条形码生成工具</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
@@ -26,12 +30,17 @@
             background-color: var(--background); color: var(--text2); margin: 0;
             padding: 20px 20px 120px 20px;
         }
+        header {
+            text-align: center;
+            padding: 20px;
+        }
         .container {
             width: 100%;
             margin: 0 auto;
             display: flex;
             gap: 20px;
             align-items: flex-start;
+            margin-left: 60px;
         }
         .controls {
             width: 380px; flex-shrink: 0; position: sticky; top: 20px;
@@ -43,8 +52,12 @@
         }
         .preview { flex-grow: 1; min-height: calc(100vh - 40px); }
         h1 {
-            color: var(--text1);  padding-bottom: 10px;
-            margin-top: 0; font-size: 1.5rem;
+            color: var(--text1);  
+            padding-bottom: 10px;
+            margin-top: 0; 
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: center;
         }
         /* MODIFIED: Replaced h2 styles with a flex container for heading + button */
         .heading-with-button {
@@ -201,20 +214,19 @@
             display: flex;
         }
         
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
             .controls { width: 320px; }
-        }
 
-        @media (max-width: 800px) {
-            body { padding-bottom: 150px; }
-            .container { flex-direction: column; }
-            .controls { width: 100%; position: static; margin-bottom: 20px; }
+            body { padding: 0 0 150px 0; }
+            .container { 
+                margin-left: 0;
+                flex-direction: column; 
+                margin-bottom: 30px;
+            }
+            .controls { width: 100%; position: static;  }
             .preview { min-height: auto; }
             .footer-buttons { grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        }
 
-        @media (max-width: 480px) {
-            body { padding: 15px 15px 150px 15px; }
             .controls, .preview { padding: 20px; }
             h1 { font-size: 1.3rem; }
             .footer-buttons { grid-template-columns: repeat(2, 1fr); }
@@ -227,7 +239,6 @@
 
     <div class="container">
         <div class="controls">
-            <h1>条码生成设置</h1>
             
             <div class="control-group">
                 <div class="tabs">
@@ -302,7 +313,7 @@
         </div>
 
         <div class="preview">
-            <h1>预览区域</h1>
+            <h1>批量条形码生成</h1>
             <div id="barcode-container"></div>
         </div>
     </div>
