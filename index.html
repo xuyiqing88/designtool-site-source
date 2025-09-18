@@ -428,12 +428,6 @@
 }
 
 
-.search-box input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 2px 15px rgba(89, 99, 255, 0.2);
-}
-
 /* 清空按钮样式 */
 .clear-search {
     position: absolute;
@@ -824,22 +818,23 @@ max-width: 330px;
             position: relative;
             width: 100%;
         }
-        
+ .search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
         .search-box input {
             padding: 8px 20px 8px 35px;
             border-radius: 50px;
-            border: 1px solid var(--border);
+            border: 1px solid #fff;
             background: #fff;
             color: var(--dark);
             font-size: 1rem;
             transition: all 0.3s ease;
 	        width: 100%;
-            box-shadow: 0 0 15px rgba(89, 99, 255, 0.2);
         }
         .search-box input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 2px 15px rgba(89, 99, 255, 0.2);
         }
         
         .search-box i {
