@@ -27,25 +27,51 @@
             padding: 20px 20px 120px 20px;
         }
         .container {
-            width: 100%; max-width: 1400px; margin: 0 auto;
-            display: flex; gap: 20px; align-items: flex-start;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
         }
         .controls {
             width: 380px; flex-shrink: 0; position: sticky; top: 20px;
         }
         .controls, .preview {
-            background: var(--white); border-radius: 8px; padding: 25px;
+            background: var(--white); border-radius: 8px; padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid var(--border);
+            box-sizing: border-box;
         }
-        /* Preserving your custom height */
-        .preview { flex-grow: 1; height: -webkit-fill-available;}
-        h1, h2 {
-            color: var(--text1); border-bottom: 1px solid var(--border); padding-bottom: 10px;
+        .preview { flex-grow: 1; min-height: calc(100vh - 40px); }
+        h1 {
+            color: var(--text1);  padding-bottom: 10px;
             margin-top: 0; font-size: 1.5rem;
         }
-        h2 { font-size: 1.2rem; margin-top: 25px; }
+        /* MODIFIED: Replaced h2 styles with a flex container for heading + button */
+        .heading-with-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .heading-with-button h2 {
+            color: var(--text1);
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        #save-styles-btn {
+            width: auto;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        
         .control-group { margin-bottom: 15px; }
-        .control-group label { font-weight: 500; color: var(--text1); }
+        .control-group label, .slider-group .label-row label, .settings-group .control-group > label {
+            font-weight: 500; color: var(--text1);
+            display: block;
+            margin-bottom: 8px;
+        }
+        
         input[type="text"], input[type="number"], select, textarea {
             width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;
             box-sizing: border-box; transition: border-color 0.3s;
@@ -56,10 +82,11 @@
         .slider-group .label-row {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
         }
+        .slider-group .label-row label { margin-bottom: 0; }
         .slider-group input[type="number"] { width: 70px; flex-shrink: 0; text-align: center; }
         .slider-group input[type="range"] {
             width: 100%; -webkit-appearance: none; appearance: none;
-            height: 8px; background: #eef0f8; border-radius: 5px; outline: none; margin: 0;
+            height: 8px; background: var(--border); border-radius: 5px; outline: none; margin: 0;
         }
         .slider-group input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; appearance: none; width: 18px; height: 18px;
@@ -70,21 +97,28 @@
             border-radius: 50%; cursor: pointer; border: none;
         }
         
-        .tabs { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--border); }
+        /* 2. OPTIMIZED TAB STYLES */
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
         .tab-button {
             padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1rem;
-            color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px;
+            color: var(--text2); border-bottom: 2px solid transparent;
+            font-weight: 600; /* Bolder text */
+            text-align: center;
+            margin-bottom: -1px;
         }
         .tab-button.active { color: var(--main-color); border-bottom-color: var(--main-color); }
         .tab-content { display: none; } .tab-content.active { display: block; }
-        .inline-group { display: flex; gap: 10px; } .inline-group > div { flex-grow: 1; }
+        .inline-group { display: flex; gap: 10px; } 
+        .inline-group > div { flex-grow: 1; }
         
         .file-input-wrapper input[type="file"] {
             width: 0.1px; height: 0.1px; opacity: 0;
             overflow: hidden; position: absolute; z-index: -1;
-        }
-        .file-input-wrapper label {
-            /* Styles will be handled by your inline style */
         }
         
         .action-footer {
@@ -93,47 +127,100 @@
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             padding: 15px; border-top: 1px solid var(--border);
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
-            z-index: 100;
+            z-index: 100; box-sizing: border-box;
         }
         .footer-buttons {
-            max-width: 1000px; margin: 0 auto; display: grid;
+            max-width: 1400px; padding: 0 20px; margin: 0 auto; display: grid;
             grid-template-columns: repeat(6, 1fr); gap: 10px;
         }
         
         .btn {
             width: 100%; padding: 12px 10px; border-radius: 6px; font-size: 0.9rem;
             font-weight: 500; cursor: pointer; transition: all 0.3s; border: 1px solid transparent;
-            white-space: nowrap;
+            white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;
         }
-        .btn:disabled { cursor: not-allowed; background: var(--border) !important; color: var(--text3); border-color: transparent !important;}
+        .btn:disabled {
+            cursor: not-allowed;
+            background: var(--border) !important;
+            color: var(--text3) !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            opacity: 0.7;
+        }
         .btn.btn-primary { background: var(--btcolor); color: var(--white); }
         .btn.btn-outline { background: var(--white); color: var(--main-color); border-color: var(--main-color); }
         .btn.btn-secondary { background: #f0f1f6; color: var(--text2); }
         .btn.btn-primary:hover:not(:disabled) { opacity: 0.9; box-shadow: 0 2px 8px rgba(90, 100, 255, 0.3); }
         .btn.btn-outline:hover:not(:disabled) { background: #f5f6ff; }
         
-        /* --- 1. OVERFLOW FIX: Changed from Grid to Flexbox --- */
         #barcode-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: flex-start; /* Align items to the top */
-            gap: 20px;
+            display: flex; flex-wrap: wrap; justify-content: center;
+            align-items: flex-start; gap: 20px;
         }
         .barcode-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            /* Preserving your custom background */
+            display: flex; flex-direction: column; align-items: center;
+            padding: 15px; border: 1px solid var(--border); border-radius: 8px;
             background: var(--background);
         }
-        .barcode-item svg {
-            max-width: 100%;
-            height: auto;
+        .barcode-item svg { max-width: 100%; height: auto; }
+        
+        .settings-group {
+            background: var(--background);
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 10px;
         }
+        .settings-group h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            color: var(--text1);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .inline-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .inline-control label {
+            margin-bottom: 0; 
+            flex-shrink: 0;
+        }
+        .inline-control select {
+            flex-grow: 1;
+        }
+
+        .file-input-wrapper {
+        }
+        .file-input-wrapper label.btn {
+            width: auto;
+            padding-left: 25px;
+            padding-right: 25px;
+            display: flex;
+        }
+        
+        @media (max-width: 1024px) {
+            .controls { width: 320px; }
+        }
+
+        @media (max-width: 800px) {
+            body { padding-bottom: 150px; }
+            .container { flex-direction: column; }
+            .controls { width: 100%; position: static; margin-bottom: 20px; }
+            .preview { min-height: auto; }
+            .footer-buttons { grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 15px 15px 150px 15px; }
+            .controls, .preview { padding: 20px; }
+            h1 { font-size: 1.3rem; }
+            .footer-buttons { grid-template-columns: repeat(2, 1fr); }
+            .tab-button { padding: 10px 8px; font-size: 0.9rem; }
+        }
+        
     </style>
 </head>
 <body>
@@ -158,41 +245,59 @@
                 </div>
                 <div id="file-tab" class="tab-content file-input-wrapper">
                     <input type="file" id="file-input" accept=".txt,.csv">
-                    <label for="file-input" style="background: #fff; color: var(--main-color); border: 1px solid var(--main-color); width: auto; border-radius: 6px; padding: 10px;">选择 .txt 或 .csv 文件</label>
+                    <label for="file-input" class="btn btn-outline">选择 .txt 或 .csv 文件</label>
                 </div>
             </div>
 
-            <h2>样式设置</h2>
+            <div class="heading-with-button">
+                 <h2>样式设置</h2>
+                 <button id="save-styles-btn" class="btn btn-primary">保存样式</button>
+            </div>
 
-            <div class="control-group inline-group">
-                <div><label for="barcode-type">条码类型</label><select id="barcode-type"><option value="CODE128" selected>CODE128</option><option value="CODE39">CODE39</option><option value="EAN13">EAN13</option><option value="UPC">UPC</option><option value="ITF">ITF</option><option value="MSI">MSI</option></select></div>
-                <div><label for="display-value">显示文本</label><select id="display-value"><option value="true" selected>显示</option><option value="false">隐藏</option></select></div>
+            <div class="settings-group">
+                <h3>条码样式</h3>
+                <div class="control-group inline-control">
+                    <label for="barcode-type">条码类型</label>
+                    <select id="barcode-type">
+                        <option value="CODE128" selected>CODE128</option><option value="CODE39">CODE39</option>
+                        <option value="EAN13">EAN13</option><option value="UPC">UPC</option>
+                        <option value="ITF">ITF</option><option value="MSI">MSI</option>
+                    </select>
+                </div>
+                <div class="control-group slider-group">
+                    <div class="label-row"><label for="barcode-width">宽度</label><input type="number" id="barcode-width" value="2" min="1" max="10"></div>
+                    <input type="range" id="barcode-width-slider" value="2" min="1" max="10">
+                </div>
+                <div class="control-group slider-group">
+                    <div class="label-row"><label for="barcode-height">高度</label><input type="number" id="barcode-height" value="80" min="20" max="200"></div>
+                    <input type="range" id="barcode-height-slider" value="80" min="20" max="200">
+                </div>
+                <div class="control-group inline-group">
+                    <div style="display: flex; align-items: center; gap: 10px;"><label for="barcode-color" style="margin-bottom: 0;">条码颜色</label><input type="color" id="barcode-color" value="#1a1d2e" style="height: 40px; padding: 5px;"></div>
+                    <div style="display: flex; align-items: center; gap: 10px;"><label for="background-color" style="margin-bottom: 0;">背景颜色</label><input type="color" id="background-color" value="#ffffff" style="height: 40px; padding: 5px;"></div>
+                </div>
             </div>
-            
-            <div class="control-group slider-group">
-                <div class="label-row"><label for="barcode-width">宽度</label><input type="number" id="barcode-width" value="2" min="1" max="10"></div>
-                <input type="range" id="barcode-width-slider" value="2" min="1" max="10">
-            </div>
-            <div class="control-group slider-group">
-                <div class="label-row"><label for="barcode-height">高度</label><input type="number" id="barcode-height" value="80" min="20" max="200"></div>
-                <input type="range" id="barcode-height-slider" value="80" min="20" max="200">
-            </div>
-             <div class="control-group slider-group">
-                <div class="label-row"><label for="font-size">字体大小</label><input type="number" id="font-size" value="18" min="8" max="40"></div>
-                <input type="range" id="font-size-slider" value="18" min="8" max="40">
-            </div>
-            <div class="control-group slider-group">
-                <div class="label-row"><label for="text-margin">文本边距</label><input type="number" id="text-margin" value="0" min="-10" max="30"></div>
-                <input type="range" id="text-margin-slider" value="0" min="-10" max="30">
-            </div>
-            <div class="control-group slider-group">
-                <div class="label-row"><label for="letter-spacing">字间距</label><input type="number" id="letter-spacing" value="0" min="-5" max="20"></div>
-                <input type="range" id="letter-spacing-slider" value="0" min="-5" max="20">
-            </div>
-            
-             <div class="control-group inline-group">
-                <div><label for="barcode-color">条码颜色</label><input type="color" id="barcode-color" value="#1a1d2e"></div>
-                <div><label for="background-color">背景颜色</label><input type="color" id="background-color" value="#ffffff"></div>
+
+            <div class="settings-group">
+                <h3>文本样式</h3>
+                <div class="control-group inline-control">
+                    <label for="display-value">显示文本</label>
+                    <select id="display-value">
+                        <option value="true" selected>显示</option><option value="false">隐藏</option>
+                    </select>
+                </div>
+                <div class="control-group slider-group">
+                    <div class="label-row"><label for="font-size">字体大小</label><input type="number" id="font-size" value="18" min="8" max="40"></div>
+                    <input type="range" id="font-size-slider" value="18" min="8" max="40">
+                </div>
+                <div class="control-group slider-group">
+                    <div class="label-row"><label for="text-margin">文本边距</label><input type="number" id="text-margin" value="0" min="-10" max="30"></div>
+                    <input type="range" id="text-margin-slider" value="0" min="-10" max="30">
+                </div>
+                <div class="control-group slider-group">
+                    <div class="label-row"><label for="letter-spacing">字间距</label><input type="number" id="letter-spacing" value="0" min="-5" max="20"></div>
+                    <input type="range" id="letter-spacing-slider" value="0" min="-5" max="20">
+                </div>
             </div>
         </div>
 
@@ -215,8 +320,15 @@
 
     <script>
         const { jsPDF } = window.jspdf;
+        // --- CONFIG FOR STYLE SAVING ---
+        const styleControlIds = [
+            'barcode-type', 'display-value', 'barcode-width', 'barcode-height',
+            'font-size', 'text-margin', 'letter-spacing', 'barcode-color', 'background-color'
+        ];
+
         // --- Setup and Initialization ---
         window.onload = () => {
+            loadStyles(); // Load saved styles from cookie first
             setupSliders();
             setupEventListeners();
             generateBarcodes();
@@ -227,13 +339,13 @@
             const configs = [
                 { numId: 'barcode-width', sliderId: 'barcode-width-slider' }, { numId: 'barcode-height', sliderId: 'barcode-height-slider' },
                 { numId: 'font-size', sliderId: 'font-size-slider' }, { numId: 'text-margin', sliderId: 'text-margin-slider' },
-                { numId: 'letter-spacing', sliderId: 'letter-spacing-slider' } // Added new slider
+                { numId: 'letter-spacing', sliderId: 'letter-spacing-slider' }
             ];
             configs.forEach(({numId, sliderId}) => {
                 const numInput = document.getElementById(numId);
                 const sliderInput = document.getElementById(sliderId);
-                numInput.addEventListener('input', () => sliderInput.value = numInput.value);
-                sliderInput.addEventListener('input', () => numInput.value = sliderInput.value);
+                numInput.addEventListener('input', () => { sliderInput.value = numInput.value; debounce(generateBarcodes, 200); });
+                sliderInput.addEventListener('input', () => { numInput.value = sliderInput.value; debounce(generateBarcodes, 200); });
             });
         }
         
@@ -243,12 +355,45 @@
         function setupEventListeners() {
             const controlsToWatch = [
                 'data', 'seq-start', 'seq-count', 'seq-prefix', 'barcode-type', 'display-value',
-                'barcode-width', 'barcode-height', 'barcode-color', 'background-color', 'font-size', 'text-margin',
-                'barcode-width-slider', 'barcode-height-slider', 'font-size-slider', 'text-margin-slider',
-                'letter-spacing', 'letter-spacing-slider' // Added new controls to watcher
+                'barcode-color', 'background-color'
             ];
             controlsToWatch.forEach(id => document.getElementById(id)?.addEventListener('input', () => debounce(generateBarcodes, 200)));
             document.getElementById('file-input').addEventListener('change', handleFileImport);
+            document.getElementById('save-styles-btn').addEventListener('click', saveStyles); // Add listener for save button
+        }
+
+        // --- NEW: SAVE AND LOAD STYLES ---
+        function saveStyles() {
+            const styleSettings = {};
+            styleControlIds.forEach(id => {
+                styleSettings[id] = document.getElementById(id).value;
+            });
+            // Save to cookie for 1 year
+            document.cookie = `barcodeStyles=${JSON.stringify(styleSettings)};max-age=31536000;path=/`;
+
+            const btn = document.getElementById('save-styles-btn');
+            btn.textContent = '已保存!';
+            setTimeout(() => { btn.textContent = '保存样式'; }, 1500);
+        }
+
+        function loadStyles() {
+            try {
+                const cookieString = document.cookie.split('; ').find(row => row.startsWith('barcodeStyles='));
+                if (!cookieString) return;
+                
+                const savedStyles = JSON.parse(cookieString.split('=')[1]);
+                styleControlIds.forEach(id => {
+                    if (savedStyles[id] !== undefined) {
+                        const el = document.getElementById(id);
+                        el.value = savedStyles[id];
+                        // Also update corresponding slider if it exists
+                        const sliderEl = document.getElementById(`${id}-slider`);
+                        if (sliderEl) sliderEl.value = savedStyles[id];
+                    }
+                });
+            } catch (e) {
+                console.error("Failed to load styles from cookie:", e);
+            }
         }
 
         let currentTab = 'manual';
@@ -317,7 +462,6 @@
                 try {
                     JsBarcode(svg, cleanLine, options);
                     
-                    // Apply letter spacing
                     if (letterSpacing != 0) {
                         const textElements = svg.querySelectorAll('text');
                         textElements.forEach(text => {
@@ -326,7 +470,7 @@
                     }
                     
                     item.appendChild(svg);
-                } catch (e) { item.innerHTML = `<p style="color:red;font-size:12px;word-break:break-all;">'${cleanLine}'生成失败</p>`; }
+                } catch (e) { item.innerHTML = `<p style="color:red;font-size:12px;word-break:break-all;">'${cleanLine}'生成失败</p><p style="color:red;font-size:10px;">${e.message}</p>`; }
                 container.appendChild(item);
             });
         }
@@ -338,8 +482,14 @@
         function getPNGDataURLFromSVG(svg) {
             return new Promise(resolve => {
                 const canvas = document.createElement('canvas'), bbox = svg.getBBox();
-                canvas.width = bbox.width; canvas.height = bbox.height;
-                const ctx = canvas.getContext('2d'), data = new XMLSerializer().serializeToString(svg);
+                const scale = 2;
+                canvas.width = bbox.width * scale; 
+                canvas.height = bbox.height * scale;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = document.getElementById('background-color').value;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.scale(scale, scale);
+                const data = new XMLSerializer().serializeToString(svg);
                 const img = new Image(), svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
                 const url = URL.createObjectURL(svgBlob);
                 img.onload = () => {
@@ -355,17 +505,27 @@
             if (svgs.length === 0) return alert('没有条码可以下载！');
             const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
             const margin = 10, itemWidth = (doc.internal.pageSize.getWidth() - 3 * margin) / 2;
-            let x = margin, y = margin;
+            let x = margin, y = margin, rowMaxHeight = 0;
+
             for (let i = 0; i < svgs.length; i++) {
                 const svg = svgs[i], dataURL = await getPNGDataURLFromSVG(svg);
                 const aspectRatio = svg.width.baseVal.value / svg.height.baseVal.value;
                 const itemHeight = itemWidth / aspectRatio;
+                
                 if (y + itemHeight > doc.internal.pageSize.getHeight() - margin) {
-                    doc.addPage(); x = margin; y = margin;
+                    doc.addPage(); x = margin; y = margin; rowMaxHeight = 0;
                 }
+                
                 doc.addImage(dataURL, 'PNG', x, y, itemWidth, itemHeight);
-                if ((i + 1) % 2 === 0 && (i + 1) < svgs.length) { x = margin; y += itemHeight + margin; } 
-                else { x += itemWidth + margin; }
+                rowMaxHeight = Math.max(rowMaxHeight, itemHeight);
+
+                if ((i + 1) % 2 === 0) {
+                    x = margin; 
+                    y += rowMaxHeight + margin;
+                    rowMaxHeight = 0;
+                } else {
+                    x += itemWidth + margin; 
+                }
             }
             doc.save('barcodes.pdf');
         }
@@ -398,16 +558,31 @@
         }
         function clearData() {
             document.getElementById('data').value = '';
+            document.getElementById('file-input').value = '';
             document.querySelector('.file-input-wrapper label').textContent = '选择 .txt 或 .csv 文件';
             generateBarcodes();
         }
         function resetStyles() {
-            document.getElementById('barcode-type').value = 'CODE128'; document.getElementById('display-value').value = 'true';
-            document.getElementById('barcode-width').value = 2; document.getElementById('barcode-height').value = 80;
-            document.getElementById('barcode-color').value = '#1a1d2e'; document.getElementById('background-color').value = '#ffffff';
-            document.getElementById('font-size').value = 18; document.getElementById('text-margin').value = 0;
-            document.getElementById('letter-spacing').value = 0; // Added reset for letter spacing
-            setupSliders(); generateBarcodes();
+            // This function now resets to default values, ignoring cookies.
+            // A user can still save new defaults after resetting.
+            document.getElementById('barcode-type').value = 'CODE128'; 
+            document.getElementById('display-value').value = 'true';
+            document.getElementById('barcode-width').value = 2;
+            document.getElementById('barcode-height').value = 80;
+            document.getElementById('barcode-color').value = '#1a1d2e'; 
+            document.getElementById('background-color').value = '#ffffff';
+            document.getElementById('font-size').value = 18;
+            document.getElementById('text-margin').value = 0;
+            document.getElementById('letter-spacing').value = 0;
+            
+            // Manually update all sliders to match the reset values
+            setupSliders(); 
+            styleControlIds.forEach(id => {
+                const sliderEl = document.getElementById(`${id}-slider`);
+                if(sliderEl) sliderEl.value = document.getElementById(id).value;
+            });
+
+            generateBarcodes();
         }
     </script>
 </body>
