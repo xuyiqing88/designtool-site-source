@@ -360,7 +360,6 @@
 .hero-content-wrapper {
     position: relative; /* 不再需要绝对定位，因为父级已经是flex布局了 */
     z-index: 1; /* 确保内容在背景之上 */
-    margin-top: -80px;
 }
 
 .hero-content {
@@ -1322,6 +1321,9 @@ body.effects-enabled .tool-content {
 @media (max-width: 768px) {
         #header-nav-wrapper {
         position: static; /* 在移动端，取消固定定位，让它随页面滚动 */
+    }
+    .hero-content-wrapper {
+        margin-top: -80px;
     }
     .search-box {
         width: 160px;
