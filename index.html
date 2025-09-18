@@ -332,7 +332,14 @@
         border-top: 1px solid #fff;
         border-left: 1px solid #fff;
         }
-        /* ▼▼▼ 新增的Banner样式 ▼▼▼ */
+/* --- 新增：控制头部导航容器 --- */
+#header-nav-wrapper {
+    position: fixed; /* 默认（桌面端）固定定位 */
+    z-index: 99;
+    width: 100%;
+    top: 0; /* 确保它贴在顶部 */
+    left: 0;
+}
 /* 将图片作为背景应用到容器上 */
 #header-image {
     width: 100%;
@@ -340,13 +347,9 @@
     z-index: 50;
     height: 55vh; 
     min-height: 400px; /* 设置一个最小高度，防止在很扁的窗口上内容被压缩 */
-
-    /* 核心修改：将图片设置为背景 */
     background-image: url('img/back.webp');
     background-size: cover; /* 确保图片铺满容器，不变形 */
     background-position: center center; /* 图片居中显示 */
-    
-    /* 使用 Flexbox 居中内容 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -786,6 +789,7 @@ max-width: 330px;
     	position: relative;	
 	    align-items: center;
 	    padding: 10px 12%;
+        box-shadow: 0 0 10px #0000000d;
         }
         
         .search-box {
@@ -1251,9 +1255,8 @@ body.effects-enabled .tool-content {
         animation: none;
     }
 }
+
 /* =============================================================== */
-
-
         /* 添加到桌面提示 */
 .add-to-home-screen {
   position: fixed;
@@ -1316,6 +1319,9 @@ body.effects-enabled .tool-content {
   }
 }
 @media (max-width: 768px) {
+        #header-nav-wrapper {
+        position: static; /* 在移动端，取消固定定位，让它随页面滚动 */
+    }
     .search-box {
         width: 160px;
     }
@@ -1366,7 +1372,7 @@ body.effects-enabled .tool-content {
         font-size: 1rem;
     }
     #header-image {
-        height: 66vh; /* 在手机上可以适当减小高度 */
+        height: 50vh; /* 在手机上可以适当减小高度 */
         min-height: 350px;
     }
 /* ▲▲▲ 新增的Banner样式 ▲▲▲ */
@@ -1466,6 +1472,7 @@ body.effects-enabled .tool-content {
 	    gap: 0;
         backdrop-filter: none; /* 在移动端默认禁用模糊 */
         -webkit-backdrop-filter: none;
+        background: linear-gradient(90deg, #f8fdfe, #e6f2ff);
     }
 
 	.container {	
@@ -1562,7 +1569,7 @@ body.effects-enabled .tool-content {
     <i class="fas fa-arrow-up"></i>
 </button>
 
-<div style="position: fixed; z-index: 99; width: 100%;">
+<div id="header-nav-wrapper">
 <div class="controls">
     <div class="logobt">
         <a href="index.html"><img src="img/logo.svg" alt="logo" class="logo"></a>
