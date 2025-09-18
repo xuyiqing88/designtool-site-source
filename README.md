@@ -82,7 +82,7 @@
 # Design Tool - Making Design Easier
 
 ## 📚 Website Introduction
-Qingyi Design is a collection platform of free online design tools recommended by professional designers, dedicated to making design work simpler and more efficient. The website provides various practical functions such as AI design tools, image processing tools, 3D modeling tools, and format conversion tools, all available online without the need for download or installation!
+Design Tool is a collection platform of free online design tools recommended by professional designers, dedicated to making design work simpler and more efficient. The website provides various practical functions such as AI design tools, image processing tools, 3D modeling tools, and format conversion tools, all available online without the need for download or installation!
 
 ## 🔗 Visit Link
 [Design Tool Official Website](http://xuyiqing88.github.io)
