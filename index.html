@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>青艺设计 - 免费在线设计工具集合 AI设计/3D工具/图片处理一站式平台</title>
-    <!-- 添加PWA相关标签 -->
     <link rel="manifest" href="manifest.json">
     <link rel="canonical" href="https://designtool.site">
     <meta name="theme-color" content="#5963ff">
@@ -306,14 +305,11 @@
         position: absolute;
         color: #4884FF;}
 .arrow-top2 {
-    /* 移除固定的 top/right，因为动画会全程控制它的位置 */
     transform: scaleX(-1);
     font-size: 3.5rem;
     position: absolute;
     color: #4884FF;
-    opacity: 0; /* 初始透明，由动画控制 */
-    /* 应用与虚线框同步的循环动画 */
-    animation: looping-arrow-tl 2.5s ease-out infinite;
+    opacity: 0;
     z-index: 1;
 }
 
@@ -321,22 +317,18 @@
         top: 180px;
         left: -40px;
         font-size: 5rem;
-        animation: slow-shake 8s ease-in-out infinite reverse; 
     }
     .circle {
-            width: 100px;
+        width: 100px;
         height: 100px;
         border-radius: 50%;
         background-color: rgb(255 255 255 / 10%);
         position: relative;
         top: 160px;
         left: 0;
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
         z-index: 1;
         border-top: 1px solid #fff;
         border-left: 1px solid #fff;
-        animation: slow-shake 6s ease-in-out infinite; /* 添加此行 */
         }
         /* ▼▼▼ 新增的Banner样式 ▼▼▼ */
 /* 将图片作为背景应用到容器上 */
@@ -370,8 +362,6 @@
     padding: 20px;
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.2); /* 半透明背景，增加磨砂玻璃效果 */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -403,8 +393,6 @@
     width: 0; 
     height: 0;
     border: 2px dashed #35B3FC;
-    /* 应用一个新的、从左上角开始的动画 */
-    animation: looping-border-grow-tl 2.5s ease-out infinite;
 }
 .hero-description {
     font-size: 1.1rem;
@@ -826,8 +814,6 @@ max-width: 330px;
     	position: relative;	
 	    align-items: center;
 	    padding: 10px 12%;
-        backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
         }
         
         .search-box {
@@ -976,8 +962,6 @@ max-width: 330px;
 	        border-radius: 10px;
             margin-left: -10px;
             background: linear-gradient(180deg, #ffffff4f, #fff 80%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-left: 1px solid #fff;
             border-top: 1px solid #fff;
             box-shadow: 0 0 10px #0000001a;
@@ -1255,6 +1239,44 @@ max-width: 330px;
     }
 }
 
+/*
+ * ===============================================================
+ * ===== 新增: 延迟加载动画和模糊效果的样式 =====
+ * ===============================================================
+ */
+body.effects-enabled .arrow-top2 {
+    animation: looping-arrow-tl 2.5s ease-out infinite;
+}
+body.effects-enabled .arrow-top1 {
+    animation: slow-shake 8s ease-in-out infinite reverse; 
+}
+body.effects-enabled .circle {
+    animation: slow-shake 6s ease-in-out infinite;
+}
+body.effects-enabled .hero-content {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+body.effects-enabled .highlight::after {
+    animation: looping-border-grow-tl 2.5s ease-out infinite;
+}
+body.effects-enabled .controls {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+body.effects-enabled .tool-content {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+/* 在移动端，如果仍然希望禁用动画以节省性能，可以保留这部分 */
+@media (max-width: 768px) {
+    body.effects-enabled .circle,
+    body.effects-enabled .arrow-top1,
+    body.effects-enabled .arrow-top2 {
+        animation: none;
+    }
+}
+/* =============================================================== */
 
 
         /* 添加到桌面提示 */
@@ -1325,7 +1347,7 @@ max-width: 330px;
     .circle,
     .arrow-top1,
     .arrow-top2  {
-        animation: none;
+        animation: none; /* 默认禁用动画 */
     }
     .circle {
        top: 130px;
@@ -1480,6 +1502,8 @@ max-width: 330px;
         position: relative;
 		padding: 14px 0;
 	    gap: 0;
+        backdrop-filter: none; /* 在移动端默认禁用模糊 */
+        -webkit-backdrop-filter: none;
     }
 
 	.container {	
@@ -1494,8 +1518,8 @@ max-width: 330px;
 	        margin-left: 0;
         	margin-top: -10px;
             background: linear-gradient(135deg, #f3f1fe, #fff 50%);
-            backdrop-filter: blur(0);
-            -webkit-backdrop-filter: blur(0);
+            backdrop-filter: none; /* 在移动端默认禁用模糊 */
+            -webkit-backdrop-filter: none;
             }
 	.comments-container {
                 border-radius: 12px;
@@ -1628,12 +1652,9 @@ max-width: 330px;
     <div class="container" style="margin-top: 0; position: relative; z-index: 60;">       
         <div id="toolsContainer" >
 
-            <!-- 分类区域将由JS动态生成 -->
-        </div>
+            </div>
     </div>        
-        <!-- 评论区域 -->
-<section class="comments-section" id="comments-section">  <!-- 添加id -->
-    <div class="comments-header">
+        <section class="comments-section" id="comments-section">  <div class="comments-header">
         <div class="comments-icon">
             <h2 class="comments-title">评论/反馈</h2>
         </div>
@@ -1647,7 +1668,6 @@ max-width: 330px;
     <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
         
-        <!-- 打赏名单表格 -->
         <div class="donation-list">
             <h4>投喂名单</h4>
             <div class="table-container">
@@ -1661,21 +1681,17 @@ max-width: 330px;
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 数据将通过JS动态填充 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
         
-        <!-- 支付方式区域 -->
         <div class="payment-methods">
-            <!-- 微信支付 -->
             <div class="payment-option">
                 <h4>微信投喂</h4>
                 <img src="img/qrcode.webp" alt="微信支付二维码" loading="lazy">
             </div>
             
-            <!-- 支付宝支付 -->
             <div class="payment-option">
                 <h4 style="color: #1678FE;">支付宝投喂</h4>
                 <img src="img/alipay-qrcode.webp" alt="支付宝付款码" loading="lazy">
@@ -1690,7 +1706,6 @@ max-width: 330px;
                             <i class="fas fa-chart-bar"></i> 网站统计
                         </a>
 </div>
-<!-- 添加到桌面提示气泡 -->
 <div id="addToHomeScreen" class="add-to-home-screen">
   <div class="add-to-home-content">
     <span>可添加至桌面图标</span>
@@ -2411,6 +2426,15 @@ backToTopBtn.addEventListener('click', function() {
     });
   }
     </script>
-
-</body>
+    
+    <script>
+      /**
+       * window.onload 事件会在整个页面（包括所有图片、样式表等资源）
+       * 完全加载完成后触发。这是启用性能消耗较大样式的最佳时机。
+       */
+      window.onload = function() {
+        document.body.classList.add('effects-enabled');
+      };
+    </script>
+    </body>
 </html>
