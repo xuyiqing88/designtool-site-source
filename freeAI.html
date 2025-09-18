@@ -1014,17 +1014,20 @@
             line-height: 1.5;
         }
         
-        @media (max-width: 768px) {
-            .main-layout { 
+ @media (max-width: 768px) {
+    .main-layout { 
                 flex-direction: column-reverse;
             }
-            .secondary-tab-pane{
+    .ai-message.initial .message-bubble {
+		width: auto;
+	}
+    .secondary-tab-pane{
                 max-height: calc(100vh - 100px);
             }
             
-            .panel {padding: 16px;}
+    .panel {padding: 16px;}
             
-            .sidebar {
+    .sidebar {
                 width: 100%;
                 height: auto;
                 flex-direction: row;
