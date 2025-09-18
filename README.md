@@ -1,50 +1,11 @@
-<div style="text-align: center; margin-bottom: 20px;">
-  <div style="display: inline-flex; background-color: #f3f4f6; border-radius: 8px; padding: 2px;">
-    <label style="position: relative;">
-      <input type="radio" name="lang" value="cn" checked style="position: absolute; opacity: 0;" />
-      <span style="display: inline-block; padding: 8px 20px; background-color: #5963ff; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">中文</span>
-    </label>
-    <label style="position: relative;">
-      <input type="radio" name="lang" value="en" style="position: absolute; opacity: 0;" />
-      <span style="display: inline-block; padding: 8px 20px; background-color: transparent; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">English</span>
-    </label>
-  </div>
-  
-  <style>
-    input[name="lang"][value="cn"]:checked ~ div > .cn-content {
-      display: block;
-    }
-    input[name="lang"][value="cn"]:checked ~ div > .en-content {
-      display: none;
-    }
-    input[name="lang"][value="en"]:checked ~ div > .cn-content {
-      display: none;
-    }
-    input[name="lang"][value="en"]:checked ~ div > .en-content {
-      display: block;
-    }
-    input[name="lang"][value="cn"]:checked + span {
-      background-color: #5963ff !important;
-      color: white !important;
-    }
-    input[name="lang"][value="en"]:checked + span {
-      background-color: #5963ff !important;
-      color: white !important;
-    }
-    /* 通用样式 */
-    .content-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      text-align: left;
-    }
-    .cn-content, .en-content {
-      width: 100%;
-    }
-  </style>
+<div align="center">
+  <img src="https://img.shields.io/badge/Design-Tool-blue?style=for-the-badge&logo=appveyor" alt="Design-Tool"/>
 </div>
+<br>
 
-<div class="content-container">
-  <div class="cn-content">
+<details open>
+<summary><strong>中文</strong> (点击切换语言)</summary>
+
 # 青艺设计 - 让设计更轻易
 
 ## 📚 网站简介
@@ -112,16 +73,19 @@
 
 ## 💬 反馈与支持
 如果您在使用过程中遇到问题或有任何建议，欢迎通过网站内的"评论反馈"功能与我们联系。您的支持是我们不断进步的动力！
-  </div>
 
-  <div class="en-content" style="display: none;">
-# Qingyi Design - Making Design Easier
+</details>
+
+<details>
+<summary><strong>English</strong> (Click to switch language)</summary>
+
+# Design Tool - Making Design Easier
 
 ## 📚 Website Introduction
-Qingyi Design is a collection platform of free online design tools recommended by professional designers, dedicated to making design work simpler and more efficient. The website provides various practical functions such as AI design tools, image processing tools, 3D modeling tools, and format conversion tools, all available online without the need for download or installation!
+Design Tool is a collection platform of free online design tools recommended by professional designers, dedicated to making design work simpler and more efficient. The website provides various practical functions such as AI design tools, image processing tools, 3D modeling tools, and format conversion tools, all available online without the need for download or installation!
 
 ## 🔗 Visit Link
-[Qingyi Design Official Website](http://xuyiqing88.github.io)
+[Design Tool Official Website](http://xuyiqing88.github.io)
 
 ## 🛠️ Tool Categories
 
@@ -158,7 +122,7 @@ Qingyi Design is a collection platform of free online design tools recommended b
 ### Easy Conversion
 - **Audio-Video Format Conversion**: Supports common video formats, audio format conversion, and audio format extraction
 - **Image Format Conversion**: Supports HEIC, TIF, JPG, PNG, BMP, GIF, WEBP, SVG formats
-- **Linear Color Conversion**: Non-linear color to linear color conversion for C4D, Blender, and color format mutual conversion
+- **Linear Color Conversion**: Non-linear color to linear color for C4D, Blender, and color format mutual conversion
 - **BASE64 Image Converter**: Convert images to Base64 encoding or restore images from Base64 encoding
 
 ### Easy Utilities
@@ -182,8 +146,8 @@ Qingyi Design is a collection platform of free online design tools recommended b
 
 ## 💬 Feedback and Support
 If you encounter any problems or have any suggestions during use, please contact us through the "Comments & Feedback" function on the website. Your support is the driving force for our continuous progress!
-  </div>
-</div>
+
+</details>
 
 ---
 © 2025 designtool.site All Rights Reserved | By Xu Yiqing
