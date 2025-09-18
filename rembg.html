@@ -879,7 +879,7 @@
 
       } catch (error) {
         console.error('模型加载或初始化失败:', error);
-        loadingError.textContent = `错误: ${error.message}。请刷新页面重试，或检查网络连接与浏览器控制台。`;
+        loadingError.textContent = `错误: ${error.message}。请检查网络连接，或在域名前缀加入"https://"后重试。`;
         loadingError.classList.remove('hidden');
       }
     }
