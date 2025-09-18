@@ -1,11 +1,50 @@
 <div style="text-align: center; margin-bottom: 20px;">
   <div style="display: inline-flex; background-color: #f3f4f6; border-radius: 8px; padding: 2px;">
-    <button id="cnBtn" style="padding: 8px 20px; background-color: #5963ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">中文</button>
-    <button id="enBtn" style="padding: 8px 20px; background-color: transparent; color: #6b7280; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">English</button>
+    <label style="position: relative;">
+      <input type="radio" name="lang" value="cn" checked style="position: absolute; opacity: 0;" />
+      <span style="display: inline-block; padding: 8px 20px; background-color: #5963ff; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">中文</span>
+    </label>
+    <label style="position: relative;">
+      <input type="radio" name="lang" value="en" style="position: absolute; opacity: 0;" />
+      <span style="display: inline-block; padding: 8px 20px; background-color: transparent; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">English</span>
+    </label>
   </div>
+  
+  <style>
+    input[name="lang"][value="cn"]:checked ~ div > .cn-content {
+      display: block;
+    }
+    input[name="lang"][value="cn"]:checked ~ div > .en-content {
+      display: none;
+    }
+    input[name="lang"][value="en"]:checked ~ div > .cn-content {
+      display: none;
+    }
+    input[name="lang"][value="en"]:checked ~ div > .en-content {
+      display: block;
+    }
+    input[name="lang"][value="cn"]:checked + span {
+      background-color: #5963ff !important;
+      color: white !important;
+    }
+    input[name="lang"][value="en"]:checked + span {
+      background-color: #5963ff !important;
+      color: white !important;
+    }
+    /* 通用样式 */
+    .content-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .cn-content, .en-content {
+      width: 100%;
+    }
+  </style>
 </div>
 
-<div id="cnContent">
+<div class="content-container">
+  <div class="cn-content">
 # 青艺设计 - 让设计更轻易
 
 ## 📚 网站简介
@@ -73,9 +112,9 @@
 
 ## 💬 反馈与支持
 如果您在使用过程中遇到问题或有任何建议，欢迎通过网站内的"评论反馈"功能与我们联系。您的支持是我们不断进步的动力！
-</div>
+  </div>
 
-<div id="enContent" style="display: none;">
+  <div class="en-content" style="display: none;">
 # Qingyi Design - Making Design Easier
 
 ## 📚 Website Introduction
@@ -143,28 +182,8 @@ Qingyi Design is a collection platform of free online design tools recommended b
 
 ## 💬 Feedback and Support
 If you encounter any problems or have any suggestions during use, please contact us through the "Comments & Feedback" function on the website. Your support is the driving force for our continuous progress!
+  </div>
 </div>
 
 ---
 © 2025 designtool.site All Rights Reserved | By Xu Yiqing
-
-<script>
-  // Language switching functionality
-  document.getElementById('cnBtn').addEventListener('click', function() {
-    document.getElementById('cnContent').style.display = 'block';
-    document.getElementById('enContent').style.display = 'none';
-    document.getElementById('cnBtn').style.backgroundColor = '#5963ff';
-    document.getElementById('cnBtn').style.color = 'white';
-    document.getElementById('enBtn').style.backgroundColor = 'transparent';
-    document.getElementById('enBtn').style.color = '#6b7280';
-  });
-  
-  document.getElementById('enBtn').addEventListener('click', function() {
-    document.getElementById('cnContent').style.display = 'none';
-    document.getElementById('enContent').style.display = 'block';
-    document.getElementById('enBtn').style.backgroundColor = '#5963ff';
-    document.getElementById('enBtn').style.color = 'white';
-    document.getElementById('cnBtn').style.backgroundColor = 'transparent';
-    document.getElementById('cnBtn').style.color = '#6b7280';
-  });
-</script>
