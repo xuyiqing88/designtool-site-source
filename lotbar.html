@@ -28,7 +28,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--background); color: var(--text2); margin: 0;
-            padding: 20px 20px 120px 20px;
+            padding: 20px;
         }
         header {
             text-align: center;
@@ -73,15 +73,23 @@
             align-items: flex-start;
             padding-left: 60px;
         }
-        .controls {
-            width: 380px; flex-shrink: 0; position: sticky; top: 20px;
-        }
+.controls {
+    width: 380px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 90px); /* 新增：限制最大高度，使其不超过视口高度 */
+    overflow-y: auto; /* 新增：当内容超出时，在面板内部显示垂直滚动条 */
+}
         .controls, .preview {
             background: var(--white); border-radius: 8px; padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);     
             box-sizing: border-box;
         }
-        .preview { flex-grow: 1;  height: -webkit-fill-available;}
+        .preview { 
+            flex-grow: 1;  
+            height: -webkit-fill-available;
+            padding: 20px 20px 70px 20px;}
         h1 {
             color: var(--text1);  
             padding-bottom: 20px;
@@ -141,12 +149,17 @@
             border-radius: 50%; cursor: pointer; border: none;
         }
         
-        .tabs {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
+.tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    /* --- 以下是为实现吸顶效果新增的样式 --- */
+    position: sticky;
+    top: -20px; /* 关键：抵消父容器的内边距，实现真正的顶部对齐 */
+    background: var(--white); /* 添加背景色，防止下方内容滚动时透过来 */
+    z-index: 1; /* 确保它显示在最上层 */
+}
         .tab-button {
             padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1.1rem;
             color: var(--text2); border-bottom: 2px solid transparent;
