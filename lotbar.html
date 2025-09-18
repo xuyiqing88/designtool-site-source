@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>最终美化版批量条形码生成工具</title>
+    <title>最终优化版批量条形码生成工具</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -24,7 +24,6 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--background); color: var(--text2); margin: 0;
-            /* Add padding to prevent content from being hidden by the fixed footer */
             padding: 20px 20px 120px 20px;
         }
         .container {
@@ -38,7 +37,8 @@
             background: var(--white); border-radius: 8px; padding: 25px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid var(--border);
         }
-        .preview { flex-grow: 1;     height: -webkit-fill-available;}
+        /* Preserving your custom height */
+        .preview { flex-grow: 1; height: -webkit-fill-available;}
         h1, h2 {
             color: var(--text1); border-bottom: 1px solid var(--border); padding-bottom: 10px;
             margin-top: 0; font-size: 1.5rem;
@@ -79,16 +79,14 @@
         .tab-content { display: none; } .tab-content.active { display: block; }
         .inline-group { display: flex; gap: 10px; } .inline-group > div { flex-grow: 1; }
         
-        /* Styled File Input */
         .file-input-wrapper input[type="file"] {
             width: 0.1px; height: 0.1px; opacity: 0;
             overflow: hidden; position: absolute; z-index: -1;
         }
         .file-input-wrapper label {
-            width: 100%; display: block; text-align: center;
+            /* Styles will be handled by your inline style */
         }
         
-        /* Action Footer */
         .action-footer {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(255, 255, 255, 0.85);
@@ -102,7 +100,6 @@
             grid-template-columns: repeat(6, 1fr); gap: 10px;
         }
         
-        /* Button Styles */
         .btn {
             width: 100%; padding: 12px 10px; border-radius: 6px; font-size: 0.9rem;
             font-weight: 500; cursor: pointer; transition: all 0.3s; border: 1px solid transparent;
@@ -115,12 +112,27 @@
         .btn.btn-primary:hover:not(:disabled) { opacity: 0.9; box-shadow: 0 2px 8px rgba(90, 100, 255, 0.3); }
         .btn.btn-outline:hover:not(:disabled) { background: #f5f6ff; }
         
+        /* --- 1. OVERFLOW FIX: Changed from Grid to Flexbox --- */
         #barcode-container {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            gap: 20px;
         }
         .barcode-item {
-            display: flex; flex-direction: column; align-items: center; padding: 15px;
-            border: 1px solid var(--border); border-radius: 8px; background: var(--background);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            /* Preserving your custom background */
+            background: var(--background);
+        }
+        .barcode-item svg {
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
@@ -146,12 +158,7 @@
                 </div>
                 <div id="file-tab" class="tab-content file-input-wrapper">
                     <input type="file" id="file-input" accept=".txt,.csv">
-                    <label for="file-input" style="background: #fff;
-    color: var(--main-color);
-    border: 1px solid var(--main-color);
-    width: auto;
-border-radius: 6px;
-    padding: 10px;">选择 .txt 或 .csv 文件</label>
+                    <label for="file-input" style="background: #fff; color: var(--main-color); border: 1px solid var(--main-color); width: auto; border-radius: 6px; padding: 10px;">选择 .txt 或 .csv 文件</label>
                 </div>
             </div>
 
@@ -177,6 +184,10 @@ border-radius: 6px;
             <div class="control-group slider-group">
                 <div class="label-row"><label for="text-margin">文本边距</label><input type="number" id="text-margin" value="0" min="-10" max="30"></div>
                 <input type="range" id="text-margin-slider" value="0" min="-10" max="30">
+            </div>
+            <div class="control-group slider-group">
+                <div class="label-row"><label for="letter-spacing">字间距</label><input type="number" id="letter-spacing" value="0" min="-5" max="20"></div>
+                <input type="range" id="letter-spacing-slider" value="0" min="-5" max="20">
             </div>
             
              <div class="control-group inline-group">
@@ -216,6 +227,7 @@ border-radius: 6px;
             const configs = [
                 { numId: 'barcode-width', sliderId: 'barcode-width-slider' }, { numId: 'barcode-height', sliderId: 'barcode-height-slider' },
                 { numId: 'font-size', sliderId: 'font-size-slider' }, { numId: 'text-margin', sliderId: 'text-margin-slider' },
+                { numId: 'letter-spacing', sliderId: 'letter-spacing-slider' } // Added new slider
             ];
             configs.forEach(({numId, sliderId}) => {
                 const numInput = document.getElementById(numId);
@@ -232,7 +244,8 @@ border-radius: 6px;
             const controlsToWatch = [
                 'data', 'seq-start', 'seq-count', 'seq-prefix', 'barcode-type', 'display-value',
                 'barcode-width', 'barcode-height', 'barcode-color', 'background-color', 'font-size', 'text-margin',
-                'barcode-width-slider', 'barcode-height-slider', 'font-size-slider', 'text-margin-slider'
+                'barcode-width-slider', 'barcode-height-slider', 'font-size-slider', 'text-margin-slider',
+                'letter-spacing', 'letter-spacing-slider' // Added new controls to watcher
             ];
             controlsToWatch.forEach(id => document.getElementById(id)?.addEventListener('input', () => debounce(generateBarcodes, 200)));
             document.getElementById('file-input').addEventListener('change', handleFileImport);
@@ -294,13 +307,25 @@ border-radius: 6px;
                 lineColor: document.getElementById('barcode-color').value,
                 margin: 15
             };
+            const letterSpacing = document.getElementById('letter-spacing').value;
+
             dataLines.forEach((line, index) => {
                 const cleanLine = line.trim(), item = document.createElement('div');
                 item.className = 'barcode-item';
                 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svg.id = `barcode-${index}`; svg.dataset.value = cleanLine;
                 try {
-                    JsBarcode(svg, cleanLine, options); item.appendChild(svg);
+                    JsBarcode(svg, cleanLine, options);
+                    
+                    // Apply letter spacing
+                    if (letterSpacing != 0) {
+                        const textElements = svg.querySelectorAll('text');
+                        textElements.forEach(text => {
+                            text.style.letterSpacing = `${letterSpacing}px`;
+                        });
+                    }
+                    
+                    item.appendChild(svg);
                 } catch (e) { item.innerHTML = `<p style="color:red;font-size:12px;word-break:break-all;">'${cleanLine}'生成失败</p>`; }
                 container.appendChild(item);
             });
@@ -381,6 +406,7 @@ border-radius: 6px;
             document.getElementById('barcode-width').value = 2; document.getElementById('barcode-height').value = 80;
             document.getElementById('barcode-color').value = '#1a1d2e'; document.getElementById('background-color').value = '#ffffff';
             document.getElementById('font-size').value = 18; document.getElementById('text-margin').value = 0;
+            document.getElementById('letter-spacing').value = 0; // Added reset for letter spacing
             setupSliders(); generateBarcodes();
         }
     </script>
