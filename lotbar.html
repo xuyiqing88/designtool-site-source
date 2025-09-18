@@ -6,7 +6,7 @@
     <title>批量条形码生成工具</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
@@ -34,32 +34,62 @@
             text-align: center;
             padding: 20px;
         }
+        .quesheng {
+            color: var(--text3); 
+            padding: 100px 20px; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            gap: 15px;
+        }
+        .color-input {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            background: none;
+            border-radius: 6px;
+            padding: 2px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .color-input::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-input::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+        .color-input::-moz-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
         .container {
             width: 100%;
             margin: 0 auto;
             display: flex;
             gap: 20px;
             align-items: flex-start;
-            margin-left: 60px;
+            padding-left: 60px;
         }
         .controls {
             width: 380px; flex-shrink: 0; position: sticky; top: 20px;
         }
         .controls, .preview {
             background: var(--white); border-radius: 8px; padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);     
             box-sizing: border-box;
         }
         .preview { flex-grow: 1; min-height: calc(100vh - 40px); }
         h1 {
             color: var(--text1);  
-            padding-bottom: 10px;
+            padding-bottom: 20px;
             margin-top: 0; 
             font-size: 1.4rem;
             display: flex;
             justify-content: center;
         }
-        /* MODIFIED: Replaced h2 styles with a flex container for heading + button */
         .heading-with-button {
             display: flex;
             justify-content: space-between;
@@ -78,25 +108,26 @@
             white-space: nowrap;
         }
         
-        .control-group { margin-bottom: 15px; }
+        .control-group { margin-bottom: 10px; }
         .control-group label, .slider-group .label-row label, .settings-group .control-group > label {
-            font-weight: 500; color: var(--text1);
+            font-weight: 400; 
+            color: var(--text2);
             display: block;
-            margin-bottom: 8px;
+            font-size: 0.9rem;
         }
         
         input[type="text"], input[type="number"], select, textarea {
-            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;
+            width: 100%; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
             box-sizing: border-box; transition: border-color 0.3s;
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--main-color); }
         textarea { resize: vertical; min-height: 100px; }
         
         .slider-group .label-row {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center; 
         }
         .slider-group .label-row label { margin-bottom: 0; }
-        .slider-group input[type="number"] { width: 70px; flex-shrink: 0; text-align: center; }
+        .slider-group input[type="number"] { width: 70px; flex-shrink: 0; text-align: center;  height: 32px;}
         .slider-group input[type="range"] {
             width: 100%; -webkit-appearance: none; appearance: none;
             height: 8px; background: var(--border); border-radius: 5px; outline: none; margin: 0;
@@ -110,7 +141,6 @@
             border-radius: 50%; cursor: pointer; border: none;
         }
         
-        /* 2. OPTIMIZED TAB STYLES */
         .tabs {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -118,9 +148,9 @@
             border-bottom: 1px solid var(--border);
         }
         .tab-button {
-            padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1rem;
+            padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1.1rem;
             color: var(--text2); border-bottom: 2px solid transparent;
-            font-weight: 600; /* Bolder text */
+            font-weight: 600;
             text-align: center;
             margin-bottom: -1px;
         }
@@ -143,12 +173,12 @@
             z-index: 100; box-sizing: border-box;
         }
         .footer-buttons {
-            max-width: 1400px; padding: 0 20px; margin: 0 auto; display: grid;
+            max-width: 1000px; padding: 0 20px; margin: 0 auto; display: grid;
             grid-template-columns: repeat(6, 1fr); gap: 10px;
         }
         
         .btn {
-            width: 100%; padding: 12px 10px; border-radius: 6px; font-size: 0.9rem;
+            width: 100%; padding: 10px; border-radius: 10px; font-size: 0.9rem;
             font-weight: 500; cursor: pointer; transition: all 0.3s; border: 1px solid transparent;
             white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;
         }
@@ -162,7 +192,14 @@
         }
         .btn.btn-primary { background: var(--btcolor); color: var(--white); }
         .btn.btn-outline { background: var(--white); color: var(--main-color); border-color: var(--main-color); }
-        .btn.btn-secondary { background: #f0f1f6; color: var(--text2); }
+        .btn.btn-secondary { 
+            background: #f0f1f6; 
+            color: var(--text2); 
+            padding: 4px 10px;
+        }
+        .btn.btn-secondary:hover {
+            background: #e5e7f2;
+        }
         .btn.btn-primary:hover:not(:disabled) { opacity: 0.9; box-shadow: 0 2px 8px rgba(90, 100, 255, 0.3); }
         .btn.btn-outline:hover:not(:disabled) { background: #f5f6ff; }
         
@@ -191,7 +228,10 @@
             border-bottom: 1px solid var(--border);
             padding-bottom: 10px;
         }
-
+        .settings-group h3 i {
+            margin-right: 8px;
+            color: var(--main-color);
+        }
         .inline-control {
             display: flex;
             align-items: center;
@@ -204,13 +244,25 @@
         .inline-control select {
             flex-grow: 1;
         }
+        .font-style-buttons { display: flex; gap: 8px; }
+        .font-style-buttons .btn {
+            width: 38px; height: 32px; padding: 0;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text3);
+        }
+        .font-style-buttons .btn.active {
+            background: #e9eaff;
+            color: var(--main-color);
+            border-color: var(--main-color);
+        }
 
         .file-input-wrapper {
         }
         .file-input-wrapper label.btn {
             width: auto;
-            padding-left: 25px;
-            padding-right: 25px;
+            padding: 10px;
             display: flex;
         }
         
@@ -219,7 +271,7 @@
 
             body { padding: 0 0 150px 0; }
             .container { 
-                margin-left: 0;
+                padding-left: 0;
                 flex-direction: column; 
                 margin-bottom: 30px;
             }
@@ -249,10 +301,10 @@
                 <div id="manual-tab" class="tab-content active"><textarea id="data" placeholder="请输入条码内容，每行一条"></textarea></div>
                 <div id="sequence-tab" class="tab-content">
                     <div class="inline-group">
-                        <div><label for="seq-start">起始数据</label><input type="text" id="seq-start" value="0001"></div>
-                        <div><label for="seq-count">生成数量</label><input type="number" id="seq-count" value="10"></div>
+                        <div><label for="seq-start" style="margin-bottom: 6px;">起始数据</label><input type="text" id="seq-start" value="0001"></div>
+                        <div><label for="seq-count" style="margin-bottom: 6px;">生成数量</label><input type="number" id="seq-count" value="10"></div>
                     </div>
-                    <div style="margin-top:10px;"><label for="seq-prefix">前缀</label><input type="text" id="seq-prefix" value="SN-"></div>
+                    <div style="margin-top:10px;"><label for="seq-prefix" style="margin-bottom: 6px;">前缀</label><input type="text" id="seq-prefix" value="SN-"></div>
                 </div>
                 <div id="file-tab" class="tab-content file-input-wrapper">
                     <input type="file" id="file-input" accept=".txt,.csv">
@@ -262,11 +314,14 @@
 
             <div class="heading-with-button">
                  <h2>样式设置</h2>
-                 <button id="save-styles-btn" class="btn btn-primary">保存样式</button>
+                 <div style="display: flex; gap: 10px;">
+                     <button class="btn btn-secondary" onclick="resetStyles()">重置样式</button>
+                     <button id="save-styles-btn" class="btn btn-primary">保存样式</button>
+                 </div>
             </div>
 
             <div class="settings-group">
-                <h3>条码样式</h3>
+                <h3><i class="fa-solid fa-barcode"></i> 条码样式</h3>
                 <div class="control-group inline-control">
                     <label for="barcode-type">条码类型</label>
                     <select id="barcode-type">
@@ -283,19 +338,38 @@
                     <div class="label-row"><label for="barcode-height">高度</label><input type="number" id="barcode-height" value="80" min="20" max="200"></div>
                     <input type="range" id="barcode-height-slider" value="80" min="20" max="200">
                 </div>
+                <div class="control-group slider-group">
+                    <div class="label-row"><label for="barcode-margin">条码边距</label><input type="number" id="barcode-margin" value="20" min="1" max="200"></div>
+                    <input type="range" id="barcode-margin-slider" value="20" min="1" max="200">
+                </div>
                 <div class="control-group inline-group">
-                    <div style="display: flex; align-items: center; gap: 10px;"><label for="barcode-color" style="margin-bottom: 0;">条码颜色</label><input type="color" id="barcode-color" value="#1a1d2e" style="height: 40px; padding: 5px;"></div>
-                    <div style="display: flex; align-items: center; gap: 10px;"><label for="background-color" style="margin-bottom: 0;">背景颜色</label><input type="color" id="background-color" value="#ffffff" style="height: 40px; padding: 5px;"></div>
+                    <div style="display: flex; align-items: center; gap: 10px;"><label for="barcode-color">条码颜色</label><input type="color" id="barcode-color" value="#1a1d2e" class="color-input"></div>
+                    <div style="display: flex; align-items: center; gap: 10px;"><label for="background-color">背景颜色</label><input type="color" id="background-color" value="#ffffff" class="color-input"></div>
                 </div>
             </div>
 
             <div class="settings-group">
-                <h3>文本样式</h3>
+                <h3><i class="fa-solid fa-font"></i>文本样式</h3>
                 <div class="control-group inline-control">
                     <label for="display-value">显示文本</label>
                     <select id="display-value">
                         <option value="true" selected>显示</option><option value="false">隐藏</option>
                     </select>
+                </div>
+                 <div class="control-group inline-control">
+                    <label for="font-family">字体选择</label>
+                    <select id="font-family">
+                        <option value="sans-serif" selected>无衬线 (Sans-serif)</option>
+                        <option value="serif">衬线 (Serif)</option>
+                        <option value="monospace">等宽 (Monospace)</option>
+                    </select>
+                </div>
+                <div class="control-group inline-control">
+                    <label>字体样式</label>
+                    <div class="font-style-buttons">
+                        <button id="font-bold-btn" class="btn"><i class="fa-solid fa-bold"></i></button>
+                        <button id="font-italic-btn" class="btn"><i class="fa-solid fa-italic"></i></button>
+                    </div>
                 </div>
                 <div class="control-group slider-group">
                     <div class="label-row"><label for="font-size">字体大小</label><input type="number" id="font-size" value="18" min="8" max="40"></div>
@@ -325,7 +399,6 @@
             <button id="pdf-btn" class="btn btn-outline" onclick="downloadAllAsPDF()">下载为PDF</button>
             <button id="excel-btn" class="btn btn-outline" onclick="downloadDataAsExcel()">下载为Excel</button>
             <button class="btn btn-secondary" onclick="clearData()">清空数据</button>
-            <button class="btn btn-secondary" onclick="resetStyles()">重置样式</button>
         </div>
     </div>
 
@@ -333,8 +406,8 @@
         const { jsPDF } = window.jspdf;
         // --- CONFIG FOR STYLE SAVING ---
         const styleControlIds = [
-            'barcode-type', 'display-value', 'barcode-width', 'barcode-height',
-            'font-size', 'text-margin', 'letter-spacing', 'barcode-color', 'background-color'
+            'barcode-type', 'display-value', 'barcode-width', 'barcode-height', 'barcode-margin',
+            'font-size', 'text-margin', 'letter-spacing', 'barcode-color', 'background-color', 'font-family'
         ];
 
         // --- Setup and Initialization ---
@@ -349,6 +422,7 @@
         function setupSliders() {
             const configs = [
                 { numId: 'barcode-width', sliderId: 'barcode-width-slider' }, { numId: 'barcode-height', sliderId: 'barcode-height-slider' },
+                { numId: 'barcode-margin', sliderId: 'barcode-margin-slider'},
                 { numId: 'font-size', sliderId: 'font-size-slider' }, { numId: 'text-margin', sliderId: 'text-margin-slider' },
                 { numId: 'letter-spacing', sliderId: 'letter-spacing-slider' }
             ];
@@ -366,19 +440,31 @@
         function setupEventListeners() {
             const controlsToWatch = [
                 'data', 'seq-start', 'seq-count', 'seq-prefix', 'barcode-type', 'display-value',
-                'barcode-color', 'background-color'
+                'barcode-color', 'background-color', 'font-family'
             ];
             controlsToWatch.forEach(id => document.getElementById(id)?.addEventListener('input', () => debounce(generateBarcodes, 200)));
+            
+            ['font-bold-btn', 'font-italic-btn'].forEach(id => {
+                document.getElementById(id).addEventListener('click', (e) => {
+                    e.currentTarget.classList.toggle('active');
+                    generateBarcodes();
+                });
+            });
+
             document.getElementById('file-input').addEventListener('change', handleFileImport);
             document.getElementById('save-styles-btn').addEventListener('click', saveStyles); // Add listener for save button
         }
 
-        // --- NEW: SAVE AND LOAD STYLES ---
+        // --- SAVE AND LOAD STYLES ---
         function saveStyles() {
             const styleSettings = {};
             styleControlIds.forEach(id => {
                 styleSettings[id] = document.getElementById(id).value;
             });
+            // Handle non-input controls (buttons)
+            styleSettings['font-bold'] = document.getElementById('font-bold-btn').classList.contains('active');
+            styleSettings['font-italic'] = document.getElementById('font-italic-btn').classList.contains('active');
+
             // Save to cookie for 1 year
             document.cookie = `barcodeStyles=${JSON.stringify(styleSettings)};max-age=31536000;path=/`;
 
@@ -402,6 +488,14 @@
                         if (sliderEl) sliderEl.value = savedStyles[id];
                     }
                 });
+                
+                // Load button states
+                const boldBtn = document.getElementById('font-bold-btn');
+                savedStyles['font-bold'] ? boldBtn.classList.add('active') : boldBtn.classList.remove('active');
+                
+                const italicBtn = document.getElementById('font-italic-btn');
+                savedStyles['font-italic'] ? italicBtn.classList.add('active') : italicBtn.classList.remove('active');
+
             } catch (e) {
                 console.error("Failed to load styles from cookie:", e);
             }
@@ -449,19 +543,28 @@
             container.innerHTML = '';
             updateButtonStates(dataLines.length > 0);
             if (dataLines.length === 0) {
-                container.innerHTML = '<p style="color: var(--text3); padding: 20px; text-align: center;">请在左侧输入数据或更改设置以实时生成预览。</p>'; return;
+                container.innerHTML = '<p class="quesheng"><i class="fa-solid fa-image" style="font-size: 64px; color: var(--border);"></i>请在左侧输入数据或更改设置以实时生成预览。</p>'; return;
             }
+
+            let fontOptions = '';
+            if (document.getElementById('font-bold-btn').classList.contains('active')) fontOptions += 'bold ';
+            if (document.getElementById('font-italic-btn').classList.contains('active')) fontOptions += 'italic';
+            fontOptions = fontOptions.trim();
+
             const options = {
                 format: document.getElementById('barcode-type').value,
                 width: parseInt(document.getElementById('barcode-width').value) || 2,
                 height: parseInt(document.getElementById('barcode-height').value) || 80,
                 displayValue: document.getElementById('display-value').value === 'true',
-                font: "sans-serif", textAlign: "center", textPosition: "bottom",
+                font: document.getElementById('font-family').value,
+                fontOptions: fontOptions,
+                textAlign: "center", // Default is center
+                textPosition: "bottom",
                 textMargin: parseInt(document.getElementById('text-margin').value) || 0,
                 fontSize: parseInt(document.getElementById('font-size').value) || 18,
                 background: document.getElementById('background-color').value,
                 lineColor: document.getElementById('barcode-color').value,
-                margin: 15
+                margin: parseInt(document.getElementById('barcode-margin').value) || 20
             };
             const letterSpacing = document.getElementById('letter-spacing').value;
 
@@ -470,18 +573,44 @@
                 item.className = 'barcode-item';
                 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svg.id = `barcode-${index}`; svg.dataset.value = cleanLine;
+                
+                // --- 全新的、更稳定的处理逻辑 ---
+                
+                // 1. 为本次生成创建一个可修改的选项副本
+                let finalOptions = {...options};
+
+                // 2. 如果设置了字间距，我们就接管对齐方式，强制左对齐以避免冲突
+                if (letterSpacing != 0) {
+                    finalOptions.textAlign = 'left';
+                }
+
                 try {
-                    JsBarcode(svg, cleanLine, options);
-                    
+                    // 3. 使用修正后的选项，并且只调用一次JsBarcode
+                    JsBarcode(svg, cleanLine, finalOptions);
+
+                    // 4. 如果设置了字间距，执行稳定可靠的 transform 居中方案
                     if (letterSpacing != 0) {
-                        const textElements = svg.querySelectorAll('text');
-                        textElements.forEach(text => {
-                            text.style.letterSpacing = `${letterSpacing}px`;
-                        });
+                        const textElement = svg.querySelector('text');
+                        if (textElement) {
+                            textElement.style.letterSpacing = `${letterSpacing}px`;
+
+                            // 精确计算条码区域的中心点
+                            const margin = finalOptions.margin;
+                            const svgWidth = svg.width.baseVal.value;
+                            const barWidth = svgWidth - (2 * margin);
+                            const center = barWidth / 2;
+
+                            // 使用 transform 平移来居中，并移除冲突的 x 属性
+                            textElement.setAttribute("transform", `translate(${center}, 0)`);
+                            textElement.setAttribute("text-anchor", "middle");
+                            textElement.removeAttribute("x");
+                        }
                     }
                     
                     item.appendChild(svg);
-                } catch (e) { item.innerHTML = `<p style="color:red;font-size:12px;word-break:break-all;">'${cleanLine}'生成失败</p><p style="color:red;font-size:10px;">${e.message}</p>`; }
+                } catch (e) { 
+                    item.innerHTML = `<p style="color:red;font-size:12px;word-break:break-all;">'${cleanLine}'生成失败</p><p style="color:red;font-size:10px;">${e.message}</p>`; 
+                }
                 container.appendChild(item);
             });
         }
@@ -494,17 +623,17 @@
             return new Promise(resolve => {
                 const canvas = document.createElement('canvas'), bbox = svg.getBBox();
                 const scale = 2;
-                canvas.width = bbox.width * scale; 
-                canvas.height = bbox.height * scale;
+                canvas.width = (bbox.width + bbox.x) * scale;
+                canvas.height = (bbox.height + bbox.y) * scale;
                 const ctx = canvas.getContext('2d');
                 ctx.fillStyle = document.getElementById('background-color').value;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.scale(scale, scale);
+                // No need to scale context, just draw image at scaled size
                 const data = new XMLSerializer().serializeToString(svg);
                 const img = new Image(), svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
                 const url = URL.createObjectURL(svgBlob);
                 img.onload = () => {
-                    ctx.drawImage(img, 0, 0); URL.revokeObjectURL(url);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height); URL.revokeObjectURL(url);
                     resolve(canvas.toDataURL('image/png'));
                 };
                 img.src = url;
@@ -560,13 +689,65 @@
             btn.textContent = originalText; btn.disabled = false;
         }
 
-        function downloadDataAsExcel() {
-            const dataLines = getDataLines(); if (dataLines.length === 0) return alert('没有可下载的数据！');
-            const worksheet = XLSX.utils.json_to_sheet(dataLines.map(d => ({'BarcodeData': d})));
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Barcodes");
-            XLSX.writeFile(workbook, "barcodes-data.xlsx");
+        // 关键改动2：全新的、支持图片的Excel导出函数
+        async function downloadDataAsExcel() {
+            const svgs = Array.from(document.querySelectorAll('#barcode-container svg'));
+            if (svgs.length === 0) return alert('没有可下载的数据！');
+            
+            const btn = document.getElementById('excel-btn');
+            const originalText = btn.innerHTML; // 保存原始按钮内容
+            btn.textContent = '生成中...';
+            btn.disabled = true;
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Barcodes');
+
+            // 设置列宽
+            worksheet.getColumn('A').width = 30; // 文本列
+            worksheet.getColumn('B').width = 40; // 图片列
+
+            // 添加表头
+            worksheet.getRow(1).values = ['条码文本', '条形码'];
+            worksheet.getRow(1).font = { bold: true };
+
+            for (let i = 0; i < svgs.length; i++) {
+                const svg = svgs[i];
+                const text = svg.dataset.value || '';
+                const rowNumber = i + 2; // Excel行号从1开始，第1行是表头
+
+                // 1. 添加文本数据
+                worksheet.getCell(`A${rowNumber}`).value = text;
+                worksheet.getCell(`A${rowNumber}`).alignment = { vertical: 'middle' };
+
+                // 2. 转换SVG为PNG
+                const pngDataUrl = await getPNGDataURLFromSVG(svg);
+                
+                // 3. 将PNG添加到工作簿
+                const imageId = workbook.addImage({
+                    base64: pngDataUrl,
+                    extension: 'png',
+                });
+
+                // 4. 将图片插入到单元格
+                worksheet.addImage(imageId, {
+                    // tl = top-left corner, br = bottom-right corner
+                    tl: { col: 1, row: rowNumber - 1 }, // col从0开始, row从0开始
+                    ext: { width: 250, height: 100 }
+                });
+                
+                // 5. 设置行高以适应图片
+                worksheet.getRow(rowNumber).height = 80;
+            }
+
+            // 生成并下载文件
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            saveAs(blob, 'barcodes-with-images.xlsx');
+            
+            btn.innerHTML = originalText; // 恢复按钮内容
+            btn.disabled = false;
         }
+
         function clearData() {
             document.getElementById('data').value = '';
             document.getElementById('file-input').value = '';
@@ -575,19 +756,22 @@
         }
         function resetStyles() {
             // This function now resets to default values, ignoring cookies.
-            // A user can still save new defaults after resetting.
             document.getElementById('barcode-type').value = 'CODE128'; 
             document.getElementById('display-value').value = 'true';
             document.getElementById('barcode-width').value = 2;
             document.getElementById('barcode-height').value = 80;
+            document.getElementById('barcode-margin').value = 20;
             document.getElementById('barcode-color').value = '#1a1d2e'; 
             document.getElementById('background-color').value = '#ffffff';
+            document.getElementById('font-family').value = 'sans-serif';
+            document.getElementById('font-bold-btn').classList.remove('active');
+            document.getElementById('font-italic-btn').classList.remove('active');
             document.getElementById('font-size').value = 18;
             document.getElementById('text-margin').value = 0;
             document.getElementById('letter-spacing').value = 0;
             
             // Manually update all sliders to match the reset values
-            setupSliders(); 
+            setupSliders(); // Re-sync sliders and inputs
             styleControlIds.forEach(id => {
                 const sliderEl = document.getElementById(`${id}-slider`);
                 if(sliderEl) sliderEl.value = document.getElementById(id).value;
