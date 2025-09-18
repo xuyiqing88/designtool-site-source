@@ -185,4 +185,10 @@
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
+    <url>
+        <loc>https://designtool.site/video/lotbar.html</loc>
+        <lastmod>2025-09-18</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 </urlset>

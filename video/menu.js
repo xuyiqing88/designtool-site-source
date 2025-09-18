@@ -299,6 +299,7 @@ const menuData = [
         title: "轻易设计",
         icon: "fa-solid fa-compass-drafting",
         submenu: [
+            { title: "批量条形码生成", link: "../lotbar.html" },
             { title: "AI生成UI界面", link: "../AI-UI.html" },
             { title: "图片对比工具", link: "../diff.html" },
             { title: "图片压缩工具", link: "../comp.html" },
