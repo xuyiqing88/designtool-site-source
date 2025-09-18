@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://img.shields.io/badge/Qingyi-Design-blue?style=for-the-badge&logo=appveyor" alt="Qingyi Design"/>
+  <img src="https://img.shields.io/badge/Design-Tool-blue?style=for-the-badge&logo=appveyor" alt="Design-Tool"/>
 </div>
 <br>
 
