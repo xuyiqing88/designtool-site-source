@@ -1,19 +1,11 @@
-<input type="radio" name="lang" value="cn" id="lang-cn" checked style="position: absolute; opacity: 0;" />
-<input type="radio" name="lang" value="en" id="lang-en" style="position: absolute; opacity: 0;" />
-
-<div style="text-align: center; margin-bottom: 20px;">
-  <div style="display: inline-flex; background-color: #f3f4f6; border-radius: 8px; padding: 2px;">
-    <label for="lang-cn" style="position: relative;">
-      <span class="lang-tab-cn" style="display: inline-block; padding: 8px 20px; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">中文</span>
-    </label>
-    <label for="lang-en" style="position: relative;">
-      <span class="lang-tab-en" style="display: inline-block; padding: 8px 20px; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">English</span>
-    </label>
-  </div>
+<div align="center">
+  <img src="https://img.shields.io/badge/Qingyi-Design-blue?style=for-the-badge&logo=appveyor" alt="Qingyi Design"/>
 </div>
+<br>
 
-<div class="content-container">
-  <div class="cn-content">
+<details open>
+<summary><strong>中文</strong> (点击切换语言)</summary>
+
 # 青艺设计 - 让设计更轻易
 
 ## 📚 网站简介
@@ -81,9 +73,12 @@
 
 ## 💬 反馈与支持
 如果您在使用过程中遇到问题或有任何建议，欢迎通过网站内的"评论反馈"功能与我们联系。您的支持是我们不断进步的动力！
-  </div>
 
-  <div class="en-content">
+</details>
+
+<details>
+<summary><strong>English</strong> (Click to switch language)</summary>
+
 # Qingyi Design - Making Design Easier
 
 ## 📚 Website Introduction
@@ -151,31 +146,8 @@ Qingyi Design is a collection platform of free online design tools recommended b
 
 ## 💬 Feedback and Support
 If you encounter any problems or have any suggestions during use, please contact us through the "Comments & Feedback" function on the website. Your support is the driving force for our continuous progress!
-  </div>
-</div>
 
-<style>
-  /* 默认隐藏所有内容 */
-  .cn-content, .en-content {
-    display: none;
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-    text-align: left;
-  }
-  
-  /* 根据选中的 radio 显示对应内容 */
-  #lang-cn:checked ~ .content-container > .cn-content {
-    display: block;
-  }
-  #lang-en:checked ~ .content-container > .en-content {
-    display: block;
-  }
+</details>
 
-  /* 根据选中的 radio 高亮对应标签 */
-  #lang-cn:checked ~ div .lang-tab-cn,
-  #lang-en:checked ~ div .lang-tab-en {
-    background-color: #5963ff !important;
-    color: white !important;
-  }
-</style>
+---
+© 2025 designtool.site All Rights Reserved | By Xu Yiqing
