@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最终美化版批量条形码生成工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+    
+    <style>
+        :root {
+            --main-color: #5a64ff;
+            --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
+            --text1: #1a1d2e;
+            --text2: #4a4e6d;
+            --text3: #8d8fa3;
+            --border: #e2e4f0;
+            --background: #f7f8fc;
+            --white: #ffffff;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--background); color: var(--text2); margin: 0;
+            /* Add padding to prevent content from being hidden by the fixed footer */
+            padding: 20px 20px 120px 20px;
+        }
+        .container {
+            width: 100%; max-width: 1400px; margin: 0 auto;
+            display: flex; gap: 20px; align-items: flex-start;
+        }
+        .controls {
+            width: 380px; flex-shrink: 0; position: sticky; top: 20px;
+        }
+        .controls, .preview {
+            background: var(--white); border-radius: 8px; padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid var(--border);
+        }
+        .preview { flex-grow: 1;     height: -webkit-fill-available;}
+        h1, h2 {
+            color: var(--text1); border-bottom: 1px solid var(--border); padding-bottom: 10px;
+            margin-top: 0; font-size: 1.5rem;
+        }
+        h2 { font-size: 1.2rem; margin-top: 25px; }
+        .control-group { margin-bottom: 15px; }
+        .control-group label { font-weight: 500; color: var(--text1); }
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;
+            box-sizing: border-box; transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--main-color); }
+        textarea { resize: vertical; min-height: 100px; }
+        
+        .slider-group .label-row {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+        }
+        .slider-group input[type="number"] { width: 70px; flex-shrink: 0; text-align: center; }
+        .slider-group input[type="range"] {
+            width: 100%; -webkit-appearance: none; appearance: none;
+            height: 8px; background: #eef0f8; border-radius: 5px; outline: none; margin: 0;
+        }
+        .slider-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 18px; height: 18px;
+            background: var(--main-color); border-radius: 50%; cursor: pointer;
+        }
+        .slider-group input[type="range"]::-moz-range-thumb {
+            width: 18px; height: 18px; background: var(--main-color);
+            border-radius: 50%; cursor: pointer; border: none;
+        }
+        
+        .tabs { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .tab-button {
+            padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1rem;
+            color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px;
+        }
+        .tab-button.active { color: var(--main-color); border-bottom-color: var(--main-color); }
+        .tab-content { display: none; } .tab-content.active { display: block; }
+        .inline-group { display: flex; gap: 10px; } .inline-group > div { flex-grow: 1; }
+        
+        /* Styled File Input */
+        .file-input-wrapper input[type="file"] {
+            width: 0.1px; height: 0.1px; opacity: 0;
+            overflow: hidden; position: absolute; z-index: -1;
+        }
+        .file-input-wrapper label {
+            width: 100%; display: block; text-align: center;
+        }
+        
+        /* Action Footer */
+        .action-footer {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            padding: 15px; border-top: 1px solid var(--border);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+            z-index: 100;
+        }
+        .footer-buttons {
+            max-width: 1000px; margin: 0 auto; display: grid;
+            grid-template-columns: repeat(6, 1fr); gap: 10px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            width: 100%; padding: 12px 10px; border-radius: 6px; font-size: 0.9rem;
+            font-weight: 500; cursor: pointer; transition: all 0.3s; border: 1px solid transparent;
+            white-space: nowrap;
+        }
+        .btn:disabled { cursor: not-allowed; background: var(--border) !important; color: var(--text3); border-color: transparent !important;}
+        .btn.btn-primary { background: var(--btcolor); color: var(--white); }
+        .btn.btn-outline { background: var(--white); color: var(--main-color); border-color: var(--main-color); }
+        .btn.btn-secondary { background: #f0f1f6; color: var(--text2); }
+        .btn.btn-primary:hover:not(:disabled) { opacity: 0.9; box-shadow: 0 2px 8px rgba(90, 100, 255, 0.3); }
+        .btn.btn-outline:hover:not(:disabled) { background: #f5f6ff; }
+        
+        #barcode-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;
+        }
+        .barcode-item {
+            display: flex; flex-direction: column; align-items: center; padding: 15px;
+            border: 1px solid var(--border); border-radius: 8px; background: var(--white);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="controls">
+            <h1>条码生成设置</h1>
+            
+            <div class="control-group">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="showTab('manual')">手动输入</button>
+                    <button class="tab-button" onclick="showTab('sequence')">序列生成</button>
+                    <button class="tab-button" onclick="showTab('file')">文件导入</button>
+                </div>
+                <div id="manual-tab" class="tab-content active"><textarea id="data" placeholder="请输入条码内容，每行一条"></textarea></div>
+                <div id="sequence-tab" class="tab-content">
+                    <div class="inline-group">
+                        <div><label for="seq-start">起始数据</label><input type="text" id="seq-start" value="0001"></div>
+                        <div><label for="seq-count">生成数量</label><input type="number" id="seq-count" value="10"></div>
+                    </div>
+                    <div style="margin-top:10px;"><label for="seq-prefix">前缀</label><input type="text" id="seq-prefix" value="SN-"></div>
+                </div>
+                <div id="file-tab" class="tab-content file-input-wrapper">
+                    <input type="file" id="file-input" accept=".txt,.csv">
+                    <label for="file-input" style="background: #fff;
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    width: auto;"
+border-radius: 6px;
+    padding: 10px;>选择 .txt 或 .csv 文件</label>
+                </div>
+            </div>
+
+            <h2>样式设置</h2>
+
+            <div class="control-group inline-group">
+                <div><label for="barcode-type">条码类型</label><select id="barcode-type"><option value="CODE128" selected>CODE128</option><option value="CODE39">CODE39</option><option value="EAN13">EAN13</option><option value="UPC">UPC</option><option value="ITF">ITF</option><option value="MSI">MSI</option></select></div>
+                <div><label for="display-value">显示文本</label><select id="display-value"><option value="true" selected>显示</option><option value="false">隐藏</option></select></div>
+            </div>
+            
+            <div class="control-group slider-group">
+                <div class="label-row"><label for="barcode-width">宽度</label><input type="number" id="barcode-width" value="2" min="1" max="10"></div>
+                <input type="range" id="barcode-width-slider" value="2" min="1" max="10">
+            </div>
+            <div class="control-group slider-group">
+                <div class="label-row"><label for="barcode-height">高度</label><input type="number" id="barcode-height" value="80" min="20" max="200"></div>
+                <input type="range" id="barcode-height-slider" value="80" min="20" max="200">
+            </div>
+             <div class="control-group slider-group">
+                <div class="label-row"><label for="font-size">字体大小</label><input type="number" id="font-size" value="18" min="8" max="40"></div>
+                <input type="range" id="font-size-slider" value="18" min="8" max="40">
+            </div>
+            <div class="control-group slider-group">
+                <div class="label-row"><label for="text-margin">文本边距</label><input type="number" id="text-margin" value="0" min="-10" max="30"></div>
+                <input type="range" id="text-margin-slider" value="0" min="-10" max="30">
+            </div>
+            
+             <div class="control-group inline-group">
+                <div><label for="barcode-color">条码颜色</label><input type="color" id="barcode-color" value="#1a1d2e"></div>
+                <div><label for="background-color">背景颜色</label><input type="color" id="background-color" value="#ffffff"></div>
+            </div>
+        </div>
+
+        <div class="preview">
+            <h1>预览区域</h1>
+            <div id="barcode-container"></div>
+        </div>
+    </div>
+    
+    <div class="action-footer">
+        <div class="footer-buttons">
+            <button id="zip-png-btn" class="btn btn-primary" onclick="downloadAllAsZip('png')">下载ZIP (PNG)</button>
+            <button id="zip-svg-btn" class="btn btn-primary" onclick="downloadAllAsZip('svg')">下载ZIP (SVG)</button>
+            <button id="pdf-btn" class="btn btn-outline" onclick="downloadAllAsPDF()">下载为PDF</button>
+            <button id="excel-btn" class="btn btn-outline" onclick="downloadDataAsExcel()">下载为Excel</button>
+            <button class="btn btn-secondary" onclick="clearData()">清空数据</button>
+            <button class="btn btn-secondary" onclick="resetStyles()">重置样式</button>
+        </div>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+        // --- Setup and Initialization ---
+        window.onload = () => {
+            setupSliders();
+            setupEventListeners();
+            generateBarcodes();
+        };
+
+        // --- Slider Synchronization ---
+        function setupSliders() {
+            const configs = [
+                { numId: 'barcode-width', sliderId: 'barcode-width-slider' }, { numId: 'barcode-height', sliderId: 'barcode-height-slider' },
+                { numId: 'font-size', sliderId: 'font-size-slider' }, { numId: 'text-margin', sliderId: 'text-margin-slider' },
+            ];
+            configs.forEach(({numId, sliderId}) => {
+                const numInput = document.getElementById(numId);
+                const sliderInput = document.getElementById(sliderId);
+                numInput.addEventListener('input', () => sliderInput.value = numInput.value);
+                sliderInput.addEventListener('input', () => numInput.value = sliderInput.value);
+            });
+        }
+        
+        let debounceTimer;
+        function debounce(func, delay) { clearTimeout(debounceTimer); debounceTimer = setTimeout(func, delay); }
+
+        function setupEventListeners() {
+            const controlsToWatch = [
+                'data', 'seq-start', 'seq-count', 'seq-prefix', 'barcode-type', 'display-value',
+                'barcode-width', 'barcode-height', 'barcode-color', 'background-color', 'font-size', 'text-margin',
+                'barcode-width-slider', 'barcode-height-slider', 'font-size-slider', 'text-margin-slider'
+            ];
+            controlsToWatch.forEach(id => document.getElementById(id)?.addEventListener('input', () => debounce(generateBarcodes, 200)));
+            document.getElementById('file-input').addEventListener('change', handleFileImport);
+        }
+
+        let currentTab = 'manual';
+        function showTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            if (tabName !== 'file') generateBarcodes();
+        }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('data').value = e.target.result;
+                const label = document.querySelector('.file-input-wrapper label');
+                label.textContent = file.name; // Show selected file name
+                showTab('manual'); generateBarcodes();
+            };
+            reader.readAsText(file);
+        }
+
+        function getDataLines() {
+            if (currentTab === 'manual' || currentTab === 'file') {
+                const data = document.getElementById('data').value.trim();
+                return data ? data.split('\n').filter(line => line.trim() !== '') : [];
+            }
+            if (currentTab === 'sequence') {
+                const start = document.getElementById('seq-start').value, count = parseInt(document.getElementById('seq-count').value, 10) || 0;
+                const prefix = document.getElementById('seq-prefix').value, dataLines = [];
+                const isNumeric = /^\d+$/.test(start);
+                for(let i=0; i<count; i++) dataLines.push(isNumeric ? prefix+String(parseInt(start,10)+i).padStart(start.length,'0') : prefix+start+i);
+                return dataLines;
+            }
+            return [];
+        }
+
+        function generateBarcodes() {
+            const container = document.getElementById('barcode-container'), dataLines = getDataLines();
+            container.innerHTML = '';
+            updateButtonStates(dataLines.length > 0);
+            if (dataLines.length === 0) {
+                container.innerHTML = '<p style="color: var(--text3); padding: 20px; text-align: center;">请在左侧输入数据或更改设置以实时生成预览。</p>'; return;
+            }
+            const options = {
+                format: document.getElementById('barcode-type').value,
+                width: parseInt(document.getElementById('barcode-width').value) || 2,
+                height: parseInt(document.getElementById('barcode-height').value) || 80,
+                displayValue: document.getElementById('display-value').value === 'true',
+                font: "sans-serif", textAlign: "center", textPosition: "bottom",
+                textMargin: parseInt(document.getElementById('text-margin').value) || 0,
+                fontSize: parseInt(document.getElementById('font-size').value) || 18,
+                background: document.getElementById('background-color').value,
+                lineColor: document.getElementById('barcode-color').value,
+                margin: 15
+            };
+            dataLines.forEach((line, index) => {
+                const cleanLine = line.trim(), item = document.createElement('div');
+                item.className = 'barcode-item';
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.id = `barcode-${index}`; svg.dataset.value = cleanLine;
+                try {
+                    JsBarcode(svg, cleanLine, options); item.appendChild(svg);
+                } catch (e) { item.innerHTML = `<p style="color:red;font-size:12px;word-break:break-all;">'${cleanLine}'生成失败</p>`; }
+                container.appendChild(item);
+            });
+        }
+        
+        function updateButtonStates(hasData) {
+            ['zip-png-btn', 'zip-svg-btn', 'pdf-btn', 'excel-btn'].forEach(id => document.getElementById(id).disabled = !hasData);
+        }
+        
+        function getPNGDataURLFromSVG(svg) {
+            return new Promise(resolve => {
+                const canvas = document.createElement('canvas'), bbox = svg.getBBox();
+                canvas.width = bbox.width; canvas.height = bbox.height;
+                const ctx = canvas.getContext('2d'), data = new XMLSerializer().serializeToString(svg);
+                const img = new Image(), svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0); URL.revokeObjectURL(url);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.src = url;
+            });
+        }
+        
+        async function downloadAllAsPDF() {
+            const svgs = Array.from(document.querySelectorAll('#barcode-container svg'));
+            if (svgs.length === 0) return alert('没有条码可以下载！');
+            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+            const margin = 10, itemWidth = (doc.internal.pageSize.getWidth() - 3 * margin) / 2;
+            let x = margin, y = margin;
+            for (let i = 0; i < svgs.length; i++) {
+                const svg = svgs[i], dataURL = await getPNGDataURLFromSVG(svg);
+                const aspectRatio = svg.width.baseVal.value / svg.height.baseVal.value;
+                const itemHeight = itemWidth / aspectRatio;
+                if (y + itemHeight > doc.internal.pageSize.getHeight() - margin) {
+                    doc.addPage(); x = margin; y = margin;
+                }
+                doc.addImage(dataURL, 'PNG', x, y, itemWidth, itemHeight);
+                if ((i + 1) % 2 === 0 && (i + 1) < svgs.length) { x = margin; y += itemHeight + margin; } 
+                else { x += itemWidth + margin; }
+            }
+            doc.save('barcodes.pdf');
+        }
+
+        async function downloadAllAsZip(format) {
+            const svgs = Array.from(document.querySelectorAll('#barcode-container svg'));
+            if (svgs.length === 0) return alert('没有条码可以下载！');
+            const zip = new JSZip(), btn = document.getElementById(`zip-${format}-btn`), originalText = btn.textContent;
+            btn.textContent = '压缩中...'; btn.disabled = true;
+            if (format === 'svg') {
+                svgs.forEach(svg => zip.file(`${svg.dataset.value || 'barcode'}.svg`, new XMLSerializer().serializeToString(svg)));
+            } else if (format === 'png') {
+                const promises = svgs.map(async svg => ({
+                    name: `${svg.dataset.value || 'barcode'}.png`,
+                    blob: await fetch(await getPNGDataURLFromSVG(svg)).then(res => res.blob())
+                }));
+                for (const file of await Promise.all(promises)) zip.file(file.name, file.blob);
+            }
+            const content = await zip.generateAsync({ type: "blob" });
+            saveAs(content, `barcodes-${format}.zip`);
+            btn.textContent = originalText; btn.disabled = false;
+        }
+
+        function downloadDataAsExcel() {
+            const dataLines = getDataLines(); if (dataLines.length === 0) return alert('没有可下载的数据！');
+            const worksheet = XLSX.utils.json_to_sheet(dataLines.map(d => ({'BarcodeData': d})));
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Barcodes");
+            XLSX.writeFile(workbook, "barcodes-data.xlsx");
+        }
+        function clearData() {
+            document.getElementById('data').value = '';
+            document.querySelector('.file-input-wrapper label').textContent = '选择 .txt 或 .csv 文件';
+            generateBarcodes();
+        }
+        function resetStyles() {
+            document.getElementById('barcode-type').value = 'CODE128'; document.getElementById('display-value').value = 'true';
+            document.getElementById('barcode-width').value = 2; document.getElementById('barcode-height').value = 80;
+            document.getElementById('barcode-color').value = '#1a1d2e'; document.getElementById('background-color').value = '#ffffff';
+            document.getElementById('font-size').value = 18; document.getElementById('text-margin').value = 0;
+            setupSliders(); generateBarcodes();
+        }
+    </script>
+</body>
+</html>
