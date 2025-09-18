@@ -42,11 +42,11 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            background: var(--mainbg);
+            background: linear-gradient(0deg, #bbb2ff, #7a6fff);
             color: var(--text1);
             transition: background 0.3s ease;
         }
-                .translate-btn {
+        .translate-btn {
             position: absolute;
             bottom: 14px;
             right: 10px;
@@ -83,12 +83,10 @@
             flex-grow: 1;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            background: var(--card-bg);
         }
 
         .sidebar {
             width: 250px;
-            background: linear-gradient(0deg, #bbb2ff, #7a6fff);
             display: flex;
             flex-direction: column;
             padding: 25px 0;
@@ -163,16 +161,23 @@
             padding: 15px;
             overflow-y: hidden;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         .tab-content {
             min-height: auto;
             padding: 0;
             min-width: auto;
+            flex-grow: 1;
+            display: flex;
         }
 
         .tab-pane { display: none; }
-        .tab-pane.active { display: block; animation: fadeIn 0.5s ease; }
+        .tab-pane.active { 
+            display: flex; 
+            flex-grow: 1;
+            animation: fadeIn 0.5s ease; }
 
         .secondary-tabs {
             display: flex;
@@ -237,11 +242,10 @@
     flex-direction: column; /* 子元素垂直堆叠 */
     max-height: calc(100vh - 100px); /* 确保它不会超出父容器 */
 	}
-        .secondary-tab-pane.active { 
-	display: flex; 
+    .secondary-tab-pane.active { 
+	    display: flex; 
     	overflow-y: auto;
 	    overflow-x: hidden;
-	    padding-bottom: 20px;
 	}
 
         @keyframes fadeIn {
@@ -529,7 +533,7 @@
             background: var(--card-bg);
             border-radius: 10px;
             padding: 20px;
-            margin-bottom: 25px;
+            width: 100%;
         }
         .settings-pane h2 {
             color: var(--text1);
@@ -637,7 +641,6 @@
     	overflow-y: auto;
     	border-radius: 4px 4px 10px 10px;
     	margin-bottom: 10px;
-	height: 100vh;
         }
 .chat-history::-webkit-scrollbar {
     width: 10px; 
@@ -833,7 +836,6 @@
         /* Chat Input Area */
         .chat-input-area {
             position: relative;
-	margin-top: auto;
         }
         .chat-input-area .btn-group {
             position: absolute;
