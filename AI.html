@@ -1073,10 +1073,13 @@
 		overflow-y: auto; }
         /* --- 结束：新增样式 --- */
         
-        @media (max-width: 768px) {
-            .main-layout { 
+@media (max-width: 768px) {
+    .main-layout { 
                 flex-direction: column-reverse;
             }
+    .ai-message.initial .message-bubble {
+		width: auto;
+	}
 	.secondary-tab-pane{
 		max-height: calc(100vh - 120px);
 	}
