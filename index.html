@@ -310,7 +310,15 @@
             min-height: 100vh;
             line-height: 1.6;
         }
-    .arrow-top1, .arrow-top2 {
+.alternate-bg {
+            background-color: #f2f4ff;/* 定义一个柔和的浅蓝色 */
+            padding-top: 15px;
+            padding-bottom: 25px;
+        }
+.alternate-bg .category-header {
+            margin-top: 0;
+        }
+.arrow-top1, .arrow-top2 {
         position: absolute;
         color: #4884FF;}
 .arrow-top2 {
@@ -759,7 +767,6 @@ max-width: 330px;
         }
         
         .container {
-                padding: 0 12%;
             margin: 0 auto;
         }
         
@@ -867,8 +874,7 @@ max-width: 330px;
         
         /* 分类区域 */
         .category-section {
-            margin-bottom: 10px;
-            padding-top: 16px;
+            padding: 16px 12% 30px;
         }
         
         .category-header {
@@ -1266,8 +1272,6 @@ body.effects-enabled .tool-content {
     }
 }
 
-/* =============================================================== */
-        /* 添加到桌面提示 */
 .add-to-home-screen {
   position: fixed;
   bottom: 20px;
@@ -1332,6 +1336,11 @@ body.effects-enabled .tool-content {
         #header-nav-wrapper {
         position: static; /* 在移动端，取消固定定位，让它随页面滚动 */
     }
+    .alternate-bg {
+                border-radius: 0; /* 移动端通常不需要圆角 */
+                padding-left: 16px;
+                padding-right: 16px;
+            }
     .hero-content-wrapper {
         margin-top: -80px;
     }
@@ -1395,7 +1404,7 @@ body.effects-enabled .tool-content {
     }
     .category-section {
         margin-bottom: 0;
-        padding-top: 10px;
+        padding: 10px;
     }
 	.imgball {
 	position: absolute;
@@ -2080,6 +2089,7 @@ showAddToHomePrompt();
 // 监听窗口大小变化
 window.addEventListener('resize', showAddToHomePrompt);
         // 渲染分类区域
+        // 渲染分类区域
         function renderCategorySections() {
             const container = document.getElementById('toolsContainer');
             container.innerHTML = '';
@@ -2087,13 +2097,19 @@ window.addEventListener('resize', showAddToHomePrompt);
             const groupedTools = groupToolsByCategory();
             
             // 按分类顺序渲染
-            Object.keys(categoryMap).forEach(categoryKey => {
+            Object.keys(categoryMap).forEach((categoryKey, index) => { // 重点1：在这里添加 index 参数
                 if (groupedTools[categoryKey]) {
                     const category = categoryMap[categoryKey];
                     const toolsList = groupedTools[categoryKey];
                     
                     const section = document.createElement('section');
                     section.className = 'category-section';
+                    
+                    // 重点2：新增的逻辑，判断是否为偶数个区块 (index 从0开始，所以判断奇数)
+                    if (index % 2 === 1) {
+                        section.classList.add('alternate-bg'); // 添加新类名
+                    }
+                    
                     section.id = `category-${categoryKey}`;
                     
                     section.innerHTML = `
