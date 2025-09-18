@@ -78,7 +78,7 @@
     flex-shrink: 0;
     position: sticky;
     top: 20px;
-    max-height: calc(100vh - 90px); /* 新增：限制最大高度，使其不超过视口高度 */
+    max-height: calc(100vh - 110px); /* 新增：限制最大高度，使其不超过视口高度 */
     overflow-y: auto; /* 新增：当内容超出时，在面板内部显示垂直滚动条 */
 }
         .controls, .preview {
@@ -89,7 +89,8 @@
         .preview { 
             flex-grow: 1;  
             height: -webkit-fill-available;
-            padding: 20px 20px 70px 20px;}
+            max-height: calc(100vh - 110px);
+            overflow-y: auto;}
         h1 {
             color: var(--text1);  
             padding-bottom: 20px;
@@ -277,6 +278,7 @@
             width: auto;
             padding: 10px;
             display: flex;
+            margin-bottom: 20px;
         }
         
         @media (max-width: 768px) {
