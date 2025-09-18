@@ -1,3 +1,11 @@
+<div style="text-align: center; margin-bottom: 20px;">
+  <div style="display: inline-flex; background-color: #f3f4f6; border-radius: 8px; padding: 2px;">
+    <button id="cnBtn" style="padding: 8px 20px; background-color: #5963ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">中文</button>
+    <button id="enBtn" style="padding: 8px 20px; background-color: transparent; color: #6b7280; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">English</button>
+  </div>
+</div>
+
+<div id="cnContent">
 # 青艺设计 - 让设计更轻易
 
 ## 📚 网站简介
@@ -65,6 +73,98 @@
 
 ## 💬 反馈与支持
 如果您在使用过程中遇到问题或有任何建议，欢迎通过网站内的"评论反馈"功能与我们联系。您的支持是我们不断进步的动力！
+</div>
+
+<div id="enContent" style="display: none;">
+# Qingyi Design - Making Design Easier
+
+## 📚 Website Introduction
+Qingyi Design is a collection platform of free online design tools recommended by professional designers, dedicated to making design work simpler and more efficient. The website provides various practical functions such as AI design tools, image processing tools, 3D modeling tools, and format conversion tools, all available online without the need for download or installation!
+
+## 🔗 Visit Link
+[Qingyi Design Official Website](http://xuyiqing88.github.io)
+
+## 🛠️ Tool Categories
+
+### Easy Design
+- **AI-Generated UI Interface**: One-click AI generation of prototype UI interfaces, supporting source file download
+- **Image Comparison Tool**: Compare differences between two images with a sliding divider
+- **Image Compression Tool**: Free online image compression supporting JPG/PNG formats
+- **UI Design Data Generator**: Quickly generate various test data for form filling and UI design verification
+- **Online PS**: Free online version of Photoshop, no copyright risk issues
+- **Vector Flower Generator**: Create beautiful unique vector flowers, supporting SVG source file download
+- **City Skyline Generator**: Create unique flat vectorized city skylines
+- **Adobe Creative Cloud Download**: Adobe 2025 Creative Cloud download
+
+### Easy AI
+- **AI HD Upscaling**: Using open-source AI models, supporting 2x-4x upscaling while preserving more details
+- **AI One-Click Background Removal**: Supports batch one-click background removal and one-click packaging download
+- **AI Painting**: AI drawing supporting text-to-image, image-to-image, and history viewing
+- **AI Digital Human (Free Version)**: No API required, supports AI conversation, prompt expansion, image recognition, etc.
+- **AI Digital Human (API Version)**: AI conversation, prompt expansion, image recognition, supporting file upload and model switching
+- **LoRA Training Dataset Editor**: Organize and edit model training datasets, supporting batch AI prompt reverse engineering
+- **AI Art Style Prompt Collection**: 588 styles, supporting SDXL and above large models
+
+### Easy 3D
+- **HDR Lighting Editor**: Supports importing external models, provides multiple lighting options, 4k HDR format export
+- **PBR Texture Generation**: Full-process texture generation, one-click generation of multiple PBR textures
+- **Seamless Texture Creation**: Seamless texture creation tool supporting PNG, JPG, TIFF formats
+- **AI-Generated Seamless Textures**: AI workflow to generate seamless textures, normal maps, curvature maps, and depth maps
+- **Seamless Texture Preview**: Preview and test seamless texture effects with percentage scaling support
+- **ORM Game Texture Generation**: Upload AO, roughness, and metallicity textures to automatically synthesize ORM texture maps
+- **C4D Floor Presets**: Includes five scene floor arrangement types with customizable parameters
+- **C4D Measurement Tools**: Free download of C4D measurement and annotation plugins
+- **C4D Weaving Presets**: Free download of C4D weaving presets to create micro-world fabric weaving effects
+
+### Easy Conversion
+- **Audio-Video Format Conversion**: Supports common video formats, audio format conversion, and audio format extraction
+- **Image Format Conversion**: Supports HEIC, TIF, JPG, PNG, BMP, GIF, WEBP, SVG formats
+- **Linear Color Conversion**: Non-linear color to linear color conversion for C4D, Blender, and color format mutual conversion
+- **BASE64 Image Converter**: Convert images to Base64 encoding or restore images from Base64 encoding
+
+### Easy Utilities
+- **Qingyi Cloud Radio**: Listen to online radio with carefully selected global high-quality music stations
+- **Online Video Editing**: Open-source video editing tool, browser-based online editing
+- **Online ikun Mini Game**: ikun dodgeball mini-game, move Kun Kun to avoid falling basketballs
+- **WeChat Moments Nine-Grid Creator**: Upload images and crop into nine grids arranged in order
+- **Advanced Translation Tool**: Supports mutual translation between over 30 languages, providing other suggestions based on text matching
+
+## ✨ Website Features
+- **No Download Required**: All tools are available online without installing any software
+- **Privacy Protection**: The website has no backend, does not save user operation information, all data is only stored in browser cache
+- **Responsive Design**: Supports PC and mobile devices, providing a good cross-device experience
+- **Permanently Free**: All tools are permanently free to use with no usage limits
+- **Continuous Updates**: Regularly update tool functions and continuously optimize user experience
+
+## 📱 Usage Tips
+- **Browser Recommendation**: Chrome browser is recommended for better function adaptation and performance
+- **Access Speed**: Due to servers being overseas, loading speed may be slower, you can use VPN for acceleration if available
+- **Add to Home Screen**: Supports adding the website to home screen for more convenient access
+
+## 💬 Feedback and Support
+If you encounter any problems or have any suggestions during use, please contact us through the "Comments & Feedback" function on the website. Your support is the driving force for our continuous progress!
+</div>
 
 ---
-© 2025 designtool.site 保留所有权利 | BY徐艺青
+© 2025 designtool.site All Rights Reserved | By Xu Yiqing
+
+<script>
+  // Language switching functionality
+  document.getElementById('cnBtn').addEventListener('click', function() {
+    document.getElementById('cnContent').style.display = 'block';
+    document.getElementById('enContent').style.display = 'none';
+    document.getElementById('cnBtn').style.backgroundColor = '#5963ff';
+    document.getElementById('cnBtn').style.color = 'white';
+    document.getElementById('enBtn').style.backgroundColor = 'transparent';
+    document.getElementById('enBtn').style.color = '#6b7280';
+  });
+  
+  document.getElementById('enBtn').addEventListener('click', function() {
+    document.getElementById('cnContent').style.display = 'none';
+    document.getElementById('enContent').style.display = 'block';
+    document.getElementById('enBtn').style.backgroundColor = '#5963ff';
+    document.getElementById('enBtn').style.color = 'white';
+    document.getElementById('cnBtn').style.backgroundColor = 'transparent';
+    document.getElementById('cnBtn').style.color = '#6b7280';
+  });
+</script>
