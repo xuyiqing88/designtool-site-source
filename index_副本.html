@@ -2470,72 +2470,92 @@ backToTopBtn.addEventListener('click', function() {
       };
     </script>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Umami API URL，不带时间参数以获取所有时间的数据
-        const umamiApiUrl = 'https://eu.umami.is/api/websites/5a2e10cd-bf73-47df-be48-079c9ba7783c/stats';
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 第一步：获取 token 和 websiteId 的凭证地址
+    const shareApiUrl = 'https://eu.umami.is/api/share/0HTJCNc5eh5ILEs7';
 
-        // 数字滚动动画函数
-        const animateValue = (element, start, end, duration) => {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const currentValue = Math.floor(progress * (end - start) + start);
-                element.textContent = currentValue.toLocaleString('en-US'); // 使用千位分隔符
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    element.textContent = end.toLocaleString('en-US'); // 确保最终值准确
-                }
-            };
-            window.requestAnimationFrame(step);
-        };
-
-        // 异步获取网站统计数据
-        async function fetchSiteStats() {
-            const pageviewsEl = document.getElementById('stats-pageviews');
-            const visitsEl = document.getElementById('stats-visits');
-            const visitorsEl = document.getElementById('stats-visitors');
-
-            try {
-                const response = await fetch(umamiApiUrl);
-                if (!response.ok) throw new Error('API request failed');
-                const data = await response.json();
-
-                // 从API响应中获取数据
-                const pageviews = data.pageviews.value;
-                const visits = data.visits.value;
-                const visitors = data.uniques.value; // Umami中 'uniques' 代表独立访客
-
-                // 为每个数据启动动画
-                animateValue(pageviewsEl, 0, pageviews, 1500);
-                animateValue(visitsEl, 0, visits, 1500);
-                animateValue(visitorsEl, 0, visitors, 1500);
-
-            } catch (error) {
-                console.error('Failed to fetch site stats:', error);
-                pageviewsEl.textContent = '加载失败';
-                visitsEl.textContent = '加载失败';
-                visitorsEl.textContent = '加载失败';
+    // 数字滚动动画函数
+    const animateValue = (element, start, end, duration) => {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const currentValue = Math.floor(progress * (end - start) + start);
+            element.textContent = currentValue.toLocaleString('en-US');
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                element.textContent = end.toLocaleString('en-US');
             }
-        }
+        };
+        window.requestAnimationFrame(step);
+    };
 
-        // 使用 Intersection Observer 监听统计模块是否进入视口
-        const statsSection = document.getElementById('site-stats-section');
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    fetchSiteStats(); // 当模块可见时，开始获取数据和播放动画
-                    observer.unobserve(entry.target); // 动画只播放一次，所以取消监听
+    // 异步获取网站统计数据（新版两步验证）
+    async function fetchSiteStats() {
+        const pageviewsEl = document.getElementById('stats-pageviews');
+        const visitsEl = document.getElementById('stats-visits');
+        const visitorsEl = document.getElementById('stats-visitors');
+
+        try {
+            // 第1步: 获取 token
+            const shareResponse = await fetch(shareApiUrl);
+            if (!shareResponse.ok) throw new Error('Failed to fetch share token');
+            const shareData = await shareResponse.json();
+            
+            const websiteId = shareData.websiteId;
+            const token = shareData.token;
+
+            // 如果没有获取到 websiteId 或 token，则抛出错误
+            if (!websiteId || !token) throw new Error('Invalid share data received');
+
+            // 第2步: 构建 stats API 地址，并携带 token 请求真实数据
+            const statsApiUrl = `https://eu.umami.is/api/websites/${websiteId}/stats`;
+            
+            const statsResponse = await fetch(statsApiUrl, {
+                headers: {
+                    // "Authorization" header 是关键，用于传递 token
+                    'Authorization': `Bearer ${token}`
                 }
             });
-        }, { threshold: 0.1 }); // 当模块可见10%时触发
 
-        if (statsSection) {
-            observer.observe(statsSection);
+            if (!statsResponse.ok) throw new Error('API request for stats failed');
+            const statsData = await statsResponse.json();
+
+            // 从API响应中获取数据
+            const pageviews = statsData.pageviews.value;
+            const visits = statsData.visits.value;
+            const visitors = statsData.uniques.value;
+
+            // 为每个数据启动动画
+            animateValue(pageviewsEl, 0, pageviews, 1500);
+            animateValue(visitsEl, 0, visits, 1500);
+            animateValue(visitorsEl, 0, visitors, 1500);
+
+        } catch (error) {
+            console.error('Failed to fetch site stats:', error);
+            pageviewsEl.textContent = '加载失败';
+            visitsEl.textContent = '加载失败';
+            visitorsEl.textContent = '加载失败';
         }
-    });
-    </script>
+    }
+
+    // 使用 Intersection Observer 监听统计模块是否进入视口
+    const statsSection = document.getElementById('site-stats-section');
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                fetchSiteStats();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
+});
+</script>
     </body>
 </html>
