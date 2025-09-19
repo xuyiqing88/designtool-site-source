@@ -1968,7 +1968,7 @@ window.addEventListener('resize', showAddToHomePrompt);
                         
                         toolCard.innerHTML = `
                             <a class="tool-cover" href="${tool.link}">
-				<img src="${tool.icon}" alt="${tool.title}">
+				        <img src="${tool.icon}" alt="${tool.title}" loading="lazy">
 				</a>
                             <div class="tool-content">
                                 <a class="h3" href="${tool.link}">${badgeHtml}${tool.title}</a>
