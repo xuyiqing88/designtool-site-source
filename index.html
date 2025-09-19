@@ -1044,8 +1044,7 @@ max-width: 330px;
         /* 评论区域样式 - 重点优化区域 */
         .comments-section {
             margin: 20px 0;
-            padding: 20px 12%;
-            border-top: 10px solid #f5f7fa;
+            padding: 0px 12%;
         }
         
         .comments-header {
@@ -1151,6 +1150,64 @@ max-width: 330px;
             background: var(--primary);
             color: white;
         }
+
+        /* ===== 开始：数据统计区域样式 ===== */
+        .stats-section {
+            padding: 30px 12% 20px;
+            background-color: #f2f4ff; /* 柔和的浅蓝色 */
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .stats-source {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--gray);
+
+        }
+
+        .stats-source a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .stats-source a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .stats-source i {
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }
+        /* ===== 结束：数据统计区域样式 ===== */
+
+
 /* ===== 开始：在这里添加新的动画代码 ===== */
 
 /* 定义一个慢速、小范围晃动的动画 */
@@ -1402,6 +1459,23 @@ body.effects-enabled .tool-content {
         margin-bottom: 0;
         padding: 16px;
     }
+    /* 响应式数据统计区域 */
+    .stats-section {
+        padding: 30px 16px;
+    }
+    .stat-number {
+        font-size: 2.2rem;
+    }
+    .stat-label {
+        font-size: 0.9rem;
+    }
+    .stats-grid {
+        gap: 30px; /* 在移动端增加垂直间距 */
+    }
+    .stats-source {
+        text-align: center; /* 移动端居中显示 */
+        margin-top: 30px;
+    }
     .category-section {
         margin-bottom: 0;
         padding: 16px 0;
@@ -1643,7 +1717,30 @@ body.effects-enabled .tool-content {
 
             </div>
     </div>        
-        <section class="comments-section" id="comments-section">  <div class="comments-header">
+    
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3 class="stat-number" data-target="21300">0</h3>
+                <p class="stat-label">浏览量</p>
+            </div>
+            <div class="stat-item">
+                <h3 class="stat-number" data-target="5660">0</h3>
+                <p class="stat-label">访问次数</p>
+            </div>
+            <div class="stat-item">
+                <h3 class="stat-number" data-target="3710">0</h3>
+                <p class="stat-label">总访客</p>
+            </div>
+        </div>
+        <div class="stats-source">
+            数据来源: 
+            <a href="https://eu.umami.is/share/0HTJCNc5eh5ILEs7/designtool.site" target="_blank" rel="noopener">
+                umami.is <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    </section>
+    <section class="comments-section" id="comments-section">  <div class="comments-header">
         <div class="comments-icon">
             <h2 class="comments-title">评论/反馈</h2>
         </div>
@@ -2392,6 +2489,55 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = 'auto';
         }
     });
+
+    // ===== 新增：数据统计动画 =====
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+        const animateNumbers = (element) => {
+            const target = +element.getAttribute('data-target');
+            // 如果已经动画过，则不再执行
+            if(element.dataset.animated) return;
+            element.dataset.animated = "true";
+
+            const duration = 2000; // 动画持续时间 (毫秒)
+            const frameRate = 1000 / 60; // 60 FPS
+            const totalFrames = Math.round(duration / frameRate);
+            const increment = target / totalFrames;
+            let current = 0;
+            
+            const counter = () => {
+                current += increment;
+                
+                if (current < target) {
+                    // 使用 Math.ceil 避免小数部分导致动画提前结束
+                    // 使用 toLocaleString() 添加千位分隔符
+                    element.innerText = Math.ceil(current).toLocaleString('en-US');
+                    requestAnimationFrame(counter);
+                } else {
+                    element.innerText = target.toLocaleString('en-US');
+                }
+            };
+            
+            counter();
+        };
+
+        // Intersection Observer 监听页面滚动
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                // 当元素进入视窗时触发动画
+                if (entry.isIntersecting) {
+                    const numberElements = entry.target.querySelectorAll('.stat-number');
+                    numberElements.forEach(el => animateNumbers(el));
+                    observer.unobserve(entry.target); // 动画只执行一次，执行后停止观察
+                }
+            });
+        }, {
+            threshold: 0.5 // 当元素 50% 可见时触发
+        });
+
+        observer.observe(statsSection);
+    }
+    // ===== 结束：新增的数据统计动画 =====
 });
 // 在现有的JavaScript代码中添加（放在文件底部）
 document.getElementById('commentsBtn').addEventListener('click', function() {
