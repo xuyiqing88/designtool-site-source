@@ -26,6 +26,7 @@
         color: var(--dark);
         min-height: 100vh;
         line-height: 1.6;
+	margin-top: -25px;
     }
     .icon {
         display: inline-block;
