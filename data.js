@@ -277,11 +277,11 @@ const tools = [
 
 // --- 2. 分类信息映射 ---
 const categoryMap = {
-    'design': { name: '轻易设计工具', icon: '#compass-drafting-solid-full', scripts: 'UI设计/Adobe全家桶/图片压缩/在线PS', gradient: '#5963ff;' },
-    'dev': { name: '轻易AI工具', icon: '#microchip-solid-full', scripts: '高清放大/AI抠图/AI绘画/LORA训练', gradient: '#a045ff' },
-    '3D': { name: '轻易3D工具', icon: '#codepen-brands-solid-full', scripts: 'PBR贴图/无缝贴图/ORM贴图/HDR', gradient: '#4583ff' },
-    'cover': { name: '轻易格式转换', icon: '#camera-rotate-solid-full', scripts: '图片转换/音频转换/视频转换/颜色转换', gradient: '#ec246a' },
-    'utility': { name: '轻易实用工具', icon: '#swatchbook-solid-full', scripts: '游戏/视频剪辑/广播/九宫格/翻译', gradient: '#20b1e9' },
+    'design': { name: '轻易设计工具', icon: '#compass-drafting-solid-full', scripts: 'UI设计/Adobe全家桶/图片压缩/在线PS', gradient: '#5c79ff;' , background: '#ebecfe, #ecf2fd'},
+    'dev': { name: '轻易AI工具', icon: '#microchip-solid-full', scripts: '高清放大/AI抠图/AI绘画/LORA训练', gradient: '#9062ff' , background: '#e5def9, #e8e4f9'},
+    '3D': { name: '轻易3D工具', icon: '#codepen-brands-solid-full', scripts: 'PBR贴图/无缝贴图/ORM贴图/HDR', gradient: '#0cbecb' , background: '#def8f9, #e2f9f7'},
+    'cover': { name: '轻易格式转换', icon: '#camera-rotate-solid-full', scripts: '图片转换/音频转换/视频转换/颜色转换', gradient: '#ef565c' , background: '#fde5eb, #fceff6'},
+    'utility': { name: '轻易实用工具', icon: '#swatchbook-solid-full', scripts: '游戏/视频剪辑/广播/九宫格/翻译', gradient: '#ffba15' , background: '#fbf6e3, #fff9e9'},
 };
 
 

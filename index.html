@@ -600,7 +600,7 @@ window.addEventListener('resize', showAddToHomePrompt);
                     section.innerHTML = `
                         <div class="category-header">
                             <div class="category-icon">
-                                <div class="h1-icon" style="color: ${category.gradient};"><svg class="icon" style="display: block; width: 1.2em; height: 1.2em; "><use xlink:href="${category.icon}"></use></svg></div>
+                                <div class="h1-icon" style="color: ${category.gradient}; background: linear-gradient(180deg, ${category.background});"><svg class="icon" style="display: block; width: 1em; height: 1em; "><use xlink:href="${category.icon}"></use></svg></div>
 				                <h2 class="category-title">${category.name}</h2>
                             </div>
                              <small style="font-size:0.95rem; color: var(--gray);">${category.scripts}</small>

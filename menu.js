@@ -114,6 +114,7 @@ body {
     text-align: center;
     margin-right: 15px;
     transition: transform 0.2s;
+	line-height: 10px;
 }
 .menu-icon svg {
     width: 18px;
@@ -133,7 +134,7 @@ body {
 
 .menu-arrow {
     margin-left: auto;
-    font-size: 12px;
+    line-height: 10px;
     transition: transform 0.3s;
 }
 

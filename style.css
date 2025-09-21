@@ -179,6 +179,9 @@
     .h1-icon {
         margin-right: 10px;
         color: #5963ff;
+	border-radius: 50%;
+    background: linear-gradient(181deg, #def9f9, #e4f9f6);
+    padding: 5px;
     }
 
     /* 清空按钮样式 */
