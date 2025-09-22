@@ -6,7 +6,7 @@ const tools = [
         category: "design",
         link: "lotbar.html",
         icon: "img/lotbar.webp",
-        badge: ""
+        badge: "更新"
     },
     {
         title: "AI生成UI界面",
@@ -94,7 +94,7 @@ const tools = [
         category: "dev",
         link: "draw.html",
         icon: "img/draw.webp",
-        badge: "更新"
+        badge: ""
     },
     {
         title: "AI数字人(免费版)",
@@ -150,7 +150,7 @@ const tools = [
         category: "3D",
         link: "texture.html",
         icon: "img/texture.webp",
-        badge: "更新"
+        badge: ""
     },
     {
         title: "AI生成无缝贴图",

@@ -3,7 +3,7 @@
     <!-- 首页 - 最高优先级 -->
     <url>
         <loc>https://designtool.site/</loc>
-        <lastmod>2025-09-19</lastmod>
+        <lastmod>2025-09-22</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority> 
     </url>
@@ -25,7 +25,7 @@
 
     <url>
         <loc>https://designtool.site/rembg.html</loc>
-        <lastmod>2025-07-12</lastmod>
+        <lastmod>2025-09-22</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -175,7 +175,7 @@
     </url>
     <url>
         <loc>https://designtool.site/video/scale.html</loc>
-        <lastmod>2025-09-16</lastmod>
+        <lastmod>2025-09-22</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -187,7 +187,7 @@
     </url>
     <url>
         <loc>https://designtool.site/video/lotbar.html</loc>
-        <lastmod>2025-09-18</lastmod>
+        <lastmod>2025-09-22</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>

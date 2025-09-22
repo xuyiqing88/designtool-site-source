@@ -133,6 +133,7 @@
         input[type="text"], input[type="number"], select, textarea {
             width: 100%; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
             box-sizing: border-box; transition: border-color 0.3s;
+            background: var(--white);
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--main-color); }
         textarea { resize: vertical; min-height: 100px; }
@@ -185,8 +186,7 @@
         
         .action-footer {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            background: var(--white);
             padding: 15px; border-top: 1px solid var(--border);
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
             z-index: 100; box-sizing: border-box;
@@ -284,7 +284,17 @@
             display: flex;
             margin-bottom: 20px;
         }
-        
+        .tongji {
+            position: absolute; 
+            top: 8px; 
+            right: 12px; 
+            color: var(--text3); 
+            font-size: 0.8rem; 
+            background: var(--white); 
+            padding: 2px 4px; 
+            border-radius: 4px; 
+            pointer-events: none;
+        }
         @media (max-width: 768px) {
             .controls { width: 320px; }
 
@@ -333,7 +343,12 @@
                     <button class="tab-button" onclick="showTab('sequence')">序列生成</button>
                     <button class="tab-button" onclick="showTab('file')">文件导入</button>
                 </div>
-                <div id="manual-tab" class="tab-content active"><textarea id="data" placeholder="请输入条码内容，每行一条"></textarea></div>
+    <div id="manual-tab" class="tab-content active">
+    <div style="position: relative;">
+        <textarea id="data" placeholder="请输入条码内容，每行一条"></textarea>
+        <span id="line-counter" class="tongji">已输入 0 条</span>
+    </div>
+</div>
                 <div id="sequence-tab" class="tab-content">
                     <div class="inline-group">
                         <div><label for="seq-start" style="margin-bottom: 6px;">起始数据</label><input type="text" id="seq-start" value="0001"></div>
@@ -575,6 +590,8 @@
 
         function generateBarcodes() {
             const container = document.getElementById('barcode-container'), dataLines = getDataLines();
+                const counterElement = document.getElementById('line-counter');
+                if (counterElement) counterElement.textContent = `已输入 ${dataLines.length} 条`;
             container.innerHTML = '';
             updateButtonStates(dataLines.length > 0);
             if (dataLines.length === 0) {
