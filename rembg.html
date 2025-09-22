@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>AI一键抠图工具 - 在线免费去除图片背景 | 支持批量抠图</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="menu.js" defer></script>
   <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
   <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
@@ -165,7 +164,7 @@
       position: relative;
     }
     
-    .panel-title i {
+    .panel-title svg {
       font-size: 1.2rem;
     }
     
@@ -186,7 +185,7 @@
       background: rgba(90, 100, 255, 0.05);
     }
     
-    .upload-area i {
+    .upload-area svg {
       font-size: 40px;
       background: var(--main-color);
       -webkit-background-clip: text;
@@ -239,7 +238,7 @@
       transform: translateY(0);
     }
     
-    .btn i {
+    .btn svg {
       margin-right: 8px;
     }
     
@@ -592,9 +591,12 @@
       max-width: 300px;
       padding: 20px;
       z-index: 1;
+      display: flex;
+    flex-direction: column;
+    align-items: center;
     }
     
-    .empty-state i {
+    .empty-state svg {
       font-size: 5rem;
       color: #dee2e6;
       margin-bottom: 20px;
@@ -688,7 +690,23 @@
   </style>
 </head>
 <body>
-
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cloud-arrow-up-solid-full">
+    <path d="M176 544C96.5 544 32 479.5 32 400C32 336.6 73 282.8 129.9 263.5C128.6 255.8 128 248 128 240C128 160.5 192.5 96 272 96C327.4 96 375.5 127.3 399.6 173.1C413.8 164.8 430.4 160 448 160C501 160 544 203 544 256C544 271.7 540.2 286.6 533.5 299.7C577.5 320 608 364.4 608 416C608 486.7 550.7 544 480 544L176 544zM337 255C327.6 245.6 312.4 245.6 303.1 255L231.1 327C221.7 336.4 221.7 351.6 231.1 360.9C240.5 370.2 255.7 370.3 265 360.9L296 329.9L296 432C296 445.3 306.7 456 320 456C333.3 456 344 445.3 344 432L344 329.9L375 360.9C384.4 370.3 399.6 370.3 408.9 360.9C418.2 351.5 418.3 336.3 408.9 327L336.9 255z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="download-solid-full">
+    <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="image-solid-full">
+    <path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96zM224 176C250.5 176 272 197.5 272 224C272 250.5 250.5 272 224 272C197.5 272 176 250.5 176 224C176 197.5 197.5 176 224 176zM368 288C376.4 288 384.1 292.4 388.5 299.5L476.5 443.5C481 450.9 481.2 460.2 477 467.8C472.8 475.4 464.7 480 456 480L184 480C175.1 480 166.8 475 162.7 467.1C158.6 459.2 159.2 449.6 164.3 442.3L220.3 362.3C224.8 355.9 232.1 352.1 240 352.1C247.9 352.1 255.2 355.9 259.7 362.3L286.1 400.1L347.5 299.6C351.9 292.5 359.6 288.1 368 288.1z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="trash-solid-full">
+    <path d="M232.7 69.9L224 96L128 96C110.3 96 96 110.3 96 128C96 145.7 110.3 160 128 160L512 160C529.7 160 544 145.7 544 128C544 110.3 529.7 96 512 96L416 96L407.3 69.9C402.9 56.8 390.7 48 376.9 48L263.1 48C249.3 48 237.1 56.8 232.7 69.9zM512 208L128 208L149.1 531.1C150.7 556.4 171.7 576 197 576L443 576C468.3 576 489.3 556.4 490.9 531.1L512 208z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="spinner-solid-full">
+    <path d="M272 112C272 85.5 293.5 64 320 64C346.5 64 368 85.5 368 112C368 138.5 346.5 160 320 160C293.5 160 272 138.5 272 112zM272 528C272 501.5 293.5 480 320 480C346.5 480 368 501.5 368 528C368 554.5 346.5 576 320 576C293.5 576 272 554.5 272 528zM112 272C138.5 272 160 293.5 160 320C160 346.5 138.5 368 112 368C85.5 368 64 346.5 64 320C64 293.5 85.5 272 112 272zM480 320C480 293.5 501.5 272 528 272C554.5 272 576 293.5 576 320C576 346.5 554.5 368 528 368C501.5 368 480 346.5 480 320zM139 433.1C157.8 414.3 188.1 414.3 206.9 433.1C225.7 451.9 225.7 482.2 206.9 501C188.1 519.8 157.8 519.8 139 501C120.2 482.2 120.2 451.9 139 433.1zM139 139C157.8 120.2 188.1 120.2 206.9 139C225.7 157.8 225.7 188.1 206.9 206.9C188.1 225.7 157.8 225.7 139 206.9C120.2 188.1 120.2 157.8 139 139zM501 433.1C519.8 451.9 519.8 482.2 501 501C482.2 519.8 451.9 519.8 433.1 501C414.3 482.2 414.3 451.9 433.1 433.1C451.9 414.3 482.2 414.3 501 433.1z"> </path>
+  </symbol> 
+</svg>
 <div id="loading-overlay">
   <div class="loading-content">
     <h2>正在准备AI模型，请稍候...</h2>
@@ -716,7 +734,7 @@
         <h2 class="panel-title"> 上传图片</h2>
         
         <div class="upload-area" id="drop-area">
-          <i class="fas fa-cloud-upload-alt"></i>
+          <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
           <h3>拖放图片到此处或点击上传</h3>
           <p>支持 JPG, PNG, WEBP 格式 | 单次最多处理 10 张图片</p>
           <input type="file" id="file-input" accept="image/*" multiple>
@@ -740,13 +758,13 @@
             </div>
           </div>
           <button class="clear-btn" id="clear-btn">
-            <i class="fas fa-trash-alt"></i> 清空
+            <svg class="icon"><use xlink:href="#trash-solid-full"></use></svg>清空
           </button>
         </div>
         
         <div class="results-container" id="results-container">
           <div class="empty-state">
-            <i class="fas fa-image"></i>
+            <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
             <h3>暂无处理结果</h3>
             <p>上传图片并点击"开始抠图"</p>
           </div>
@@ -767,7 +785,7 @@
     
     <div class="download-all-container">
 	    <div class="batch-download-btn" id="batch-download">
-        <i class="fas fa-download"></i>下载全部
+        <svg class="icon"><use xlink:href="#download-solid-full"></use></svg>下载全部
 	    </div>
     </div>
   </div>
@@ -776,7 +794,7 @@
     <div class="modal-content">
       <img id="modal-image" src="" alt="预览图">
       <div class="close-modal">
-        <i class="fas fa-times"></i>
+        ×
       </div>
     </div>
   </div>
@@ -963,7 +981,7 @@
               <span>${formatFileSize(file.size)}</span>
             </div>
           </div>
-          <button class="delete-btn" data-filename="${file.name}"><i class="fas fa-times"></i></button>
+          <button class="delete-btn" data-filename="${file.name}">×</button>
         `;
         previewContainer.appendChild(card);
         const deleteBtn = card.querySelector('.delete-btn');
@@ -1003,7 +1021,7 @@
       if (files.length === 0) return;
       
       processBtn.disabled = true;
-      processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+      processBtn.innerHTML = '<svg class="icon"><use xlink:href="#spinner-solid-full"></use></svg> 处理中...';
 
       // 找出尚未处理的文件进行处理
       const filesToProcess = files.filter(f => !processedFiles.some(pf => pf.file.name === f.name));
@@ -1082,7 +1100,7 @@
         <div class="preview-container">
           <img src="${resultUrl}" alt="${file.name} - 抠图结果">
           <div class="download-bt" data-url="${resultUrl}" data-filename="${file.name}">
-            <i class="fas fa-download"></i>
+            <svg class="icon"> <use xlink:href="#download-solid-full"></use></svg>
           </div>
         </div>
         <div class="image-name-result">${file.name}</div>
@@ -1119,7 +1137,7 @@
     function clearResults() {
       resultsContainer.innerHTML = `
         <div class="empty-state">
-          <i class="fas fa-image"></i>
+          <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
           <h3>暂无处理结果</h3>
           <p>上传图片并点击"开始批量抠图"按钮处理图片</p>
         </div>
