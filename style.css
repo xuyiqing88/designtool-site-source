@@ -30,8 +30,8 @@
     }
     .icon {
         display: inline-block;
-        width: 1em;       /* 设置宽度，1em 表示和父级文字一样大 */
-        height: 1em;      /* 设置高度 */
+        width: 1.2em;       /* 设置宽度，1em 表示和父级文字一样大 */
+        height: 1.2em;      /* 设置高度 */
         fill: currentColor;
     }
     .alternate-bg {

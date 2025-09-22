@@ -29,8 +29,8 @@ body {
 }
 .icon {
     display: inline-block;
-    width: 1em;
-    height: 1em;
+    width: 1.2em;
+    height: 1.2em;
     fill: currentColor;
 }
 .icon2 {
@@ -489,10 +489,11 @@ body {
     
     .menu-toggle {
         display: flex;
-	top: 10px;
+	    top: 10px;
         left: 10px;
         padding: 6px;
-    }
+        font-size: 1.5rem;
+        }
 	.video-container iframe {height: auto;}
 	.titleh1 {
     		margin-bottom: 0;}

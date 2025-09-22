@@ -7,7 +7,6 @@
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --main-color: #5a64ff;
@@ -146,7 +145,7 @@
 	color: var(--main-color);
         }
 
-        .upload-icon-text i {
+        .upload-icon-text svg {
             font-size: 2.5rem;
         }
 
@@ -329,6 +328,20 @@
         .clear-button:hover {
             background: #dc2626;
             transform: translateY(-1px);
+        }
+
+        /* 下载按钮样式 - 确保图标与文字垂直居中 */
+        #download-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            justify-content: center;
+        }
+
+        #download-button .icon {
+            vertical-align: middle;
         }
 
         .progress-bar {
@@ -561,6 +574,32 @@
     </style>
 </head>
 <body>
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-check-solid-full">
+    <path d="M320 576C178.6 576 64 461.4 64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576zM438 209.7C427.3 201.9 412.3 204.3 404.5 215L285.1 379.2L233 327.1C223.6 317.7 208.4 317.7 199.1 327.1C189.8 336.5 189.7 351.7 199.1 361L271.1 433C276.1 438 282.9 440.5 289.9 440C296.9 439.5 303.3 435.9 307.4 430.2L443.3 243.2C451.1 232.5 448.7 217.5 438 209.7z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cloud-arrow-up-solid-full">
+    <path d="M176 544C96.5 544 32 479.5 32 400C32 336.6 73 282.8 129.9 263.5C128.6 255.8 128 248 128 240C128 160.5 192.5 96 272 96C327.4 96 375.5 127.3 399.6 173.1C413.8 164.8 430.4 160 448 160C501 160 544 203 544 256C544 271.7 540.2 286.6 533.5 299.7C577.5 320 608 364.4 608 416C608 486.7 550.7 544 480 544L176 544zM337 255C327.6 245.6 312.4 245.6 303.1 255L231.1 327C221.7 336.4 221.7 351.6 231.1 360.9C240.5 370.2 255.7 370.3 265 360.9L296 329.9L296 432C296 445.3 306.7 456 320 456C333.3 456 344 445.3 344 432L344 329.9L375 360.9C384.4 370.3 399.6 370.3 408.9 360.9C418.2 351.5 418.3 336.3 408.9 327L336.9 255z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="download-solid-full">
+    <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="image-solid-full">
+    <path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96zM224 176C250.5 176 272 197.5 272 224C272 250.5 250.5 272 224 272C197.5 272 176 250.5 176 224C176 197.5 197.5 176 224 176zM368 288C376.4 288 384.1 292.4 388.5 299.5L476.5 443.5C481 450.9 481.2 460.2 477 467.8C472.8 475.4 464.7 480 456 480L184 480C175.1 480 166.8 475 162.7 467.1C158.6 459.2 159.2 449.6 164.3 442.3L220.3 362.3C224.8 355.9 232.1 352.1 240 352.1C247.9 352.1 255.2 355.9 259.7 362.3L286.1 400.1L347.5 299.6C351.9 292.5 359.6 288.1 368 288.1z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="maximize-solid-full">
+    <path d="M264 96L120 96C106.7 96 96 106.7 96 120L96 264C96 273.7 101.8 282.5 110.8 286.2C119.8 289.9 130.1 287.8 137 281L177 241L256 320L177 399L137 359C130.1 352.1 119.8 350.1 110.8 353.8C101.8 357.5 96 366.3 96 376L96 520C96 533.3 106.7 544 120 544L264 544C273.7 544 282.5 538.2 286.2 529.2C289.9 520.2 287.9 509.9 281 503L241 463L320 384L399 463L359 503C352.1 509.9 350.1 520.2 353.8 529.2C357.5 538.2 366.3 544 376 544L520 544C533.3 544 544 533.3 544 520L544 376C544 366.3 538.2 357.5 529.2 353.8C520.2 350.1 509.9 352.1 503 359L463 399L384 320L463 241L503 281C509.9 287.9 520.2 289.9 529.2 286.2C538.2 282.5 544 273.7 544 264L544 120C544 106.7 533.3 96 520 96L376 96C366.3 96 357.5 101.8 353.8 110.8C350.1 119.8 352.2 130.1 359 137L399 177L320 256L241 177L281 137C287.9 130.1 289.9 119.8 286.2 110.8C282.5 101.8 273.7 96 264 96z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="rotate-right-solid-full">
+    <path d="M552 256L408 256C398.3 256 389.5 250.2 385.8 241.2C382.1 232.2 384.1 221.9 391 215L437.7 168.3C362.4 109.7 253.4 115 184.2 184.2C109.2 259.2 109.2 380.7 184.2 455.7C259.2 530.7 380.7 530.7 455.7 455.7C463.9 447.5 471.2 438.8 477.6 429.6C487.7 415.1 507.7 411.6 522.2 421.7C536.7 431.8 540.2 451.8 530.1 466.3C521.6 478.5 511.9 490.1 501 501C401 601 238.9 601 139 501C39.1 401 39 239 139 139C233.3 44.7 382.7 39.4 483.3 122.8L535 71C541.9 64.1 552.2 62.1 561.2 65.8C570.2 69.5 576 78.3 576 88L576 232C576 245.3 565.3 256 552 256z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="trash-solid-full">
+    <path d="M232.7 69.9L224 96L128 96C110.3 96 96 110.3 96 128C96 145.7 110.3 160 128 160L512 160C529.7 160 544 145.7 544 128C544 110.3 529.7 96 512 96L416 96L407.3 69.9C402.9 56.8 390.7 48 376.9 48L263.1 48C249.3 48 237.1 56.8 232.7 69.9zM512 208L128 208L149.1 531.1C150.7 556.4 171.7 576 197 576L443 576C468.3 576 489.3 556.4 490.9 531.1L512 208z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="triangle-exclamation-solid-full">
+    <path d="M320 64C334.7 64 348.2 72.1 355.2 85L571.2 485C577.9 497.4 577.6 512.4 570.4 524.5C563.2 536.6 550.1 544 536 544L104 544C89.9 544 76.8 536.6 69.6 524.5C62.4 512.4 62.1 497.4 68.8 485L284.8 85C291.8 72.1 305.3 64 320 64zM320 416C302.3 416 288 430.3 288 448C288 465.7 302.3 480 320 480C337.7 480 352 465.7 352 448C352 430.3 337.7 416 320 416zM320 224C301.8 224 287.3 239.5 288.6 257.7L296 361.7C296.9 374.2 307.4 384 319.9 384C332.5 384 342.9 374.3 343.8 361.7L351.2 257.7C352.5 239.5 338.1 224 319.8 224z"></path>
+  </symbol>
+</svg>
     <div class="container">
         <div class="left-panel">
             <header>
@@ -570,7 +609,7 @@
             <div class="upload-section" id="upload-section">
                 <input type="file" id="image-input" accept="image/*" hidden>
                 <div class="upload-icon-text">
-                    <i class="fas fa-cloud-upload-alt"></i>
+                    <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
                 </div>
                     <div style="margin-top: 10px; font-weight:600;">拖放图片到此处或点击上传</div>
                 <p class="drag-hint">支持jpg、png、jpeg、webp格式</p>
@@ -603,7 +642,7 @@
             </div>
                                         <div class="download-section1">
                     <a id="download-link" href="#">
-                        <button id="download-button" disabled><i class="fas fa-download"></i> 下载放大图像</button>
+                        <button id="download-button" disabled><svg class="icon"><use xlink:href="#download-solid-full"></use></svg> 下载放大图像</button>
                     </a>
                 </div>
         </div>
@@ -618,10 +657,10 @@
                     </div>
                     <div class="action-buttons">
                         <button id="retry-button" class="action-button retry-button" style="display: none;">
-                            <i class="fas fa-redo"></i> 重试
+                            <svg class="icon"><use xlink:href="#rotate-right-solid-full"></use></svg>重试
                         </button>
                         <button id="clear-button" class="action-button clear-button" style="display: none;">
-                            <i class="fas fa-trash"></i> 清除
+                            <svg class="icon"><use xlink:href="#trash-solid-full"></use></svg>清除
                         </button>
                     </div>
                 </div>
@@ -634,7 +673,7 @@
                 <div class="image-preview">
                     <div class="image-wrapper">
                         <div class="image-container">
-                            <h2><i class="fas fa-image"></i> 原始图像</h2>
+                            <h2><svg class="icon"><use xlink:href="#image-solid-full"></use></svg>原始图像</h2>
                             <div id="original-container">
                                 <img id="original-image" src="" alt="原始图像预览" style="display: none;">
                                 <div id="original-placeholder" class="placeholder-text">原始图像将显示在这里</div>
@@ -645,7 +684,7 @@
                 
                 <div class="image-wrapper">
                     <div class="image-container">
-                        <h2><i class="fas fa-expand-arrows-alt"></i> 放大后的图像</h2>
+                        <h2><svg class="icon"><use xlink:href="#maximize-solid-full"></use></svg> 放大后的图像</h2>
                         <div id="upscaled-container">
                             <img id="upscaled-image" src="" alt="放大后的图像预览" style="display: none;">
                             <div id="upscaled-placeholder" class="placeholder-text">放大后的图像将显示在这里</div>
@@ -714,10 +753,10 @@
             function updateModelStatus(loaded) {
                 isModelLoaded = loaded;
                 if (loaded) {
-                    modelStatus.innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i> 模型已加载';
+                    modelStatus.innerHTML = '<svg class="icon" style="color:var(--success)" ><use xlink:href="#circle-check-solid-full"></use></svg>模型已加载';
                     showStatus("AI模型加载成功！");
                 } else {
-                    modelStatus.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:var(--error)"></i> 模型加载失败';
+                    modelStatus.innerHTML = '<svg class="icon" style="color:var(--error)" ><use xlink:href="#triangle-exclamation-solid-full"></use></svg>模型加载失败';
                 }
             }
 
@@ -861,8 +900,8 @@
             async function handleFile(file) {
                 isImageUploaded = true;
                 currentFile = file;
-                retryButton.style.display = 'inline-block';
-                clearButton.style.display = 'inline-block';
+                retryButton.style.display = 'flex';
+                clearButton.style.display = 'flex';
                 
                 // 验证文件类型
                 if (!file.type.startsWith('image/')) {
