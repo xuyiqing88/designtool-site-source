@@ -276,7 +276,15 @@
   box-shadow: none;
   transform: none;
 }
-    
+
+/* 确保旋转图标在禁用状态下仍然旋转 */
+.btn:disabled .spinning-icon {
+  animation: spin 1s linear infinite;
+}
+
+.btn:disabled:hover {
+  transform: none;
+}
     .image-preview-container {
       display: flex;
       flex-wrap: wrap;
@@ -723,6 +731,9 @@
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="spinner-solid-full">
     <path d="M272 112C272 85.5 293.5 64 320 64C346.5 64 368 85.5 368 112C368 138.5 346.5 160 320 160C293.5 160 272 138.5 272 112zM272 528C272 501.5 293.5 480 320 480C346.5 480 368 501.5 368 528C368 554.5 346.5 576 320 576C293.5 576 272 554.5 272 528zM112 272C138.5 272 160 293.5 160 320C160 346.5 138.5 368 112 368C85.5 368 64 346.5 64 320C64 293.5 85.5 272 112 272zM480 320C480 293.5 501.5 272 528 272C554.5 272 576 293.5 576 320C576 346.5 554.5 368 528 368C501.5 368 480 346.5 480 320zM139 433.1C157.8 414.3 188.1 414.3 206.9 433.1C225.7 451.9 225.7 482.2 206.9 501C188.1 519.8 157.8 519.8 139 501C120.2 482.2 120.2 451.9 139 433.1zM139 139C157.8 120.2 188.1 120.2 206.9 139C225.7 157.8 225.7 188.1 206.9 206.9C188.1 225.7 157.8 225.7 139 206.9C120.2 188.1 120.2 157.8 139 139zM501 433.1C519.8 451.9 519.8 482.2 501 501C482.2 519.8 451.9 519.8 433.1 501C414.3 482.2 414.3 451.9 433.1 433.1C451.9 414.3 482.2 414.3 501 433.1z"> </path>
   </symbol> 
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="xmark-solid-full">
+    <path d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"></path>
+  </symbol>
 </svg>
 <div id="loading-overlay">
   <div class="loading-content">
@@ -811,7 +822,7 @@
     <div class="modal-content">
       <img id="modal-image" src="" alt="预览图">
       <div class="close-modal">
-        ×
+       <svg class="icon"><use xlink:href="#xmark-solid-full"></use></svg>
       </div>
     </div>
   </div>
@@ -998,7 +1009,7 @@
               <span>${formatFileSize(file.size)}</span>
             </div>
           </div>
-          <button class="delete-btn" data-filename="${file.name}">×</button>
+          <button class="delete-btn" data-filename="${file.name}"> <svg class="icon"><use xlink:href="#xmark-solid-full"></use></svg></button>
         `;
         previewContainer.appendChild(card);
         const deleteBtn = card.querySelector('.delete-btn');
@@ -1030,7 +1041,6 @@
     }
 
     async function processImages() {
-      // 改动：检查模型是否已加载
       if (!session) {
         alert('模型尚未准备好，请稍等片刻。');
         return;
@@ -1040,40 +1050,44 @@
       processBtn.disabled = true;
       processBtn.innerHTML = '<svg class="icon spinning-icon"><use xlink:href="#spinner-solid-full"></use></svg> 处理中...';
 
-      // 找出尚未处理的文件进行处理
-      const filesToProcess = files.filter(f => !processedFiles.some(pf => pf.file.name === f.name));
-      
-      for (const file of filesToProcess) {
-        const card = document.querySelector(`.image-card[data-filename="${file.name}"]`);
-        if (card) {
-          const statusDot = card.querySelector('.status-dot');
-          const statusText = card.querySelector('.status-indicator span:last-child');
-          statusDot.className = 'status-dot status-processing';
-          statusText.textContent = '处理中';
-          
-          try {
-            const processedImage = await processSingleImage(file);
-            processedFiles.push({ file: file, result: processedImage });
-            statusDot.className = 'status-dot status-completed';
-            statusText.textContent = '已完成';
-            displayResult(file, processedImage);
-          } catch (error) {
-            console.error(`图片处理失败: ${file.name}`, error);
-            statusDot.className = 'status-dot status-error';
-            statusText.textContent = '处理失败';
+      // --- 修改开始：将抠图循环放入setTimeout，以确保动画能够渲染 ---
+      setTimeout(async () => {
+        const filesToProcess = files.filter(f => !processedFiles.some(pf => pf.file.name === f.name));
+        
+        for (const file of filesToProcess) {
+          const card = document.querySelector(`.image-card[data-filename="${file.name}"]`);
+          if (card) {
+            const statusDot = card.querySelector('.status-dot');
+            const statusText = card.querySelector('.status-indicator span:last-child');
+            statusDot.className = 'status-dot status-processing';
+            statusText.textContent = '处理中';
+            
+            try {
+              const processedImage = await processSingleImage(file);
+              processedFiles.push({ file: file, result: processedImage });
+              statusDot.className = 'status-dot status-completed';
+              statusText.textContent = '已完成';
+              displayResult(file, processedImage);
+            } catch (error) {
+              console.error(`图片处理失败: ${file.name}`, error);
+              statusDot.className = 'status-dot status-error';
+              statusText.textContent = '处理失败';
+            }
+            updateBatchInfo();
           }
-          updateBatchInfo();
         }
-      }
-      
-      resetProcessButton();
+        
+        resetProcessButton();
+      }, 0); // 使用0毫秒延迟，将任务推到下一个事件循环
+      // --- 修改结束 ---
     }
 
     function resetProcessButton() {
       processBtn.disabled = files.length === 0;
+      // --- 修改开始：移除SVG图标，只保留文字 ---
       processBtn.innerHTML = '开始抠图';
+      // --- 修改结束 ---
     }
-
     async function processSingleImage(file) {
       return new Promise((resolve, reject) => {
         const img = new Image();
