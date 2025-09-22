@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     
   <script src="menu.js" defer></script>
   <link rel="icon" href="../img/gongjuxiang.svg" type="image/svg">
@@ -225,7 +224,7 @@
             background-color: rgba(90, 100, 255, 0.08);
         }
 
-        .drop-icon { font-size: 3rem; color: #5a64ff80; margin-bottom: 15px; }
+        .drop-icon { font-size: 3rem; color: #5a64ff80;  }
         .drop-text { color: var(--text2); margin-bottom: 10px; font-size: 1.0rem; font-weight: 500; }
         .drop-text u { color: var(--main-color); text-decoration: none; font-weight: 600; }
         .drop-hint { color: var(--text3); font-size: 0.9rem; max-width: 300px; margin: 0 auto; }
@@ -275,7 +274,7 @@
             text-align: center; padding: 20px; color: var(--text3); flex: 1;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        .no-preview i { font-size: 5rem; color: var(--border); margin-bottom: 25px; }
+        .no-preview svg { font-size: 5rem; color: var(--border); margin-bottom: 25px; }
         .no-preview p { font-size: 0.9rem; max-width: 400px; margin: 0 auto; line-height: 1.7; }
 
         .status-area {  color: var(--text2); font-size: 0.9rem; font-weight: 400; /*flex-basis: 100%;*/ margin: 10px 0; }
@@ -296,7 +295,7 @@
             transition: all 0.3s; 
         }
         .download-all-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgb(101 90 255 / 40%); }
-        .download-all-btn i { margin-right: 12px; font-size: 1.5rem; }
+        .download-all-btn svg { margin-right: 12px; font-size: 1.5rem; }
         .counter {
             background: white; color: var(--main-color); font-weight: 700;
             padding: 3px 12px; border-radius: 100px; margin-left: 12px; font-size: 0.9rem;
@@ -376,6 +375,26 @@
     </style>
 </head>
 <body>
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-right-solid-full">
+    <path d="M64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM451.3 331.3L347.3 435.3C342.7 439.9 335.8 441.2 329.9 438.8C324 436.4 320 430.5 320 424L320 368L224 368C206.3 368 192 353.7 192 336L192 304C192 286.3 206.3 272 224 272L320 272L320 216C320 209.5 323.9 203.7 329.9 201.2C335.9 198.7 342.8 200.1 347.3 204.7L451.3 308.7C457.5 314.9 457.5 325.1 451.3 331.3z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="file-zipper-solid-full">
+    <path d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 122.5L336 216C336 229.3 346.7 240 360 240L453.5 240L336 122.5zM192 136C192 149.3 202.7 160 216 160L264 160C277.3 160 288 149.3 288 136C288 122.7 277.3 112 264 112L216 112C202.7 112 192 122.7 192 136zM192 232C192 245.3 202.7 256 216 256L264 256C277.3 256 288 245.3 288 232C288 218.7 277.3 208 264 208L216 208C202.7 208 192 218.7 192 232zM256 304L224 304C206.3 304 192 318.3 192 336L192 384C192 410.5 213.5 432 240 432C266.5 432 288 410.5 288 384L288 336C288 318.3 273.7 304 256 304zM240 368C248.8 368 256 375.2 256 384C256 392.8 248.8 400 240 400C231.2 400 224 392.8 224 384C224 375.2 231.2 368 240 368z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="photo-film-solid-full">
+    <path d="M192 128C192 92.7 220.7 64 256 64L576 64C611.3 64 640 92.7 640 128L640 352C640 387.3 611.3 416 576 416L256 416C220.7 416 192 387.3 192 352L192 128zM320 160C320 142.3 305.7 128 288 128C270.3 128 256 142.3 256 160C256 177.7 270.3 192 288 192C305.7 192 320 177.7 320 160zM476.5 171.5C472.1 164.4 464.4 160 456 160C447.6 160 439.9 164.4 435.5 171.5L381.5 259.8L363.6 234.2C359.1 227.8 351.8 224 343.9 224C336 224 328.7 227.8 324.2 234.2L268.2 314.2C263.1 321.5 262.4 331.1 266.6 339C270.8 346.9 279.1 352 288 352L544 352C552.7 352 560.7 347.3 564.9 339.7C569.1 332.1 569 322.9 564.4 315.4L476.4 171.4zM144 192L144 352C144 413.9 194.1 464 256 464L448 464L448 480C448 515.3 419.3 544 384 544L64 544C28.7 544 0 515.3 0 480L0 256C0 220.7 28.7 192 64 192L144 192zM52 260L52 284C52 292.8 59.2 300 68 300L92 300C100.8 300 108 292.8 108 284L108 260C108 251.2 100.8 244 92 244L68 244C59.2 244 52 251.2 52 260zM68 340C59.2 340 52 347.2 52 356L52 380C52 388.8 59.2 396 68 396L92 396C100.8 396 108 388.8 108 380L108 356C108 347.2 100.8 340 92 340L68 340zM68 436C59.2 436 52 443.2 52 452L52 476C52 484.8 59.2 492 68 492L92 492C100.8 492 108 484.8 108 476L108 452C108 443.2 100.8 436 92 436L68 436z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="film-solid-full">
+    <path d="M96 160C96 124.7 124.7 96 160 96L480 96C515.3 96 544 124.7 544 160L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 160zM144 432L144 464C144 472.8 151.2 480 160 480L192 480C200.8 480 208 472.8 208 464L208 432C208 423.2 200.8 416 192 416L160 416C151.2 416 144 423.2 144 432zM448 416C439.2 416 432 423.2 432 432L432 464C432 472.8 439.2 480 448 480L480 480C488.8 480 496 472.8 496 464L496 432C496 423.2 488.8 416 480 416L448 416zM144 304L144 336C144 344.8 151.2 352 160 352L192 352C200.8 352 208 344.8 208 336L208 304C208 295.2 200.8 288 192 288L160 288C151.2 288 144 295.2 144 304zM448 288C439.2 288 432 295.2 432 304L432 336C432 344.8 439.2 352 448 352L480 352C488.8 352 496 344.8 496 336L496 304C496 295.2 488.8 288 480 288L448 288zM144 176L144 208C144 216.8 151.2 224 160 224L192 224C200.8 224 208 216.8 208 208L208 176C208 167.2 200.8 160 192 160L160 160C151.2 160 144 167.2 144 176zM448 160C439.2 160 432 167.2 432 176L432 208C432 216.8 439.2 224 448 224L480 224C488.8 224 496 216.8 496 208L496 176C496 167.2 488.8 160 480 160L448 160z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="music-solid-full">
+    <path d="M532 71C539.6 77.1 544 86.3 544 96L544 400C544 444.2 501 480 448 480C395 480 352 444.2 352 400C352 355.8 395 320 448 320C459.2 320 470 321.6 480 324.6L480 207.9L256 257.7L256 464C256 508.2 213 544 160 544C107 544 64 508.2 64 464C64 419.8 107 384 160 384C171.2 384 182 385.6 192 388.6L192 160C192 145 202.4 132 217.1 128.8L505.1 64.8C514.6 62.7 524.5 65 532.1 71.1z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="video-solid-full">
+    <path d="M128 128C92.7 128 64 156.7 64 192L64 448C64 483.3 92.7 512 128 512L384 512C419.3 512 448 483.3 448 448L448 192C448 156.7 419.3 128 384 128L128 128zM496 400L569.5 458.8C573.7 462.2 578.9 464 584.3 464C597.4 464 608 453.4 608 440.3L608 199.7C608 186.6 597.4 176 584.3 176C578.9 176 573.7 177.8 569.5 181.2L496 240L496 400z"></path>
+  </symbol>
+</svg>
     <div class="container">
         <header>
             <h1>高效视频/音频格式转换工具</h1>
@@ -388,7 +407,7 @@
                 
                 <div class="form-group">
                     <div class="drop-area" id="dropArea">
-                        <div class="drop-icon"><i class="fas fa-film"></i></div>
+                        <div class="drop-icon"><svg class="icon"><use xlink:href="#film-solid-full"></use></svg></div>
                         <p class="drop-text">拖放文件到此处 或 <u>点击选择文件</u></p>
                         <p class="drop-hint">支持常见视频和音频格式</p>
                         <input type="file" id="fileInput" accept="video/*,audio/*" multiple>
@@ -477,14 +496,14 @@
 
                 <div class="preview-container" id="previewContainer">
                     <div class="no-preview" id="noPreviewMessage">
-                        <i class="fas fa-photo-film"></i>
+                        <svg class="icon"><use xlink:href="#photo-film-solid-full"></use></svg>
                         <p>上传文件后将在此处显示转换结果</p>
                     </div>
                 </div>
                 
                 <div class="download-all-container" id="downloadAllContainer" style="display:none;">
                     <button class="download-all-btn" id="downloadAllBtn">
-                        <i class="fas fa-file-zipper"></i>
+                        <svg class="icon"><use xlink:href="#file-zipper-solid-full"></use></svg>
                         打包下载全部
                         <span class="counter" id="fileCounter">0</span>
                     </button>
@@ -526,7 +545,7 @@
 	</div>
     </div>
 	<div class="arrow-r">
-		<i class="fa-solid fa-circle-right"></i>
+		<svg class="icon"><use xlink:href="#circle-right-solid-full"></use></svg>
 	</div>
     <div class="type-cont">
 	<div class="type-s">输出的视频文件格式</div>
@@ -942,7 +961,7 @@ async function convertFile(file) {
             row.className = 'media-row';
             row.dataset.index = index;
 
-            const icon = fileData.originalFile.type.startsWith('video') ? '<i class="fas fa-video"></i>' : '<i class="fas fa-music"></i>';
+            const icon = fileData.originalFile.type.startsWith('video') ? '<svg class="icon"><use xlink:href="#video-solid-full"></use></svg>' : '<svg class="icon"><use xlink:href="#music-solid-full"></use></svg>';
 
             row.innerHTML = `
                 <div class="thumbnail">${icon}</div>

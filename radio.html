@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在线网络收音机 - 全球电台实时收听 | 华语乐坛 |流行音乐</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
   <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
@@ -183,7 +182,7 @@
             font-weight: 700;
         }
 
-        .radio-list h2 i { color: var(--main-color); }
+        .radio-list h2 svg { color: var(--main-color); }
 
         .station {
             display: flex;
@@ -512,7 +511,7 @@
             -webkit-backdrop-filter: blur(20px);
         }
         
-        .notification i { 
+        .notification svg { 
             font-size: 18px; 
         }
 
@@ -531,7 +530,7 @@
 	margin: 0 20px;
         }
         
-        .search-box i { 
+        .search-box svg { 
             color: var(--text3); 
             margin-right: 8px; 
         }
@@ -633,16 +632,63 @@
     </style>
 </head>
 <body>
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="backward-step-solid-full">
+    <path d="M491 100.8C478.1 93.8 462.3 94.5 450 102.6L192 272.1L192 128C192 110.3 177.7 96 160 96C142.3 96 128 110.3 128 128L128 512C128 529.7 142.3 544 160 544C177.7 544 192 529.7 192 512L192 367.9L450 537.5C462.3 545.6 478 546.3 491 539.3C504 532.3 512 518.8 512 504.1L512 136.1C512 121.4 503.9 107.9 491 100.9z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-info-solid-full">
+    <path d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM288 224C288 206.3 302.3 192 320 192C337.7 192 352 206.3 352 224C352 241.7 337.7 256 320 256C302.3 256 288 241.7 288 224zM280 288L328 288C341.3 288 352 298.7 352 312L352 400L360 400C373.3 400 384 410.7 384 424C384 437.3 373.3 448 360 448L280 448C266.7 448 256 437.3 256 424C256 410.7 266.7 400 280 400L304 400L304 336L280 336C266.7 336 256 325.3 256 312C256 298.7 266.7 288 280 288z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-play-solid-full">
+    <path d="M64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C178.6 576 64 461.4 64 320zM252.3 211.1C244.7 215.3 240 223.4 240 232L240 408C240 416.7 244.7 424.7 252.3 428.9C259.9 433.1 269.1 433 276.6 428.4L420.6 340.4C427.7 336 432.1 328.3 432.1 319.9C432.1 311.5 427.7 303.8 420.6 299.4L276.6 211.4C269.2 206.9 259.9 206.7 252.3 210.9z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="forward-step-solid-full">
+    <path d="M149 100.8C161.9 93.8 177.7 94.5 190 102.6L448 272.1L448 128C448 110.3 462.3 96 480 96C497.7 96 512 110.3 512 128L512 512C512 529.7 497.7 544 480 544C462.3 544 448 529.7 448 512L448 367.9L190 537.5C177.7 545.6 162 546.3 149 539.3C136 532.3 128 518.7 128 504L128 136C128 121.3 136.1 107.8 149 100.8z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="magnifying-glass-solid-full">
+    <path d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="pause-solid-full">
+    <path d="M176 96C149.5 96 128 117.5 128 144L128 496C128 522.5 149.5 544 176 544L240 544C266.5 544 288 522.5 288 496L288 144C288 117.5 266.5 96 240 96L176 96zM400 96C373.5 96 352 117.5 352 144L352 496C352 522.5 373.5 544 400 544L464 544C490.5 544 512 522.5 512 496L512 144C512 117.5 490.5 96 464 96L400 96z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="play-solid-full">
+    <path d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="podcast-solid-full">
+    <path d="M432 423.8C471.1 391.5 496 342.7 496 288C496 190.8 417.2 112 320 112C222.8 112 144 190.8 144 288C144 342.7 168.9 391.5 208 423.8C208.4 441.4 211.2 464.2 214.4 485.6C144 447.9 96 373.5 96 288C96 164.3 196.3 64 320 64C443.7 64 544 164.3 544 288C544 373.6 496 447.9 425.5 485.6C428.8 464.2 431.5 441.4 431.9 423.8zM418 370.4C409.7 357.8 398.8 348.8 387.6 342.6C385.5 341.5 383.4 340.4 381.3 339.4C393 325.5 400.1 307.5 400.1 287.9C400.1 243.7 364.3 207.9 320.1 207.9C275.9 207.9 240.1 243.7 240.1 287.9C240.1 307.5 247.2 325.5 258.9 339.4C256.8 340.4 254.7 341.4 252.6 342.6C241.4 348.8 230.5 357.8 222.2 370.4C203.4 348.1 192.1 319.4 192.1 288C192.1 217.3 249.4 160 320.1 160C390.8 160 448.1 217.3 448.1 288C448.1 319.4 436.8 348.2 418 370.4zM320 376C352.9 376 384 384.6 384 419.8C384 452.8 371.1 523.9 363.4 552.7C358.3 571.7 338.9 576.1 320 576.1C301.1 576.1 281.8 571.7 276.6 552.7C268.8 524.2 256 453 256 419.9C256 384.8 287.1 376.1 320 376.1zM320 248C342.1 248 360 265.9 360 288C360 310.1 342.1 328 320 328C297.9 328 280 310.1 280 288C280 265.9 297.9 248 320 248z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="radio-solid-full">
+    <path d="M558.8 79C571.5 75.3 578.8 61.9 575.1 49.2C571.4 36.5 558 29.2 545.3 33L115.8 158.9C106.4 161.6 97.9 166.1 90.6 172C74.5 183.7 64 202.6 64 224L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 576 515.3 576 480L576 224C576 188.7 547.3 160 512 160L282.5 160L558.8 79zM432 272C476.2 272 512 307.8 512 352C512 396.2 476.2 432 432 432C387.8 432 352 396.2 352 352C352 307.8 387.8 272 432 272zM128 312C128 298.7 138.7 288 152 288L264 288C277.3 288 288 298.7 288 312C288 325.3 277.3 336 264 336L152 336C138.7 336 128 325.3 128 312zM128 408C128 394.7 138.7 384 152 384L264 384C277.3 384 288 394.7 288 408C288 421.3 277.3 432 264 432L152 432C138.7 432 128 421.3 128 408z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="volume-high-solid-full">
+    <path d="M533.6 96.5C523.3 88.1 508.2 89.7 499.8 100C491.4 110.3 493 125.4 503.3 133.8C557.5 177.8 592 244.8 592 320C592 395.2 557.5 462.2 503.3 506.3C493 514.7 491.5 529.8 499.8 540.1C508.1 550.4 523.3 551.9 533.6 543.6C598.5 490.7 640 410.2 640 320C640 229.8 598.5 149.2 533.6 96.5zM473.1 171C462.8 162.6 447.7 164.2 439.3 174.5C430.9 184.8 432.5 199.9 442.8 208.3C475.3 234.7 496 274.9 496 320C496 365.1 475.3 405.3 442.8 431.8C432.5 440.2 431 455.3 439.3 465.6C447.6 475.9 462.8 477.4 473.1 469.1C516.3 433.9 544 380.2 544 320.1C544 260 516.3 206.3 473.1 171.1zM412.6 245.5C402.3 237.1 387.2 238.7 378.8 249C370.4 259.3 372 274.4 382.3 282.8C393.1 291.6 400 305 400 320C400 335 393.1 348.4 382.3 357.3C372 365.7 370.5 380.8 378.8 391.1C387.1 401.4 402.3 402.9 412.6 394.6C434.1 376.9 448 350.1 448 320C448 289.9 434.1 263.1 412.6 245.5zM80 416L128 416L262.1 535.2C268.5 540.9 276.7 544 285.2 544C304.4 544 320 528.4 320 509.2L320 130.8C320 111.6 304.4 96 285.2 96C276.7 96 268.5 99.1 262.1 104.8L128 224L80 224C53.5 224 32 245.5 32 272L32 368C32 394.5 53.5 416 80 416z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="compact-disc-solid-full">
+    <path d="M64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C178.6 576 64 461.4 64 320zM320 352C302.3 352 288 337.7 288 320C288 302.3 302.3 288 320 288C337.7 288 352 302.3 352 320C352 337.7 337.7 352 320 352zM224 320C224 373 267 416 320 416C373 416 416 373 416 320C416 267 373 224 320 224C267 224 224 267 224 320zM168 304C168 271.6 184.3 237.4 210.8 210.8C237.3 184.2 271.6 168 304 168C317.3 168 328 157.3 328 144C328 130.7 317.3 120 304 120C256.1 120 210.3 143.5 176.9 176.9C143.5 210.3 120 256.1 120 304C120 317.3 130.7 328 144 328C157.3 328 168 317.3 168 304z"></path>
+    </symbol>
+<symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="guitar-solid-full">
+    <path d="M529 71C519.6 61.6 504.4 61.6 495.1 71L447 119C444.6 121.4 442.7 124.3 441.5 127.5L426.1 168.5L348.6 246.1C303.5 216.7 249.3 215.9 217.6 247.7C206.6 258.7 199.6 272.3 196.2 287.3C192.5 303.9 177.1 318 160.1 318.9C134.5 320.2 110.8 329.6 92.8 347.5C48 392.3 56.4 473.3 111.5 528.4C166.6 583.5 247.6 592 292.4 547.2C310.3 529.3 319.8 505.5 321 479.9C321.9 462.9 336 447.6 352.6 443.8C367.6 440.4 381.2 433.3 392.2 422.4C424 390.6 423.2 336.5 393.8 291.4L471.4 213.8L512.4 198.4C515.6 197.2 518.5 195.3 520.9 192.9L568.9 144.9C578.3 135.5 578.3 120.3 568.9 111L529 71zM272 320C298.5 320 320 341.5 320 368C320 394.5 298.5 416 272 416C245.5 416 224 394.5 224 368C224 341.5 245.5 320 272 320z"></path>
+</symbol>
+<symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="volume-low-solid-full">
+    <path d="M144 416L192 416L326.1 535.2C332.5 540.9 340.7 544 349.2 544C368.4 544 384 528.4 384 509.2L384 130.8C384 111.6 368.4 96 349.2 96C340.7 96 332.5 99.1 326.1 104.8L192 224L144 224C117.5 224 96 245.5 96 272L96 368C96 394.5 117.5 416 144 416zM476.6 245.5C466.3 237.1 451.2 238.7 442.8 249C434.4 259.3 436 274.4 446.3 282.8C457.1 291.6 464 305 464 320C464 335 457.1 348.4 446.3 357.3C436 365.7 434.5 380.8 442.8 391.1C451.1 401.4 466.3 402.9 476.6 394.6C498.1 376.9 512 350.1 512 320C512 289.9 498.1 263.1 476.5 245.5z"></path>
+    </symbol>
+<symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="volume-xmark-solid-full">
+    <path d="M80 416L128 416L262.1 535.2C268.5 540.9 276.7 544 285.2 544C304.4 544 320 528.4 320 509.2L320 130.8C320 111.6 304.4 96 285.2 96C276.7 96 268.5 99.1 262.1 104.8L128 224L80 224C53.5 224 32 245.5 32 272L32 368C32 394.5 53.5 416 80 416zM399 239C389.6 248.4 389.6 263.6 399 272.9L446 319.9L399 366.9C389.6 376.3 389.6 391.5 399 400.8C408.4 410.1 423.6 410.2 432.9 400.8L479.9 353.8L526.9 400.8C536.3 410.2 551.5 410.2 560.8 400.8C570.1 391.4 570.2 376.2 560.8 366.9L513.8 319.9L560.8 272.9C570.2 263.5 570.2 248.3 560.8 239C551.4 229.7 536.2 229.6 526.9 239L479.9 286L432.9 239C423.5 229.6 408.3 229.6 399 239z"></path>
+</symbol>
+<symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="music-solid-full">
+    <path d="M532 71C539.6 77.1 544 86.3 544 96L544 400C544 444.2 501 480 448 480C395 480 352 444.2 352 400C352 355.8 395 320 448 320C459.2 320 470 321.6 480 324.6L480 207.9L256 257.7L256 464C256 508.2 213 544 160 544C107 544 64 508.2 64 464C64 419.8 107 384 160 384C171.2 384 182 385.6 192 388.6L192 160C192 145 202.4 132 217.1 128.8L505.1 64.8C514.6 62.7 524.5 65 532.1 71.1z"></path>
+</symbol>
+</svg>
     <div class="container">
         <header>
-            <h1><i class="fas fa-radio"></i> 青艺云广播</h1>
+            <h1><svg class="icon"><use xlink:href="#radio-solid-full"></use></svg>青艺云广播</h1>
             <p>精选全球优质音乐电台，畅享高品质播放体验</p>
         </header>
         
         <div class="content1">
             <div class="player-section">
                 <div class="now-playing">
-                    <h3><i class="fas fa-play-circle"></i> 正在播放</h3>
+                    <h3><svg class="icon"><use xlink:href="#circle-play-solid-full"></use></svg>正在播放</h3>
                     <div class="track-info">
                         <div class="music-notes-container"></div>
                         <div class="album-art">
@@ -665,13 +711,13 @@
                 
                 <div class="player-controls">
                     <div class="control-buttons">
-                        <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
-                        <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
-                        <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                        <button class="btn" id="prev-btn"><svg class="icon"><use xlink:href="#backward-step-solid-full"></use></svg></button>
+                        <button class="btn btn-play" id="play-btn"><svg class="icon"><use xlink:href="#play-solid-full"></use></svg></button>
+                        <button class="btn" id="next-btn"><svg class="icon"><use xlink:href="#forward-step-solid-full"></use></svg></button>
                     </div>
                     
                     <div class="volume-control">
-                        <i class="fas fa-volume-up volume-icon"></i>
+                        <svg class="icon volume-icon"><use xlink:href="#volume-high-solid-full"></use></svg>
                         <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.01" value="0.7">
                     </div>
                 </div>
@@ -685,9 +731,9 @@
             <div class="radio-list">
                 
                 <div class="search-container">
-			<h2><i class="fas fa-broadcast-tower"></i> 电台列表</h2>
+			<h2><svg class="icon"><use xlink:href="#podcast-solid-full"></use></svg>电台列表</h2>
                     <div class="search-box">
-                        <i class="fas fa-search"></i>
+                       <svg class="icon"><use xlink:href="#magnifying-glass-solid-full"></use></svg>
                         <input type="text" id="search-input" placeholder="搜索电台...">
                     </div>
                 </div>
@@ -933,7 +979,7 @@
                     playPromise.catch(error => {
                         console.error('播放失败:', error);
                         isPlaying = false;
-                        document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>';
+                        document.getElementById('play-btn').innerHTML = '<svg class="icon"><use xlink:href="#play-solid-full"></use></svg>';
                         showNotification('播放失败，请重试');
                     });
                 }
@@ -948,7 +994,7 @@
                 if (isPlaying) {
                     audio.pause();
                     isPlaying = false;
-                    document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>';
+                    document.getElementById('play-btn').innerHTML = '<svg class="icon"><use xlink:href="#play-solid-full"></use></svg>';
                     document.querySelector('.status-indicator').style.background = 'var(--error)';
                     document.querySelector('.status-text strong').textContent = '准备就绪';
                     document.querySelector('.rotate1').classList.remove('is-playing');
@@ -984,7 +1030,7 @@
                         const canPlayHandler = () => {
                             audio.removeEventListener('canplay', canPlayHandler);
                             isPlaying = true;
-                            document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+                            document.getElementById('play-btn').innerHTML = '<svg class="icon"><use xlink:href="#pause-solid-full"></use></svg>';
                             playAudio();
                         };
                         
@@ -1005,7 +1051,7 @@
                 } else {
                     if (audio.src) {
                         isPlaying = true;
-                        document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('play-btn').innerHTML = '<svg class="icon"><use xlink:href="#pause-solid-full"></use></svg>';
                         playAudio();
                     }
                 }
@@ -1018,7 +1064,7 @@
                 
                 const notification = document.createElement('div');
                 notification.className = 'notification';
-                notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+                notification.innerHTML = `<svg class="icon"><use xlink:href="#circle-info-solid-full"></use></svg> ${message}`;
                 document.body.appendChild(notification);
                 
                 setTimeout(() => { 
@@ -1064,14 +1110,25 @@
                 });
                 
                 // 音量控制
-                const volumeSlider = document.getElementById('volume-slider');
-                volumeSlider.addEventListener('input', function() {
-                    audio.volume = this.value;
-                    const volumeIcon = document.querySelector('.volume-icon');
-                    if (this.value == 0) volumeIcon.className = 'fas fa-volume-mute volume-icon';
-                    else if (this.value < 0.5) volumeIcon.className = 'fas fa-volume-down volume-icon';
-                    else volumeIcon.className = 'fas fa-volume-up volume-icon';
-                });
+const volumeSlider = document.getElementById('volume-slider');
+volumeSlider.addEventListener('input', function() {
+    audio.volume = this.value;
+    
+    // --- 修改开始 ---
+    // 找到 SVG 中的 <use> 元素
+    const volumeIconUse = document.querySelector('.volume-icon use');
+    if (!volumeIconUse) return; // 如果找不到元素，则退出
+
+    // 根据音量值，切换 SVG 图标的 ID
+    if (this.value == 0) {
+        volumeIconUse.setAttribute('xlink:href', '#volume-xmark-solid-full');
+    } else if (this.value < 0.5) {
+        volumeIconUse.setAttribute('xlink:href', '#volume-low-solid-full');
+    } else {
+        volumeIconUse.setAttribute('xlink:href', '#volume-high-solid-full');
+    }
+    // --- 修改结束 ---
+});
                 
                 // 搜索功能
                 const searchInput = document.getElementById('search-input');
@@ -1087,42 +1144,53 @@
                 // 音频事件监听
                 audio.addEventListener('play', () => { 
                     isPlaying = true; 
-                    document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>'; 
+                    document.getElementById('play-btn').innerHTML = '<svg class="icon"><use xlink:href="#pause-solid-full"></use></svg>'; 
                     document.querySelector('.status-indicator').style.background = 'var(--success)'; 
                     document.querySelector('.status-text strong').textContent = '正在播放';
                     document.querySelector('.rotate1').classList.add('is-playing');
 
                     // 音符动画
-                    const notesContainer = document.querySelector('.music-notes-container');
-                    if (noteInterval) clearInterval(noteInterval);
-                    
-                    noteInterval = setInterval(() => {
-                        const noteCount = Math.floor(Math.random() * 2);
-                        const noteTypes = ['fas fa-music', 'fas fa-compact-disc', 'fa-solid fa-guitar', 'fas fa-music',];
-                        const colors = ['var(--text3)'];
-                        
-                        for (let i = 0; i < noteCount; i++) {
-                            const note = document.createElement('i');
-                            const typeIndex = Math.floor(Math.random() * noteTypes.length);
-                            note.className = 'music-note ' + noteTypes[typeIndex];
-                            note.style.right = (15 + Math.random() * 20) + '%';
-                            note.style.top = (15 + Math.random() * 20) + '%';
-                            note.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-                            note.style.color = colors[Math.floor(Math.random() * colors.length)];
-                            note.style.fontSize = (14 + Math.random() * 10) + 'px';
-                            
-                            notesContainer.appendChild(note);
-                            
-                            setTimeout(() => {
-                                if (note.parentNode) note.parentNode.removeChild(note);
-                            }, 3000);
-                        }
-                    }, 600);
+const notesContainer = document.querySelector('.music-notes-container');
+if (noteInterval) clearInterval(noteInterval);
+
+noteInterval = setInterval(() => {
+    const noteCount = Math.floor(Math.random() * 2);
+    
+    // --- 修改开始 ---
+    // 1. 将 noteTypes 数组的值改为 SVG symbol ID
+    const noteTypes = ['compact-disc-solid-full', 'guitar-solid-full', 'music-solid-full'];
+    const colors = ['var(--text3)'];
+    
+    for (let i = 0; i < noteCount; i++) {
+        // 2. 创建 <svg> 元素而不是 <i>
+        const note = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+        
+        const typeIndex = Math.floor(Math.random() * noteTypes.length);
+        use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${noteTypes[typeIndex]}`);
+        note.appendChild(use);
+        
+        // 3. 设置 svg 的 class 和样式
+        note.setAttribute('class', 'music-note icon');
+        note.style.right = (15 + Math.random() * 20) + '%';
+        note.style.top = (15 + Math.random() * 20) + '%';
+        note.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        note.style.color = colors[Math.floor(Math.random() * colors.length)];
+        note.style.fontSize = (14 + Math.random() * 10) + 'px';
+        
+        notesContainer.appendChild(note);
+        
+        setTimeout(() => {
+            if (note.parentNode) note.parentNode.removeChild(note);
+        }, 3000);
+    }
+    // --- 修改结束 ---
+}, 600);
                 });
                 
                 audio.addEventListener('pause', () => { 
                     isPlaying = false; 
-                    document.getElementById('play-btn').innerHTML = '<i class="fas fa-play"></i>'; 
+                    document.getElementById('play-btn').innerHTML = '<svg class="icon"><use xlink:href="#play-solid-full"></use></svg>'; 
                     document.querySelector('.status-indicator').style.background = 'var(--error)'; 
                     document.querySelector('.status-text strong').textContent = '已暂停';
                     document.querySelector('.rotate1').classList.remove('is-playing');
