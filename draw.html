@@ -260,12 +260,14 @@
         .main-content {
             flex-grow: 1;
             padding: 10px;
+            display: flex;
         }
         
         .panel {
             background: var(--card-bg);
             border-radius: 12px;
-	padding: 20px;
+	    padding: 20px;
+        flex: 1;
         }
         
         .panel h2 {
@@ -436,14 +438,14 @@
         
         button {
             padding: 10px 24px;
-            border-radius: 12px;
+            border-radius: 30px;
             border: none;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 4px;
             justify-content: center;
         }
         
@@ -776,7 +778,7 @@
             background: #ffffffc2;
             bottom: 0;
             position: fixed;
-            width: 93%;
+            width: 92%;
             z-index: 9;
             align-items: center;
 	backdrop-filter: blur(20px);
@@ -936,7 +938,7 @@
                 bottom: auto;
                 right: auto;
                 transform: none;
-                display: block;
+                display: flex;
                 margin: 0 auto 15px;
                 width: 80%;
                 max-width: 200px;
@@ -968,6 +970,7 @@
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 padding: 0;
                 margin-bottom: 50px;
+                gap: 10px;
             }
             
             .empty-gallery {
@@ -1482,7 +1485,7 @@ async function uploadToImgBB(blob, prompt) {
         
         // 处理提示词作为文件名（最多30个字符，替换特殊字符）
         const fileName = prompt ? 
-            prompt.substring(0, 30).replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_') : 
+            prompt.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_') : 
             'ai-image';
             
         // 创建一个新的Blob对象，使用提示词作为文件名
