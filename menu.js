@@ -27,7 +27,18 @@ body {
     min-height: 100vh;
     transition: margin-left var(--transition-speed);
 }
-
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+}
+.icon2 {
+    display: inline-block;
+    width: 1.75em;
+    height: 1.75em;
+    fill: currentColor;
+}
 /* 侧边菜单样式 */
 #global-sidebar {
     position: fixed;
@@ -313,6 +324,9 @@ body {
         .date {
             color: var(--text3);
             font-size: 0.9rem;
+            display: flex;
+        align-items: center;
+        gap: 4px;
         }
 
         .content-wrapper {
