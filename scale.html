@@ -515,8 +515,17 @@
             object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            cursor: zoom-in;
+            transition: all 0.2s ease-in-out;
         }
-        
+        .modal-content.zoomed {
+            max-width: none;
+            max-height: none;
+            cursor: zoom-out;
+        }
+    .modal.zoomed-container {
+    align-items: flex-start;
+}
         .close {
             position: absolute;
             top: 20px;
@@ -1089,7 +1098,12 @@
                     modalImage.src = originalImage.src;
                 }
             });
-
+// --- 在文件末尾的脚本区域内，添加以下代码 ---
+modalImage.addEventListener('click', () => {
+    // 点击图片时，同时切换图片和其容器的类
+    modalImage.classList.toggle('zoomed');
+    imageModal.classList.toggle('zoomed-container');
+});
             upscaledImage.addEventListener('click', () => {
                 if (upscaledImage.src) {
                     imageModal.style.display = 'flex';
@@ -1099,12 +1113,16 @@
 
             // 关闭模态框
             closeModal.addEventListener('click', () => {
-                imageModal.style.display = 'none';
+                    modalImage.classList.remove('zoomed'); // 新增：关闭时重置缩放状态
+                    imageModal.classList.remove('zoomed-container'); 
+                    imageModal.style.display = 'none';
             });
 
             // 点击模态框外部关闭
             imageModal.addEventListener('click', (e) => {
                 if (e.target === imageModal) {
+                    modalImage.classList.remove('zoomed');
+                    imageModal.classList.remove('zoomed-container');
                     imageModal.style.display = 'none';
                 }
             });
@@ -1112,6 +1130,8 @@
             // ESC键关闭模态框
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && imageModal.style.display === 'flex') {
+                    modalImage.classList.remove('zoomed'); // 新增：关闭时重置缩放状态
+                    imageModal.classList.remove('zoomed-container'); 
                     imageModal.style.display = 'none';
                 }
             });
