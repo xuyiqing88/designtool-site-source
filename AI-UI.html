@@ -12,6 +12,12 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
      crossorigin="anonymous"></script>
     <style>
+      /* 防止SVG图标在样式加载前闪烁 (FOUC) */
+      #global-sidebar svg {
+        visibility: hidden;
+      }
+    </style>
+    <style>
         :root {
             --main-color: #5a64ff;
             --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
@@ -40,6 +46,12 @@
             display: flex;
             flex-direction: column;
         }
+.icon {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    fill: currentColor;
+}
 .device-icon {
     color: var(--text3);
     font-size: 1.2em;

@@ -27,7 +27,18 @@ body {
     min-height: 100vh;
     transition: margin-left var(--transition-speed);
 }
-
+.icon {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    fill: currentColor;
+}
+.icon2 {
+    display: inline-block;
+    width: 1.75em;
+    height: 1.75em;
+    fill: currentColor;
+}
 /* 侧边菜单样式 */
 #global-sidebar {
     position: fixed;
