@@ -32,6 +32,7 @@ body {
     width: 1em;
     height: 1em;
     fill: currentColor;
+    margin-right: 4px;
 }
 .icon2 {
     display: inline-block;
@@ -326,7 +327,6 @@ body {
             font-size: 0.9rem;
             display: flex;
         align-items: center;
-        gap: 4px;
         }
 
         .content-wrapper {
