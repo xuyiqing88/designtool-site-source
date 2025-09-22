@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HDRI Studio 编辑器 - 免费在线HDR编辑器</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
@@ -269,6 +268,9 @@
             transition: all .2s ease;
             font-size: 12px;
             margin-left: auto;
+            display: flex;
+    align-items: center;
+    gap: 4px;
         }
         .import-model-button:hover {
             border-color: var(--main-color);
@@ -515,6 +517,10 @@
             border-radius:4px; 
             cursor:pointer;    
             flex: 1;
+            display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
         }
         #imageUploadLabel:hover {
             background-color: #44444c;
@@ -637,16 +643,71 @@
     </style>
 </head>
 <body>
-    <div id="global-sidebar"></div>
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="arrow-rotate-left-solid-full">
+    <path d="M320 128C263.2 128 212.1 152.7 176.9 192L224 192C241.7 192 256 206.3 256 224C256 241.7 241.7 256 224 256L96 256C78.3 256 64 241.7 64 224L64 96C64 78.3 78.3 64 96 64C113.7 64 128 78.3 128 96L128 150.7C174.9 97.6 243.5 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C233 576 156.1 532.6 109.9 466.3C99.8 451.8 103.3 431.9 117.8 421.7C132.3 411.5 152.2 415.1 162.4 429.6C197.2 479.4 254.8 511.9 320 511.9C426 511.9 512 425.9 512 319.9C512 213.9 426 128 320 128z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="box-solid-full">
+    <path d="M465.4 192L431.1 144L209 144L174.7 192L465.4 192zM96 212.5C96 199.2 100.2 186.2 107.9 175.3L156.9 106.8C168.9 90 188.3 80 208.9 80L431 80C451.7 80 471.1 90 483.1 106.8L532 175.3C539.8 186.2 543.9 199.2 543.9 212.5L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 212.5z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cloud-arrow-up-solid-full">
+    <path d="M176 544C96.5 544 32 479.5 32 400C32 336.6 73 282.8 129.9 263.5C128.6 255.8 128 248 128 240C128 160.5 192.5 96 272 96C327.4 96 375.5 127.3 399.6 173.1C413.8 164.8 430.4 160 448 160C501 160 544 203 544 256C544 271.7 540.2 286.6 533.5 299.7C577.5 320 608 364.4 608 416C608 486.7 550.7 544 480 544L176 544zM337 255C327.6 245.6 312.4 245.6 303.1 255L231.1 327C221.7 336.4 221.7 351.6 231.1 360.9C240.5 370.2 255.7 370.3 265 360.9L296 329.9L296 432C296 445.3 306.7 456 320 456C333.3 456 344 445.3 344 432L344 329.9L375 360.9C384.4 370.3 399.6 370.3 408.9 360.9C418.2 351.5 418.3 336.3 408.9 327L336.9 255z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cube-solid-full">
+    <path d="M288.3 61.5C308.1 50.1 332.5 50.1 352.3 61.5L528.2 163C548 174.4 560.2 195.6 560.2 218.4L560.2 421.4C560.2 444.3 548 465.4 528.2 476.8L352.3 578.5C332.5 589.9 308.1 589.9 288.3 578.5L112.5 477C92.7 465.6 80.5 444.4 80.5 421.6L80.5 218.6C80.5 195.7 92.7 174.6 112.5 163.2L288.3 61.5zM496.1 421.5L496.1 255.4L352.3 338.4L352.3 504.5L496.1 421.5z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="download-solid-full">
+    <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="eye-slash-solid-full">
+    <path d="M73 39.1C63.6 29.7 48.4 29.7 39.1 39.1C29.8 48.5 29.7 63.7 39 73.1L567 601.1C576.4 610.5 591.6 610.5 600.9 601.1C610.2 591.7 610.3 576.5 600.9 567.2L504.5 470.8C507.2 468.4 509.9 466 512.5 463.6C559.3 420.1 590.6 368.2 605.5 332.5C608.8 324.6 608.8 315.8 605.5 307.9C590.6 272.2 559.3 220.2 512.5 176.8C465.4 133.1 400.7 96.2 319.9 96.2C263.1 96.2 214.3 114.4 173.9 140.4L73 39.1zM236.5 202.7C260 185.9 288.9 176 320 176C399.5 176 464 240.5 464 320C464 351.1 454.1 379.9 437.3 403.5L402.6 368.8C415.3 347.4 419.6 321.1 412.7 295.1C399 243.9 346.3 213.5 295.1 227.2C286.5 229.5 278.4 232.9 271.1 237.2L236.4 202.5zM357.3 459.1C345.4 462.3 332.9 464 320 464C240.5 464 176 399.5 176 320C176 307.1 177.7 294.6 180.9 282.7L101.4 203.2C68.8 240 46.4 279 34.5 307.7C31.2 315.6 31.2 324.4 34.5 332.3C49.4 368 80.7 420 127.5 463.4C174.6 507.1 239.3 544 320.1 544C357.4 544 391.3 536.1 421.6 523.4L357.4 459.2z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="eye-solid-full">
+    <path d="M320 96C239.2 96 174.5 132.8 127.4 176.6C80.6 220.1 49.3 272 34.4 307.7C31.1 315.6 31.1 324.4 34.4 332.3C49.3 368 80.6 420 127.4 463.4C174.5 507.1 239.2 544 320 544C400.8 544 465.5 507.2 512.6 463.4C559.4 419.9 590.7 368 605.6 332.3C608.9 324.4 608.9 315.6 605.6 307.7C590.7 272 559.4 220 512.6 176.6C465.5 132.9 400.8 96 320 96zM176 320C176 240.5 240.5 176 320 176C399.5 176 464 240.5 464 320C464 399.5 399.5 464 320 464C240.5 464 176 399.5 176 320zM320 256C320 291.3 291.3 320 256 320C244.5 320 233.7 317 224.3 311.6C223.3 322.5 224.2 333.7 227.2 344.8C240.9 396 293.6 426.4 344.8 412.7C396 399 426.4 346.3 412.7 295.1C400.5 249.4 357.2 220.3 311.6 224.3C316.9 233.6 320 244.4 320 256z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="file-import-solid-full">
+    <path d="M192 64C156.7 64 128 92.7 128 128L128 368L310.1 368L279.1 337C269.7 327.6 269.7 312.4 279.1 303.1C288.5 293.8 303.7 293.7 313 303.1L385 375.1C394.4 384.5 394.4 399.7 385 409L313 481C303.6 490.4 288.4 490.4 279.1 481C269.8 471.6 269.7 456.4 279.1 447.1L310.1 416.1L128 416.1L128 512.1C128 547.4 156.7 576.1 192 576.1L448 576.1C483.3 576.1 512 547.4 512 512.1L512 234.6C512 217.6 505.3 201.3 493.3 189.3L386.7 82.7C374.7 70.7 358.5 64 341.5 64L192 64zM453.5 240L360 240C346.7 240 336 229.3 336 216L336 122.5L453.5 240z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="globe-solid-full">
+    <path d="M415.9 344L225 344C227.9 408.5 242.2 467.9 262.5 511.4C273.9 535.9 286.2 553.2 297.6 563.8C308.8 574.3 316.5 576 320.5 576C324.5 576 332.2 574.3 343.4 563.8C354.8 553.2 367.1 535.8 378.5 511.4C398.8 467.9 413.1 408.5 416 344zM224.9 296L415.8 296C413 231.5 398.7 172.1 378.4 128.6C367 104.2 354.7 86.8 343.3 76.2C332.1 65.7 324.4 64 320.4 64C316.4 64 308.7 65.7 297.5 76.2C286.1 86.8 273.8 104.2 262.4 128.6C242.1 172.1 227.8 231.5 224.9 296zM176.9 296C180.4 210.4 202.5 130.9 234.8 78.7C142.7 111.3 74.9 195.2 65.5 296L176.9 296zM65.5 344C74.9 444.8 142.7 528.7 234.8 561.3C202.5 509.1 180.4 429.6 176.9 344L65.5 344zM463.9 344C460.4 429.6 438.3 509.1 406 561.3C498.1 528.6 565.9 444.8 575.3 344L463.9 344zM575.3 296C565.9 195.2 498.1 111.3 406 78.7C438.3 130.9 460.4 210.4 463.9 296L575.3 296z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="lightbulb-regular-full">
+    <path d="M424.5 355.1C449 329.2 464 294.4 464 256C464 176.5 399.5 112 320 112C240.5 112 176 176.5 176 256C176 294.4 191 329.2 215.5 355.1C236.8 377.5 260.4 409.1 268.8 448L371.2 448C379.6 409 403.2 377.5 424.5 355.1zM459.3 388.1C435.7 413 416 443.4 416 477.7L416 496C416 540.2 380.2 576 336 576L304 576C259.8 576 224 540.2 224 496L224 477.7C224 443.4 204.3 413 180.7 388.1C148 353.7 128 307.2 128 256C128 150 214 64 320 64C426 64 512 150 512 256C512 307.2 492 353.7 459.3 388.1zM272 248C272 261.3 261.3 272 248 272C234.7 272 224 261.3 224 248C224 199.4 263.4 160 312 160C325.3 160 336 170.7 336 184C336 197.3 325.3 208 312 208C289.9 208 272 225.9 272 248z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="lightbulb-solid-full">
+    <path d="M420.9 448C428.2 425.7 442.8 405.5 459.3 388.1C492 353.7 512 307.2 512 256C512 150 426 64 320 64C214 64 128 150 128 256C128 307.2 148 353.7 180.7 388.1C197.2 405.5 211.9 425.7 219.1 448L420.8 448zM416 496L224 496L224 512C224 556.2 259.8 592 304 592L336 592C380.2 592 416 556.2 416 512L416 496zM312 176C272.2 176 240 208.2 240 248C240 261.3 229.3 272 216 272C202.7 272 192 261.3 192 248C192 181.7 245.7 128 312 128C325.3 128 336 138.7 336 152C336 165.3 325.3 176 312 176z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="list-ul-solid-full">
+    <path d="M112 208C138.5 208 160 186.5 160 160C160 133.5 138.5 112 112 112C85.5 112 64 133.5 64 160C64 186.5 85.5 208 112 208zM256 128C238.3 128 224 142.3 224 160C224 177.7 238.3 192 256 192L544 192C561.7 192 576 177.7 576 160C576 142.3 561.7 128 544 128L256 128zM256 288C238.3 288 224 302.3 224 320C224 337.7 238.3 352 256 352L544 352C561.7 352 576 337.7 576 320C576 302.3 561.7 288 544 288L256 288zM256 448C238.3 448 224 462.3 224 480C224 497.7 238.3 512 256 512L544 512C561.7 512 576 497.7 576 480C576 462.3 561.7 448 544 448L256 448zM112 528C138.5 528 160 506.5 160 480C160 453.5 138.5 432 112 432C85.5 432 64 453.5 64 480C64 506.5 85.5 528 112 528zM160 320C160 293.5 138.5 272 112 272C85.5 272 64 293.5 64 320C64 346.5 85.5 368 112 368C138.5 368 160 346.5 160 320z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="panorama-solid-full">
+    <path d="M75.9 112C51.7 112 32 131.7 32 155.9L32 484.1C32 508.4 51.7 528 75.9 528C81.4 528 86.6 527 91.6 525.1C104.5 520.2 195 488 320 488C445 488 535.5 520.3 548.4 525.1C553.4 527 558.6 528 564.1 528C588.4 528 608 508.3 608 484.1L608 155.9C608 131.6 588.3 112 564.1 112C558.6 112 553.4 113 548.4 114.9C535.5 119.8 445 152 320 152C195 152 104.5 119.7 91.6 114.9C86.6 113 81.4 112 75.9 112zM104 240C104 217.9 121.9 200 144 200C166.1 200 184 217.9 184 240C184 262.1 166.1 280 144 280C121.9 280 104 262.1 104 240zM368.1 224C375.6 224 382.7 227.6 387.2 233.6L511.7 400.2C517.6 408.1 518.1 418.7 513 427.1C507.9 435.5 498.2 439.9 488.5 438.2C442.7 430.4 385.2 424 320.1 424C254.5 424 196.7 430.5 150.8 438.4C141 440.1 131.1 435.5 126.1 426.9C121.1 418.3 121.8 407.5 128 399.7L197.3 313C201.9 307.3 208.8 304 216 304C223.2 304 230.2 307.3 234.7 313L262.2 347.4L348.9 233.5C353.5 227.5 360.6 224 368.1 224z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="ring-solid-full">
+    <path d="M128 272C128 279.8 132.4 290.7 145.1 302.3C190.5 278.1 252.8 264 320 264C387.2 264 449.5 278.1 494.9 302.3C507.7 290.7 512 279.8 512 272C512 259.7 501.2 240 464.1 221.4C428.9 203.8 378 192 320 192C262 192 211.1 203.8 175.9 221.4C138.8 240 128 259.7 128 272zM320 312C273 312 230.7 319.6 197.1 331.7C230.3 344.1 272.8 352 320 352C367.2 352 409.7 344.2 442.9 331.7C409.3 319.6 367 312 320 312zM64 272C64 222.4 103.4 186.2 147.3 164.2C193.1 141.3 254.3 128 320 128C385.7 128 446.9 141.3 492.7 164.2C536.6 186.2 576 222.4 576 272L576 368C576 417.6 536.6 453.8 492.7 475.8C446.8 498.7 385.7 512 320 512C254.3 512 193.1 498.7 147.3 475.8C103.4 453.8 64 417.6 64 368L64 272z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="ruler-combined-solid-full">
+    <path d="M97 505.7C101.5 527.5 120.8 544 144 544L496 544C522.5 544 544 522.5 544 496L544 400C544 373.5 522.5 352 496 352L448 352L448 424C448 437.3 437.3 448 424 448C410.7 448 400 437.3 400 424L400 352L336 352L336 424C336 437.3 325.3 448 312 448C298.7 448 288 437.3 288 424L288 352L216 352C202.7 352 192 341.3 192 328C192 314.7 202.7 304 216 304L288 304L288 240L216 240C202.7 240 192 229.3 192 216C192 202.7 202.7 192 216 192L288 192L288 144C288 117.5 266.5 96 240 96L144 96C117.5 96 96 117.5 96 144L96 496C96 499.3 96.3 502.6 97 505.7z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="square-regular-full">
+    <path d="M480 144C488.8 144 496 151.2 496 160L496 480C496 488.8 488.8 496 480 496L160 496C151.2 496 144 488.8 144 480L144 160C144 151.2 151.2 144 160 144L480 144zM160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="sun-solid-full">
+    <path d="M210.2 53.9C217.6 50.8 226 51.7 232.7 56.1L320.5 114.3L408.3 56.1C415 51.7 423.4 50.9 430.8 53.9C438.2 56.9 443.4 63.5 445 71.3L465.9 174.5L569.1 195.4C576.9 197 583.5 202.4 586.5 209.7C589.5 217 588.7 225.5 584.3 232.2L526.1 320L584.3 407.8C588.7 414.5 589.5 422.9 586.5 430.3C583.5 437.7 576.9 443.1 569.1 444.6L465.8 465.4L445 568.7C443.4 576.5 438 583.1 430.7 586.1C423.4 589.1 414.9 588.3 408.2 583.9L320.4 525.7L232.6 583.9C225.9 588.3 217.5 589.1 210.1 586.1C202.7 583.1 197.3 576.5 195.8 568.7L175 465.4L71.7 444.5C63.9 442.9 57.3 437.5 54.3 430.2C51.3 422.9 52.1 414.4 56.5 407.7L114.7 320L56.5 232.2C52.1 225.5 51.3 217.1 54.3 209.7C57.3 202.3 63.9 196.9 71.7 195.4L175 174.6L195.9 71.3C197.5 63.5 202.9 56.9 210.2 53.9zM239.6 320C239.6 275.6 275.6 239.6 320 239.6C364.4 239.6 400.4 275.6 400.4 320C400.4 364.4 364.4 400.4 320 400.4C275.6 400.4 239.6 364.4 239.6 320zM448.4 320C448.4 249.1 390.9 191.6 320 191.6C249.1 191.6 191.6 249.1 191.6 320C191.6 390.9 249.1 448.4 320 448.4C390.9 448.4 448.4 390.9 448.4 320z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="trash-solid-full">
+    <path d="M232.7 69.9L224 96L128 96C110.3 96 96 110.3 96 128C96 145.7 110.3 160 128 160L512 160C529.7 160 544 145.7 544 128C544 110.3 529.7 96 512 96L416 96L407.3 69.9C402.9 56.8 390.7 48 376.9 48L263.1 48C249.3 48 237.1 56.8 232.7 69.9zM512 208L128 208L149.1 531.1C150.7 556.4 171.7 576 197 576L443 576C468.3 576 489.3 556.4 490.9 531.1L512 208z"></path>
+  </symbol>
+</svg>
     <div class="editor-container">
         <div class="controls-panel">
             <div class="controls-header">
                 <h2 class="main-title">
                     <span>HDRI Studio 编辑器</span>
-                    <button class="export-button" id="exportHdri"><i class="fa-solid fa-download"></i> 导出 HDRI</button>
+                    <button class="export-button" id="exportHdri"><svg class="icon"><use xlink:href="#download-solid-full"></use></svg> 导出 HDRI</button>
                 </h2>
                 <div class="control-group">
-                    <label for="resolutionSelector"><i class="fa-solid fa-ruler-combined"></i> 尺寸选择</label>
+                    <label for="resolutionSelector"><svg class="icon"><use xlink:href="#ruler-combined-solid-full"></use></svg> 尺寸选择</label>
                     <select id="resolutionSelector">
                         <option value="1024x512">1024 × 512</option>
                         <option value="2048x1024" selected>2048 × 1024</option>
@@ -654,18 +715,24 @@
                     </select>
                 </div>
                 <div class="button-group">
-                    <button id="addCircleLight"><i class="fa-regular fa-lightbulb"></i> 圆形灯</button>
-                    <button id="addRectLight"><i class="fa-regular fa-square"></i> 矩形灯</button>
-                    <button id="addOctagonLight"><i class="fa-solid fa-sun"></i> 八边形灯</button>
-                    <button id="addRingLight"><i class="fa-solid fa-ring"></i> 环形灯</button>
+                    <button id="addCircleLight"><svg class="icon"><use xlink:href="#lightbulb-regular-full"></use></svg>
+ 圆形灯</button>
+                    <button id="addRectLight"><svg class="icon"><use xlink:href="#square-regular-full"></use></svg>
+ 矩形灯</button>
+                    <button id="addOctagonLight"><svg class="icon"><use xlink:href="#sun-solid-full"></use></svg>
+八边形灯</button>
+                    <button id="addRingLight"><svg class="icon"><use xlink:href="#ring-solid-full"></use></svg>
+ 环形灯</button>
                 </div>
             </div>
             <div class="controls-content">
                 <div id="lightControls"></div>
                 <div class="control-section" id="modelControls">
                     <div class="control-header">
-                        <h3><i class="fa-solid fa-box"></i> 模型调节</h3>
-                        <button class="delete-button" id="resetSceneBtn" title="恢复为球体"><i class="fa-solid fa-arrow-rotate-left"></i> 复位场景</button>
+                        <h3><svg class="icon"><use xlink:href="#box-solid-full"></use></svg>
+模型调节</h3>
+                        <button class="delete-button" id="resetSceneBtn" title="恢复为球体"><svg class="icon"><use xlink:href="#arrow-rotate-left-solid-full"></use></svg>
+ 复位场景</button>
                     </div>
                     <div class="control-group">
                         <label for="modelScale">缩放</label>
@@ -698,7 +765,8 @@
                 </div>
                 <div class="control-section" id="backgroundControlsContainer">
                     <div class="control-header">
-                        <h3><i class="fa-solid fa-globe"></i> 环境调节</h3>
+                        <h3><svg class="icon"><use xlink:href="#globe-solid-full"></use></svg>
+环境调节</h3>
                     </div>
                     <div class="tab-buttons">
                         <button class="tab-button active" data-tab="solid">纯色</button>
@@ -733,7 +801,8 @@
                     <div id="imageTab" class="tab-content">
                         <div class="control-group">
                             <input type="file" id="imageUpload" accept="image/*">
-                            <label for="imageUpload" id="imageUploadLabel"><i class="fa-solid fa-upload"></i> 点击上传图片</label>
+                            <label for="imageUpload" id="imageUploadLabel"><svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
+点击上传图片</label>
                         </div>
                     </div>
                     <div class="control-group" style="margin-top:20px;">
@@ -757,7 +826,8 @@
         <div class="preview-panel">
             <div class="preview-box top-preview">
                 <div class="preview-header">
-                    <h3><i class="fa-solid fa-panorama"></i> 二维视图 & 灯光列表
+                    <h3><svg class="icon"><use xlink:href="#panorama-solid-full"></use></svg>
+二维视图 & 灯光列表
                         <span class="scripts">点击左侧添加灯光，选中画布中的灯光进行编辑</span>
                     </h3>
                 </div>
@@ -768,7 +838,8 @@
                     <div id="vertical-resize-handle"></div>
                     <div id="light-list-panel">
                         <div class="preview-header">
-                            <h3><i class="fa-solid fa-list-ul"></i> 灯光列表
+                            <h3><svg class="icon"><use xlink:href="#list-ul-solid-full"></use></svg>
+ 灯光列表
                                 <span class="scripts">支持隐藏和删除</span>
                             </h3>
                         </div>
@@ -779,11 +850,13 @@
             <div class="resize-handle" id="resizeHandle"></div>
             <div class="preview-box bottom-preview">
                 <div class="preview-header">
-                    <h3><i class="fa-solid fa-cube"></i> 3D环境预览
+                    <h3><svg class="icon"><use xlink:href="#cube-solid-full"></use></svg>
+ 3D环境预览
                         <span class="scripts">支持obj、fbx、glb格式的外部模型导入</span>
                     </h3>
                     <input type="file" id="modelUpload" accept=".obj,.glb,.gltf,.fbx">
-                    <button id="importModelBtn" class="import-model-button"><i class="fa-solid fa-file-import"></i> 导入模型</button>
+                    <button id="importModelBtn" class="import-model-button"><svg class="icon"><use xlink:href="#file-import-solid-full"></use></svg>
+导入模型</button>
                 </div>
                 <canvas id="sceneCanvas"></canvas>
             </div>
@@ -965,15 +1038,21 @@
             camera.updateProjectionMatrix();
         }
         
-        function updateLightListUI() {
+       function updateLightListUI() {
             const container = document.getElementById('light-list-items');
             container.innerHTML = '';
             
             const typeTranslations = {
                 circle: '圆形灯', rect: '矩形灯', octagon: '八边形灯', ring: '环形灯'
             };
+
+            // --- 修改开始 ---
+            // 1. 将 typeIcons 的值从 CSS 类名改为 SVG symbol ID
             const typeIcons = {
-                circle: 'fa-regular fa-lightbulb', rect: 'fa-regular fa-square', octagon: 'fa-solid fa-sun', ring: 'fa-solid fa-ring'
+                circle: 'lightbulb-regular-full', 
+                rect: 'square-regular-full', 
+                octagon: 'sun-solid-full', 
+                ring: 'ring-solid-full'
             };
 
             lights.forEach(light => {
@@ -984,19 +1063,23 @@
                     li.classList.add('active');
                 }
 
-                const iconClass = typeIcons[light.type] || 'fa-solid fa-question';
+                // 2. 获取正确的 iconId，并为未知类型提供一个后备ID
+                const iconId = typeIcons[light.type] || 'box-solid-full'; // 使用 box-solid-full 作为后备图标
                 const name = `${typeTranslations[light.type] || '未知'} ${light.displayId}`;
                 
-                const visibilityIcon = light.visible ? 'fa-eye' : 'fa-eye-slash';
+                // 3. 将可见性图标也改为 symbol ID
+                const visibilityIconId = light.visible ? 'eye-solid-full' : 'eye-slash-solid-full';
 
+                // 4. 更新 innerHTML，用 <svg> 替换 <i> 标签
                 li.innerHTML = `
-                    <span class="icon" style="color: ${light.color};"><i class="fa-fw ${iconClass}"></i></span>
+                    <span class="icon" style="color: ${light.color};"><svg class="icon"><use xlink:href="#${iconId}"></use></svg></span>
                     <span class="name">${name}</span>
                     <div class="actions">
-                        <button class="toggle-visibility" title="切换可见性"><i class="fa-solid ${visibilityIcon}"></i></button>
-                        <button class="delete-from-list" title="删除灯光"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="toggle-visibility" title="切换可见性"><svg class="icon"><use xlink:href="#${visibilityIconId}"></use></svg></button>
+                        <button class="delete-from-list" title="删除灯光"><svg class="icon"><use xlink:href="#trash-solid-full"></use></svg></button>
                     </div>
                 `;
+                // --- 修改结束 ---
 
                 li.addEventListener('click', (e) => {
                     if (e.target.closest('.actions')) return;
@@ -1341,25 +1424,31 @@
             }
         }
         
-        function updateControlsUI() {
+function updateControlsUI() {
             const container = document.getElementById('lightControls');
             container.innerHTML = '';
             updateLightListUI();
             if (!selectedLight) return;
 
-            const icon = selectedLight.type === 'circle' ? 'fa-lightbulb' :
-                         selectedLight.type === 'rect' ? 'fa-square' :
-                         selectedLight.type === 'octagon' ? 'fa-sun' :
-                         'fa-ring';
+            // --- 修改开始 ---
+            // 1. 将 icon 变量的值从 Font Awesome 类名后缀改为完整的 SVG symbol ID
+            const iconId = selectedLight.type === 'circle' ? 'lightbulb-solid-full' :
+                         selectedLight.type === 'rect' ? 'square-regular-full' :
+                         selectedLight.type === 'octagon' ? 'sun-solid-full' :
+                         'ring-solid-full';
+            
             const typeName = selectedLight.type === 'circle' ? '圆形灯光' :
                              selectedLight.type === 'rect' ? '矩形灯光' :
                              selectedLight.type === 'octagon' ? '八边形灯光' :
                              '环形灯光';
+            
+            // 2. 更新 HTML 模板字符串，用 <svg> 替换 <i> 标签
             let html = `<div class="control-section">
                 <div class="control-header">
-                    <h3><i class="fas ${icon}"></i> ${typeName} ${selectedLight.displayId}</h3>
-                    <button class="delete-button" id="deleteLightBtn"><i class="fa-solid fa-trash-can"></i></button>
+                    <h3><svg class="icon"><use xlink:href="#${iconId}"></use></svg> ${typeName} ${selectedLight.displayId}</h3>
+                    <button class="delete-button" id="deleteLightBtn"><svg class="icon"><use xlink:href="#trash-solid-full"></use></svg></button>
                 </div>`;
+            // --- 修改结束 ---
 
             if (selectedLight.type === 'circle') {
                 html += createSlider('size', '大小', 10, 500, 1, selectedLight.size);
