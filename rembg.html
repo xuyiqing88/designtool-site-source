@@ -45,6 +45,18 @@
     height: 1.2em;
     fill: currentColor;
 }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning-icon {
+  animation: spin 1s linear infinite;
+}
     /* 新增：加载蒙版样式 */
     #loading-overlay {
       position: fixed;
@@ -1026,7 +1038,7 @@
       if (files.length === 0) return;
       
       processBtn.disabled = true;
-      processBtn.innerHTML = '<svg class="icon"><use xlink:href="#spinner-solid-full"></use></svg> 处理中...';
+      processBtn.innerHTML = '<svg class="icon spinning-icon"><use xlink:href="#spinner-solid-full"></use></svg> 处理中...';
 
       // 找出尚未处理的文件进行处理
       const filesToProcess = files.filter(f => !processedFiles.some(pf => pf.file.name === f.name));

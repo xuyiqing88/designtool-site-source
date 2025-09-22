@@ -49,6 +49,18 @@
     height: 1.2em;
     fill: currentColor;
 }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning-icon {
+  animation: spin 1s linear infinite;
+}
         .container {
             width: 100%;
             max-width: 1200px;
@@ -792,7 +804,7 @@
                 <div class="result-container" id="result-container">
                     <div class="result-img" id="result-preview">
                         <div style="text-align: center; padding: 20px;" class="default-placeholder">
-                            <svg class="icon" style="font-size: 3.5rem; margin-bottom: 20px; opacity: 0.5;"><use xlink:href="#rotate-solid-full"></use></svg>
+                            <svg class="icon spinning-icon" style="font-size: 3.5rem; margin-bottom: 20px; opacity: 0.5;"><use xlink:href="#rotate-solid-full"></use></svg>
                             <p>上传图片后自动合成</p>
                         </div>
                     </div>
