@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PBR全流程贴图生成器 - 一键生成法线/置换/AO/反射/光泽度贴图（GPU加速+3D预览）</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -237,7 +236,7 @@
             background: none;
             color: #fff;
             border: none;
-            padding: 16px 25px;
+            padding: 16px 20px;
             border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
@@ -313,7 +312,7 @@
             line-height: 1.7;
         }
         
-        .placeholder i {
+        .placeholder svg {
             font-size: 3.5rem;
             display: block;
             margin-bottom: 25px;
@@ -467,14 +466,14 @@
 	justify-content: center;
         }
         
-        .file-upload-area i {
+        .file-upload-area svg {
             font-size: 3rem;
             color: #454559;
             transition: all 0.3s ease;
 	    margin-right: 10px;
         }
         
-        .file-upload-area:hover i {
+        .file-upload-area:hover svg {
             color: var(--main-color);
         }
         
@@ -488,7 +487,7 @@
             line-height: 1.7;
         }
         
-        .info-text i {
+        .info-text svg {
             color: var(--main-color);
             margin-right: 8px;
         }
@@ -643,6 +642,10 @@
             margin-top: 16px;
             text-align: center;
             font-size: 0.9rem;
+            display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
         }
         
         .value-input {
@@ -819,9 +822,27 @@
         }
     </style>
 </head>
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
-<div id="global-sidebar"></div>
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-exclamation-solid-full">
+    <path d="M320 576C178.6 576 64 461.4 64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576zM320 384C302.3 384 288 398.3 288 416C288 433.7 302.3 448 320 448C337.7 448 352 433.7 352 416C352 398.3 337.7 384 320 384zM320 192C301.8 192 287.3 207.5 288.6 225.7L296 329.7C296.9 342.3 307.4 352 319.9 352C332.5 352 342.9 342.3 343.8 329.7L351.2 225.7C352.5 207.5 338.1 192 319.8 192z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cloud-arrow-up-solid-full">
+    <path d="M176 544C96.5 544 32 479.5 32 400C32 336.6 73 282.8 129.9 263.5C128.6 255.8 128 248 128 240C128 160.5 192.5 96 272 96C327.4 96 375.5 127.3 399.6 173.1C413.8 164.8 430.4 160 448 160C501 160 544 203 544 256C544 271.7 540.2 286.6 533.5 299.7C577.5 320 608 364.4 608 416C608 486.7 550.7 544 480 544L176 544zM337 255C327.6 245.6 312.4 245.6 303.1 255L231.1 327C221.7 336.4 221.7 351.6 231.1 360.9C240.5 370.2 255.7 370.3 265 360.9L296 329.9L296 432C296 445.3 306.7 456 320 456C333.3 456 344 445.3 344 432L344 329.9L375 360.9C384.4 370.3 399.6 370.3 408.9 360.9C418.2 351.5 418.3 336.3 408.9 327L336.9 255z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cube-solid-full">
+    <path d="M288.3 61.5C308.1 50.1 332.5 50.1 352.3 61.5L528.2 163C548 174.4 560.2 195.6 560.2 218.4L560.2 421.4C560.2 444.3 548 465.4 528.2 476.8L352.3 578.5C332.5 589.9 308.1 589.9 288.3 578.5L112.5 477C92.7 465.6 80.5 444.4 80.5 421.6L80.5 218.6C80.5 195.7 92.7 174.6 112.5 163.2L288.3 61.5zM496.1 421.5L496.1 255.4L352.3 338.4L352.3 504.5L496.1 421.5z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="download-solid-full">
+    <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="rotate-right-solid-full">
+    <path d="M552 256L408 256C398.3 256 389.5 250.2 385.8 241.2C382.1 232.2 384.1 221.9 391 215L437.7 168.3C362.4 109.7 253.4 115 184.2 184.2C109.2 259.2 109.2 380.7 184.2 455.7C259.2 530.7 380.7 530.7 455.7 455.7C463.9 447.5 471.2 438.8 477.6 429.6C487.7 415.1 507.7 411.6 522.2 421.7C536.7 431.8 540.2 451.8 530.1 466.3C521.6 478.5 511.9 490.1 501 501C401 601 238.9 601 139 501C39.1 401 39 239 139 139C233.3 44.7 382.7 39.4 483.3 122.8L535 71C541.9 64.1 552.2 62.1 561.2 65.8C570.2 69.5 576 78.3 576 88L576 232C576 245.3 565.3 256 552 256z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="rotate-solid-full">
+    <path d="M544.1 256L552 256C565.3 256 576 245.3 576 232L576 88C576 78.3 570.2 69.5 561.2 65.8C552.2 62.1 541.9 64.2 535 71L483.3 122.8C439 86.1 382 64 320 64C191 64 84.3 159.4 66.6 283.5C64.1 301 76.2 317.2 93.7 319.7C111.2 322.2 127.4 310 129.9 292.6C143.2 199.5 223.3 128 320 128C364.4 128 405.2 143 437.7 168.3L391 215C384.1 221.9 382.1 232.2 385.8 241.2C389.5 250.2 398.3 256 408 256L544.1 256zM573.5 356.5C576 339 563.8 322.8 546.4 320.3C529 317.8 512.7 330 510.2 347.4C496.9 440.4 416.8 511.9 320.1 511.9C275.7 511.9 234.9 496.9 202.4 471.6L249 425C255.9 418.1 257.9 407.8 254.2 398.8C250.5 389.8 241.7 384 232 384L88 384C74.7 384 64 394.7 64 408L64 552C64 561.7 69.8 570.5 78.8 574.2C87.8 577.9 98.1 575.8 105 569L156.8 517.2C201 553.9 258 576 320 576C449 576 555.7 480.6 573.4 356.5z"></path>
+  </symbol>
+</svg>
     <div class="container">
         <header>
             <h1>PBR全流程贴图生成器 <span class="format-badge">法线/置换/AO等</span></h1>
@@ -831,7 +852,7 @@
         <div class="content-n">
             <div class="progress-container" id="progressContainer">
                 <div class="quality-indicator">
-                    <span><i class="fas fa-sync fa-spin"></i> 处理中...</span>
+                    <span><svg class="icon"><use xlink:href="#rotate-solid-full"></use></svg>处理中...</span>
                     <span id="progressPercent">0%</span>
                 </div>
                 <div class="progress-bar">
@@ -846,7 +867,7 @@
                         <div class="toggle-btn" style="border-radius: 0 30px 30px 0;" id="gpuModeBtn">GPU模式 (超快)</div>
                     </div>
                     <div class="perf-info" id="perfInfo">
-                        <i class="fas fa-info-circle"></i> 
+                        <svg class="icon"><use xlink:href="#circle-exclamation-solid-full"></use></svg>
                         <span>当前模式：<span id="currentMode">CPU模式</span> | 处理时间：<span id="processingTime">0</span>ms</span>
                     </div>
                 </div>
@@ -856,7 +877,7 @@
                 
                 <div class="file-upload-area" id="inputUploadArea">
                     <label for="fileInput">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                        <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
 				<div>点击选择文件或拖放图像到此处</div>
                         	<div style="font-size: 0.9rem; color: var(--text3);">支持 JPG, PNG, BMP, TIFF, WEBP 等格式</div>
                         <div style="display: flex; flex-direction: column; align-items: flex-start;">
@@ -893,7 +914,7 @@
                     <div class="canvas-container" id="inputCanvasContainer">
                         <canvas id="inputCanvas"></canvas>
                         <div id="inputPlaceholder" class="placeholder">
-                            <i class="fas fa-cloud-upload-alt"></i>
+                            <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
                             请上传灰度图或选择示例图像
                         </div>
                     </div>
@@ -901,7 +922,7 @@
 
                 <div style="display: flex; justify-content: center; margin: 15px 0;">
                     <button id="downloadGrayBtn" class="button" style="background: var(--btcolor);">
-                        <i class="fas fa-download"></i> 下载灰度图
+                        <svg class="icon"><use xlink:href="#download-solid-full"></use></svg>下载灰度图
                     </button>
                 </div>
 
@@ -1057,11 +1078,12 @@
 
                 <div class="btn-group">
                     <button id="resetParamsBtn" class="toggle-btn">
-                        <i class="fas fa-redo"></i> 重置参数
+                        <svg class="icon"><use xlink:href="#rotate-right-solid-full"></use></svg> 重置参数
                     </button>
 
                     <button id="downloadMapBtn">
-                        <i class="fas fa-download"></i> <span>下载法线图</span>
+                        <svg class="icon"><use xlink:href="#download-solid-full"></use></svg>
+                    <span>下载法线图</span>
                     </button>
                 </div>
                 
@@ -1088,7 +1110,7 @@
                 
                 <div id="preview3dContainer">
                     <div class="preview-hint" id="previewHint">
-                        <i class="fas fa-cube"></i>
+                        <svg class="icon"><use xlink:href="#cube-solid-full"></use></svg>
                         <p>使用鼠标左键旋转模型，滚轮缩放</p>
                     </div>
                     <div class="preview-controls">

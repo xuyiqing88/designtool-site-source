@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在线无缝纹理制作工具 - 专业3D无缝贴图生成工具</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
     <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
@@ -264,7 +262,7 @@
 
         .upload-icon {
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #5a73f5;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -704,7 +702,59 @@
     </style>
 </head>
 <body>
-<div id="global-sidebar"></div>
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="arrow-down-up-across-line-solid-full">
+    <path d="M329.4 169.4L425.4 73.4C437.9 60.9 458.2 60.9 470.7 73.4L566.7 169.4C579.2 181.9 579.2 202.2 566.7 214.7C554.2 227.2 533.9 227.2 521.4 214.7L480 173.3L480 288L544 288C561.7 288 576 302.3 576 320C576 337.7 561.7 352 544 352L224 352L224 466.7L265.4 425.3C277.9 412.8 298.2 412.8 310.7 425.3C323.2 437.8 323.2 458.1 310.7 470.6L214.7 566.6C202.2 579.1 181.9 579.1 169.4 566.6L73.4 470.6C60.9 458.1 60.9 437.8 73.4 425.3C85.9 412.8 106.2 412.8 118.7 425.3L160 466.7L160 352L96 352C78.3 352 64 337.7 64 320C64 302.3 78.3 288 96 288L416 288L416 173.3L374.6 214.7C362.1 227.2 341.8 227.2 329.3 214.7C316.8 202.2 316.8 181.9 329.3 169.4zM480 400L480 544C480 561.7 465.7 576 448 576C430.3 576 416 561.7 416 544L416 400L480 400zM160 240L160 96C160 78.3 174.3 64 192 64C209.7 64 224 78.3 224 96L224 240L160 240z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-exclamation-solid-full">
+    <path d="M320 576C178.6 576 64 461.4 64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576zM320 384C302.3 384 288 398.3 288 416C288 433.7 302.3 448 320 448C337.7 448 352 433.7 352 416C352 398.3 337.7 384 320 384zM320 192C301.8 192 287.3 207.5 288.6 225.7L296 329.7C296.9 342.3 307.4 352 319.9 352C332.5 352 342.9 342.3 343.8 329.7L351.2 225.7C352.5 207.5 338.1 192 319.8 192z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-half-stroke-solid-full">
+    <path d="M512 320C512 214 426 128 320 128L320 512C426 512 512 426 512 320zM64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C178.6 576 64 461.4 64 320z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cloud-arrow-up-solid-full">
+    <path d="M176 544C96.5 544 32 479.5 32 400C32 336.6 73 282.8 129.9 263.5C128.6 255.8 128 248 128 240C128 160.5 192.5 96 272 96C327.4 96 375.5 127.3 399.6 173.1C413.8 164.8 430.4 160 448 160C501 160 544 203 544 256C544 271.7 540.2 286.6 533.5 299.7C577.5 320 608 364.4 608 416C608 486.7 550.7 544 480 544L176 544zM337 255C327.6 245.6 312.4 245.6 303.1 255L231.1 327C221.7 336.4 221.7 351.6 231.1 360.9C240.5 370.2 255.7 370.3 265 360.9L296 329.9L296 432C296 445.3 306.7 456 320 456C333.3 456 344 445.3 344 432L344 329.9L375 360.9C384.4 370.3 399.6 370.3 408.9 360.9C418.2 351.5 418.3 336.3 408.9 327L336.9 255z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cube-solid-full">
+    <path d="M288.3 61.5C308.1 50.1 332.5 50.1 352.3 61.5L528.2 163C548 174.4 560.2 195.6 560.2 218.4L560.2 421.4C560.2 444.3 548 465.4 528.2 476.8L352.3 578.5C332.5 589.9 308.1 589.9 288.3 578.5L112.5 477C92.7 465.6 80.5 444.4 80.5 421.6L80.5 218.6C80.5 195.7 92.7 174.6 112.5 163.2L288.3 61.5zM496.1 421.5L496.1 255.4L352.3 338.4L352.3 504.5L496.1 421.5z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="download-solid-full">
+    <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="eye-slash-solid-full">
+    <path d="M73 39.1C63.6 29.7 48.4 29.7 39.1 39.1C29.8 48.5 29.7 63.7 39 73.1L567 601.1C576.4 610.5 591.6 610.5 600.9 601.1C610.2 591.7 610.3 576.5 600.9 567.2L504.5 470.8C507.2 468.4 509.9 466 512.5 463.6C559.3 420.1 590.6 368.2 605.5 332.5C608.8 324.6 608.8 315.8 605.5 307.9C590.6 272.2 559.3 220.2 512.5 176.8C465.4 133.1 400.7 96.2 319.9 96.2C263.1 96.2 214.3 114.4 173.9 140.4L73 39.1zM236.5 202.7C260 185.9 288.9 176 320 176C399.5 176 464 240.5 464 320C464 351.1 454.1 379.9 437.3 403.5L402.6 368.8C415.3 347.4 419.6 321.1 412.7 295.1C399 243.9 346.3 213.5 295.1 227.2C286.5 229.5 278.4 232.9 271.1 237.2L236.4 202.5zM357.3 459.1C345.4 462.3 332.9 464 320 464C240.5 464 176 399.5 176 320C176 307.1 177.7 294.6 180.9 282.7L101.4 203.2C68.8 240 46.4 279 34.5 307.7C31.2 315.6 31.2 324.4 34.5 332.3C49.4 368 80.7 420 127.5 463.4C174.6 507.1 239.3 544 320.1 544C357.4 544 391.3 536.1 421.6 523.4L357.4 459.2z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="eye-solid-full">
+    <path d="M320 96C239.2 96 174.5 132.8 127.4 176.6C80.6 220.1 49.3 272 34.4 307.7C31.1 315.6 31.1 324.4 34.4 332.3C49.3 368 80.6 420 127.4 463.4C174.5 507.1 239.2 544 320 544C400.8 544 465.5 507.2 512.6 463.4C559.4 419.9 590.7 368 605.6 332.3C608.9 324.4 608.9 315.6 605.6 307.7C590.7 272 559.4 220 512.6 176.6C465.5 132.9 400.8 96 320 96zM176 320C176 240.5 240.5 176 320 176C399.5 176 464 240.5 464 320C464 399.5 399.5 464 320 464C240.5 464 176 399.5 176 320zM320 256C320 291.3 291.3 320 256 320C244.5 320 233.7 317 224.3 311.6C223.3 322.5 224.2 333.7 227.2 344.8C240.9 396 293.6 426.4 344.8 412.7C396 399 426.4 346.3 412.7 295.1C400.5 249.4 357.2 220.3 311.6 224.3C316.9 233.6 320 244.4 320 256z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="image-solid-full">
+    <path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96zM224 176C250.5 176 272 197.5 272 224C272 250.5 250.5 272 224 272C197.5 272 176 250.5 176 224C176 197.5 197.5 176 224 176zM368 288C376.4 288 384.1 292.4 388.5 299.5L476.5 443.5C481 450.9 481.2 460.2 477 467.8C472.8 475.4 464.7 480 456 480L184 480C175.1 480 166.8 475 162.7 467.1C158.6 459.2 159.2 449.6 164.3 442.3L220.3 362.3C224.8 355.9 232.1 352.1 240 352.1C247.9 352.1 255.2 355.9 259.7 362.3L286.1 400.1L347.5 299.6C351.9 292.5 359.6 288.1 368 288.1z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="layer-group-solid-full">
+    <path d="M296.5 69.2C311.4 62.3 328.6 62.3 343.5 69.2L562.1 170.2C570.6 174.1 576 182.6 576 192C576 201.4 570.6 209.9 562.1 213.8L343.5 314.8C328.6 321.7 311.4 321.7 296.5 314.8L77.9 213.8C69.4 209.8 64 201.3 64 192C64 182.7 69.4 174.1 77.9 170.2L296.5 69.2zM112.1 282.4L276.4 358.3C304.1 371.1 336 371.1 363.7 358.3L528 282.4L562.1 298.2C570.6 302.1 576 310.6 576 320C576 329.4 570.6 337.9 562.1 341.8L343.5 442.8C328.6 449.7 311.4 449.7 296.5 442.8L77.9 341.8C69.4 337.8 64 329.3 64 320C64 310.7 69.4 302.1 77.9 298.2L112 282.4zM77.9 426.2L112 410.4L276.3 486.3C304 499.1 335.9 499.1 363.6 486.3L527.9 410.4L562 426.2C570.5 430.1 575.9 438.6 575.9 448C575.9 457.4 570.5 465.9 562 469.8L343.4 570.8C328.5 577.7 311.3 577.7 296.4 570.8L77.9 469.8C69.4 465.8 64 457.3 64 448C64 438.7 69.4 430.1 77.9 426.2z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="recycle-solid-full">
+    <path d="M216.3 124C262.5 44 378 44 424.2 124L461.5 188.6L489.2 172.6C497.6 167.7 508.1 168.4 515.8 174.3C523.5 180.2 526.9 190.2 524.4 199.6L500.9 287C497.5 299.8 484.3 307.4 471.5 304L384.1 280.6C374.7 278.1 367.8 270.2 366.5 260.6C365.2 251 369.9 241.5 378.3 236.7L406 220.7L368.7 156.1C347.1 118.8 293.3 118.8 271.7 156.1L266.4 165.2C257.6 180.5 238 185.7 222.7 176.9C207.4 168.1 202.2 148.5 211 133.1L216.3 124zM513.7 343.1C529 334.3 548.6 339.5 557.4 354.8L562.7 363.9C608.9 443.9 551.2 543.9 458.8 543.9L384.2 543.9L384.2 575.9C384.2 585.6 378.4 594.4 369.4 598.1C360.4 601.8 350.1 599.8 343.2 592.9L279.2 528.9C269.8 519.5 269.8 504.3 279.2 495L343.2 431C350.1 424.1 360.4 422.1 369.4 425.8C378.4 429.5 384.2 438.3 384.2 448L384.2 480L458.8 480C501.9 480 528.9 433.3 507.3 396L502 386.9C493.2 371.6 498.4 352 513.7 343.2zM115 299.4L87.3 283.4C78.9 278.5 74.2 269.1 75.5 259.5C76.8 249.9 83.7 242 93.1 239.5L180.5 216C193.3 212.6 206.5 220.2 209.9 233L233.3 320.4C235.8 329.8 232.4 339.7 224.7 345.7C217 351.7 206.5 352.3 198.1 347.4L170.4 331.4L133.1 396C111.5 433.3 138.5 480 181.6 480L192.2 480C209.9 480 224.2 494.3 224.2 512C224.2 529.7 209.9 544 192.2 544L181.6 544C89.3 544 31.6 444 77.8 364L115 299.4z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="rotate-right-solid-full">
+    <path d="M552 256L408 256C398.3 256 389.5 250.2 385.8 241.2C382.1 232.2 384.1 221.9 391 215L437.7 168.3C362.4 109.7 253.4 115 184.2 184.2C109.2 259.2 109.2 380.7 184.2 455.7C259.2 530.7 380.7 530.7 455.7 455.7C463.9 447.5 471.2 438.8 477.6 429.6C487.7 415.1 507.7 411.6 522.2 421.7C536.7 431.8 540.2 451.8 530.1 466.3C521.6 478.5 511.9 490.1 501 501C401 601 238.9 601 139 501C39.1 401 39 239 139 139C233.3 44.7 382.7 39.4 483.3 122.8L535 71C541.9 64.1 552.2 62.1 561.2 65.8C570.2 69.5 576 78.3 576 88L576 232C576 245.3 565.3 256 552 256z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="signs-post-solid-full">
+    <path d="M320.4 64C302.7 64 288.4 78.3 288.4 96L288.4 128L128.4 128C110.7 128 96.4 142.3 96.4 160L96.4 224C96.4 241.7 110.7 256 128.4 256L288.4 256L288.4 320L135 320C130.8 320 126.7 321.7 123.7 324.7L75.7 372.7C69.5 378.9 69.5 389.1 75.7 395.3L123.7 443.3C126.7 446.3 130.8 448 135 448L288.4 448L288.4 544C288.4 561.7 302.7 576 320.4 576C338.1 576 352.4 561.7 352.4 544L352.4 448L512.4 448C530.1 448 544.4 433.7 544.4 416L544.4 352C544.4 334.3 530.1 320 512.4 320L352.4 320L352.4 256L505.8 256C510 256 514.1 254.3 517.1 251.3L565.1 203.3C571.3 197.1 571.3 186.9 565.1 180.7L517.1 132.7C514.1 129.7 510 128 505.8 128L352.4 128L352.4 96C352.4 78.3 338.1 64 320.4 64z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="sliders-solid-full">
+    <path d="M96 128C78.3 128 64 142.3 64 160C64 177.7 78.3 192 96 192L182.7 192C195 220.3 223.2 240 256 240C288.8 240 317 220.3 329.3 192L544 192C561.7 192 576 177.7 576 160C576 142.3 561.7 128 544 128L329.3 128C317 99.7 288.8 80 256 80C223.2 80 195 99.7 182.7 128L96 128zM96 288C78.3 288 64 302.3 64 320C64 337.7 78.3 352 96 352L342.7 352C355 380.3 383.2 400 416 400C448.8 400 477 380.3 489.3 352L544 352C561.7 352 576 337.7 576 320C576 302.3 561.7 288 544 288L489.3 288C477 259.7 448.8 240 416 240C383.2 240 355 259.7 342.7 288L96 288zM96 448C78.3 448 64 462.3 64 480C64 497.7 78.3 512 96 512L150.7 512C163 540.3 191.2 560 224 560C256.8 560 285 540.3 297.3 512L544 512C561.7 512 576 497.7 576 480C576 462.3 561.7 448 544 448L297.3 448C285 419.7 256.8 400 224 400C191.2 400 163 419.7 150.7 448L96 448z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="star-solid-full">
+    <path d="M341.5 45.1C337.4 37.1 329.1 32 320.1 32C311.1 32 302.8 37.1 298.7 45.1L225.1 189.3L65.2 214.7C56.3 216.1 48.9 222.4 46.1 231C43.3 239.6 45.6 249 51.9 255.4L166.3 369.9L141.1 529.8C139.7 538.7 143.4 547.7 150.7 553C158 558.3 167.6 559.1 175.7 555L320.1 481.6L464.4 555C472.4 559.1 482.1 558.3 489.4 553C496.7 547.7 500.4 538.8 499 529.8L473.7 369.9L588.1 255.4C594.5 249 596.7 239.6 593.9 231C591.1 222.4 583.8 216.1 574.8 214.7L415 189.3L341.5 45.1z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="table-cells-large-solid-full">
+    <path d="M480 160L352 160L352 288L480 288L480 160zM544 288L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 160C96 124.7 124.7 96 160 96L480 96C515.3 96 544 124.7 544 160L544 288zM160 352L160 480L288 480L288 352L160 352zM288 288L288 160L160 160L160 288L288 288zM352 352L352 480L480 480L480 352L352 352z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="trash-solid-full">
+    <path d="M232.7 69.9L224 96L128 96C110.3 96 96 110.3 96 128C96 145.7 110.3 160 128 160L512 160C529.7 160 544 145.7 544 128C544 110.3 529.7 96 512 96L416 96L407.3 69.9C402.9 56.8 390.7 48 376.9 48L263.1 48C249.3 48 237.1 56.8 232.7 69.9zM512 208L128 208L149.1 531.1C150.7 556.4 171.7 576 197 576L443 576C468.3 576 489.3 556.4 490.9 531.1L512 208z"></path>
+  </symbol>
+</svg>
     <div class="header">
         <div class="header-content">
             <div class="toptitle">
@@ -723,11 +773,11 @@
                     <option value="image/tiff">TIFF</option>
                 </select>
                 <div style="display: flex; gap: 10px;"><button class="btn btn-orange" onclick="exportImage()">
-                    <i class="fas fa-download fa-icon"></i>
+                    <svg class="icon"><use xlink:href="#download-solid-full"></use></svg>
                     下载纹理
                 </button>
                 <button class="btn btn-secondary" onclick="clearImage()">
-                    <i class="fas fa-trash fa-icon"></i>
+                    <svg class="icon"><use xlink:href="#trash-solid-full"></use></svg>
                     清空
                 </button>
 	</div>
@@ -738,8 +788,8 @@
     <div class="container">
         <div class="sidebar">
             <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">
-                    <i class="fa-solid fa-cloud-arrow-up  icon-large"></i>
+                <div class="upload-icon icon-large">
+                    <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
                 </div>
                 <h3>拖拽或点击图像上传</h3>
                 <small>支持 PNG, JPG, BMP, WebP, TIFF</small>
@@ -749,11 +799,11 @@
 <div class="tabs-container">
     <div class="tabs-header">
         <button class="tab-btn active" data-tab="seamless">
-            <i class="fa-solid fa-layer-group"></i>
+            <svg class="icon"><use xlink:href="#layer-group-solid-full"></use></svg>
             无缝化处理
         </button>
         <button class="tab-btn" data-tab="adjustment">
-            <i class="fas fa-sliders-h fa-icon"></i>
+            <svg class="icon"><use xlink:href="#sliders-solid-full"></use></svg>
             图像调整
         </button>
     </div>
@@ -765,33 +815,33 @@
             实时预览
         </span>
         <button class="btn btn-secondary" style="width: 100%; margin-bottom: 16px;" onclick="resetSeamlessParameters()" >
-            <i class="fas fa-redo fa-icon"></i>
+            <svg class="icon"><use xlink:href="#rotate-right-solid-full"></use></svg>
             重置参数
         </button>
                 
                 <div class="method-selector">
                     <div class="method-btn" data-method="mirror">
-			<div class="tabicon"><i class="fa-solid fa-signs-post"></i></div>
+			<div class="tabicon"><svg class="icon"><use xlink:href="#signs-post-solid-full"></use></svg></div>
                         <strong>镜像边缘</strong>
                         <small>镜像边缘像素</small>
                         <span class="order-indicator">1</span>
                     </div>
 
 <div class="method-btn" data-method="gradient">
-<div class="tabicon"><i class="fa-solid fa-circle-half-stroke"></i></div>
+<div class="tabicon"><svg class="icon"><use xlink:href="#circle-half-stroke-solid-full"></use></svg></div>
     <strong>光影矫正</strong>
     <small>渐变调整图像亮度</small>
     <span class="order-indicator">2</span>
 </div>
 
                     <div class="method-btn" data-method="blend">
-			<div class="tabicon"><i class="fa-solid fa-recycle"></i></div>
+			<div class="tabicon"><svg class="icon"><use xlink:href="#recycle-solid-full"></use></svg></div>
                         <strong>边缘混合</strong>
                         <small>混合相对边缘</small>
                         <span class="order-indicator">2</span>
                     </div>
                     <div class="method-btn" data-method="offset">
-			<div class="tabicon"><i class="fa-solid fa-arrow-down-up-across-line"></i></div>
+			<div class="tabicon"><svg class="icon"><use xlink:href="#arrow-down-up-across-line-solid-full"></use></svg></div>
                         <strong>偏移映射</strong>
                         <small>重新排列图像象限</small>
                         <span class="order-indicator">3</span>
@@ -880,7 +930,7 @@
 
     <!-- 将重置按钮移到标题右侧 -->
     <button class="btn btn-secondary" style="width: 100%; margin-bottom: 16px;" onclick="resetAdjustments()" >
-        <i class="fas fa-redo fa-icon"></i>
+        <svg class="icon"><use xlink:href="#rotate-right-solid-full"></use></svg>
         重置调整
     </button>
 
@@ -934,13 +984,13 @@
             <div class="preview-panel" id="leftPanel">
                 <div class="preview-header">
                     <span>
-                        <i class="fas fa-image fa-icon"></i>
+                        <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
                         图像预览
                     </span>
                     <div style="display: flex; align-items: center;">
                         <span id="imageDimensions" style="margin-right: 10px;"></span>
                         <button class="toggle-btn" id="toggleOriginalBtn" onclick="toggleOriginalPreview()">
-                            <i class="fas fa-eye fa-icon"></i>
+                            <svg class="icon"><use xlink:href="#eye-solid-full"></use></svg>
                             显示原图
                         </button>
                     </div>
@@ -950,7 +1000,7 @@
                     <canvas id="arrowCanvas"></canvas>
                     <div id="noImageMessage">
                         <div style="text-align: center; opacity: 0.6;">
-                            <i class="fas fa-star icon-xl" style="margin-bottom: 1rem;"></i>
+                            <svg class="icon icon-xl" style="margin-bottom: 1rem;"><use xlink:href="#star-solid-full"></use></svg>
                             <h3>欢迎使用无缝纹理工具</h3>
                             <p>请上传图像开始制作</p>
                         </div>
@@ -961,14 +1011,14 @@
             <div class="preview-panel" id="rightPanel">
 <div class="preview-header">
     <span>
-        <i class="fas fa-th fa-icon"></i>
+        <svg class="icon"><use xlink:href="#table-cells-solid-full"></use></svg>
         平铺预览
     </span>
     <div style="display: flex; align-items: center; gap: 10px;">
         <span>3×3 网格</span>
         <!-- 添加这个切换按钮 -->
         <button class="toggle-btn" id="toggleTiledBtn" onclick="toggleTiledPreview()">
-            <i class="fas fa-eye fa-icon"></i>
+            <svg class="icon"><use xlink:href="#eye-solid-full"></use></svg>
             显示原图
         </button>
     </div>
@@ -977,7 +1027,7 @@
                     <canvas id="tiledCanvas" style="display: none;"></canvas>
                     <div id="noTileMessage">
                         <div style="text-align: center; opacity: 0.6;">
-                            <i class="fas fa-th-large icon-xl" style="margin-bottom: 1rem;"></i>
+                            <svg class="icon icon-xl" style="margin-bottom: 1rem;"><use xlink:href="#table-cells-large-solid-full"></use></svg>
                             <h3>平铺预览</h3>
                             <p>上传图像后查看无缝效果</p>
                         </div>
@@ -1211,13 +1261,13 @@
             if (showTiledOriginal) {
                 btn.classList.add('active');
                 btn.innerHTML = `
-                    <i class="fa-solid fa-eye-slash"></i>
+                    <svg class="icon"><use xlink:href="#eye-slash-solid-full"></use></svg>
                     显示修改
                 `;
             } else {
                 btn.classList.remove('active');
                 btn.innerHTML = `
-                    <i class="fas fa-eye fa-icon"></i>
+                    <svg class="icon"><use xlink:href="#eye-solid-full"></use></svg>
                     显示原图
                 `;
             }
@@ -1981,7 +2031,7 @@
                 processedCtx.drawImage(rotatedCanvas, 0, 0);
                 btn.classList.add('active');
                 btn.innerHTML = `
-                    <i class="fa-solid fa-eye-slash"></i>
+                    <svg class="icon"><use xlink:href="#eye-slash-solid-full"></use></svg>
                     显示修改
                 `;
             } else {
@@ -1989,7 +2039,7 @@
                 applySeamlessEffect();
                 btn.classList.remove('active');
                 btn.innerHTML = `
-                    <i class="fas fa-eye fa-icon"></i>
+                    <svg class="icon"><use xlink:href="#eye-solid-full"></use></svg>
                     显示原图
                 `;
             }
@@ -2127,7 +2177,7 @@
             const btn = document.getElementById('toggleOriginalBtn');
             btn.classList.remove('active');
             btn.innerHTML = `
-                <i class="fas fa-eye fa-icon"></i>
+                <svg class="icon"><use xlink:href="#eye-solid-full"></use></svg>
                 显示原图
             `;
             
