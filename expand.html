@@ -756,12 +756,21 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchAndDisplayImage(apiUrl);
     }
 
-    async function fetchAndDisplayImage(apiUrl) {
+   async function fetchAndDisplayImage(apiUrl) {
         setButtonLoading(generateBtn, true, '生成中...');
-        drawingPlaceholder.innerHTML = `<div class="loader"></div><p>正在请求AI，请稍候...</p>`;
+
+        // [FIX] Start: Rearranged and corrected logic
+        // 1. Hide the old image and its action buttons first.
         generatedImage.classList.add('hidden');
         imageActions.style.display = 'none';
         
+        // 2. Ensure the placeholder is visible before adding the loader. This is the core of the fix.
+        drawingPlaceholder.classList.remove('hidden');
+        
+        // 3. Now, set the loading animation inside the visible placeholder.
+        drawingPlaceholder.innerHTML = `<div class="loader"></div><p>正在请求AI，请稍候...</p>`;
+        // [FIX] End
+
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) {
@@ -778,16 +787,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             uploadToImgBB(blob, "expanded-image").catch(err => console.error("生成结果上传失败:", err));
             
-            // 使用Blob URL，性能更好
             if (currentExpandedImageUrl) {
-                URL.revokeObjectURL(currentExpandedImageUrl); // 释放旧的URL
+                URL.revokeObjectURL(currentExpandedImageUrl);
             }
             currentExpandedImageUrl = URL.createObjectURL(blob);
             
             generatedImage.onload = () => {
+                // Once the new image loads, hide the placeholder and show the image.
                 drawingPlaceholder.classList.add('hidden');
                 generatedImage.classList.remove('hidden');
-                imageActions.style.display = 'flex'; // 显示功能按钮
+                imageActions.style.display = 'flex';
                 showAlert('图像生成成功！', 'success');
             };
             generatedImage.src = currentExpandedImageUrl;
@@ -795,6 +804,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('图像生成失败:', error);
             showAlert(`生成失败: ${error.message}`, 'error');
+            // Ensure the placeholder is visible to show the error message.
+            drawingPlaceholder.classList.remove('hidden'); 
             drawingPlaceholder.innerHTML = `<svg class="icon" style="color: var(--error-color);"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败，请重试</p>`;
         } finally {
             setButtonLoading(generateBtn, false, '生成图像');
