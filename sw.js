@@ -4,6 +4,9 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
+  '/menu.js',
+   '/video/menu.js',
+  '/data.js',
   // 添加其他需要缓存的资源
 ];
 
