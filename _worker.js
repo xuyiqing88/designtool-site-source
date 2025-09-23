@@ -2,10 +2,10 @@
 
 // 引入 onnxruntime-web 库，即使在worker里，我们也需要它来运行模型
 // Cloudflare Workers 支持这种从 CDN 导入的方式
-import * as ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.all.min.js';
+import * as ort from 'onnxruntime-web';
 
 // 设置 WASM 文件的路径，这是 ONNX Runtime 运行需要的核心文件
-ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/';
+// ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/'; // <--- 删除或注释掉这一行
 
 // 在全局作用域缓存模型会话，避免每次请求都重新加载模型
 let session;

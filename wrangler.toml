@@ -1,14 +1,17 @@
-# 你的Worker项目的名字，可以随便起，比如 "my-model-worker"
-name = "my-model-worker"
+# 你的Worker项目的名字
+name = "my-rembg-worker"
 
-# 你的主代码文件。Cloudflare Pages + Workers模式下，通常是这个。
-# 如果你没有这个文件，请创建一个。
+# 你的主代码文件 (源文件)
 main = "_worker.js"
 
-# 兼容性设置，建议加上
-compatibility_date = "2023-10-30"
+# 兼容性设置
+compatibility_date = "2023-11-21"
 
-# 你的R2绑定信息（这部分你写的是对的）
+# 【关键】告诉Pages，静态文件构建后放在哪个目录
+# 我们的 build 脚本就是把文件输出到 "public" 目录的
+pages_build_output_dir = "public"
+
+# 你的R2绑定信息
 [[r2_buckets]]
 binding = 'MY_MODEL_BUCKET'
 bucket_name = 'model-assets'
