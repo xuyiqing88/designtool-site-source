@@ -1,6 +1,6 @@
 {
 "scripts": {
-  "build": "rm -rf public && mkdir public && copyfiles *.html *.js *.css *.json *.txt *.xml public && copyfiles -u 1 \"libs/**/*\" \"img/**/*\" \"video/**/*\" public && cp _worker.js ./public/_worker.js"
+  "build": "rm -rf public && mkdir public && copyfiles -u 1 *.html *.js *.css *.json *.txt *.xml *.webp *.png *.svg *.jpg *.jpeg *.gif public && copyfiles \"libs/**/*\" \"img/**/*\" \"video/**/*\" public && cp _worker.js ./public/_worker.js"
 },
   "devDependencies": {
     "copyfiles": "^2.4.1"
