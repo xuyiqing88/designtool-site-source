@@ -179,13 +179,13 @@
             position: relative;
         }
         
-    #generatedImage {
-    max-width: 100%;
-    max-height: 500px;
-    border-radius: 12px;
-    display: block; /* <-- 修改这里 */
-    border: 1px solid var(--line);
-}
+        #generatedImage {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 12px;
+            display: block; /* <-- 修改这里 */
+            border: 1px solid var(--line);
+        }
         
         .drawing-placeholder {
             color: var(--text3);
@@ -363,20 +363,6 @@
             color: var(--main-color);
         }
         
-        .size-info {
-            padding: 10px 15px;
-            background-color: var(--lightbg);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--text2);
-            text-align: center;
-        }
-        .size-info span {
-            font-weight: 600;
-            color: var(--main-color);
-        }
-
         @media (max-width: 768px) {
             .drawing-layout {
                 grid-template-columns: 1fr;
@@ -461,11 +447,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div id="sizeInfo" class="size-info hidden">
-                        原始尺寸: <span id="originalSize"></span><br>
-                        预计输出: <span id="outputSize"></span>
-                    </div>
 
                     <div class="btn-group">
                         <button class="btn-secondary" id="clearBtn">
@@ -507,9 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateBtn = document.getElementById('generateBtn');
     const drawingPlaceholder = document.getElementById('drawingPlaceholder');
     const generatedImage = document.getElementById('generatedImage');
-    const sizeInfo = document.getElementById('sizeInfo');
-    const originalSizeSpan = document.getElementById('originalSize');
-    const outputSizeSpan = document.getElementById('outputSize');
 
     // 状态变量
     let uploadedImageUrl = null;
@@ -525,7 +503,6 @@ document.addEventListener('DOMContentLoaded', () => {
     directionBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             btn.classList.toggle('active');
-            updateOutputSizeDisplay();
         });
     });
 
@@ -559,8 +536,6 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadedImagePreview.onload = () => {
                 originalWidth = uploadedImagePreview.naturalWidth;
                 originalHeight = uploadedImagePreview.naturalHeight;
-                updateOutputSizeDisplay();
-                sizeInfo.classList.remove('hidden');
             };
             uploadedImagePreview.classList.remove('hidden');
             uploadPrompt.classList.add('hidden');
@@ -619,10 +594,10 @@ document.addEventListener('DOMContentLoaded', () => {
             image: uploadedImageUrl,
             strength,
             seed,
-            model: 'kontext', // 扩图任务必须使用kontext模型
+            model: 'kontext',
             nologo: 'true',
             safe: 'false',
-            token: 'lOpIOM_Rk9Ne3k5Z'
+            referrer: 'designtool.site'
         });
         const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params.toString()}`;
 
@@ -637,7 +612,13 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) {
-                throw new Error(`HTTP 错误: ${response.status} ${response.statusText}`);
+                // 尝试解析JSON错误信息
+                try {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP 错误: ${response.status}`);
+                } catch (e) {
+                    throw new Error(`HTTP 错误: ${response.status} ${response.statusText}`);
+                }
             }
             const blob = await response.blob();
             if (blob.size < 1000) { // 小于1KB的图片基本可视为无效
@@ -687,17 +668,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeDirections.has('downwards')) finalHeight += extensionY;
 
         // 将最终尺寸处理为64的倍数，提高AI生成成功率
-        const roundTo64 = num => Math.round(num / 64) * 64;
+        const roundTo64 = num => {
+            const result = Math.round(num / 64) * 64;
+            return result > 0 ? result : 64; //确保尺寸不为0
+        };
         
         return { finalWidth: roundTo64(finalWidth), finalHeight: roundTo64(finalHeight) };
-    }
-
-    function updateOutputSizeDisplay() {
-        if (originalWidth > 0 && originalHeight > 0) {
-            originalSizeSpan.textContent = `${originalWidth} × ${originalHeight}`;
-            const { finalWidth, finalHeight } = calculateFinalDimensions();
-            outputSizeSpan.textContent = `${finalWidth} × ${finalHeight}`;
-        }
     }
 
     function clearAll() {
@@ -713,10 +689,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         directionBtns.forEach(btn => btn.classList.remove('active'));
         
-        sizeInfo.classList.add('hidden');
-        originalSizeSpan.textContent = '';
-        outputSizeSpan.textContent = '';
-
         generatedImage.src = '';
         generatedImage.classList.add('hidden');
         drawingPlaceholder.classList.remove('hidden');
