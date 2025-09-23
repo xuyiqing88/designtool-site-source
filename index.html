@@ -338,7 +338,15 @@
         </div>
     </div>
     
-
+<div class="intro-modal" id="changelogModal">
+    <div class="intro-content">
+        <span class="intro-close" id="changelogClose">&times;</span>
+        <h2 class="intro-title">更新日志</h2>
+        <div class="intro-text" id="changelogContent">
+            </div>
+        <button class="intro-btn" id="changelogConfirm">我知道了</button>
+    </div>
+</div>
 
 <button id="backToTop" class="back-to-top">
     <svg class="icon"><use xlink:href="#arrow-up-solid-full"></use></svg>
@@ -380,15 +388,16 @@
 </div>
 
 <div id="header-image">
-    <div class="hero-content-wrapper">
-        <div class="circle"></div>
-        <div class="arrow-top1"><svg class="icon"><use xlink:href="#location-arrow-solid-full"></use></svg></div>
-        <div class="arrow-top2"><svg class="icon"><use xlink:href="#location-arrow-solid-full"></use></svg></div>
-        <h1 class="hero-title">青艺设计</h1>
-        <h2 class="hero-subtitle">让设计<span class="highlight">更轻易</span></h2>
-        <p class="hero-description">专业设计师推荐的免费设计工具网站，无需下载即用即走！</p>
-        <button class="hero-button" id="infoBtn">网站介绍</button>
-    </div>
+<div class="hero-content-wrapper">
+    <div class="circle"></div>
+    <div class="arrow-top1"><svg class="icon"><use xlink:href="#location-arrow-solid-full"></use></svg></div>
+    <div class="arrow-top2"><svg class="icon"><use xlink:href="#location-arrow-solid-full"></use></svg></div>
+    <h1 class="hero-title">青艺设计</h1>
+    <h2 class="hero-subtitle">让设计<span class="highlight">更轻易</span></h2>
+    <p class="hero-description">专业设计师推荐的免费设计工具网站，无需下载即用即走！</p>
+    <button class="hero-button" id="infoBtn">网站介绍</button>
+    <button class="hero-button changelog-button" id="changelogBtn">更新日志</button>
+  </div>
 </div>
 
     <div class="container" style="margin-top: 0; position: relative; z-index: 60;">       
@@ -530,7 +539,90 @@ function showAddToHomePrompt() {
 closeAddToHomeBtn.addEventListener('click', () => {
   addToHomeElement.style.display = 'none';
 });
+// 【新增代码】 开始
 
+// --- 更新日志弹窗控制逻辑 ---
+document.addEventListener('DOMContentLoaded', function() {
+    const changelogBtn = document.getElementById('changelogBtn');
+    const changelogModal = document.getElementById('changelogModal');
+    const changelogClose = document.getElementById('changelogClose');
+    const changelogConfirm = document.getElementById('changelogConfirm');
+    const changelogContent = document.getElementById('changelogContent');
+
+  // 动态填充日志内容 (新版)
+function populateChangelog() {
+    const changelogContent = document.getElementById('changelogContent');
+
+    if (typeof changelogData !== 'undefined' && changelogData.length > 0) {
+        
+        const groupedLogs = {};
+        changelogData.forEach(log => {
+            // 确保 content 是一个有内容的数组
+            if (!log.content || log.content.length === 0) return; 
+
+            if (!groupedLogs[log.date]) {
+                groupedLogs[log.date] = []; 
+            }
+            
+            // --- 这里是唯一的修改点 ---
+            // 使用 ... (展开语法) 将 content 数组中的每个元素独立 push 进去
+            groupedLogs[log.date].push(...log.content); 
+        });
+
+        let contentHtml = '';
+        
+        for (const date in groupedLogs) {
+            contentHtml += `<div class="changelog-entry">`;
+            contentHtml += `<h3 class="changelog-date">${date}</h3>`;
+            contentHtml += `<ul class="changelog-list">`;
+            
+            groupedLogs[date].forEach(item => {
+                contentHtml += `<li>${item}</li>`;
+            });
+            
+            contentHtml += `</ul>`;
+            contentHtml += `</div>`;
+        }
+        
+        changelogContent.innerHTML = contentHtml;
+    } else {
+        changelogContent.innerHTML = '<p>暂无更新记录。</p>';
+    }
+}
+
+    // 显示弹窗函数
+    function showChangelogModal() {
+        populateChangelog(); // 每次显示前都重新填充内容
+        changelogModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // 关闭弹窗函数
+    function closeChangelogModal() {
+        changelogModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // 绑定事件
+    changelogBtn.addEventListener('click', showChangelogModal);
+    changelogClose.addEventListener('click', closeChangelogModal);
+    changelogConfirm.addEventListener('click', closeChangelogModal);
+
+    // 点击模态框外部关闭
+    changelogModal.addEventListener('click', function(event) {
+        if (event.target === changelogModal) {
+            closeChangelogModal();
+        }
+    });
+
+    // 按ESC键关闭
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && changelogModal.style.display === 'flex') {
+            closeChangelogModal();
+        }
+    });
+});
+// 【新增代码】 结束
 // 初始化
 showAddToHomePrompt();
         // 新增介绍弹窗控制逻辑

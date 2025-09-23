@@ -29,6 +29,32 @@
         min-height: 100vh;
         line-height: 1.6;
     }
+/* 1. 更新日志按钮样式：白底蓝框，与主按钮区分 */
+.hero-button.changelog-button {
+    background: #fff; /* 白色背景 */
+    color: #5963ff; /* 蓝色文字 */
+    border: 1px solid #5963ff; /* 1像素蓝色边框 */
+    margin-left: 15px; 
+    transition: all 0.3s ease;
+}
+
+.hero-button.changelog-button:hover {
+    background-color: #f5f6ff;
+    transform: translateY(-2px);
+}
+
+/* 2. 优化日志弹窗内的列表样式 */
+#changelogContent ul {
+            line-height: 1.6;
+        color: var(--dark);
+        margin-bottom: 10px;
+        font-size: 1.0rem;
+}
+
+#changelogContent li {
+    position: relative;
+}
+
     .icon {
         display: inline-block;
         width: 1.2em;       /* 设置宽度，1em 表示和父级文字一样大 */
@@ -280,7 +306,7 @@
     }
 
     .intro-text li {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         position: relative;
         margin-left: 20px;
     }
