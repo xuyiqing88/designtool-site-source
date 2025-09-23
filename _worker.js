@@ -22,7 +22,7 @@ export default {
         if (!session) {
           console.log("正在从R2加载 u2net.onnx 模型...");
           // 从R2存储桶中获取大的、完整的模型文件
-          const modelObject = await env.MY_MODEL_BUCKET.get('u2net.onnx');
+          const modelObject = await env.MY_MODEL_BUCKET.get('u2netp.onnx');
           if (modelObject === null) {
             return new Response('模型文件 u2net.onnx 未在R2中找到', { status: 404 });
           }
