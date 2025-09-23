@@ -860,7 +860,8 @@
 
     // ========= 新增：模型加载与缓存逻辑 =========
     async function loadModelWithProgress() {
-      const modelUrl = 'model/u2netp.onnx'; // 确保这个路径是正确的
+      // 【重要】请将下面的URL替换为您自己R2桶中u2netp.onnx文件的真实公开URL
+const modelUrl = 'https://pub-c502804539294926b0c4f69f7b7faf38.r2.dev/u2netp.onnx';
       const cacheName = 'rembg-model-cache-v1';
 
       try {
