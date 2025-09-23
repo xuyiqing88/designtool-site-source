@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 智能扩图工具</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖼️</text></svg>">
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     <style>
         :root {
             --main-color: #5a64ff;
@@ -56,13 +57,14 @@
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             flex-direction: column;
-            max-width: 1200px;
             width: 95%;
             border-radius: 12px;
+            height: 100vh;
+            padding: 0 0 0 60px;
         }
         
         .header {
-            padding: 15px 30px 10px;
+            padding: 20px 30px 0;
             display: flex;
             align-items: baseline;
             color: white;
@@ -76,7 +78,7 @@
         
         .main-content {
             flex-grow: 1;
-            padding: 10px;
+            padding: 20px;
             display: flex;
             overflow-y: auto;
         }
@@ -123,7 +125,6 @@
         .btn-group {
             display: flex;
             gap: 15px;
-            margin-top: auto; /* Push buttons to the bottom */
             padding-top: 20px;
             justify-content: center;
         }
@@ -369,7 +370,7 @@
             color: var(--main-color);
         }
         
-        /* 修正后的模态框样式 */
+        /* 新增样式 */
         .image-actions {
             display: flex;
             justify-content: center;
@@ -396,41 +397,40 @@
         }
         
         .modal-content {
-            position: relative;
-            max-width: 90vw;
-            max-height: 90vh;
-            padding: 10px; /* 为图片和按钮提供呼吸空间 */
-            background: var(--card-bg); /* 添加背景色以承载图片 */
-            border-radius: 12px;
-        }
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    padding: 10px; /* 为图片和按钮提供呼吸空间 */
+    background: var(--card-bg); /* 添加背景色以承载图片 */
+    border-radius: 12px;
+}
         
         .modal-content img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            max-height: calc(90vh - 20px); /* 减去padding */
-            border-radius: 8px;
+            max-height: 90vh;
         }
         
-        .modal-close-btn {
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            color: var(--text1);
-            font-size: 28px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            line-height: 1;
-        }
+    .modal-close-btn {
+    position: absolute;
+    top: -20px; /* 调整位置 */
+    right: -20px; /* 调整位置 */
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    color: var(--text1);
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 增加阴影提升质感 */
+    line-height: 1;
+}
 
         .modal-close-btn:hover {
             transform: scale(1.1);
@@ -438,19 +438,19 @@
         }
         
         .modal-download-btn {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--btcolor);
-            opacity: 0.9;
-            transition: all 0.3s;
-        }
+    position: absolute;
+    bottom: 20px; /* 调整位置，使其在图片内部 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--btcolor);
+    opacity: 0.9; /* 增加轻微透明度 */
+    transition: all 0.3s;
+}
 
-        .modal-download-btn:hover {
-            opacity: 1;
-            transform: translateX(-50%) scale(1.05);
-        }
+.modal-download-btn:hover {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05); /* 增加悬浮效果 */
+}
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -461,13 +461,18 @@
             .drawing-layout {
                 grid-template-columns: 1fr;
             }
+            .panel {
+                padding: 10px;
+            }
             .header {
-                display: none;
+                padding: 20px 20px 10px;
+                justify-content: center;
             }
              .main-layout {
                 width: 100%;
                 height: 100vh;
                 border-radius: 0;
+                padding: 0;
             }
             .main-content {
                 padding: 8px;
@@ -480,6 +485,9 @@
                 right: 10px;
                 background: rgba(0,0,0,0.5);
                 color: white;
+            }
+            .modal-download-btn {
+                bottom: 20px;
             }
         }
     </style>
@@ -622,13 +630,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedImageUrl = null;
     let originalWidth = 0;
     let originalHeight = 0;
-    let currentExpandedImageUrl = null;
-    const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289';
+    let currentExpandedImageUrl = null; // 用于存储生成的图片URL，供下载和放大使用
+    const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289'; // 公共API Key
 
     // --- 事件监听 ---
     clearBtn.addEventListener('click', clearAll);
     generateBtn.addEventListener('click', generateExpandedImage);
-    regenerateExpandedBtn.addEventListener('click', generateExpandedImage);
+    regenerateExpandedBtn.addEventListener('click', generateExpandedImage); // 重新生成按钮也调用同一个函数
     downloadExpandedBtn.addEventListener('click', downloadExpandedImage);
     generatedImage.addEventListener('click', showExpandedImageModal);
     modalCloseBtn.addEventListener('click', () => imageModal.classList.remove('show'));
@@ -757,14 +765,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('API返回了无效或空的图像数据');
             }
             uploadToImgBB(blob, "expanded-image").catch(err => console.error("生成结果上传失败:", err));
+            
+            // 使用Blob URL，性能更好
             if (currentExpandedImageUrl) {
-                URL.revokeObjectURL(currentExpandedImageUrl);
+                URL.revokeObjectURL(currentExpandedImageUrl); // 释放旧的URL
             }
             currentExpandedImageUrl = URL.createObjectURL(blob);
+            
             generatedImage.onload = () => {
                 drawingPlaceholder.classList.add('hidden');
                 generatedImage.classList.remove('hidden');
-                imageActions.style.display = 'flex';
+                imageActions.style.display = 'flex'; // 显示功能按钮
                 showAlert('图像生成成功！', 'success');
             };
             generatedImage.src = currentExpandedImageUrl;
@@ -774,9 +785,11 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert(`生成失败: ${error.message}`, 'error');
             drawingPlaceholder.innerHTML = `<svg class="icon" style="color: var(--error-color);"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败，请重试</p>`;
         } finally {
-            setButtonLoading(generateBtn, false, generateBtn.innerHTML);
+            setButtonLoading(generateBtn, false, '生成图像');
         }
     }
+
+    // --- 新增：图片操作函数 ---
 
     function showExpandedImageModal() {
         if (currentExpandedImageUrl) {
@@ -790,10 +803,13 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert('没有可下载的图像', 'error');
             return;
         }
+        
         const button = this.id === 'modalDownloadBtn' ? modalDownloadBtn : downloadExpandedBtn;
         const originalHtml = button.innerHTML;
         setButtonLoading(button, true, '下载中...');
+
         try {
+            // currentExpandedImageUrl已经是blob URL，可以直接使用
             const link = document.createElement('a');
             link.href = currentExpandedImageUrl;
             link.download = `expanded-image-${Date.now()}.png`;
@@ -805,10 +821,11 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('下载失败:', error);
             showAlert('下载失败，请重试', 'error');
         } finally {
-            setButtonLoading(button, false, originalHtml);
+             setButtonLoading(button, false, originalHtml);
         }
     }
 
+    // --- 辅助及UI函数 ---
     function calculateFinalDimensions() {
         if (originalWidth === 0 || originalHeight === 0) {
             return { finalWidth: 0, finalHeight: 0 };
@@ -846,7 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
         directionBtns.forEach(btn => btn.classList.remove('active'));
         generatedImage.src = '';
         generatedImage.classList.add('hidden');
-        imageActions.style.display = 'none';
+        imageActions.style.display = 'none'; // 隐藏功能按钮
         drawingPlaceholder.classList.remove('hidden');
         drawingPlaceholder.innerHTML = `<svg class="icon"><use xlink:href="#image-solid-full"></use></svg><p>此处将显示生成的图像</p>`;
         showAlert('已清除所有内容', 'success');
@@ -883,8 +900,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isLoading) {
             button.innerHTML = loadingText;
         } else {
-            if (typeof loadingText === 'string') {
-                button.innerHTML = loadingText;
+            // For buttons with original HTML content (like icons)
+            if(typeof loadingText === 'string'){
+                 // This case is for simple text restoration
+                 if(button.id === 'generateBtn') button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像';
+            } else {
+                 // Restore original HTML if it was passed
+                 button.innerHTML = loadingText;
             }
         }
     }
@@ -902,4 +924,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-}
