@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 智能扩图工具</title>
+    <title>AI一键扩图 - AI智能扩图工具</title>
     <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <style>
         :root {
             --main-color: #5a64ff;
@@ -44,6 +45,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .icon {
             display: inline-block;
             width: 1.2em;
@@ -70,7 +72,11 @@
             color: white;
             gap: 10px;
         }
-        
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
         .logo h1 {
             font-size: 1.8rem;
             font-weight: 700;
@@ -462,6 +468,10 @@
             .drawing-layout {
                 grid-template-columns: 1fr;
             }
+            .logo {
+                    align-items: center;
+                    flex-direction: column;
+            }
             .panel {
                 padding: 10px;
             }
@@ -512,7 +522,8 @@
 <div class="main-layout">
     <div class="header">
         <div class="logo">
-            <h1>AI 智能扩图</h1>
+            <h1>AI一键扩图</h1>
+            <p style="font-size: 14px;">无需复杂操作，一键即可扩展图片尺寸。</p>
         </div>
     </div>
     
