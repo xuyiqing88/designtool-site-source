@@ -1240,16 +1240,17 @@
                                 <input type="password" id="apiKey" placeholder="输入您的Gemini API密钥">
                             </div>
                             
-                            <div class="settings-item">
-                                <label for="modelSelection">模型选择</label>
-                                <p class="panel-description" style="color: var(--text3);">
-                                    选择用于所有AI功能的模型。三者均支持多模态。
-                                </p>
-                                <select id="modelSelection">
-					                <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash (快速/经济)</option>
-                                    <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro (强大/稳定)</option> 
-                                </select>
-                            </div>
+<div class="settings-item">
+    <label for="modelSelection">模型选择</label>
+    <p class="panel-description" style="color: var(--text3);">
+        选择用于所有AI功能的模型。三者均支持多模态。
+    </p>
+    <select id="modelSelection">
+        <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro</option>
+        <option value="gemini-2.5-pro-latest">Gemini 2.5 Pro</option> 
+        <option value="gemini-pro">Gemini Pro (旧版)</option> 
+    </select>
+</div>
 
 			                <div class="settings-item">
                                 <label for="promptTemplate">
