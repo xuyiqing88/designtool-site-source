@@ -719,35 +719,24 @@
                 <h3 class="modal-title">模型设置</h3>
                 <button class="close-btn" id="closeModalBtn">&times;</button>
             </div>
-<div class="modal-body">
-    <div class="form-group">
-        <label class="form-label">选择模型</label>
-        <select id="modelSelect" class="model-select">
-            <option value="free">免费无api版</option>
-            <option value="deepseek">DeepSeek API版</option>
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (快速)</option>
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro (强大)</option>
-        </select>
-    </div>
-
-    <div id="deepseekApiKeyContainer" class="api-key-container">
-        <label class="form-label">DeepSeek API Key</label>
-        <input type="password" id="deepseekApiKeyInput" class="api-key-input"
-               placeholder="请输入您的DeepSeek API密钥" autocomplete="off">
-        <p style="font-size: 14px; color: var(--text3); margin-top: 8px;">
-            DeepSeek比默认效果好，需自行申请。您的API密钥仅存储在本地浏览器中。
-        </p>
-    </div>
-
-    <div id="geminiApiKeyContainer" class="api-key-container">
-        <label class="form-label">Gemini API Key</label>
-        <input type="password" id="geminiApiKeyInput" class="api-key-input"
-               placeholder="请输入您的Gemini API密钥" autocomplete="off">
-        <p style="font-size: 14px; color: var(--text3); margin-top: 8px;">
-            本功能需使用Google Gemini API。您的API密钥仅存储在本地。请确保您的网络环境可以访问Google服务。
-        </p>
-    </div>
-</div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">选择模型</label>
+                    <select id="modelSelect" class="model-select">
+                        <option value="free">免费无api版</option>
+                        <option value="deepseek">DeepSeek API版</option>
+                    </select>
+                </div>
+                
+                <div id="apiKeyContainer" class="api-key-container">
+                    <label class="form-label">DeepSeek API Key</label>
+                    <input type="password" id="apiKeyInput" class="api-key-input" 
+                           placeholder="请输入您的DeepSeek API密钥" autocomplete="off">
+                    <p style="font-size: 14px; color: var(--text3); margin-top: 8px;">
+                        DeepDeek比默认效果好，需自行申请和购买DeepSeek API。您的API密钥仅存储在本地浏览器中，不会上传到任何服务器
+                    </p>
+                </div>
+            </div>
             <div class="modal-footer">
                 <button class="modal-btn cancel-btn" id="cancelBtn">取消</button>
                 <button class="modal-btn save-btn" id="saveBtn">保存</button>
@@ -897,10 +886,8 @@
         const cancelBtn = document.getElementById('cancelBtn');
         const saveBtn = document.getElementById('saveBtn');
         const modelSelect = document.getElementById('modelSelect');
-        const deepseekApiKeyInput = document.getElementById('deepseekApiKeyInput');
-        const geminiApiKeyInput = document.getElementById('geminiApiKeyInput');
-        const deepseekApiKeyContainer = document.getElementById('deepseekApiKeyContainer');
-        const geminiApiKeyContainer = document.getElementById('geminiApiKeyContainer');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const apiKeyContainer = document.getElementById('apiKeyContainer');
 
         // 状态变量
         let generatedSVG = '';
@@ -911,24 +898,8 @@
         let currentLayoutStyle = 'default';
         let currentPrimaryColor = '#5a64ff';
         let currentModel = 'free'; // 当前选择的模型
-        let deepseekApiKey = ''; 
-        let geminiApiKey = '';
+        let apiKey = ''; // 存储DeepSeek API密钥
 
-// 新增：根据模型选择显示/隐藏对应的API输入框
-        function updateApiKeyInputVisibility() {
-            const selectedModel = modelSelect.value;
-            if (selectedModel === 'deepseek') {
-                deepseekApiKeyContainer.style.display = 'block';
-                geminiApiKeyContainer.style.display = 'none';
-            } else if (selectedModel.startsWith('gemini')) { // 匹配所有gemini模型
-                deepseekApiKeyContainer.style.display = 'none';
-                geminiApiKeyContainer.style.display = 'block';
-            } else { // 免费模型
-                deepseekApiKeyContainer.style.display = 'none';
-                geminiApiKeyContainer.style.display = 'none';
-            }
-        }
-        
         // 初始化
         function init() {
             hideMessages();
@@ -947,9 +918,15 @@
             closeModalBtn.addEventListener('click', closeSettingsModal);
             cancelBtn.addEventListener('click', closeSettingsModal);
             saveBtn.addEventListener('click', saveSettings);
-
-            // 新的、更强大的模型切换逻辑
-            modelSelect.addEventListener('change', updateApiKeyInputVisibility);
+            
+            // 模型选择变化事件
+            modelSelect.addEventListener('change', () => {
+                if (modelSelect.value === 'deepseek') {
+                    apiKeyContainer.style.display = 'block';
+                } else {
+                    apiKeyContainer.style.display = 'none';
+                }
+            });
 
             deviceOptions.forEach(option => {
                 option.addEventListener('click', () => {
@@ -961,20 +938,6 @@
                     updatePreviewSize();
                 });
             });
-        // 新增：根据模型选择显示/隐藏对应的API输入框
-        function updateApiKeyInputVisibility() {
-            const selectedModel = modelSelect.value;
-            if (selectedModel === 'deepseek') {
-                deepseekApiKeyContainer.style.display = 'block';
-                geminiApiKeyContainer.style.display = 'none';
-            } else if (selectedModel.startsWith('gemini')) { // 匹配所有gemini模型
-                deepseekApiKeyContainer.style.display = 'none';
-                geminiApiKeyContainer.style.display = 'block';
-            } else { // 免费模型
-                deepseekApiKeyContainer.style.display = 'none';
-                geminiApiKeyContainer.style.display = 'none';
-            }
-        }
 // 新增：设备图标更新函数
 function updateDeviceIcon() {
     const deviceIcon = document.getElementById('deviceIcon');
@@ -1016,69 +979,39 @@ updateDeviceIcon(); // 确保初始状态正确
         
         // 从本地存储加载设置
         function loadSettings() {
-            // 使用新key "_UI" 避免与其他工具冲突
-            const savedModel = localStorage.getItem('aiModel_UI');
-            const savedDeepseekKey = localStorage.getItem('deepseekApiKey_UI');
-            const savedGeminiKey = localStorage.getItem('geminiApiKey_UI');
-
+            const savedModel = localStorage.getItem('aiModel');
+            const savedApiKey = localStorage.getItem('deepseekApiKey');
+            
             if (savedModel) {
                 currentModel = savedModel;
                 modelSelect.value = savedModel;
+                
+                if (savedModel === 'deepseek') {
+                    apiKeyContainer.style.display = 'block';
+                    if (savedApiKey) {
+                        apiKey = savedApiKey;
+                        apiKeyInput.value = savedApiKey;
+                    }
+                }
             }
-            if (savedDeepseekKey) {
-                deepseekApiKey = savedDeepseekKey;
-                deepseekApiKeyInput.value = savedDeepseekKey;
-            }
-            if (savedGeminiKey) {
-                geminiApiKey = savedGeminiKey;
-                geminiApiKeyInput.value = savedGeminiKey;
-            }
-            
-            updateApiKeyInputVisibility(); // 加载后立即更新UI
-            // 更新API状态显示（优先检查当前模型的key）
-            updateApiStatusForCurrentModel();
         }
         
         // 保存设置到本地存储
         function saveSettings() {
             currentModel = modelSelect.value;
-            deepseekApiKey = deepseekApiKeyInput.value.trim();
-            geminiApiKey = geminiApiKeyInput.value.trim();
             
-            // 根据当前选择的模型，检查对应的key是否为空
-            if (currentModel === 'deepseek' && !deepseekApiKey) {
-                alert('请输入DeepSeek API密钥');
-                return;
+            if (currentModel === 'deepseek') {
+                apiKey = apiKeyInput.value.trim();
+                if (!apiKey) {
+                    alert('请输入DeepSeek API密钥');
+                    return;
+                }
+                localStorage.setItem('deepseekApiKey', apiKey);
             }
-            if (currentModel.startsWith('gemini') && !geminiApiKey) {
-                alert('请输入Gemini API密钥');
-                return;
-            }
-
-            // 保存所有设置
-            localStorage.setItem('aiModel_UI', currentModel);
-            localStorage.setItem('deepseekApiKey_UI', deepseekApiKey);
-            localStorage.setItem('geminiApiKey_UI', geminiApiKey);
-
-            updateApiStatusForCurrentModel();
+            
+            localStorage.setItem('aiModel', currentModel);
             closeSettingsModal();
             alert('设置已保存！');
-        }
- // 新增：根据当前模型更新API状态文本
-        function updateApiStatusForCurrentModel() {
-            const selectedModel = modelSelect.value;
-            let isActive = false;
-            if (selectedModel === 'free') {
-                isActive = true; // 免费版始终可用
-                 apiStatus.textContent = '当前为免费模型';
-                 apiStatus.style.color = '#33b763';
-                 return;
-            } else if (selectedModel === 'deepseek') {
-                isActive = !!deepseekApiKey;
-            } else if (selectedModel.startsWith('gemini')) {
-                isActive = !!geminiApiKey;
-            }
-            updateApiStatus(isActive);
         }
         
         // 打开设置弹窗
@@ -1152,6 +1085,7 @@ updateDeviceIcon(); // 确保初始状态正确
         }
 
         async function generateSVG(promptOverride = null) {
+            // 通过判断是否存在promptOverride来确定这是否是一次"重新生成"操作
             const isRegeneration = promptOverride !== null;
             const prompt = promptOverride ?? promptInput.value.trim();
             
@@ -1159,100 +1093,75 @@ updateDeviceIcon(); // 确保初始状态正确
                 showError(isModificationMode ? '请输入修改要求。' : '请输入UI界面描述。');
                 return;
             }
-            
-            // 检查对应模型的API Key是否存在
-            if (currentModel === 'deepseek' && !deepseekApiKey) {
-                showError('请先在设置中配置DeepSeek API密钥。');
-                openSettingsModal();
-                return;
-            }
-            if (currentModel.startsWith('gemini') && !geminiApiKey) {
-                showError('请先在设置中配置Gemini API密钥。');
-                openSettingsModal();
-                return;
-            }
 
             hideMessages();
             loadingIndicator.style.display = 'flex';
             defaultPreview.style.display = 'none';
-            // ... (省略部分UI状态更新代码, 保持不变)
             regenerateBtn.style.display = 'none';
             modifyBtn.style.display = 'none';
             clearBtn.style.display = 'none';
             downloadBtn.disabled = true;
             svgPreview.innerHTML = '';
 
-
             try {
                 let fullPrompt;
-                // ... (生成 fullPrompt 的逻辑保持不变)
+
                 if (isModificationMode) {
                     fullPrompt = `请基于以下现有的SVG代码，并根据用户的修改要求，生成一个新的完整、有效、可预览的SVG代码。请仅返回SVG代码本身，不要包含任何其他说明文字或Markdown代码块标记。\n\n【现有SVG代码】:\n${generatedSVG}\n\n【修改要求】:\n${prompt}\n\n【其他设计参数】:\n设备: ${currentDevice}, 主色调: ${currentPrimaryColor}, 界面模式: ${currentInterfaceMode}, 布局风格: ${currentLayoutStyle}。请继续使用Lucide图标库和picsum.photos图片库。`;
                 } else {
+                    // 如果是重新生成，在prompt中加入额外指令以确保API返回新的、不同的结果
                     const regenerationHint = isRegeneration ? '请为我生成一个不同于上一个的、全新的、有创意的版本。' : '';
                     fullPrompt = `生成一个完整、有效、可预览的SVG代码，仅返回SVG代码本身，不要包含任何HTML、CSS、JS、解释性文字或Markdown代码块标记。确保SVG是独立且可直接嵌入的。描述：${prompt}。${regenerationHint}设备：${currentDevice}，主色调：${currentPrimaryColor}，界面模式：${currentInterfaceMode}，布局风格：${currentLayoutStyle}，引入开源图片库picsum.photos进行随机填充, 使用Lucide图标库进行填充。`;
                 }
                 
+                let response;
                 let text;
                 
-                // --- 根据选择的模型使用不同的API ---
+                // 根据选择的模型使用不同的API
                 if (currentModel === 'free') {
                     const POLLINATIONS_API_URL = 'https://text.pollinations.ai/';
-                    const response = await fetch(`${POLLINATIONS_API_URL}${encodeURIComponent(fullPrompt)}`);
+                    response = await fetch(`${POLLINATIONS_API_URL}${encodeURIComponent(fullPrompt)}`);
+                    
                     if (!response.ok) throw new Error(`免费API请求失败，状态码: ${response.status}`);
+                    
                     text = await response.text();
-                } 
-                else if (currentModel === 'deepseek') {
+                } else if (currentModel === 'deepseek') {
+                    if (!apiKey) {
+                        throw new Error('请先在设置中配置DeepSeek API密钥');
+                    }
+                    
                     const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
-                    const response = await fetch(DEEPSEEK_API_URL, {
+                    response = await fetch(DEEPSEEK_API_URL, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${deepseekApiKey}`
+                            'Authorization': `Bearer ${apiKey}`
                         },
                         body: JSON.stringify({
                             model: "deepseek-chat",
-                            messages: [{ role: "user", content: fullPrompt }],
+                            messages: [
+                                { role: "user", content: fullPrompt }
+                            ],
                             temperature: 0.7,
-                            max_tokens: 4096 // 增加token
+                            max_tokens: 2000
                         })
                     });
+                    
                     if (!response.ok) {
                         const errorData = await response.json();
                         throw new Error(`DeepSeek API请求失败: ${errorData.error?.message || '未知错误'}`);
                     }
+                    
                     const data = await response.json();
                     text = data.choices[0]?.message?.content || '';
-                } 
-                else if (currentModel.startsWith('gemini')) {
-                    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${geminiApiKey}`;
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: fullPrompt }] }],
-                            generationConfig: {
-                                temperature: 0.7,
-                                maxOutputTokens: 8192
-                            }
-                        })
-                    });
-                    const data = await response.json();
-                    if (!response.ok || !data.candidates) {
-                        console.error('API Error:', data);
-                        const errorMsg = data.error?.message || '未知错误';
-                        throw new Error(`Gemini API请求失败: ${errorMsg}`);
-                    }
-                    text = data.candidates[0].content.parts[0].text;
                 }
                 
-                // --- 后续处理逻辑 (保持不变) ---
                 const svgMatch = text.match(/<svg.*?>[\s\S]*?<\/svg>/i);
-                const newSVG = svgMatch ? svgMatch[0].trim() : text.trim().replace(/```svg\n?|<\/svg>```/g, '').trim();
+                
+                const newSVG = svgMatch ? svgMatch[0].trim() : text.trim();
 
                 if (newSVG && newSVG.startsWith('<svg')) {
-                    generatedSVG = newSVG;
-                    // ... (后续成功的UI更新逻辑保持不变)
+                    generatedSVG = newSVG; // 更新当前SVG
                     const svgWrapper = document.createElement('div');
                     svgWrapper.style.display = 'flex';
                     svgWrapper.style.justifyContent = 'center';
@@ -1273,26 +1182,31 @@ updateDeviceIcon(); // 确保初始状态正确
                     regenerateBtn.style.display = 'flex';
                     modifyBtn.style.display = 'flex';
                     clearBtn.style.display = 'flex';
-                    updateApiStatusForCurrentModel();
+                    updateApiStatus(true);
 
+                    // 成功后退出修改模式，并记录成功的prompt
                     if (isModificationMode) {
                         isModificationMode = false;
                         modificationTitle.style.display = 'none';
-                        promptInput.value = '';
+                        promptInput.value = ''; // 清空修改指令
                         promptInput.placeholder = '请输入您想要生成的UI界面描述，例如：一个用户端登录界面。';
                     }
+                    // 只在不是修改模式（即初始生成或重新生成）时更新lastSuccessfulPrompt
                     if (!isModificationMode) {
                         lastSuccessfulPrompt = prompt;
                     }
+
                 } else {
                     showError('API返回了空或无效的SVG内容。请尝试更具体的描述。');
                     defaultPreview.style.display = 'flex';
+                    updateApiStatus(false);
                 }
 
             } catch (error) {
                 console.error('生成SVG时发生错误:', error);
                 showError(`生成失败: ${error.message}`);
                 defaultPreview.style.display = 'flex';
+                updateApiStatus(false);
             } finally {
                 loadingIndicator.style.display = 'none';
             }
