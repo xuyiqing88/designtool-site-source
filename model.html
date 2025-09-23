@@ -1040,7 +1040,6 @@ display: flex;
 
 </style>
 </head>
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
 <svg width="0" height="0" class="hidden">
   <symbol version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 210 155" id="AIrengongzhineng">
@@ -1095,7 +1094,7 @@ display: flex;
 	<span style="background: var(--btcolor); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
 	模型数据集编辑器</span>
     </h2>
-    <div class="miaoshu" style="color: var(--text2);">V2.1 2025-07-21 徐艺青
+    <div class="miaoshu" style="color: var(--text2);">V2.2 2025-09-23 徐艺青
 <a href="#" id="featureLink" class="linetxt" style="margin-left: 8px;">功能介绍</a>
 </div>
 <div class="bg-1">
@@ -2954,41 +2953,40 @@ async function analyzeImage(file) {
         reader.readAsDataURL(file);
     });
 
-    const model = localStorage.getItem('GEMINI_MODEL') || 'gemini-1.5-flash-latest';
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-    const API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
+const model = localStorage.getItem('GEMINI_MODEL') || 'gemini-2.5-flash';
+const API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
 
+// 关键修改：将 API_KEY 放入 URL，并移除请求头中的 x-goog-api-key
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
 
-    const requestBody = {
-        contents: [{
-            parts: [
-                { 
-                    text: localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT
-                },
-                {
-                    inline_data: {
-                        mime_type: file.type,
-                        data: base64Image
-                    }
+const requestBody = {
+    contents: [{
+        parts: [
+            { 
+                text: localStorage.getItem('CUSTOM_PROMPT') || DEFAULT_PROMPT
+            },
+            {
+                inline_data: {
+                    mime_type: file.type,
+                    data: base64Image
                 }
-            ]
-        }],
-        generationConfig: {
-            temperature: 0.4,
-            topP: 1,
-            topK: 32,
-            maxOutputTokens: 200
-        }
-    };
+            }
+        ]
+    }],
+generationConfig: {
+    temperature: 0.7,
+    maxOutputTokens: 8192
+}
+};
 
-    const response = await fetch(API_URL, {  // 移除URL参数
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'x-goog-api-key': API_KEY  // 添加认证头
-        },
-        body: JSON.stringify(requestBody)
-    });
+const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json'
+        // 'x-goog-api-key' 已被移除
+    },
+    body: JSON.stringify(requestBody)
+});
 
     if (!response.ok) {
         const error = await response.json();
@@ -3243,6 +3241,10 @@ async function analyzeImage(file) {
         <div class="modal-title">功能更新说明
 	</div>
         <div class="modal-content">
+        <p class="p1"><strong>版本 V2.2 2025-09-23 更新内容：</strong></p>
+        	<ul>
+        	<li class="li1">新增<span class="remind">模型选择</span>，可以切换选择三种Gemini模型</li>
+        	</ul>
         <p class="p1"><strong>版本 V2.1 2025-07-21 更新内容：</strong></p>
         	<ul>
         	<li class="li1">新增<span class="remind">一键反推</span>功能，点击按钮可实现一键反推，无需挨个去操作</li>
