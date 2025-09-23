@@ -179,13 +179,13 @@
             position: relative;
         }
         
-        #generatedImage {
-            max-width: 100%;
-            max-height: 500px;
-            border-radius: 12px;
-            display: none;
-            border: 1px solid var(--line);
-        }
+    #generatedImage {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 12px;
+    display: block; /* <-- 修改这里 */
+    border: 1px solid var(--line);
+}
         
         .drawing-placeholder {
             color: var(--text3);
@@ -484,7 +484,7 @@
                             <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
                             <p>此处将显示生成的图像</p>
                         </div>
-                        <img id="generatedImage" alt="生成的图像">
+                        <img id="generatedImage" alt="生成的图像" class="hidden">
                     </div>
                 </div>
             </div>
@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
             model: 'kontext', // 扩图任务必须使用kontext模型
             nologo: 'true',
             safe: 'false',
-            referrer: 'designtool.site'
+            token: 'lOpIOM_Rk9Ne3k5Z'
         });
         const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params.toString()}`;
 
