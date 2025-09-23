@@ -827,14 +827,10 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.min.js"></script>
   <script>
-    // 设置从 CDN 自动加载 .wasm 文件
-    ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/';
-    ort.env.wasm.numThreads = 1;
+// /rembg.html (只替换 <script> 标签里的内容)
 
-    // DOM 元素
-    // --- DOM 元素 (这部分和原来一样) ---
+// --- DOM 元素 ---
 const fileInput = document.getElementById('file-input');
 const dropArea = document.getElementById('drop-area');
 const processBtn = document.getElementById('process-btn');
@@ -848,15 +844,15 @@ const clearBtn = document.getElementById('clear-btn');
 const modal = document.getElementById('image-modal');
 const modalImage = document.getElementById('modal-image');
 const closeModal = document.querySelector('.close-modal');
-
-// --- 移除所有模型加载相关的DOM和逻辑 ---
 const loadingOverlay = document.getElementById('loading-overlay');
-loadingOverlay.style.display = 'none'; // 直接隐藏，我们不再需要它了
 
 let files = [];
 let processedFiles = [];
 
-// --- 初始化事件监听 (和原来基本一样) ---
+// 页面加载后立即隐藏模型加载动画
+loadingOverlay.style.display = 'none';
+
+// --- 事件监听 ---
 function initEventListeners() {
     dropArea.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', handleFileSelect);
@@ -872,23 +868,16 @@ function initEventListeners() {
     dropArea.addEventListener('drop', handleDrop, false);
     processBtn.addEventListener('click', processImages);
     batchDownload.addEventListener('click', downloadAllResults);
-    clearBtn.addEventListener('click', clearResults);
+    clearBtn.addEventListener('click', clearAll);
     closeModal.addEventListener('click', () => modal.classList.remove('active'));
     modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.classList.remove('active');
     });
 }
 
-// --- 文件处理逻辑 (大部分和原来一样) ---
-function handleFileSelect(e) {
-    const selectedFiles = e.target.files;
-    if (selectedFiles.length > 0) addFiles(selectedFiles);
-}
-
-function handleDrop(e) {
-    const droppedFiles = e.dataTransfer.files;
-    if (droppedFiles.length > 0) addFiles(droppedFiles);
-}
+// --- 文件处理 ---
+function handleFileSelect(e) { addFiles(e.target.files); }
+function handleDrop(e) { addFiles(e.dataTransfer.files); }
 
 function addFiles(fileList) {
     const maxFiles = 10;
@@ -930,7 +919,8 @@ function createPreviewCard(file) {
             <button class="delete-btn" data-filename="${file.name}"><svg class="icon"><use xlink:href="#xmark-solid-full"></use></svg></button>
         `;
         previewContainer.appendChild(card);
-        card.querySelector('.delete-btn').addEventListener('click', () => {
+        card.querySelector('.delete-btn').addEventListener('click', (event) => {
+            event.stopPropagation();
             removeFile(file.name);
             card.remove();
         });
@@ -950,10 +940,10 @@ function updateBatchInfo() {
     totalCountHeader.textContent = total;
     completedCountHeader.textContent = completed;
     headerProgressBar.style.width = total > 0 ? `${Math.round((completed / total) * 100)}%` : '0%';
-    batchDownload.classList.toggle('visible', completed === total && total > 0);
+    batchDownload.classList.toggle('visible', completed > 0 && completed === total);
 }
 
-// --- 核心改动：图片处理逻辑 ---
+// --- 核心处理逻辑 ---
 async function processImages() {
     if (files.length === 0) return;
     processBtn.disabled = true;
@@ -969,12 +959,23 @@ async function processImages() {
         statusText.textContent = '正在处理...';
 
         try {
-            // 调用新的后端处理函数
-            const processedImage = await processSingleImageOnBackend(file);
-            processedFiles.push({ file: file, result: processedImage });
+            const response = await fetch('/api/remove-background', {
+                method: 'POST',
+                body: file
+            });
+
+            if (!response.ok) {
+                throw new Error(`服务器错误: ${response.status} ${response.statusText}`);
+            }
+
+            const imageBlob = await response.blob();
+            const resultUrl = URL.createObjectURL(imageBlob);
+
+            processedFiles.push({ file: file, result: resultUrl });
             statusDot.className = 'status-dot status-completed';
             statusText.textContent = '已完成';
-            displayResult(file, processedImage);
+            displayResult(file, resultUrl);
+
         } catch (error) {
             console.error(`图片处理失败: ${file.name}`, error);
             statusDot.className = 'status-dot status-error';
@@ -986,57 +987,11 @@ async function processImages() {
     processBtn.disabled = files.length === 0;
 }
 
-async function processSingleImageOnBackend(file) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        img.onload = async () => {
-            try {
-                // 1. 在浏览器端将图片转换为Tensor数据
-                const { tensor, originalWidth, originalHeight } = imageToTensor(img);
-
-                // 2. 将Tensor数据发送到我们的后端Worker
-                const response = await fetch('/api/remove-background', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        input: tensor.data,
-                        dims: tensor.dims
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`服务器错误: ${response.statusText}`);
-                }
-                const { mask } = await response.json();
-
-                // 3. 在浏览器端将返回的蒙版应用到原图上
-                const resizedMask = resizeMask(mask, 320, originalWidth, originalHeight);
-                const canvas = document.createElement('canvas');
-                canvas.width = originalWidth;
-                canvas.height = originalHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, originalWidth, originalHeight);
-                const imgData = ctx.getImageData(0, 0, originalWidth, originalHeight);
-                for (let i = 0; i < originalWidth * originalHeight; i++) {
-                    imgData.data[i * 4 + 3] = Math.floor(resizedMask[i] * 255);
-                }
-                ctx.putImageData(imgData, 0, 0);
-
-                canvas.toBlob(blob => resolve(URL.createObjectURL(blob)), 'image/png');
-
-            } catch (error) {
-                reject(error);
-            }
-        };
-        img.onerror = () => reject(new Error('图片加载失败'));
-    });
-}
-
-// --- 辅助函数 (大部分和原来一样) ---
+// --- 结果展示与下载 ---
 function displayResult(file, resultUrl) {
     const emptyState = resultsContainer.querySelector('.empty-state');
     if (emptyState) emptyState.style.display = 'none';
+
     const resultItem = document.createElement('div');
     resultItem.className = 'result-item';
     resultItem.innerHTML = `
@@ -1071,60 +1026,19 @@ function downloadAllResults() {
     processedFiles.forEach(pf => downloadImage(pf.result, pf.file.name));
 }
 
-function clearResults() {
-    resultsContainer.innerHTML = `<div class="empty-state" style="display: flex;">...</div>`; // 简化
-    processedFiles = [];
-    files = [];
+function clearAll() {
+    resultsContainer.innerHTML = `
+        <div class="empty-state">
+            <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
+            <h3>暂无处理结果</h3>
+            <p>上传图片并点击"开始抠图"</p>
+        </div>
+    `;
     previewContainer.innerHTML = '';
+    files = [];
+    processedFiles = [];
     updateBatchInfo();
     processBtn.disabled = true;
-}
-
-function imageToTensor(img, size = 320) {
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, size, size);
-    const imgData = ctx.getImageData(0, 0, size, size).data;
-    const float32Data = new Float32Array(size * size * 3);
-    for (let i = 0; i < size * size; i++) {
-        float32Data[i] = imgData[i * 4] / 255;
-        float32Data[i + size * size] = imgData[i * 4 + 1] / 255;
-        float32Data[i + size * size * 2] = imgData[i * 4 + 2] / 255;
-    }
-    return {
-        tensor: new ort.Tensor('float32', float32Data, [1, 3, size, size]),
-        originalWidth: img.width,
-        originalHeight: img.height
-    };
-}
-
-function resizeMask(mask, fromSize, toW, toH) {
-    const canvas = document.createElement('canvas');
-    canvas.width = fromSize;
-    canvas.height = fromSize;
-    const ctx = canvas.getContext('2d');
-    const imageData = ctx.createImageData(fromSize, fromSize);
-    for (let i = 0; i < fromSize * fromSize; i++) {
-        const value = Math.floor(mask[i] * 255);
-        imageData.data[i * 4] = value;
-        imageData.data[i * 4 + 1] = value;
-        imageData.data[i * 4 + 2] = value;
-        imageData.data[i * 4 + 3] = 255;
-    }
-    ctx.putImageData(imageData, 0, 0);
-    const outputCanvas = document.createElement('canvas');
-    outputCanvas.width = toW;
-    outputCanvas.height = toH;
-    const outCtx = outputCanvas.getContext('2d');
-    outCtx.drawImage(canvas, 0, 0, toW, toH);
-    const resized = outCtx.getImageData(0, 0, toW, toH).data;
-    const resizedMask = new Float32Array(toW * toH);
-    for (let i = 0; i < toW * toH; i++) {
-        resizedMask[i] = resized[i * 4] / 255;
-    }
-    return resizedMask;
 }
 
 function formatFileSize(bytes) {
