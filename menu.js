@@ -1,4 +1,3 @@
-
 // 创建并注入菜单样式
 const menuStyles = document.createElement('style');
 menuStyles.textContent = `
@@ -8,7 +7,9 @@ menuStyles.textContent = `
     box-sizing: border-box;
     font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
 }
-
+.hidden {
+    display: none;
+}
 :root {
     --sidebar-width: 60px;
     --sidebar-expanded-width: 240px;

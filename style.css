@@ -20,13 +20,14 @@
         box-sizing: border-box;
         font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
     }
-
+.hidden {
+    display: none;
+}
     body {
         background: #fff;
         color: var(--dark);
         min-height: 100vh;
         line-height: 1.6;
-	margin-top: -25px;
     }
     .icon {
         display: inline-block;
