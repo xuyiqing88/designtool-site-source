@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "build": "mkdir public && rsync -av --exclude 'model/' --exclude '.git/' --exclude '_worker.js' ./ public/ && cp _worker.js ./public/_worker.js"
+  }
+}
