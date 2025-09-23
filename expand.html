@@ -738,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert(`目标尺寸(${finalWidth}x${finalHeight})过大，请减少扩展方向。`, 'error');
             return;
         }
-        const prompt = `Expand the image ${activeDirections.map(btn => btn.dataset.direction).join(' and ')}`;
+        const prompt = `Expand the image ${activeDirections.map(btn => btn.dataset.direction).join(' and ')}, keep the background unchanged`;
         const strength = 0.6;
         const seed = Math.floor(Math.random() * 1000000);
         const params = new URLSearchParams({
@@ -838,23 +838,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 辅助及UI函数 ---
+    
+    /**
+     * [MODIFIED] Calculates final image dimensions based on original size, aspect ratio, and selected expansion directions.
+     * - For squares, total expansion is 1/2 of the side length.
+     * - For rectangles, total expansion is 1/2 of the short side or 1/4 of the long side.
+     * This logic applies whether one or two directions (e.g., left and right) are selected on an axis.
+     */
     function calculateFinalDimensions() {
         if (originalWidth === 0 || originalHeight === 0) {
             return { finalWidth: 0, finalHeight: 0 };
         }
-        let finalWidth = originalWidth;
-        let finalHeight = originalHeight;
-        const extensionX = Math.round(originalWidth / 2);
-        const extensionY = Math.round(originalHeight / 2);
+
         const activeDirections = new Set(Array.from(directionBtns).filter(btn => btn.classList.contains('active')).map(btn => btn.dataset.direction));
-        if (activeDirections.has('to the left')) finalWidth += extensionX;
-        if (activeDirections.has('to the right')) finalWidth += extensionX;
-        if (activeDirections.has('upwards')) finalHeight += extensionY;
-        if (activeDirections.has('downwards')) finalHeight += extensionY;
+        
+        const isUp = activeDirections.has('upwards');
+        const isDown = activeDirections.has('downwards');
+        const isLeft = activeDirections.has('to the left');
+        const isRight = activeDirections.has('to the right');
+
+        const horizontalDirections = (isLeft ? 1 : 0) + (isRight ? 1 : 0);
+        const verticalDirections = (isUp ? 1 : 0) + (isDown ? 1 : 0);
+
+        let totalHorizontalExtension = 0;
+        let totalVerticalExtension = 0;
+
+        // 根据是否选择水平扩展方向来计算总扩展量
+        if (horizontalDirections > 0) {
+            if (originalWidth === originalHeight) { // 正方形
+                totalHorizontalExtension = Math.round(originalWidth / 2);
+            } else if (originalWidth < originalHeight) { // 长方形（竖向），宽度是短边
+                totalHorizontalExtension = Math.round(originalWidth / 2);
+            } else { // 长方形（横向），宽度是长边
+                totalHorizontalExtension = Math.round(originalWidth / 4);
+            }
+        }
+
+        // 根据是否选择垂直扩展方向来计算总扩展量
+        if (verticalDirections > 0) {
+            if (originalWidth === originalHeight) { // 正方形
+                totalVerticalExtension = Math.round(originalHeight / 2);
+            } else if (originalWidth < originalHeight) { // 长方形（竖向），高度是长边
+                totalVerticalExtension = Math.round(originalHeight / 4);
+            } else { // 长方形（横向），高度是短边
+                totalVerticalExtension = Math.round(originalHeight / 2);
+            }
+        }
+
+        let finalWidth = originalWidth + totalHorizontalExtension;
+        let finalHeight = originalHeight + totalVerticalExtension;
+        
         const roundTo64 = num => {
             const result = Math.round(num / 64) * 64;
             return result > 0 ? result : 64;
         };
+        
         return { finalWidth: roundTo64(finalWidth), finalHeight: roundTo64(finalHeight) };
     }
 
