@@ -1,5 +1,8 @@
 {
-  "scripts": {
-    "build": "mkdir public && rsync -av --exclude 'model/' --exclude '.git/' --exclude '_worker.js' ./ public/ && cp _worker.js ./public/_worker.js"
+"scripts": {
+  "build": "rm -rf public && mkdir public && copyfiles -u 1 *.html *.js *.css *.json *.txt *.xml public && copyfiles -u 1 \"libs/**/*\" \"img/**/*\" \"video/**/*\" \"freeAI.html\" \"hdr_副本.html\" \"hdr.html\" \"jntm.html\" \"lotbar.html\" \"menu.js\" \"normal.html\" \"opencut.html\" \"ORM.html\" \"prompts.js\" \"PS.html\" \"radio.html\" \"rembg.html\" \"scale.html\" \"SDXL.html\" \"sw.js\" \"test.html\" \"texture.html\" \"translation.html\" \"weaving.html\" \"flower.html\" public && cp _worker.js ./public/_worker.js"
+},
+  "devDependencies": {
+    "copyfiles": "^2.4.1"
   }
 }
