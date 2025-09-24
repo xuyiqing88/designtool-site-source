@@ -1480,7 +1480,7 @@
         return await blobToDataURL(blob);
     }
 
-    ffunction generateImage() {
+    function generateImage() {
     const prompt = drawingPrompt.value.trim();
     if (!prompt) return showAlert('请输入图像描述', 'error');
     let finalPrompt = stylePrefixes[styleSelect.value] ? stylePrefixes[styleSelect.value] + prompt : prompt;
