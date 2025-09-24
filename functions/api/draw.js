@@ -1,41 +1,34 @@
-// 文件: functions/api/draw.js (V2 - 带有日志功能)
+// 文件: functions/api/draw.js (V3 - 使用 Authorization Header)
 
 export async function onRequestPost(context) {
   try {
-    // 1. 从 Cloudflare 环境变量中安全地获取您的私人 API Token
     const apiToken = context.env.POLLINATIONS_API_TOKEN;
 
     if (!apiToken) {
-      // 增加明确的日志
       console.error("错误：服务器未能从环境变量中读取 POLLINATIONS_API_TOKEN。");
       return new Response(JSON.stringify({ error: '服务器未配置API Token。' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        status: 500, headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // 2. 解析从前端发来的 JSON 数据
     const requestData = await context.request.json();
 
     if (!requestData.prompt || !requestData.width || !requestData.height) {
       return new Response(JSON.stringify({ error: '缺少必要的参数(prompt, width, height)。' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
+        status: 400, headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // 3. 构建发往 Pollinations AI 的 URLSearchParams
+    // [核心修改 1] 构建 URL 时，不再需要 'referrer' 参数了
     const params = new URLSearchParams({
       width: requestData.width,
       height: requestData.height,
       seed: requestData.seed || Math.floor(Math.random() * 1000000),
       nologo: 'true',
       safe: 'false',
-      // [核心安全步骤] 在这里使用您储存在服务器的私密 Token
-      referrer: apiToken,
     });
     
-    // 动态添加前端传来的其他可选参数
+    // 动态添加其他参数 (保持不变)
     if (requestData.model) params.append('model', requestData.model);
     if (requestData.enhance) params.append('enhance', 'true');
     if (requestData.style) params.append('style', requestData.style);
@@ -45,25 +38,25 @@ export async function onRequestPost(context) {
 
     const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(requestData.prompt)}?${params.toString()}`;
 
-    // =================================================================
-    // ↓↓↓↓↓↓ 【新增的核心调试日志】 ↓↓↓↓↓↓
-    // =================================================================
-    console.log(`正在请求的最终URL: ${apiUrl}`);
-    // =================================================================
+    console.log(`正在请求的URL (不含Token): ${apiUrl}`);
 
-    // 4. 从后端服务器发起对 Pollinations AI 的请求
-    const aiResponse = await fetch(apiUrl);
+    // [核心修改 2] 在 fetch 请求中，通过 Authorization Header 发送 Token
+    const aiResponse = await fetch(apiUrl, {
+        method: 'GET', // API 依然是 GET 请求
+        headers: {
+            // 这是最标准的 API Token 验证方式
+            'Authorization': `Bearer ${apiToken}`
+        }
+    });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error(`AI 接口返回错误: ${errorText}`); // 增加错误日志
+      console.error(`AI 接口返回错误: ${errorText}`);
       return new Response(JSON.stringify({ error: `AI接口错误: ${errorText}` }), {
-        status: aiResponse.status,
-        headers: { 'Content-Type': 'application/json' },
+        status: aiResponse.status, headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // 5. 成功后，将获取到的图片直接返回给前端
     return new Response(aiResponse.body, {
       status: 200,
       headers: {
@@ -72,10 +65,9 @@ export async function onRequestPost(context) {
     });
 
   } catch (error) {
-    console.error(`服务器内部错误: ${error.message}`); // 增加异常日志
+    console.error(`服务器内部错误: ${error.message}`);
     return new Response(JSON.stringify({ error: `服务器内部错误: ${error.message}` }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      status: 500, headers: { 'Content-Type': 'application/json' },
     });
   }
 }
