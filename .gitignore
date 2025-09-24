@@ -1,1 +1,8 @@
 model/u2netp.onnx
+.DS_Store
+functions/.DS_Store
+img/.DS_Store
+img/game/.DS_Store
+img/style-preview/.DS_Store
+model/.DS_Store
+video/.DS_Store
