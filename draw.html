@@ -49,7 +49,44 @@
             color: var(--text1);
             transition: background 0.3s ease;
         }
-        .icon {
+        /* 1. 重置滑块的基本样式 */
+#imageToImageStrength {
+    -webkit-appearance: none; /* 移除 WebKit/Blink 浏览器的默认外观 */
+    appearance: none;         /* 移除其他浏览器的默认外观 */
+    width: 100%;              /* 宽度占满容器 */
+    height: 8px;              /* 滑块轨道的高度 */
+    background: var(--line);  /* 未填充部分的背景色，使用现有颜色变量 */
+    border-radius: 5px;       /* 圆角 */
+    outline: none;            /* 移除焦点时的轮廓 */
+    padding: 0;               /* 覆盖内联样式中的 padding */
+    margin: 8px 0;            /* 增加垂直间距，优化布局 */
+}
+
+/* 2. 为 WebKit 浏览器 (Chrome, Safari) 设置轨道样式 */
+#imageToImageStrength::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background: var(--btactive); /* !关键: 应用主色调渐变 */
+    border-radius: 5px;
+    border: 1px solid var(--line);
+}
+
+/* 3. 为 WebKit 浏览器设置滑块手柄样式 */
+#imageToImageStrength::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 2px solid white;  
+    height: 20px;             
+    width: 20px;             
+    border-radius: 50%;       
+    background: var(--main-color); 
+    cursor: pointer;
+    margin-top: -6px;     
+    box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+}
+
+.icon {
     display: inline-block;
     width: 1.2em;
     height: 1.2em;
@@ -1589,7 +1626,25 @@
     function showImageModal() { const activeTab = document.querySelector('.secondary-tab-btn.active').dataset.subtab; if ((activeTab === 'textToImage' || activeTab === 'imageToImage') && currentImageUrl) { modalImage.src = currentImageUrl; imageModal.classList.add('show'); currentHistoryIndex = -1; modalPrevBtn.style.display = 'none'; modalNextBtn.style.display = 'none'; } }
     async function downloadImage() { if (!currentImageUrl) return; const button = this.id === 'modalDownloadBtn' ? modalDownloadBtn : downloadImageBtn; const originalButtonHtml = button.innerHTML; setButtonLoading(button, true, '下载中...'); try { const response = await fetch(currentImageUrl); const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; let prompt = (currentHistoryIndex !== -1) ? JSON.parse(localStorage.getItem('aiDrawingHistory'))[currentHistoryIndex].prompt : drawingPrompt.value; link.download = `ai-art-${prompt.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_') || 'image'}.png`; document.body.appendChild(link); link.click(); document.body.removeChild(link); window.URL.revokeObjectURL(url); showAlert('下载开始', 'success'); } catch (error) { console.error("下载失败:", error); showAlert('下载失败', 'error'); } finally { setButtonLoading(button, false, originalButtonHtml); } }
     function clearDrawing() { drawingPrompt.value = ''; drawingPlaceholder.style.display = 'flex'; drawingPlaceholder.innerHTML = `<svg class="icon"><use xlink:href="#image-solid-full"></use></svg><p>输入提示词并点击"生成图像"按钮</p>`; generatedImage.style.display = 'none'; imageActions.style.display = 'none'; currentImageUrl = null; seedInput.value = ''; }
-    function setButtonLoading(button, isLoading, loadingText) { button.disabled = isLoading; if (isLoading) { button.innerHTML = loadingText; } else { if(button.id === 'generateImageBtn' || button.id === 'generateImageToImageBtn'){ button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'; } else { button.innerHTML = loadingText; } } }
+    function setButtonLoading(button, isLoading, loadingText) {
+    button.disabled = isLoading;
+    if (isLoading) {
+        // 在加载文字前添加一个转圈的动画元素
+        // 这个 .loader 类在您的 CSS 中已经定义好了动画效果
+        const loaderHTML = '<div class="loader" style="width: 16px; height: 16px; border-width: 2px; margin-right: 8px;"></div>';
+        button.innerHTML = loaderHTML + `<span>${loadingText}</span>`;
+    } else {
+        // 恢复按钮的原始图标和文本
+        if (button.id === 'generateImageBtn') {
+            button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像';
+        } else if (button.id === 'generateImageToImageBtn') {
+            // 注意：图生图按钮原始HTML中有两个空格，这里予以保留
+            button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像';
+        } else {
+            button.innerHTML = loadingText;
+        }
+    }
+}
     function showAlert(message, type = 'success') { const alertContainer = document.getElementById('alertContainer'); const alert = document.createElement('div'); alert.className = `alert ${type}`; const iconId = type === 'success' ? 'check-circle-solid-full' : 'triangle-exclamation-solid-full'; alert.innerHTML = `<svg class="icon"><use xlink:href="#${iconId}"></use></svg>  ${message}`; alertContainer.appendChild(alert); setTimeout(() => alert.remove(), 3000); }
     function formatDate(dateString) { const date = new Date(dateString); return `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`; }
 </script>
