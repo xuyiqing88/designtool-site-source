@@ -1379,7 +1379,6 @@
         "surrealism": "surreal, dreamlike, bizarre, impossible perspective, ",
         "cyberpunk": "cyberpunk, neon lights, futuristic city, rain, "
     };
-    
     // DOM元素
     const drawingPrompt = document.getElementById('drawingPrompt');
     const modelSelect = document.getElementById('modelSelect');
@@ -1405,8 +1404,6 @@
     const modalNextBtn = document.getElementById('modalNextBtn');
     const tabBtns = document.querySelectorAll('.secondary-tab-btn');
     const enhanceOption = document.getElementById('enhanceOption');
-
-    // 图生图相关DOM元素
     const imageUploadArea = document.getElementById('imageUploadArea');
     const imageUploadInput = document.getElementById('imageUploadInput');
     const uploadedImagePreview = document.getElementById('uploadedImagePreview');
@@ -1429,44 +1426,120 @@
     let currentImageUrl = null;
     let currentImageData = null;
     let currentSeed = '';
-    let uploadedImageUrl = ''; // 存储上传图片的URL
-    const MAX_HISTORY = 100; // 最大历史记录数
-    let currentHistoryIndex = -1; // 当前查看的历史图片索引
-    
-    // ImgBB API
-    const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289'; 
+    let uploadedImageUrl = '';
+    const MAX_HISTORY = 100;
+    let currentHistoryIndex = -1;
+    const IMGBB_API_KEY = '1ca725c363a3096e17108ea665be289';
 
-    // 初始化
     document.addEventListener('DOMContentLoaded', () => {
         setupEventListeners();
         loadHistory();
         setupSeedButtons();
         setupImageToImageListeners();
-        // 新增：为获取原图尺寸按钮添加点击事件
         document.getElementById('getOriginalSizeBtn').addEventListener('click', () => {
             const previewImage = document.getElementById('uploadedImagePreview');
-            // 检查是否有图片上传并且图片已加载完成
             if (previewImage && previewImage.src && previewImage.naturalWidth > 0) {
                 const width = previewImage.naturalWidth;
                 const height = previewImage.naturalHeight;
-                
                 const imageSizeLabel = document.getElementById('imageSizeLabel');
                 const sizeSelect = document.getElementById('imageToImageSizeSelect');
-                
-                // 更新标签文本
                 imageSizeLabel.textContent = `图像尺寸 (${width}×${height}px)`;
-                imageSizeLabel.style.color = 'var(--main-color)'; // 高亮显示
-                
-                // 动态创建一个新的option并选中它
+                imageSizeLabel.style.color = 'var(--main-color)';
                 let newOption = new Option(`${width}×${height} (原图)`, `${width}x${height}`, true, true);
-                sizeSelect.add(newOption, 0); // 添加到最前面
-                
+                sizeSelect.add(newOption, 0);
                 showAlert('已成功获取原图尺寸', 'success');
             } else {
                 showAlert('请先上传一张图片', 'error');
             }
         });
     });
+
+    // 内部函数，用于将Blob转为DataURL
+    function blobToDataURL(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    // 内部函数，用于调用我们专属的后端 /api/draw
+    async function callDrawApi(params) {
+        const response = await fetch('/api/draw', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(params),
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `请求失败: ${response.status}`);
+        }
+        const blob = await response.blob();
+        if (blob.size < 1000) throw new Error("API返回了无效图像");
+        return await blobToDataURL(blob);
+    }
+
+    function generateImage() {
+        const prompt = drawingPrompt.value.trim();
+        if (!prompt) return showAlert('请输入图像描述', 'error');
+        let finalPrompt = stylePrefixes[styleSelect.value] ? stylePrefixes[styleSelect.value] + prompt : prompt;
+        const [width, height] = sizeSelect.value.split('x');
+        currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
+        const params = { prompt: finalPrompt, model: modelSelect.value, width, height, seed: currentSeed, enhance: enhanceOption.checked, style: styleSelect.value };
+        setButtonLoading(generateImageBtn, true, '生成中...');
+        drawingPlaceholder.style.display = 'flex';
+        drawingPlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
+        generatedImage.style.display = 'none';
+        imageActions.style.display = 'none';
+        callDrawApi(params).then(imageUrl => {
+            generatedImage.onload = () => {
+                drawingPlaceholder.style.display = 'none';
+                generatedImage.style.display = 'block';
+                imageActions.style.display = 'flex';
+                showAlert('图像生成成功！', 'success');
+                currentImageUrl = imageUrl;
+                currentImageData = { url: imageUrl, prompt: drawingPrompt.value.trim(), model: modelSelect.value, style: styleSelect.value, size: sizeSelect.value, seed: currentSeed, timestamp: new Date().toLocaleString(), enhance: enhanceOption.checked };
+                saveToHistory(currentImageData);
+            };
+            generatedImage.src = imageUrl;
+        }).catch(error => {
+            console.error('图像生成错误:', error);
+            drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+        }).finally(() => {
+            setTimeout(() => setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'), 5000);
+        });
+    }
+
+    function generateImageToImage() {
+        if (!uploadedImageUrl) return showAlert('请先上传图片', 'error');
+        const prompt = imageToImagePrompt.value.trim();
+        if (!prompt) return showAlert('请输入修改指令', 'error');
+        const [width, height] = imageToImageSizeSelect.value.split('x');
+        const params = { prompt, image: uploadedImageUrl, width, height, strength: imageToImageStrength.value, negative_prompt: negativePromptInput.value.trim(), model: 'kontext' };
+        setButtonLoading(generateImageToImageBtn, true, '生成中...');
+        imageToImagePlaceholder.style.display = 'flex';
+        imageToImagePlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
+        generatedImageToImage.style.display = 'none';
+        imageToImageActions.style.display = 'none';
+        callDrawApi(params).then(imageUrl => {
+            generatedImageToImage.onload = () => {
+                imageToImagePlaceholder.style.display = 'none';
+                generatedImageToImage.style.display = 'block';
+                imageToImageActions.style.display = 'flex';
+                showAlert('图像生成成功！', 'success');
+                currentImageUrl = imageUrl;
+                currentImageData = { url: imageUrl, prompt: imageToImagePrompt.value.trim(), model: 'kontext', strength: imageToImageStrength.value, size: imageToImageSizeSelect.value, seed: '随机', timestamp: new Date().toLocaleString() };
+                saveToHistory(currentImageData);
+            };
+            generatedImageToImage.src = imageUrl;
+        }).catch(error => {
+            console.error('图生图生成错误:', error);
+            imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+        }).finally(() => {
+            setTimeout(() => setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像'), 5000);
+        });
+    }
 
     // 上传图片到ImgBB函数
     async function uploadToImgBB(blob, prompt) {
