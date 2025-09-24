@@ -63,8 +63,7 @@
             border-radius: 12px;
             height: 100vh;
             padding: 0 0 0 60px;
-        }
-        
+        }  
         .header {
             padding: 20px 30px 0;
             display: flex;
@@ -722,7 +721,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function generateExpandedImage() {
+    async function generateExpandedImage() { // [MODIFIED]
         if (!uploadedImageUrl) {
             showAlert('请先上传一张图片', 'error');
             return;
@@ -738,46 +737,52 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert(`目标尺寸(${finalWidth}x${finalHeight})过大，请减少扩展方向。`, 'error');
             return;
         }
-        const prompt = `Expand the image ${activeDirections.map(btn => btn.dataset.direction).join(' and ')}, keep the background unchanged`;
-        const strength = 0.6;
-        const seed = Math.floor(Math.random() * 1000000);
-        const params = new URLSearchParams({
+
+        // 1. 定义要发送到我们自己的后端函数的数据
+        const requestBody = {
+            prompt: `Expand the image ${activeDirections.map(btn => btn.dataset.direction).join(' and ')}, keep the background unchanged`,
             width: finalWidth,
             height: finalHeight,
             image: uploadedImageUrl,
-            strength,
-            seed,
-            model: 'kontext',
-            nologo: 'true',
-            safe: 'false',
-            referrer: 'designtool.site'
+            strength: 0.6,
+            seed: Math.floor(Math.random() * 1000000),
+            model: 'kontext'
+        };
+
+        // 2. 将 API 地址指向我们新建的 Cloudflare Function
+        const proxyApiUrl = '/api/generate-image';
+
+        // 3. 调用 fetchAndDisplayImage 函数，但这次是通过 POST 请求发送数据
+        // 注意：这里不再是直接传递一个完整的 URL，而是传递我们自己的端点和请求体
+        await fetchAndDisplayImage(proxyApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
         });
-        const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params.toString()}`;
-        fetchAndDisplayImage(apiUrl);
     }
 
-   async function fetchAndDisplayImage(apiUrl) {
+   async function fetchAndDisplayImage(url, options = {}) { // [MODIFIED]
         setButtonLoading(generateBtn, true, '生成中...');
 
-        // [FIX] Start: Rearranged and corrected logic
-        // 1. Hide the old image and its action buttons first.
         generatedImage.classList.add('hidden');
         imageActions.style.display = 'none';
-        
-        // 2. Ensure the placeholder is visible before adding the loader. This is the core of the fix.
         drawingPlaceholder.classList.remove('hidden');
-        
-        // 3. Now, set the loading animation inside the visible placeholder.
         drawingPlaceholder.innerHTML = `<div class="loader"></div><p>正在请求AI，请稍候...</p>`;
-        // [FIX] End
 
         try {
-            const response = await fetch(apiUrl);
+            // 如果没有提供 options，则默认为 GET 请求（为了兼容性，虽然此场景下不会用到）
+            // 如果提供了 options（比如 method: 'POST'），则使用它们
+            const response = await fetch(url, options);
+
             if (!response.ok) {
-                try {
+                // 如果后端代理返回了 JSON 格式的错误信息，就解析它
+                if (response.headers.get('Content-Type')?.includes('application/json')) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || `HTTP 错误: ${response.status}`);
-                } catch (e) {
+                    throw new Error(errorData.error || `HTTP 错误: ${response.status}`);
+                } else {
+                    // 否则返回通用错误
                     throw new Error(`HTTP 错误: ${response.status} ${response.statusText}`);
                 }
             }
@@ -793,7 +798,6 @@ document.addEventListener('DOMContentLoaded', () => {
             currentExpandedImageUrl = URL.createObjectURL(blob);
             
             generatedImage.onload = () => {
-                // Once the new image loads, hide the placeholder and show the image.
                 drawingPlaceholder.classList.add('hidden');
                 generatedImage.classList.remove('hidden');
                 imageActions.style.display = 'flex';
@@ -804,11 +808,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('图像生成失败:', error);
             showAlert(`生成失败: ${error.message}`, 'error');
-            // Ensure the placeholder is visible to show the error message.
             drawingPlaceholder.classList.remove('hidden'); 
             drawingPlaceholder.innerHTML = `<svg class="icon" style="color: var(--error-color);"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败，请重试</p>`;
         } finally {
-            setButtonLoading(generateBtn, false, '生成图像');
+            // 注意：由于重新生成按钮可能也被禁用，我们需要一个更稳妥的方式来恢复按钮文字
+            const originalGenerateBtnHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像';
+            setButtonLoading(generateBtn, false, originalGenerateBtnHTML);
         }
     }
 
@@ -956,19 +961,12 @@ document.addEventListener('DOMContentLoaded', () => {
         else uploadStatus.style.color = 'var(--text2)';
     }
 
-    function setButtonLoading(button, isLoading, loadingText) {
+    function setButtonLoading(button, isLoading, content) { // [MODIFIED]
         button.disabled = isLoading;
         if (isLoading) {
-            button.innerHTML = loadingText;
+            button.innerHTML = `<div class="loader" style="width: 1em; height: 1em; border-width: 2px; border-top-color: white;"></div> ${content}`;
         } else {
-            // For buttons with original HTML content (like icons)
-            if(typeof loadingText === 'string'){
-                 // This case is for simple text restoration
-                 if(button.id === 'generateBtn') button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像';
-            } else {
-                 // Restore original HTML if it was passed
-                 button.innerHTML = loadingText;
-            }
+            button.innerHTML = content; // content 应该是原始的HTML内容
         }
     }
 
