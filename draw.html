@@ -1480,66 +1480,76 @@
         return await blobToDataURL(blob);
     }
 
-    function generateImage() {
-        const prompt = drawingPrompt.value.trim();
-        if (!prompt) return showAlert('请输入图像描述', 'error');
-        let finalPrompt = stylePrefixes[styleSelect.value] ? stylePrefixes[styleSelect.value] + prompt : prompt;
-        const [width, height] = sizeSelect.value.split('x');
-        currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
-        const params = { prompt: finalPrompt, model: modelSelect.value, width, height, seed: currentSeed, enhance: enhanceOption.checked, style: styleSelect.value };
-        setButtonLoading(generateImageBtn, true, '生成中...');
-        drawingPlaceholder.style.display = 'flex';
-        drawingPlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
-        generatedImage.style.display = 'none';
-        imageActions.style.display = 'none';
-        callDrawApi(params).then(imageUrl => {
-            generatedImage.onload = () => {
-                drawingPlaceholder.style.display = 'none';
-                generatedImage.style.display = 'block';
-                imageActions.style.display = 'flex';
-                showAlert('图像生成成功！', 'success');
-                currentImageUrl = imageUrl;
-                currentImageData = { url: imageUrl, prompt: drawingPrompt.value.trim(), model: modelSelect.value, style: styleSelect.value, size: sizeSelect.value, seed: currentSeed, timestamp: new Date().toLocaleString(), enhance: enhanceOption.checked };
-                saveToHistory(currentImageData);
-            };
-            generatedImage.src = imageUrl;
-        }).catch(error => {
-            console.error('图像生成错误:', error);
-            drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-        }).finally(() => {
-            setTimeout(() => setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'), 5000);
-        });
-    }
+    ffunction generateImage() {
+    const prompt = drawingPrompt.value.trim();
+    if (!prompt) return showAlert('请输入图像描述', 'error');
+    let finalPrompt = stylePrefixes[styleSelect.value] ? stylePrefixes[styleSelect.value] + prompt : prompt;
+    const [width, height] = sizeSelect.value.split('x');
+    currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
+    const params = { prompt: finalPrompt, model: modelSelect.value, width, height, seed: currentSeed, enhance: enhanceOption.checked, style: styleSelect.value };
+    setButtonLoading(generateImageBtn, true, '生成中...');
+    drawingPlaceholder.style.display = 'flex';
+    drawingPlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
+    generatedImage.style.display = 'none';
+    imageActions.style.display = 'none';
+    callDrawApi(params).then(imageUrl => {
+        generatedImage.onload = () => {
+            drawingPlaceholder.style.display = 'none';
+            generatedImage.style.display = 'block';
+            imageActions.style.display = 'flex';
+            showAlert('图像生成成功！', 'success');
+            currentImageUrl = imageUrl;
+            currentImageData = { url: imageUrl, prompt: drawingPrompt.value.trim(), model: modelSelect.value, style: styleSelect.value, size: sizeSelect.value, seed: currentSeed, timestamp: new Date().toLocaleString(), enhance: enhanceOption.checked };
+            saveToHistory(currentImageData);
+
+            // ↓↓↓ 新增代码：在后台上传图片到 ImgBB ↓↓↓
+            fetch(imageUrl).then(res => res.blob()).then(blob => uploadToImgBB(blob, drawingPrompt.value.trim())).catch(err => console.error("ImgBB上传失败:", err));
+            // ↑↑↑ 新增代码结束 ↑↑↑
+
+        };
+        generatedImage.src = imageUrl;
+    }).catch(error => {
+        console.error('图像生成错误:', error);
+        drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+    }).finally(() => {
+        setTimeout(() => setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'), 5000);
+    });
+}
 
     function generateImageToImage() {
-        if (!uploadedImageUrl) return showAlert('请先上传图片', 'error');
-        const prompt = imageToImagePrompt.value.trim();
-        if (!prompt) return showAlert('请输入修改指令', 'error');
-        const [width, height] = imageToImageSizeSelect.value.split('x');
-        const params = { prompt, image: uploadedImageUrl, width, height, strength: imageToImageStrength.value, negative_prompt: negativePromptInput.value.trim(), model: 'kontext' };
-        setButtonLoading(generateImageToImageBtn, true, '生成中...');
-        imageToImagePlaceholder.style.display = 'flex';
-        imageToImagePlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
-        generatedImageToImage.style.display = 'none';
-        imageToImageActions.style.display = 'none';
-        callDrawApi(params).then(imageUrl => {
-            generatedImageToImage.onload = () => {
-                imageToImagePlaceholder.style.display = 'none';
-                generatedImageToImage.style.display = 'block';
-                imageToImageActions.style.display = 'flex';
-                showAlert('图像生成成功！', 'success');
-                currentImageUrl = imageUrl;
-                currentImageData = { url: imageUrl, prompt: imageToImagePrompt.value.trim(), model: 'kontext', strength: imageToImageStrength.value, size: imageToImageSizeSelect.value, seed: '随机', timestamp: new Date().toLocaleString() };
-                saveToHistory(currentImageData);
-            };
-            generatedImageToImage.src = imageUrl;
-        }).catch(error => {
-            console.error('图生图生成错误:', error);
-            imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-        }).finally(() => {
-            setTimeout(() => setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像'), 5000);
-        });
-    }
+    if (!uploadedImageUrl) return showAlert('请先上传图片', 'error');
+    const prompt = imageToImagePrompt.value.trim();
+    if (!prompt) return showAlert('请输入修改指令', 'error');
+    const [width, height] = imageToImageSizeSelect.value.split('x');
+    const params = { prompt, image: uploadedImageUrl, width, height, strength: imageToImageStrength.value, negative_prompt: negativePromptInput.value.trim(), model: 'kontext' };
+    setButtonLoading(generateImageToImageBtn, true, '生成中...');
+    imageToImagePlaceholder.style.display = 'flex';
+    imageToImagePlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
+    generatedImageToImage.style.display = 'none';
+    imageToImageActions.style.display = 'none';
+    callDrawApi(params).then(imageUrl => {
+        generatedImageToImage.onload = () => {
+            imageToImagePlaceholder.style.display = 'none';
+            generatedImageToImage.style.display = 'block';
+            imageToImageActions.style.display = 'flex';
+            showAlert('图像生成成功！', 'success');
+            currentImageUrl = imageUrl;
+            currentImageData = { url: imageUrl, prompt: imageToImagePrompt.value.trim(), model: 'kontext', strength: imageToImageStrength.value, size: imageToImageSizeSelect.value, seed: '随机', timestamp: new Date().toLocaleString() };
+            saveToHistory(currentImageData);
+
+            // ↓↓↓ 新增代码：在后台上传图片到 ImgBB ↓↓↓
+            fetch(imageUrl).then(res => res.blob()).then(blob => uploadToImgBB(blob, imageToImagePrompt.value.trim())).catch(err => console.error("ImgBB上传失败:", err));
+            // ↑↑↑ 新增代码结束 ↑↑↑
+
+        };
+        generatedImageToImage.src = imageUrl;
+    }).catch(error => {
+        console.error('图生图生成错误:', error);
+        imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+    }).finally(() => {
+        setTimeout(() => setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像'), 5000);
+    });
+}
 
     // 上传图片到ImgBB函数
     async function uploadToImgBB(blob, prompt) {
