@@ -73,12 +73,20 @@ const tools = [
         badge: ""
     },
     {
+        title: "AI一键扩图",
+        description: "无需复杂操作，上传图片即可一键扩展图片",
+        category: "dev",
+        link: "expand.html",
+        icon: "img/expand.webp",
+        badge: "NEW"
+    },
+    {
         title: "AI高清放大",
         description: "使用开源 AI 模型，支持2倍-4倍放大，保留更多细节",
         category: "dev",
         link: "scale.html",
         icon: "img/scale.webp",
-        badge: "NEW"
+        badge: ""
     },
     {
         title: "AI一键抠图",
@@ -305,6 +313,7 @@ const changelogData = [
         date: "2025-09-24",
         content: [
             "数据从github迁移到cloudflare，优化网站速度。",
+            "新增AI一键扩图工具，无需复杂操作，上传图片即可一键扩展图片。",
         ]
     },
     {

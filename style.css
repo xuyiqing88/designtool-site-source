@@ -737,7 +737,7 @@
         flex-direction: column;
         border-radius: 10px;
         margin-left: -10px;
-        background: linear-gradient(180deg, #ffffff4f, #fff 80%);
+        background: #fff;
         border-left: 1px solid #fff;
         border-top: 1px solid #fff;
         box-shadow: 0 0 10px #0000001a;
@@ -1078,11 +1078,6 @@
     }
 
     body.effects-enabled .controls {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-    }
-
-    body.effects-enabled .tool-content {
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
     }
