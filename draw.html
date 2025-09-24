@@ -10,7 +10,6 @@
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
      crossorigin="anonymous"></script>
-     <script src="api-handler.js" defer></script>
     <style>
         :root {
             --main-color: #5a64ff;
@@ -984,7 +983,7 @@
         }
     </style>
 </head>
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
+
 <body>
 <svg width="0" height="0" class="hidden">
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="box-open-solid-full">
@@ -1369,16 +1368,8 @@
 
 <script>
     // 样式前缀映射
-    const stylePrefixes = {
-        "realistic": "cinematic photo, photograph, film, bokeh, professional, ",
-        "2.5D": "Semi-realistic 3D portraits, Blender rendering style, ",
-        "3D": "Adorable 3D Character, 3D render, adorable character, 3D art, ",
-        "anime": "anime style, vibrant colors, expressive eyes, ",
-        "oil-painting": "oil painting texture, brush strokes, classical art, ",
-        "pixel-art": "pixel art, 8-bit, retro video game style, ",
-        "surrealism": "surreal, dreamlike, bizarre, impossible perspective, ",
-        "cyberpunk": "cyberpunk, neon lights, futuristic city, rain, "
-    };
+    const stylePrefixes = { "realistic": "cinematic photo, photograph, film, bokeh, professional, ", "2.5D": "Semi-realistic 3D portraits, Blender rendering style, ", "3D": "Adorable 3D Character, 3D render, adorable character, 3D art, ", "anime": "anime style, vibrant colors, expressive eyes, ", "oil-painting": "oil painting texture, brush strokes, classical art, ", "pixel-art": "pixel art, 8-bit, retro video game style, ", "surrealism": "surreal, dreamlike, bizarre, impossible perspective, ", "cyberpunk": "cyberpunk, neon lights, futuristic city, rain, " };
+    
     // DOM元素
     const drawingPrompt = document.getElementById('drawingPrompt');
     const modelSelect = document.getElementById('modelSelect');
@@ -1454,7 +1445,7 @@
         });
     });
 
-    // 内部函数，用于将Blob转为DataURL
+    // 【已修正】将Blob转为DataURL
     function blobToDataURL(blob) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1464,7 +1455,7 @@
         });
     }
 
-    // 内部函数，用于调用我们专属的后端 /api/draw
+    // 【已修正】调用后端，但这次它返回的是原始Blob数据
     async function callDrawApi(params) {
         const response = await fetch('/api/draw', {
             method: 'POST',
@@ -1475,691 +1466,132 @@
             const errorData = await response.json();
             throw new Error(errorData.error || `请求失败: ${response.status}`);
         }
-        const blob = await response.blob();
-        if (blob.size < 1000) throw new Error("API返回了无效图像");
-        return await blobToDataURL(blob);
+        // 直接返回Blob，而不是转换后的Data URL
+        return await response.blob();
     }
-
-    function generateImage() {
-    const prompt = drawingPrompt.value.trim();
-    if (!prompt) return showAlert('请输入图像描述', 'error');
-    let finalPrompt = stylePrefixes[styleSelect.value] ? stylePrefixes[styleSelect.value] + prompt : prompt;
-    const [width, height] = sizeSelect.value.split('x');
-    currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
-    const params = { prompt: finalPrompt, model: modelSelect.value, width, height, seed: currentSeed, enhance: enhanceOption.checked, style: styleSelect.value };
-    setButtonLoading(generateImageBtn, true, '生成中...');
-    drawingPlaceholder.style.display = 'flex';
-    drawingPlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
-    generatedImage.style.display = 'none';
-    imageActions.style.display = 'none';
-    callDrawApi(params).then(imageUrl => {
-        generatedImage.onload = () => {
-            drawingPlaceholder.style.display = 'none';
-            generatedImage.style.display = 'block';
-            imageActions.style.display = 'flex';
-            showAlert('图像生成成功！', 'success');
-            currentImageUrl = imageUrl;
-            currentImageData = { url: imageUrl, prompt: drawingPrompt.value.trim(), model: modelSelect.value, style: styleSelect.value, size: sizeSelect.value, seed: currentSeed, timestamp: new Date().toLocaleString(), enhance: enhanceOption.checked };
-            saveToHistory(currentImageData);
-
-            // ↓↓↓ 新增代码：在后台上传图片到 ImgBB ↓↓↓
-            fetch(imageUrl).then(res => res.blob()).then(blob => uploadToImgBB(blob, drawingPrompt.value.trim())).catch(err => console.error("ImgBB上传失败:", err));
-            // ↑↑↑ 新增代码结束 ↑↑↑
-
-        };
-        generatedImage.src = imageUrl;
-    }).catch(error => {
-        console.error('图像生成错误:', error);
-        drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-    }).finally(() => {
-        setTimeout(() => setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'), 5000);
-    });
-}
-
-    function generateImageToImage() {
-    if (!uploadedImageUrl) return showAlert('请先上传图片', 'error');
-    const prompt = imageToImagePrompt.value.trim();
-    if (!prompt) return showAlert('请输入修改指令', 'error');
-    const [width, height] = imageToImageSizeSelect.value.split('x');
-    const params = { prompt, image: uploadedImageUrl, width, height, strength: imageToImageStrength.value, negative_prompt: negativePromptInput.value.trim(), model: 'kontext' };
-    setButtonLoading(generateImageToImageBtn, true, '生成中...');
-    imageToImagePlaceholder.style.display = 'flex';
-    imageToImagePlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
-    generatedImageToImage.style.display = 'none';
-    imageToImageActions.style.display = 'none';
-    callDrawApi(params).then(imageUrl => {
-        generatedImageToImage.onload = () => {
-            imageToImagePlaceholder.style.display = 'none';
-            generatedImageToImage.style.display = 'block';
-            imageToImageActions.style.display = 'flex';
-            showAlert('图像生成成功！', 'success');
-            currentImageUrl = imageUrl;
-            currentImageData = { url: imageUrl, prompt: imageToImagePrompt.value.trim(), model: 'kontext', strength: imageToImageStrength.value, size: imageToImageSizeSelect.value, seed: '随机', timestamp: new Date().toLocaleString() };
-            saveToHistory(currentImageData);
-
-            // ↓↓↓ 新增代码：在后台上传图片到 ImgBB ↓↓↓
-            fetch(imageUrl).then(res => res.blob()).then(blob => uploadToImgBB(blob, imageToImagePrompt.value.trim())).catch(err => console.error("ImgBB上传失败:", err));
-            // ↑↑↑ 新增代码结束 ↑↑↑
-
-        };
-        generatedImageToImage.src = imageUrl;
-    }).catch(error => {
-        console.error('图生图生成错误:', error);
-        imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-    }).finally(() => {
-        setTimeout(() => setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像'), 5000);
-    });
-}
-
-    // 上传图片到ImgBB函数
+    
+    // 【已修正】ImgBB上传函数（与您旧文件逻辑保持一致）
     async function uploadToImgBB(blob, prompt) {
         try {
             const formData = new FormData();
-            const fileName = prompt ? 
-                prompt.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_') : 
-                'ai-image';
+            const fileName = prompt ? prompt.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_') : 'ai-image';
             const blobWithName = new File([blob], `${fileName}.png`, { type: 'image/png' });
             formData.append('image', blobWithName);
-            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-            if (data.success) {
-                console.log('GET', data.data.url);
-            } else {
-                throw new Error(data.error?.message || '!');
-            }
-        } catch (error) {
-            console.error('!', error);
-        }
-    }        
-
-    // 设置事件监听器
-    function setupEventListeners() {
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const subtab = btn.dataset.subtab;
-                switchSecondaryTab(subtab);
-            });
-            // 复制提示词功能
-            document.getElementById('copyPromptBtn').addEventListener('click', function() {
-                const promptText = document.getElementById('modalPromptText').textContent;
-                navigator.clipboard.writeText(promptText).then(() => {
-                    showAlert('提示词已复制到剪贴板', 'success');
-                }).catch(err => {
-                    console.error('复制失败:', err);
-                    showAlert('复制失败，请手动复制', 'error');
-                });
-            });
-        });
-        
-        clearDrawingBtn.addEventListener('click', clearDrawing);
-        generateImageBtn.addEventListener('click', generateImage);
-        // 为图生图图片添加点击事件监听
-        generatedImageToImage.addEventListener('click', showImageModal);
-        downloadImageBtn.addEventListener('click', downloadImage);
-        regenerateImageBtn.addEventListener('click', generateImage);
-        drawingPrompt.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                generateImage();
-            }
-        });
-
-        generatedImage.addEventListener('click', showImageModal);
-        modalCloseBtn.addEventListener('click', () => {
-            imageModal.classList.remove('show');
-            document.getElementById('imageDetailsPanel').style.display = 'none';
-            currentHistoryIndex = -1;
-        });
-
-        imageModal.addEventListener('click', (e) => {
-            if (e.target === imageModal) {
-                imageModal.classList.remove('show');
-                document.getElementById('imageDetailsPanel').style.display = 'none';
-                currentHistoryIndex = -1;
-            }
-        });
-        modalDownloadBtn.addEventListener('click', downloadImage);
-        
-        clearGalleryBtn.addEventListener('click', clearHistory);
-        
-        const translateBtn = document.getElementById('translateBtn');
-        translateBtn.addEventListener('click', () => translatePrompt(drawingPrompt));
-        
-        translateImageToImageBtn.addEventListener('click', () => translatePrompt(imageToImagePrompt));
-        
-        modalPrevBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showPrevImage();
-        });
-        
-        modalNextBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showNextImage();
-        });
-        
-        document.addEventListener('keydown', (e) => {
-            if (imageModal.classList.contains('show')) {
-                if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    showPrevImage();
-                } else if (e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    showNextImage();
-                } else if (e.key === 'Escape') {
-                    e.preventDefault();
-                    imageModal.classList.remove('show');
-                    document.getElementById('imageDetailsPanel').style.display = 'none';
-                    currentHistoryIndex = -1;
-                }
-            }
-        });
-    }
-
-    // 设置图生图事件监听器
-    function setupImageToImageListeners() {
-        imageUploadInput.addEventListener('change', handleImageUpload);
-        imageUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "var(--main-color)"; imageUploadArea.style.background = "var(--btactive)"; });
-        imageUploadArea.addEventListener('dragleave', (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "var(--line)"; imageUploadArea.style.background = "var(--lightbg)"; });
-        imageUploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            imageUploadArea.style.borderColor = "var(--line)";
-            imageUploadArea.style.background = "var(--lightbg)";
-            if (e.dataTransfer.files.length > 0) {
-                imageUploadInput.files = e.dataTransfer.files;
-                handleImageUpload();
-            }
-        });
-        imageToImageStrength.addEventListener('input', () => { strengthValue.textContent = imageToImageStrength.value; });
-        clearImageToImageBtn.addEventListener('click', clearImageToImage);
-        generateImageToImageBtn.addEventListener('click', generateImageToImage);
-        downloadImageToImageBtn.addEventListener('click', downloadImageToImage);
-        regenerateImageToImageBtn.addEventListener('click', generateImageToImage);
-        imageToImagePrompt.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                generateImageToImage();
-            }
-        });
-    }
-    
-    // 处理图片上传
-    async function handleImageUpload() {
-        const file = imageUploadInput.files[0];
-        if (!file) return;
-        if (!file.type.startsWith('image/')) {
-            showAlert('请上传图片文件', 'error');
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            uploadedImagePreview.src = e.target.result;
-            uploadedImagePreview.style.display = 'block';
-            imageToImagePlaceholder.style.display = 'none';
-            document.getElementById('uploadIcon').classList.add('hidden');
-            document.getElementById('uploadText').classList.add('hidden');
-        };
-        reader.readAsDataURL(file);
-        setUploadStatus('上传中...', 'loading');
-        try {
-            const formData = new FormData();
-            formData.append('image', file);
             const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
             const data = await response.json();
             if (data.success) {
-                uploadedImageUrl = data.data.url;
-                setUploadStatus('上传成功!', 'success');
-                showAlert('图片上传成功!', 'success');
+                console.log('ImgBB上传成功:', data.data.url);
             } else {
-                throw new Error(data.error?.message || '上传失败');
+                throw new Error(data.error?.message || 'ImgBB上传失败');
             }
         } catch (error) {
-            console.error('上传错误:', error);
-            setUploadStatus('上传失败', 'error');
-            showAlert(`图片上传失败: ${error.message}`, 'error');
-            if (file) {
-                uploadedImageUrl = URL.createObjectURL(file);
-            }
+            console.error('ImgBB上传时发生错误:', error);
         }
     }
-    
-    // 【核心修改】文生图函数
+
+    // 【已修正】文生图函数，恢复旧文件的正确逻辑
     function generateImage() {
         const prompt = drawingPrompt.value.trim();
-        if (!prompt) {
-            return showAlert('请输入图像描述', 'error');
-        }
-        
-        const style = styleSelect.value;
-        let finalPrompt = prompt;
-        if (style && stylePrefixes[style]) {
-            finalPrompt = stylePrefixes[style] + prompt;
-        }
-        
+        if (!prompt) return showAlert('请输入图像描述', 'error');
+        let finalPrompt = stylePrefixes[styleSelect.value] ? stylePrefixes[styleSelect.value] + prompt : prompt;
         const [width, height] = sizeSelect.value.split('x');
         currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
-        
-        // 1. 准备要发送到我们后端的数据包
-        const params = {
-            prompt: finalPrompt,
-            model: modelSelect.value,
-            width: width,
-            height: height,
-            seed: currentSeed,
-            enhance: enhanceOption.checked,
-            style: style
-        };
-        
-        // 2. 设置加载状态 (UI)
+        const params = { prompt: finalPrompt, model: modelSelect.value, width, height, seed: currentSeed, enhance: enhanceOption.checked, style: styleSelect.value };
+
         setButtonLoading(generateImageBtn, true, '生成中...');
         drawingPlaceholder.style.display = 'flex';
         drawingPlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
         generatedImage.style.display = 'none';
         imageActions.style.display = 'none';
 
-        // 3. 调用 api-handler.js 中的函数来处理一切
-        generateImageViaProxy(params)
-            .then(imageUrl => {
-                generatedImage.onload = () => {
+        callDrawApi(params).then(blob => {
+            // 1. 立刻上传Blob
+            uploadToImgBB(blob, drawingPrompt.value.trim());
+
+            // 2. 将Blob转换为DataURL用于显示
+            blobToDataURL(blob).then(imageUrl => {
+                 generatedImage.onload = () => {
                     drawingPlaceholder.style.display = 'none';
                     generatedImage.style.display = 'block';
                     imageActions.style.display = 'flex';
                     showAlert('图像生成成功！', 'success');
-                    
                     currentImageUrl = imageUrl;
-                    currentImageData = {
-                        url: imageUrl,
-                        prompt: drawingPrompt.value.trim(),
-                        model: modelSelect.value,
-                        style: styleSelect.value,
-                        size: sizeSelect.value,
-                        seed: currentSeed,
-                        timestamp: new Date().toLocaleString(),
-                        enhance: enhanceOption.checked
-                    };
-                    
+                    currentImageData = { url: imageUrl, prompt: drawingPrompt.value.trim(), model: modelSelect.value, style: styleSelect.value, size: sizeSelect.value, seed: currentSeed, timestamp: new Date().toLocaleString(), enhance: enhanceOption.checked };
                     saveToHistory(currentImageData);
                 };
                 generatedImage.src = imageUrl;
-            })
-            .catch(error => {
-                console.error('图像生成错误:', error);
-                drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败，请重试</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-            })
-            .finally(() => {
-                setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像');
             });
+        }).catch(error => {
+            console.error('图像生成错误:', error);
+            drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+        }).finally(() => {
+            setTimeout(() => setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'), 5000);
+        });
     }
 
-    // 【核心修改】图生图函数
+    // 【已修正】图生图函数，恢复旧文件的正确逻辑
     function generateImageToImage() {
-        if (!uploadedImageUrl) {
-            return showAlert('请先上传图片', 'error');
-        }
+        if (!uploadedImageUrl) return showAlert('请先上传图片', 'error');
         const prompt = imageToImagePrompt.value.trim();
-        if (!prompt) {
-            return showAlert('请输入修改指令', 'error');
-        }
+        if (!prompt) return showAlert('请输入修改指令', 'error');
         const [width, height] = imageToImageSizeSelect.value.split('x');
-
-        // 1. 准备要发送到我们后端的数据包
-        const params = {
-            prompt: prompt,
-            image: uploadedImageUrl,
-            width: width,
-            height: height,
-            strength: imageToImageStrength.value,
-            negative_prompt: negativePromptInput.value.trim(),
-            model: 'kontext'
-        };
+        const params = { prompt, image: uploadedImageUrl, width, height, strength: imageToImageStrength.value, negative_prompt: negativePromptInput.value.trim(), model: 'kontext' };
         
-        // 2. 设置加载状态 (UI)
         setButtonLoading(generateImageToImageBtn, true, '生成中...');
         imageToImagePlaceholder.style.display = 'flex';
         imageToImagePlaceholder.innerHTML = `<div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div><p>正在生成图像，请稍候...</p>`;
         generatedImageToImage.style.display = 'none';
         imageToImageActions.style.display = 'none';
 
-        // 3. 调用 api-handler.js 中的同一个函数来处理
-        generateImageViaProxy(params)
-            .then(imageUrl => {
+        callDrawApi(params).then(blob => {
+            // 1. 立刻上传Blob
+            uploadToImgBB(blob, imageToImagePrompt.value.trim());
+
+            // 2. 将Blob转换为DataURL用于显示
+            blobToDataURL(blob).then(imageUrl => {
                 generatedImageToImage.onload = () => {
                     imageToImagePlaceholder.style.display = 'none';
                     generatedImageToImage.style.display = 'block';
                     imageToImageActions.style.display = 'flex';
                     showAlert('图像生成成功！', 'success');
-                    
                     currentImageUrl = imageUrl;
-                    currentImageData = {
-                        url: imageUrl,
-                        prompt: imageToImagePrompt.value.trim(),
-                        model: 'kontext',
-                        strength: imageToImageStrength.value,
-                        size: imageToImageSizeSelect.value,
-                        seed: '随机',
-                        timestamp: new Date().toLocaleString()
-                    };
+                    currentImageData = { url: imageUrl, prompt: imageToImagePrompt.value.trim(), model: 'kontext', strength: imageToImageStrength.value, size: imageToImageSizeSelect.value, seed: '随机', timestamp: new Date().toLocaleString() };
                     saveToHistory(currentImageData);
                 };
                 generatedImageToImage.src = imageUrl;
-            })
-            .catch(error => {
-                console.error('图生图生成错误:', error);
-                imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败，请重试</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-            })
-            .finally(() => {
-                setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像');
             });
+        }).catch(error => {
+            console.error('图生图生成错误:', error);
+            imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+        }).finally(() => {
+            setTimeout(() => setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像'), 5000);
+        });
     }
 
-    // 以下是其他所有未修改的辅助函数
-    function setUploadStatus(message, type) {
-        uploadStatus.textContent = message;
-        uploadStatus.style.color = type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--error-color)' : 'var(--text2)';
-        if (type === 'loading') {
-            uploadStatus.innerHTML = `<div class="loader" style="width: 16px; height: 16px; margin-right: 5px;"></div> ${message}`;
-        }
-    }
-    
-    function clearImageToImage() {
-        imageUploadInput.value = '';
-        uploadedImagePreview.src = '';
-        uploadedImagePreview.style.display = 'none';
-        imageToImagePrompt.value = '';
-        negativePromptInput.value = '';
-        imageToImageStrength.value = '0.7';
-        strengthValue.textContent = '0.7';
-        imageToImagePlaceholder.style.display = 'flex';
-        generatedImageToImage.style.display = 'none';
-        imageToImageActions.style.display = 'none';
-        uploadStatus.textContent = '';
-        uploadedImageUrl = '';
-        const imageSizeLabel = document.getElementById('imageSizeLabel');
-        const sizeSelect = document.getElementById('imageToImageSizeSelect');
-        imageSizeLabel.textContent = '图像尺寸';
-        imageSizeLabel.style.color = 'var(--text2)';
-        sizeSelect.disabled = false;
-        if (sizeSelect.options[0] && sizeSelect.options[0].text.includes('(原图)')) {
-            sizeSelect.remove(0);
-        }
-        document.getElementById('uploadIcon').classList.remove('hidden');
-        document.getElementById('uploadText').classList.remove('hidden');
-    }
-    
-    async function downloadImageToImage() {
-        if (!currentImageUrl) return;
-        const button = downloadImageToImageBtn;
-        const originalButtonHtml = button.innerHTML;
-        setButtonLoading(button, true, '下载中...');
-        try {
-            const response = await fetch(currentImageUrl);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            const prompt = imageToImagePrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
-            link.download = `ai-art-${prompt || 'image'}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-            showAlert('图像开始下载...', 'success');
-        } catch (error) {
-            console.error("下载失败:", error);
-            showAlert('下载失败，请尝试右键保存', 'error');
-        } finally {
-            setButtonLoading(button, false, '');
-            button.innerHTML = originalButtonHtml;
-        }
-    }
-    
-    async function translatePrompt(textarea) {
-        const prompt = textarea.value.trim();
-        if (!prompt) {
-            showAlert('请输入要翻译的内容', 'error');
-            return;
-        }
-        const originalButtonHtml = textarea.id === 'drawingPrompt' ? translateBtn.innerHTML : translateImageToImageBtn.innerHTML;
-        if (textarea.id === 'drawingPrompt') {
-            translateBtn.innerHTML = '翻译中...';
-            translateBtn.disabled = true;
-        } else {
-            translateImageToImageBtn.innerHTML = '翻译中...';
-            translateImageToImageBtn.disabled = true;
-        }
-        try {
-            const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(prompt)}&langpair=zh-CN|en`);
-            const data = await response.json();
-            if (data.responseData && data.responseData.translatedText) {
-                textarea.value = data.responseData.translatedText;
-                showAlert('翻译完成！', 'success');
-            } else {
-                throw new Error(data.responseDetails || '翻译失败');
-            }
-        } catch (error) {
-            showAlert(`翻译失败: ${error.message}`, 'error');
-        } finally {
-            if (textarea.id === 'drawingPrompt') {
-                translateBtn.innerHTML = originalButtonHtml;
-                translateBtn.disabled = false;
-            } else {
-                translateImageToImageBtn.innerHTML = originalButtonHtml;
-                translateImageToImageBtn.disabled = false;
-            }
-        }
-    }
-    
-    function setupSeedButtons() {
-        randomSeedBtn.addEventListener('click', () => {
-            const randomSeed = Math.floor(Math.random() * 1000000);
-            seedInput.value = randomSeed;
-        });
-        lockSeedBtn.addEventListener('click', () => {
-            const isLocked = lockSeedBtn.classList.toggle('locked');
-            lockSeedBtn.innerHTML = isLocked ? '<svg class="icon"><use xlink:href="#lock-solid-full"></use></svg>' : '<svg class="icon"><use xlink:href="#lock-open-solid-full"></use></svg>';
-            seedInput.disabled = isLocked;
-            if (isLocked && !seedInput.value.trim()) {
-                const randomSeed = Math.floor(Math.random() * 1000000);
-                seedInput.value = randomSeed;
-            }
-        });
-    }
-    
-    function switchSecondaryTab(subtab) {
-        tabBtns.forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.subtab === subtab);
-        });
-        document.querySelectorAll('.secondary-tab-pane').forEach(pane => {
-            pane.classList.toggle('active', pane.id === `${subtab}SubTab`);
-        });
-    }
-    
-    function saveToHistory(imageData) {
-        let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-        history.unshift(imageData);
-        if (history.length > MAX_HISTORY) {
-            history = history.slice(0, MAX_HISTORY);
-        }
-        localStorage.setItem('aiDrawingHistory', JSON.stringify(history));
-        loadHistory();
-    }
-    
-    function loadHistory() {
-        const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-        historyGallery.innerHTML = '';
-        if (history.length === 0) {
-            historyGallery.innerHTML = `<div class="empty-gallery"><svg class="icon"><use xlink:href="#box-open-solid-full"></use></svg><p>暂无历史记录</p></div>`;
-            return;
-        }
-        history.forEach((item, index) => {
-            const historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            let statusIcons = '';
-            if (item.enhance) {
-                statusIcons += '<svg class="icon"  title="增强提示" style="color: #ffcc00; margin-right: 5px;"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>';
-            }
-            historyItem.innerHTML = `<img src="${item.url}" alt="${item.prompt}" class="history-image" data-index="${index}"><div class="history-info"><div class="history-prompt" title="${item.prompt}">${item.prompt}</div><div class="history-date"><span>${formatDate(item.timestamp)} ${statusIcons}</span><svg class="icon delete-history" data-index="${index}"><use xlink:href="#trash-solid-full"></use></svg></div></div>`;
-            historyGallery.appendChild(historyItem);
-        });
-        document.querySelectorAll('.history-image').forEach(img => {
-            img.addEventListener('click', (e) => {
-                const index = e.target.dataset.index;
-                showHistoryImage(index);
-            });
-        });
-        document.querySelectorAll('.delete-history').forEach(icon => {
-            icon.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const index = e.target.dataset.index;
-                deleteHistoryItem(index);
-            });
-        });
-    }
-    
-    function showHistoryImage(index) {
-        const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-        if (index >= 0 && index < history.length) {
-            const item = history[index];
-            modalImage.src = item.url;
-            currentImageUrl = item.url;
-            document.getElementById('modalPromptText').textContent = item.prompt;
-            document.getElementById('modalModel').textContent = item.model || '未知';
-            document.getElementById('modalStyle').textContent = item.style || '默认';
-            document.getElementById('modalSize').textContent = item.size || '未知';
-            document.getElementById('modalSeed').textContent = item.seed || '随机';
-            document.getElementById('modalTimestamp').textContent = item.timestamp || '未知';
-            document.getElementById('imageDetailsPanel').style.display = 'block';
-            currentHistoryIndex = parseInt(index);
-            updateNavigationButtons();
-            imageModal.classList.add('show');
-        }
-    }
-
-    function updateNavigationButtons() {
-        const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-        const hasPrev = currentHistoryIndex > 0;
-        const hasNext = currentHistoryIndex < history.length - 1;
-        modalPrevBtn.style.display = hasPrev ? 'flex' : 'none';
-        modalNextBtn.style.display = hasNext ? 'flex' : 'none';
-    }
-
-    function showPrevImage() {
-        if (currentHistoryIndex > 0) {
-            showHistoryImage(currentHistoryIndex - 1);
-        }
-    }
-
-    function showNextImage() {
-        const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-        if (currentHistoryIndex < history.length - 1) {
-            showHistoryImage(currentHistoryIndex + 1);
-        }
-    }
-    
-    function deleteHistoryItem(index) {
-        let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-        if (index >= 0 && index < history.length) {
-            history.splice(index, 1);
-            localStorage.setItem('aiDrawingHistory', JSON.stringify(history));
-            loadHistory();
-            showAlert('已删除历史记录', 'success');
-        }
-    }
-    
-    function clearHistory() {
-        if (confirm('确定要清空所有历史记录吗？此操作不可恢复。')) {
-            localStorage.removeItem('aiDrawingHistory');
-            loadHistory();
-            showAlert('已清空历史记录', 'success');
-        }
-    }
-    
-    function showImageModal() {
-        const activeTab = document.querySelector('.secondary-tab-btn.active').dataset.subtab;
-        if ((activeTab === 'textToImage' || activeTab === 'imageToImage') && currentImageUrl) {
-            modalImage.src = currentImageUrl;
-            imageModal.classList.add('show');
-            currentHistoryIndex = -1;
-            modalPrevBtn.style.display = 'none';
-            modalNextBtn.style.display = 'none';
-        }
-    }
-    
-    async function downloadImage() {
-        if (!currentImageUrl) return;
-        const button = downloadImageBtn;
-        const originalButtonHtml = button.innerHTML;
-        setButtonLoading(button, true, '下载中...');
-        try {
-            const response = await fetch(currentImageUrl);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            let prompt;
-            if (currentHistoryIndex !== -1) {
-                const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
-                const historyItem = history[currentHistoryIndex];
-                prompt = historyItem.prompt.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
-            } else {
-                prompt = drawingPrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
-            }
-            link.download = `ai-art-${prompt || 'image'}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-            showAlert('图像开始下载...', 'success');
-        } catch (error) {
-            console.error("下载失败:", error);
-            showAlert('下载失败，请尝试右键保存', 'error');
-        } finally {
-            setButtonLoading(button, false, '');
-            button.innerHTML = originalButtonHtml;
-        }
-    }
-    
-    function clearDrawing() {
-        drawingPrompt.value = '';
-        drawingPlaceholder.style.display = 'flex';
-        drawingPlaceholder.innerHTML = `<svg class="icon"><use xlink:href="#image-solid-full"></use></svg><p>输入提示词并点击"生成图像"按钮</p>`;
-        generatedImage.style.display = 'none';
-        imageActions.style.display = 'none';
-        currentImageUrl = null;
-        seedInput.value = '';
-    }
-    
-    function setButtonLoading(button, isLoading, loadingText) {
-        button.disabled = isLoading;
-        if (isLoading) {
-            button.classList.add('btn-disabled');
-            button.innerHTML = loadingText;
-        } else {
-            button.classList.remove('btn-disabled');
-            if(button.id === 'generateImageBtn' || button.id === 'generateImageToImageBtn'){
-                button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像';
-            } else if(button.id === 'downloadImageBtn' || button.id === 'downloadImageToImageBtn') {
-                button.innerHTML = '<svg class="icon"><use xlink:href="#download-solid-full"></use></svg>下载';
-            }
-        }
-    }
-    
-    function showAlert(message, type = 'success') {
-        const alertContainer = document.getElementById('alertContainer') || document.body;
-        const alert = document.createElement('div');
-        alert.className = `alert ${type}`;
-        const iconId = type === 'success' ? 'check-circle-solid-full' : 'triangle-exclamation-solid-full';
-        alert.innerHTML = `<svg class="icon"><use xlink:href="#${iconId}"></use></svg>  ${message}`;
-        alertContainer.appendChild(alert);
-        setTimeout(() => alert.remove(), 3000);
-    }
-    
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-    }
+    // --- 以下是所有其他未修改的辅助函数 ---
+    function setupEventListeners() { tabBtns.forEach(btn => { btn.addEventListener('click', () => switchSecondaryTab(btn.dataset.subtab)); }); document.getElementById('copyPromptBtn').addEventListener('click', function() { const promptText = document.getElementById('modalPromptText').textContent; navigator.clipboard.writeText(promptText).then(() => showAlert('提示词已复制', 'success')).catch(err => showAlert('复制失败', 'error')); }); clearDrawingBtn.addEventListener('click', clearDrawing); generateImageBtn.addEventListener('click', generateImage); generatedImageToImage.addEventListener('click', showImageModal); downloadImageBtn.addEventListener('click', downloadImage); regenerateImageBtn.addEventListener('click', generateImage); drawingPrompt.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateImage(); } }); generatedImage.addEventListener('click', showImageModal); modalCloseBtn.addEventListener('click', () => { imageModal.classList.remove('show'); document.getElementById('imageDetailsPanel').style.display = 'none'; currentHistoryIndex = -1; }); imageModal.addEventListener('click', (e) => { if (e.target === imageModal) { imageModal.classList.remove('show'); document.getElementById('imageDetailsPanel').style.display = 'none'; currentHistoryIndex = -1; } }); modalDownloadBtn.addEventListener('click', downloadImage); clearGalleryBtn.addEventListener('click', clearHistory); const translateBtn = document.getElementById('translateBtn'); translateBtn.addEventListener('click', () => translatePrompt(drawingPrompt)); translateImageToImageBtn.addEventListener('click', () => translatePrompt(imageToImagePrompt)); modalPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); showPrevImage(); }); modalNextBtn.addEventListener('click', (e) => { e.stopPropagation(); showNextImage(); }); document.addEventListener('keydown', (e) => { if (imageModal.classList.contains('show')) { if (e.key === 'ArrowLeft') { e.preventDefault(); showPrevImage(); } else if (e.key === 'ArrowRight') { e.preventDefault(); showNextImage(); } else if (e.key === 'Escape') { e.preventDefault(); imageModal.classList.remove('show'); document.getElementById('imageDetailsPanel').style.display = 'none'; currentHistoryIndex = -1; } } }); }
+    function setupImageToImageListeners() { imageUploadInput.addEventListener('change', handleImageUpload); imageUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "var(--main-color)"; imageUploadArea.style.background = "var(--btactive)"; }); imageUploadArea.addEventListener('dragleave', (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "var(--line)"; imageUploadArea.style.background = "var(--lightbg)"; }); imageUploadArea.addEventListener('drop', (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "var(--line)"; imageUploadArea.style.background = "var(--lightbg)"; if (e.dataTransfer.files.length > 0) { imageUploadInput.files = e.dataTransfer.files; handleImageUpload(); } }); imageToImageStrength.addEventListener('input', () => { strengthValue.textContent = imageToImageStrength.value; }); clearImageToImageBtn.addEventListener('click', clearImageToImage); generateImageToImageBtn.addEventListener('click', generateImageToImage); downloadImageToImageBtn.addEventListener('click', downloadImageToImage); regenerateImageToImageBtn.addEventListener('click', generateImageToImage); imageToImagePrompt.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateImageToImage(); } }); }
+    async function handleImageUpload() { const file = imageUploadInput.files[0]; if (!file) return; if (!file.type.startsWith('image/')) { showAlert('请上传图片文件', 'error'); return; } const reader = new FileReader(); reader.onload = (e) => { uploadedImagePreview.src = e.target.result; uploadedImagePreview.style.display = 'block'; imageToImagePlaceholder.style.display = 'none'; document.getElementById('uploadIcon').classList.add('hidden'); document.getElementById('uploadText').classList.add('hidden'); }; reader.readAsDataURL(file); setUploadStatus('上传中...', 'loading'); try { const formData = new FormData(); formData.append('image', file); const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData }); const data = await response.json(); if (data.success) { uploadedImageUrl = data.data.url; setUploadStatus('上传成功!', 'success'); showAlert('图片上传成功!', 'success'); } else { throw new Error(data.error?.message || '上传失败'); } } catch (error) { console.error('上传错误:', error); setUploadStatus('上传失败', 'error'); showAlert(`图片上传失败: ${error.message}`, 'error'); if (file) { uploadedImageUrl = URL.createObjectURL(file); } } }
+    function setUploadStatus(message, type) { uploadStatus.textContent = message; uploadStatus.style.color = type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--error-color)' : 'var(--text2)'; if (type === 'loading') { uploadStatus.innerHTML = `<div class="loader" style="width: 16px; height: 16px; margin-right: 5px;"></div> ${message}`; } }
+    function clearImageToImage() { imageUploadInput.value = ''; uploadedImagePreview.src = ''; uploadedImagePreview.style.display = 'none'; imageToImagePrompt.value = ''; negativePromptInput.value = ''; imageToImageStrength.value = '0.7'; strengthValue.textContent = '0.7'; imageToImagePlaceholder.style.display = 'flex'; generatedImageToImage.style.display = 'none'; imageToImageActions.style.display = 'none'; uploadStatus.textContent = ''; uploadedImageUrl = ''; const imageSizeLabel = document.getElementById('imageSizeLabel'); const sizeSelect = document.getElementById('imageToImageSizeSelect'); imageSizeLabel.textContent = '图像尺寸'; imageSizeLabel.style.color = 'var(--text2)'; sizeSelect.disabled = false; if (sizeSelect.options[0] && sizeSelect.options[0].text.includes('(原图)')) { sizeSelect.remove(0); } document.getElementById('uploadIcon').classList.remove('hidden'); document.getElementById('uploadText').classList.remove('hidden'); }
+    async function downloadImageToImage() { if (!currentImageUrl) return; const button = downloadImageToImageBtn; const originalButtonHtml = button.innerHTML; setButtonLoading(button, true, '下载中...'); try { const response = await fetch(currentImageUrl); const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; const prompt = imageToImagePrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_'); link.download = `ai-art-${prompt || 'image'}.png`; document.body.appendChild(link); link.click(); document.body.removeChild(link); window.URL.revokeObjectURL(url); showAlert('图像开始下载...', 'success'); } catch (error) { console.error("下载失败:", error); showAlert('下载失败', 'error'); } finally { setButtonLoading(button, false, ''); button.innerHTML = originalButtonHtml; } }
+    async function translatePrompt(textarea) { const prompt = textarea.value.trim(); if (!prompt) { showAlert('请输入要翻译的内容', 'error'); return; } const btn = textarea.id === 'drawingPrompt' ? document.getElementById('translateBtn') : document.getElementById('translateImageToImageBtn'); const originalButtonHtml = btn.innerHTML; btn.innerHTML = '翻译中...'; btn.disabled = true; try { const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(prompt)}&langpair=zh-CN|en`); const data = await response.json(); if (data.responseData && data.responseData.translatedText) { textarea.value = data.responseData.translatedText; showAlert('翻译完成！', 'success'); } else { throw new Error(data.responseDetails || '翻译失败'); } } catch (error) { showAlert(`翻译失败: ${error.message}`, 'error'); } finally { btn.innerHTML = originalButtonHtml; btn.disabled = false; } }
+    function setupSeedButtons() { randomSeedBtn.addEventListener('click', () => { seedInput.value = Math.floor(Math.random() * 1000000); }); lockSeedBtn.addEventListener('click', () => { const isLocked = lockSeedBtn.classList.toggle('locked'); lockSeedBtn.innerHTML = isLocked ? '<svg class="icon"><use xlink:href="#lock-solid-full"></use></svg>' : '<svg class="icon"><use xlink:href="#lock-open-solid-full"></use></svg>'; seedInput.disabled = isLocked; if (isLocked && !seedInput.value.trim()) { seedInput.value = Math.floor(Math.random() * 1000000); } }); }
+    function switchSecondaryTab(subtab) { tabBtns.forEach(btn => { btn.classList.toggle('active', btn.dataset.subtab === subtab); }); document.querySelectorAll('.secondary-tab-pane').forEach(pane => { pane.classList.toggle('active', pane.id === `${subtab}SubTab`); }); }
+    function saveToHistory(imageData) { let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]'); history.unshift(imageData); if (history.length > MAX_HISTORY) { history = history.slice(0, MAX_HISTORY); } localStorage.setItem('aiDrawingHistory', JSON.stringify(history)); loadHistory(); }
+    function loadHistory() { const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]'); historyGallery.innerHTML = ''; if (history.length === 0) { historyGallery.innerHTML = `<div class="empty-gallery"><svg class="icon"><use xlink:href="#box-open-solid-full"></use></svg><p>暂无历史记录</p></div>`; return; } history.forEach((item, index) => { const historyItem = document.createElement('div'); historyItem.className = 'history-item'; let statusIcons = item.enhance ? '<svg class="icon" title="增强提示" style="color: #ffcc00; margin-right: 5px;"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>' : ''; historyItem.innerHTML = `<img src="${item.url}" alt="${item.prompt}" class="history-image" data-index="${index}"><div class="history-info"><div class="history-prompt" title="${item.prompt}">${item.prompt}</div><div class="history-date"><span>${formatDate(item.timestamp)} ${statusIcons}</span><svg class="icon delete-history" data-index="${index}" style="cursor:pointer;"><use xlink:href="#trash-solid-full"></use></svg></div></div>`; historyGallery.appendChild(historyItem); }); document.querySelectorAll('.history-image').forEach(img => img.addEventListener('click', (e) => showHistoryImage(e.target.dataset.index))); document.querySelectorAll('.delete-history').forEach(icon => icon.addEventListener('click', (e) => { e.stopPropagation(); deleteHistoryItem(e.target.dataset.index); })); }
+    function showHistoryImage(index) { const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]'); if (index >= 0 && index < history.length) { const item = history[index]; modalImage.src = item.url; currentImageUrl = item.url; document.getElementById('modalPromptText').textContent = item.prompt; document.getElementById('modalModel').textContent = item.model || '未知'; document.getElementById('modalStyle').textContent = item.style || '默认'; document.getElementById('modalSize').textContent = item.size || '未知'; document.getElementById('modalSeed').textContent = item.seed || '随机'; document.getElementById('modalTimestamp').textContent = item.timestamp || '未知'; document.getElementById('imageDetailsPanel').style.display = 'block'; currentHistoryIndex = parseInt(index); updateNavigationButtons(); imageModal.classList.add('show'); } }
+    function updateNavigationButtons() { const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]'); modalPrevBtn.style.display = currentHistoryIndex > 0 ? 'flex' : 'none'; modalNextBtn.style.display = currentHistoryIndex < history.length - 1 ? 'flex' : 'none'; }
+    function showPrevImage() { if (currentHistoryIndex > 0) showHistoryImage(currentHistoryIndex - 1); }
+    function showNextImage() { const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]'); if (currentHistoryIndex < history.length - 1) showHistoryImage(currentHistoryIndex + 1); }
+    function deleteHistoryItem(index) { let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]'); if (index >= 0 && index < history.length) { history.splice(index, 1); localStorage.setItem('aiDrawingHistory', JSON.stringify(history)); loadHistory(); showAlert('已删除记录', 'success'); } }
+    function clearHistory() { if (confirm('确定要清空所有历史记录吗？')) { localStorage.removeItem('aiDrawingHistory'); loadHistory(); showAlert('已清空历史记录', 'success'); } }
+    function showImageModal() { const activeTab = document.querySelector('.secondary-tab-btn.active').dataset.subtab; if ((activeTab === 'textToImage' || activeTab === 'imageToImage') && currentImageUrl) { modalImage.src = currentImageUrl; imageModal.classList.add('show'); currentHistoryIndex = -1; modalPrevBtn.style.display = 'none'; modalNextBtn.style.display = 'none'; } }
+    async function downloadImage() { if (!currentImageUrl) return; const button = this.id === 'modalDownloadBtn' ? modalDownloadBtn : downloadImageBtn; const originalButtonHtml = button.innerHTML; setButtonLoading(button, true, '下载中...'); try { const response = await fetch(currentImageUrl); const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; let prompt = (currentHistoryIndex !== -1) ? JSON.parse(localStorage.getItem('aiDrawingHistory'))[currentHistoryIndex].prompt : drawingPrompt.value; link.download = `ai-art-${prompt.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_') || 'image'}.png`; document.body.appendChild(link); link.click(); document.body.removeChild(link); window.URL.revokeObjectURL(url); showAlert('下载开始', 'success'); } catch (error) { console.error("下载失败:", error); showAlert('下载失败', 'error'); } finally { setButtonLoading(button, false, originalButtonHtml); } }
+    function clearDrawing() { drawingPrompt.value = ''; drawingPlaceholder.style.display = 'flex'; drawingPlaceholder.innerHTML = `<svg class="icon"><use xlink:href="#image-solid-full"></use></svg><p>输入提示词并点击"生成图像"按钮</p>`; generatedImage.style.display = 'none'; imageActions.style.display = 'none'; currentImageUrl = null; seedInput.value = ''; }
+    function setButtonLoading(button, isLoading, loadingText) { button.disabled = isLoading; if (isLoading) { button.innerHTML = loadingText; } else { if(button.id === 'generateImageBtn' || button.id === 'generateImageToImageBtn'){ button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'; } else { button.innerHTML = loadingText; } } }
+    function showAlert(message, type = 'success') { const alertContainer = document.getElementById('alertContainer'); const alert = document.createElement('div'); alert.className = `alert ${type}`; const iconId = type === 'success' ? 'check-circle-solid-full' : 'triangle-exclamation-solid-full'; alert.innerHTML = `<svg class="icon"><use xlink:href="#${iconId}"></use></svg>  ${message}`; alertContainer.appendChild(alert); setTimeout(() => alert.remove(), 3000); }
+    function formatDate(dateString) { const date = new Date(dateString); return `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`; }
 </script>
 </body>
 </html>
