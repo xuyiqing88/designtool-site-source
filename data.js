@@ -302,6 +302,12 @@ const donationData = [
 ];
 const changelogData = [
     {
+        date: "2025-09-24",
+        content: [
+            "数据从github迁移到cloudflare，优化网站速度。",
+        ]
+    },
+    {
         date: "2025-09-23",
         content: [
             "LORA训练集编辑器，新增Gemini模型版本切换。",
