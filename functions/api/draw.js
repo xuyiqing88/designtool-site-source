@@ -1,17 +1,20 @@
-// 文件: functions/api/draw.js
+// 文件: functions/api/draw.js (V2 - 带有日志功能)
+
 export async function onRequestPost(context) {
   try {
-    // 1. 安全地从 Cloudflare 环境变量中获取您的私人 API Token
+    // 1. 从 Cloudflare 环境变量中安全地获取您的私人 API Token
     const apiToken = context.env.POLLINATIONS_API_TOKEN;
 
     if (!apiToken) {
+      // 增加明确的日志
+      console.error("错误：服务器未能从环境变量中读取 POLLINATIONS_API_TOKEN。");
       return new Response(JSON.stringify({ error: '服务器未配置API Token。' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // 2. 解析从前端 (api-handler.js) 发来的 JSON 数据
+    // 2. 解析从前端发来的 JSON 数据
     const requestData = await context.request.json();
 
     if (!requestData.prompt || !requestData.width || !requestData.height) {
@@ -21,8 +24,7 @@ export async function onRequestPost(context) {
       });
     }
 
-    // 3. 构建发往 Pollinations AI 的最终URL
-    // URLSearchParams 会自动处理特殊字符的编码
+    // 3. 构建发往 Pollinations AI 的 URLSearchParams
     const params = new URLSearchParams({
       width: requestData.width,
       height: requestData.height,
@@ -43,11 +45,18 @@ export async function onRequestPost(context) {
 
     const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(requestData.prompt)}?${params.toString()}`;
 
+    // =================================================================
+    // ↓↓↓↓↓↓ 【新增的核心调试日志】 ↓↓↓↓↓↓
+    // =================================================================
+    console.log(`正在请求的最终URL: ${apiUrl}`);
+    // =================================================================
+
     // 4. 从后端服务器发起对 Pollinations AI 的请求
     const aiResponse = await fetch(apiUrl);
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
+      console.error(`AI 接口返回错误: ${errorText}`); // 增加错误日志
       return new Response(JSON.stringify({ error: `AI接口错误: ${errorText}` }), {
         status: aiResponse.status,
         headers: { 'Content-Type': 'application/json' },
@@ -63,6 +72,7 @@ export async function onRequestPost(context) {
     });
 
   } catch (error) {
+    console.error(`服务器内部错误: ${error.message}`); // 增加异常日志
     return new Response(JSON.stringify({ error: `服务器内部错误: ${error.message}` }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
