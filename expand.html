@@ -321,15 +321,21 @@
         .hidden { display: none !important; }
 
         .direction-controls-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             align-items: center;
             gap: 10px;
             padding: 15px;
             border: 1px solid var(--line);
             border-radius: 8px;
         }
-
+.direction-guide-text {
+    font-size: 14px;
+    color: var(--text3);
+    margin-top: 10px;
+    min-height: 1.5em; /* 防止文字出现/消失时布局跳动 */
+    transition: color 0.3s ease; /* 增加颜色过渡效果 */
+}
         .direction-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -337,6 +343,7 @@
             gap: 10px;
             width: 150px;
             height: 150px;
+            margin: 0 auto;
         }
 
         .direction-btn {
@@ -545,29 +552,31 @@
                         <div class="upload-status" id="uploadStatus"></div>
                     </div>
 
-                    <div>
-                        <label class="drawing-control-label">2. 选择扩展方向</label>
-                         <p class="panel-description" style="margin-bottom: 10px;">点击箭头选择一个或多个扩展方向。</p>
-                        <div class="direction-controls-container">
-                            <div class="direction-grid">
-                                <button class="direction-btn" id="arrow-up" data-direction="upwards">
-                                    <svg class="icon"><use xlink:href="#arrow-up-solid-full"></use></svg>
-                                </button>
-                                <button class="direction-btn" id="arrow-left" data-direction="to the left">
-                                    <svg class="icon"><use xlink:href="#arrow-left-solid-full"></use></svg>
-                                </button>
-                                <div class="center-placeholder">
-                                    <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
-                                </div>
-                                <button class="direction-btn" id="arrow-right" data-direction="to the right">
-                                    <svg class="icon"><use xlink:href="#arrow-right-solid-full"></use></svg>
-                                </button>
-                                <button class="direction-btn" id="arrow-down" data-direction="downwards">
-                                    <svg class="icon"><use xlink:href="#arrow-down-solid-full"></use></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+<div>
+    <label class="drawing-control-label">2. 选择扩展方向</label>
+     <p class="panel-description" style="margin-bottom: 10px;">点击箭头选择一个或多个扩展方向。</p>
+    <div class="direction-controls-container">
+        <div class="direction-grid">
+            <button class="direction-btn" id="arrow-up" data-direction="upwards" data-guide-text="向上扩展图片">
+                <svg class="icon"><use xlink:href="#arrow-up-solid-full"></use></svg>
+            </button>
+            <button class="direction-btn" id="arrow-left" data-direction="to the left" data-guide-text="向左扩展图片">
+                <svg class="icon"><use xlink:href="#arrow-left-solid-full"></use></svg>
+            </button>
+            <div class="center-placeholder">
+                <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
+            </div>
+            <button class="direction-btn" id="arrow-right" data-direction="to the right" data-guide-text="向右扩展图片">
+                <svg class="icon"><use xlink:href="#arrow-right-solid-full"></use></svg>
+            </button>
+            <button class="direction-btn" id="arrow-down" data-direction="downwards" data-guide-text="向下扩展图片">
+                <svg class="icon"><use xlink:href="#arrow-down-solid-full"></use></svg>
+            </button>
+        </div>
+        <p id="direction-guide-text" class="direction-guide-text">将鼠标悬停在箭头上查看方向</p>
+    </div>
+    
+</div>
 
                     <div class="btn-group">
                         <button class="btn-secondary" id="clearBtn">
@@ -636,6 +645,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalImage = document.getElementById('modalImage');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
     const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+// --- 新增：获取指引文字元素 ---
+    const directionGuideText = document.getElementById('direction-guide-text');
+    const defaultGuideText = '将鼠标悬停在箭头上查看方向';
+
+    // --- 新增：更新指引文字的函数 ---
+    function updateGuideText() {
+        const activeDirections = Array.from(directionBtns)
+            .filter(btn => btn.classList.contains('active'))
+            .map(btn => btn.dataset.guideText.replace('图片', '')); // 获取激活按钮的文字并去掉“图片”二字
+
+        if (activeDirections.length > 0) {
+            directionGuideText.textContent = activeDirections.join('和') + '图片';
+            directionGuideText.style.color = 'var(--main-color)';
+        } else {
+            directionGuideText.textContent = defaultGuideText;
+            directionGuideText.style.color = 'var(--text3)';
+        }
+    }
+
+    // --- 修改：为方向按钮增加新的事件监听 ---
+    directionBtns.forEach(btn => {
+        // 原有的 click 监听需要修改
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            updateGuideText(); // 点击后也更新文字
+        });
+
+        // 新增 mouseenter 监听
+        btn.addEventListener('mouseenter', () => {
+            directionGuideText.textContent = btn.dataset.guideText;
+            directionGuideText.style.color = 'var(--main-color)';
+        });
+        
+        // 新增 mouseleave 监听
+        btn.addEventListener('mouseleave', () => {
+            updateGuideText(); // 鼠标离开时，恢复显示已选中的方向或默认文字
+        });
+    });
+
 
     // 状态变量
     let uploadedImageUrl = null;
@@ -661,12 +709,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape' && imageModal.classList.contains('show')) {
             imageModal.classList.remove('show');
         }
-    });
-
-    directionBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            btn.classList.toggle('active');
-        });
     });
 
     imageUploadInput.addEventListener('change', handleImageUpload);
