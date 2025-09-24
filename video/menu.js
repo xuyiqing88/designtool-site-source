@@ -128,8 +128,8 @@ body {
 }
 /* 在下方添加这段新的CSS */
 .menu-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     fill: currentColor; /* 关键！让SVG颜色继承父元素的color属性 */
 }
 .menu-text {
