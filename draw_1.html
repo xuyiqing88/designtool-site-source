@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI绘画工具 - AI图像生成与历史图库管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
+     crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --main-color: #5a64ff;
+            --btcolor: linear-gradient(113deg, #4c73ff, #6a52ff);
+            --text1: #1a1d2e;
+            --text2: #4a4e6d;
+            --text3: #8d8fa3;
+            --line: #e2e4f0;
+            --mainbg: #f9fafb;
+            --btactive: #e5e8ff;
+            --lightbg: #f8f9ff;
+            --shadow: #55537512;
+            --card-bg: #ffffff;
+            --blur: rgba(255, 255, 255, 0.5);
+            --button: #5a64ff24;
+            --secondary-tab-active: #eef0ff;
+            --secondary-tab-hover: #f6f7ff;
+            --user-msg-bg: #e2e5fd;
+            --ai-msg-bg: #ffffff;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+                background: linear-gradient(0deg, #f9f9ff 72%, #7a6fff);
+            color: var(--text1);
+            transition: background 0.3s ease;
+        }
+        .icon {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    fill: currentColor;
+}
+.ruler {
+	cursor: pointer; 
+	color: var(--main-color);
+    gap: 6px;
+    display: flex;
+    align-items: center;
+	text-decoration: none;
+}
+.ruler:hover {
+	text-decoration: underline;
+}
+/* 图片详情面板样式 */
+.image-details-panel {
+    position: relative;
+    right: 0;
+    top: 0;
+    width: 300px;
+    padding: 20px;
+    overflow-y: auto;
+    display: none;
+	height: -webkit-fill-available;
+}
+
+.image-details-panel h3 {
+    margin-bottom: 15px;
+    color: var(--text1);
+    font-size: 18px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+}
+
+.detail-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.detail-item span {
+    color: var(--text3);
+    font-size: 14px;
+}
+
+.prompt-text {
+    background: var(--mainbg);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-height: 280px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text2);
+    border: 1px solid var(--line);
+}
+
+.copy-btn {
+    align-self: flex-end;
+    padding: 6px 12px;
+    background: var(--copy-btn);
+    color: var(--text2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.copy-btn:hover {
+    background: var(--btactive);
+    color: white;
+}
+
+.hidden {
+    display: none !important;
+}
+        .advanced-options {
+           /* display: grid;*/
+            /*grid-template-columns: 1fr 1fr;*/
+            gap: 15px;
+            margin-top: 8px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+        }
+        
+        .option-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+	justify-content: space-between;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #d7d7df;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--main-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .option-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text2);
+        }
+        
+        .option-description {
+            font-size: 12px;
+            color: var(--text3);
+            margin-top: 4px;
+        }       
+        
+        .main-layout {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            flex-direction: column;
+            margin-left: 60px;
+        }
+        
+        .header {
+            padding: 15px 30px 10px;
+            display: flex;
+            align-items: baseline;
+            color: white;
+            gap: 10px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo svg {
+            font-size: 30px;
+            background: var(--btcolor);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+        
+        .header-info {
+            font-size: 14px;
+            opacity: 0.9;
+            max-width: 500px;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            padding: 10px;
+            display: flex;
+        }
+        
+        .panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+	    padding: 20px;
+        flex: 1;
+        }
+        
+        .panel h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--text1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .panel-description {
+            color: var(--text2);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .secondary-tabs {
+            display: flex;
+            background: transparent;
+            border-radius: 0;
+            padding: 0 4px;
+            border-bottom: 1px solid var(--line);
+        }
+        
+        .secondary-tab-btn {
+            flex: 1;
+            padding: 0 15px 15px;
+            background: none;
+            border: none;
+            color: var(--text2);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;	
+            justify-content: center;
+            border-radius: 0;
+            box-shadow: none;
+            position: relative;
+        }
+        
+        .secondary-tab-btn::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -1px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--main-color);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .secondary-tab-btn.active {
+            background: transparent;
+            color: var(--main-color);
+            font-weight: 600;
+            box-shadow: none;
+        }
+        
+        .secondary-tab-btn.active::after {
+            width: 70%;
+        }
+        
+        .secondary-tab-btn:hover {
+            color: var(--main-color);
+        }
+        
+        .secondary-tab-btn:not(.active):hover::after {
+            width: 40%;
+        }
+        
+        .secondary-tab-pane { 
+            display: none; 
+            flex: 1; 
+            flex-direction: column; 
+            max-height: calc(100vh - 100px);
+        }
+        
+        .secondary-tab-pane.active { 
+            display: flex; 
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+            padding-top: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .translate-btn {
+            position: absolute;
+            bottom: 14px;
+            right: 10px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 4px 12px;
+            cursor: pointer;
+            color: var(--text2);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .translate-btn:hover {
+            background: var(--button);
+            color: var(--main-color);
+        }
+        
+        .drawing-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .drawing-controls-panel {
+            border-radius: 12px;
+        }
+        
+        .drawing-preview-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        textarea, input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 16px 16px 38px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--mainbg);
+            color: var(--text1);
+            font-size: 15px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            outline: none;
+            border-color: var(--main-color);
+            box-shadow: 0 0 0 3px rgba(89, 99, 255, 0.15);
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin: 20px;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: var(--btcolor);
+            color: white;
+            box-shadow: 0 4px 15px rgba(89, 99, 255, 0.25);
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.92;
+            box-shadow: 0 7px 18px rgba(89, 99, 255, 0.35);
+        }
+        
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text2);
+            border: 1px solid var(--line);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--btactive);
+            color: var(--main-color);
+            transform: translateY(-2px);
+        }
+        
+        .drawing-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .drawing-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .drawing-control label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text2);
+	    display: flex;
+    justify-content: space-between;
+        }
+        
+        .drawing-control select, .drawing-control input {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--mainbg);
+            font-size: 14px;
+        }
+        
+        .drawing-control select {
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238d8fa3' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+        
+        .drawing-preview {
+            text-align: center;
+            position: relative;
+        }
+        
+        #generatedImage, #generatedImageToImage {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 12px;
+            display: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            border: 1px solid var(--line);
+        }
+        
+        #generatedImage:hover, #generatedImageToImage:hover {
+            transform: scale(1.03);
+        }
+        
+        .drawing-placeholder {
+            color: var(--text3);
+            padding: 40px;
+            opacity: 0.7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            border: 2px dashed var(--line);
+            border-radius: 12px;
+            min-height: 300px;
+	max-width: 860px;
+    	overflow: hidden;
+        }
+        
+        .drawing-placeholder svg {
+            font-size: 56px;
+            color: var(--text3);
+            opacity: 0.5;
+        }
+        
+        .image-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .image-modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+	display: flex;
+	    background: #fff;
+    border-radius: 10px;
+        }
+        
+        /* 图片容器 - 包含图片和翻页按钮 */
+        .modal-image-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .modal-content img {
+            object-fit: contain;
+            border-radius: 14px;
+            height: 85vh;
+	        padding: 10px;
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: -40px;
+            background: #00000045;
+            border: 1px solid;;
+            color: var(--card-bg);
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            padding: 7px 0 10px;
+	        right: -50px;
+    	    z-index: 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 左右翻页按钮样式 - 精确位于图片边缘 */
+        .modal-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 10px;
+        }
+        
+        .modal-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .modal-prev-btn {
+            left: 10px;
+        }
+        
+        .modal-next-btn {
+            right: 10px;
+        }
+        
+        .modal-close-btn:hover {
+            transform: scale(1.1);
+            color: #ff5a5a;
+        }
+        
+        .modal-download-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 0%;
+            transform: translateX(-50%);
+            background: var(--btcolor);
+        }
+        
+        .alert {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 35px;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 8px 25px var(--shadow);
+            z-index: 1001;
+            animation: fadeInOut 3s forwards;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert.success { background: var(--success-color); z-index:2001; }
+        .alert.error { background: var(--error-color); z-index:2001; }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* 历史图库样式 */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 15px;	
+            margin-bottom: 110px;
+        }
+        
+        .history-item {
+            background: var(--lightbg);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid var(--line);
+        }
+        
+        .history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .history-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+	    padding: 5px;
+        }
+        
+        .history-info {
+            padding: 0 12px 12px;
+        }
+        
+        .history-prompt {
+            font-size: 13px;
+            color: var(--text2);
+            height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin-bottom: 8px;
+        }
+        
+        .history-date {
+            font-size: 11px;
+            color: var(--text3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .delete-history {
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .delete-history:hover {
+            color: var(--error-color);
+        }
+        
+        .gallery-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-top: 1px solid var(--line);
+            background: #ffffffc2;
+            bottom: 0;
+            position: fixed;
+            width: 92%;
+            z-index: 9;
+            align-items: center;
+	backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .empty-gallery {
+            text-align: center;
+            padding: 50px;
+            color: var(--text3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .empty-gallery svg {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--line);
+        }
+
+        /* 图生图样式 */
+        #imageToImageOptions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            padding-top: 10px;
+        }
+        
+        .image-upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 2px dashed var(--line);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .image-upload-area:hover {
+            border-color: var(--main-color);
+            background: var(--btactive);
+        }
+        
+        .image-upload-area svg {
+            font-size: 40px;
+            color: var(--text3);
+            margin-bottom: 10px;
+        }
+        
+        .image-upload-area p {
+            color: var(--text2);
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .image-upload-area input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .uploaded-image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+            border: 1px solid var(--line);
+        }
+        
+        .upload-status {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .advanced-options, #imageToImageOptions {
+                grid-template-columns: 1fr;
+            }
+	.panel {
+		padding: 10px;
+		}
+       .image-details-panel {
+        	position: static;
+        	width: 100%;
+        	height: auto;
+        	max-height: 65vh;
+        	overflow-y: auto;
+    }
+    
+    .modal-content {
+        flex-direction: column;
+        width: 95vw;
+        max-height: 80vh;
+    }
+            .drawing-layout {
+                grid-template-columns: 1fr;
+            }
+            .secondary-tab-btn {    padding: 5px 15px 15px;}
+            .gallery-controls {
+                flex-direction: column;
+                padding: 5px;
+                gap: 10px;
+            }
+            
+            button {
+                font-size: 14px;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+                padding: 15px;
+                align-items: center;
+                display: none;
+            }
+            
+            .main-layout {
+                margin-left: 0;
+            }
+            
+            .header-info {
+                font-size: 13px;
+            }
+            
+            .main-content {
+                padding: 8px;
+            }
+            
+            .modal-content img {
+                width: 100%;
+		        max-height: 50vh;
+                height: -webkit-fill-available;
+            }
+            
+            .image-details-panel {
+                max-height: 35vh;
+            }
+            
+            .modal-download-btn {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                transform: none;
+                display: flex;
+                margin: 0 auto 15px;
+                width: 80%;
+                max-width: 200px;
+            }
+            
+            .modal-close-btn {
+                right: 0;
+            }
+            
+            /* 移动端翻页按钮样式 */
+            .modal-prev-btn {
+                left: 0;
+            }
+            
+            .modal-next-btn {
+                right: 0;
+            }
+            
+            /* 调整移动端的图片容器 */
+            .modal-image-container {
+                width: 100%;
+            }
+            
+            .drawing-placeholder {
+                min-height: 200px;
+            }
+            
+            .gallery-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                padding: 0;
+                margin-bottom: 50px;
+                gap: 10px;
+            }
+            
+            .empty-gallery {
+                padding: 30px;
+            }
+            
+            .history-image {
+                height: 140px;
+            }
+        }
+    </style>
+</head>
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
+<body>
+<svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="box-open-solid-full">
+    <path d="M560.3 301.2C570.7 313 588.6 315.6 602.1 306.7C616.8 296.9 620.8 277 611 262.3L563 190.3C560.2 186.1 556.4 182.6 551.9 180.1L351.4 68.7C332.1 58 308.6 58 289.2 68.7L88.8 180C83.4 183 79.1 187.4 76.2 192.8L27.7 282.7C15.1 306.1 23.9 335.2 47.3 347.8L80.3 365.5L80.3 418.8C80.3 441.8 92.7 463.1 112.7 474.5L288.7 574.2C308.3 585.3 332.2 585.3 351.8 574.2L527.8 474.5C547.9 463.1 560.2 441.9 560.2 418.8L560.2 301.3zM320.3 291.4L170.2 208L320.3 124.6L470.4 208L320.3 291.4zM278.8 341.6L257.5 387.8L91.7 299L117.1 251.8L278.8 341.6z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="chevron-left-solid-full">
+    <path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="chevron-right-solid-full">
+    <path d="M471.1 297.4C483.6 309.9 483.6 330.2 471.1 342.7L279.1 534.7C266.6 547.2 246.3 547.2 233.8 534.7C221.3 522.2 221.3 501.9 233.8 489.4L403.2 320L233.9 150.6C221.4 138.1 221.4 117.8 233.9 105.3C246.4 92.8 266.7 92.8 279.2 105.3L471.2 297.3z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="cloud-arrow-up-solid-full">
+    <path d="M176 544C96.5 544 32 479.5 32 400C32 336.6 73 282.8 129.9 263.5C128.6 255.8 128 248 128 240C128 160.5 192.5 96 272 96C327.4 96 375.5 127.3 399.6 173.1C413.8 164.8 430.4 160 448 160C501 160 544 203 544 256C544 271.7 540.2 286.6 533.5 299.7C577.5 320 608 364.4 608 416C608 486.7 550.7 544 480 544L176 544zM337 255C327.6 245.6 312.4 245.6 303.1 255L231.1 327C221.7 336.4 221.7 351.6 231.1 360.9C240.5 370.2 255.7 370.3 265 360.9L296 329.9L296 432C296 445.3 306.7 456 320 456C333.3 456 344 445.3 344 432L344 329.9L375 360.9C384.4 370.3 399.6 370.3 408.9 360.9C418.2 351.5 418.3 336.3 408.9 327L336.9 255z"></path>
+  </symbol>
+  <symbol version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" id="copy">
+    <title>复制@2x</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g id="01首页" transform="translate(-862, -148)" stroke="#6F7189" stroke-width="1.25">
+        <g id="矩形" transform="translate(800, 10)">
+          <g id="编组-18" transform="translate(0, 70)">
+            <g id="编组-5" transform="translate(20, -14)">
+              <g id="编组-9" transform="translate(42, 0)">
+                <g id="编组-12" transform="translate(0, 82)">
+                  <g id="编组-23" transform="translate(1.5, 1)">
+                    <rect id="矩形" x="4.125" y="0.625" width="8.75" height="8.75" rx="2"></rect>
+                    <path d="M10,11.6587302 C10,12.6756354 9.17563541,13.5 8.15873016,13.5 L1.84126984,13.5 C0.824364588,13.5 0,12.6756354 0,11.6587302 L0,5.34126984 C0,4.32436459 0.824364588,3.5 1.84126984,3.5" id="路径" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="dice-solid-full">
+    <path d="M205.4 66.3C167 56 127.5 78.8 117.3 117.2L66.5 306.7C56.2 345.1 79 384.6 117.4 394.9L306.9 445.7C345.3 456 384.8 433.2 395.1 394.8L445.9 205.3C456.2 166.9 433.4 127.4 395 117.1L205.4 66.3zM228.4 272C222.3 262.1 222.1 249.6 227.8 239.5C233.5 229.4 244.3 223.2 256 223.3C267.6 223.4 278.2 229.8 283.8 240C289.9 249.9 290.1 262.4 284.4 272.5C278.7 282.6 267.9 288.8 256.2 288.7C244.6 288.6 234 282.2 228.4 272zM143.2 284.3C153.1 278.2 165.6 278 175.7 283.7C185.8 289.4 192 300.2 191.9 311.9C191.8 323.5 185.4 334.1 175.2 339.7C165.3 345.8 152.8 346 142.7 340.3C132.6 334.6 126.4 323.8 126.5 312.1C126.6 300.5 133 289.9 143.2 284.3zM328.2 380.7C318.3 386.8 305.8 387 295.7 381.3C285.6 375.6 279.4 364.8 279.5 353.1C279.6 341.5 286 330.9 296.2 325.3C306.1 319.2 318.6 319 328.7 324.7C338.8 330.4 345 341.2 344.9 352.9C344.8 364.5 338.4 375.1 328.2 380.7zM337.2 172.3C347.1 166.2 359.6 166 369.7 171.7C379.8 177.4 386 188.2 385.9 199.9C385.8 211.5 379.4 222.1 369.2 227.7C359.3 233.8 346.8 234 336.7 228.3C326.6 222.6 320.4 211.8 320.5 200.1C320.6 188.5 327 177.9 337.2 172.3zM216.2 186.7C206.3 192.8 193.8 193 183.7 187.3C173.6 181.6 167.4 170.8 167.5 159.1C167.6 147.5 174 136.9 184.2 131.3C194.1 125.2 206.6 125 216.7 130.7C226.8 136.4 233 147.2 232.9 158.9C232.8 170.5 226.4 181.1 216.2 186.7zM482 256L441.4 407.2C424.2 471.2 358.4 509.2 294.4 492.1L256.1 481.8L256.1 512C256.1 547.3 284.8 576 320.1 576L512.1 576C547.4 576 576.1 547.3 576.1 512L576.1 320C576.1 284.7 547.4 256 512.1 256L482 256z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="download-solid-full">
+    <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="eraser-solid-full">
+    <path d="M210.5 480L333.5 480L398.8 414.7L225.3 241.2L98.6 367.9L210.6 479.9zM256 544L210.5 544C193.5 544 177.2 537.3 165.2 525.3L49 409C38.1 398.1 32 383.4 32 368C32 352.6 38.1 337.9 49 327L295 81C305.9 70.1 320.6 64 336 64C351.4 64 366.1 70.1 377 81L559 263C569.9 273.9 576 288.6 576 304C576 319.4 569.9 334.1 559 345L424 480L544 480C561.7 480 576 494.3 576 512C576 529.7 561.7 544 544 544L256 544z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="image-solid-full">
+    <path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96zM224 176C250.5 176 272 197.5 272 224C272 250.5 250.5 272 224 272C197.5 272 176 250.5 176 224C176 197.5 197.5 176 224 176zM368 288C376.4 288 384.1 292.4 388.5 299.5L476.5 443.5C481 450.9 481.2 460.2 477 467.8C472.8 475.4 464.7 480 456 480L184 480C175.1 480 166.8 475 162.7 467.1C158.6 459.2 159.2 449.6 164.3 442.3L220.3 362.3C224.8 355.9 232.1 352.1 240 352.1C247.9 352.1 255.2 355.9 259.7 362.3L286.1 400.1L347.5 299.6C351.9 292.5 359.6 288.1 368 288.1z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="lock-open-solid-full">
+    <path d="M416 160C416 124.7 444.7 96 480 96C515.3 96 544 124.7 544 160L544 192C544 209.7 558.3 224 576 224C593.7 224 608 209.7 608 192L608 160C608 89.3 550.7 32 480 32C409.3 32 352 89.3 352 160L352 224L192 224C156.7 224 128 252.7 128 288L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 288C512 252.7 483.3 224 448 224L416 224L416 160z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="lock-solid-full">
+    <path d="M256 160L256 224L384 224L384 160C384 124.7 355.3 96 320 96C284.7 96 256 124.7 256 160zM192 224L192 160C192 89.3 249.3 32 320 32C390.7 32 448 89.3 448 160L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 156.7 224 192 224z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="rotate-solid-full">
+    <path d="M544.1 256L552 256C565.3 256 576 245.3 576 232L576 88C576 78.3 570.2 69.5 561.2 65.8C552.2 62.1 541.9 64.2 535 71L483.3 122.8C439 86.1 382 64 320 64C191 64 84.3 159.4 66.6 283.5C64.1 301 76.2 317.2 93.7 319.7C111.2 322.2 127.4 310 129.9 292.6C143.2 199.5 223.3 128 320 128C364.4 128 405.2 143 437.7 168.3L391 215C384.1 221.9 382.1 232.2 385.8 241.2C389.5 250.2 398.3 256 408 256L544.1 256zM573.5 356.5C576 339 563.8 322.8 546.4 320.3C529 317.8 512.7 330 510.2 347.4C496.9 440.4 416.8 511.9 320.1 511.9C275.7 511.9 234.9 496.9 202.4 471.6L249 425C255.9 418.1 257.9 407.8 254.2 398.8C250.5 389.8 241.7 384 232 384L88 384C74.7 384 64 394.7 64 408L64 552C64 561.7 69.8 570.5 78.8 574.2C87.8 577.9 98.1 575.8 105 569L156.8 517.2C201 553.9 258 576 320 576C449 576 555.7 480.6 573.4 356.5z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="ruler-combined-solid-full">
+    <path d="M97 505.7C101.5 527.5 120.8 544 144 544L496 544C522.5 544 544 522.5 544 496L544 400C544 373.5 522.5 352 496 352L448 352L448 424C448 437.3 437.3 448 424 448C410.7 448 400 437.3 400 424L400 352L336 352L336 424C336 437.3 325.3 448 312 448C298.7 448 288 437.3 288 424L288 352L216 352C202.7 352 192 341.3 192 328C192 314.7 202.7 304 216 304L288 304L288 240L216 240C202.7 240 192 229.3 192 216C192 202.7 202.7 192 216 192L288 192L288 144C288 117.5 266.5 96 240 96L144 96C117.5 96 96 117.5 96 144L96 496C96 499.3 96.3 502.6 97 505.7z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="trash-solid-full">
+    <path d="M232.7 69.9L224 96L128 96C110.3 96 96 110.3 96 128C96 145.7 110.3 160 128 160L512 160C529.7 160 544 145.7 544 128C544 110.3 529.7 96 512 96L416 96L407.3 69.9C402.9 56.8 390.7 48 376.9 48L263.1 48C249.3 48 237.1 56.8 232.7 69.9zM512 208L128 208L149.1 531.1C150.7 556.4 171.7 576 197 576L443 576C468.3 576 489.3 556.4 490.9 531.1L512 208z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="triangle-exclamation-solid-full">
+    <path d="M320 64C334.7 64 348.2 72.1 355.2 85L571.2 485C577.9 497.4 577.6 512.4 570.4 524.5C563.2 536.6 550.1 544 536 544L104 544C89.9 544 76.8 536.6 69.6 524.5C62.4 512.4 62.1 497.4 68.8 485L284.8 85C291.8 72.1 305.3 64 320 64zM320 416C302.3 416 288 430.3 288 448C288 465.7 302.3 480 320 480C337.7 480 352 465.7 352 448C352 430.3 337.7 416 320 416zM320 224C301.8 224 287.3 239.5 288.6 257.7L296 361.7C296.9 374.2 307.4 384 319.9 384C332.5 384 342.9 374.3 343.8 361.7L351.2 257.7C352.5 239.5 338.1 224 319.8 224z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="up-right-from-square-solid-full">
+    <path d="M354.4 83.8C359.4 71.8 371.1 64 384 64L544 64C561.7 64 576 78.3 576 96L576 256C576 268.9 568.2 280.6 556.2 285.6C544.2 290.6 530.5 287.8 521.3 278.7L464 221.3L310.6 374.6C298.1 387.1 277.8 387.1 265.3 374.6C252.8 362.1 252.8 341.8 265.3 329.3L418.7 176L361.4 118.6C352.2 109.4 349.5 95.7 354.5 83.7zM64 240C64 195.8 99.8 160 144 160L224 160C241.7 160 256 174.3 256 192C256 209.7 241.7 224 224 224L144 224C135.2 224 128 231.2 128 240L128 496C128 504.8 135.2 512 144 512L400 512C408.8 512 416 504.8 416 496L416 416C416 398.3 430.3 384 448 384C465.7 384 480 398.3 480 416L480 496C480 540.2 444.2 576 400 576L144 576C99.8 576 64 540.2 64 496L64 240z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="wand-magic-sparkles-solid-full">
+    <path d="M295.4 37L310.2 73.8L347 88.6C350 89.8 352 92.8 352 96C352 99.2 350 102.2 347 103.4L310.2 118.2L295.4 155C294.2 158 291.2 160 288 160C284.8 160 281.8 158 280.6 155L265.8 118.2L229 103.4C226 102.2 224 99.2 224 96C224 92.8 226 89.8 229 88.6L265.8 73.8L280.6 37C281.8 34 284.8 32 288 32C291.2 32 294.2 34 295.4 37zM142.7 105.7L164.2 155.8L214.3 177.3C220.2 179.8 224 185.6 224 192C224 198.4 220.2 204.2 214.3 206.7L164.2 228.2L142.7 278.3C140.2 284.2 134.4 288 128 288C121.6 288 115.8 284.2 113.3 278.3L91.8 228.2L41.7 206.7C35.8 204.2 32 198.4 32 192C32 185.6 35.8 179.8 41.7 177.3L91.8 155.8L113.3 105.7C115.8 99.8 121.6 96 128 96C134.4 96 140.2 99.8 142.7 105.7zM496 368C502.4 368 508.2 371.8 510.7 377.7L532.2 427.8L582.3 449.3C588.2 451.8 592 457.6 592 464C592 470.4 588.2 476.2 582.3 478.7L532.2 500.2L510.7 550.3C508.2 556.2 502.4 560 496 560C489.6 560 483.8 556.2 481.3 550.3L459.8 500.2L409.7 478.7C403.8 476.2 400 470.4 400 464C400 457.6 403.8 451.8 409.7 449.3L459.8 427.8L481.3 377.7C483.8 371.8 489.6 368 496 368zM492 64C503 64 513.6 68.4 521.5 76.2L563.8 118.5C571.6 126.4 576 137 576 148C576 159 571.6 169.6 563.8 177.5L475.6 265.7L374.3 164.4L462.5 76.2C470.4 68.4 481 64 492 64zM76.2 462.5L340.4 198.3L441.7 299.6L177.5 563.8C169.6 571.6 159 576 148 576C137 576 126.4 571.6 118.5 563.8L76.2 521.5C68.4 513.6 64 503 64 492C64 481 68.4 470.4 76.2 462.5z"></path>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="check-circle-solid-full">
+    <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+</symbol>
+</svg>
+    <div class="main-layout">
+        <div class="header">
+            <div class="logo">
+                <h1>AI 绘画</h1>
+            </div>
+            <div class="header-info">
+                使用AI生成精美图像，所有生成的作品会自动保存到历史图库中
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">              
+                <div class="secondary-tabs">
+                    <button class="secondary-tab-btn active" data-subtab="textToImage">文生图</button>
+                    <button class="secondary-tab-btn" data-subtab="imageToImage">图生图</button>
+                    <button class="secondary-tab-btn" data-subtab="gallery">历史图库</button>
+                </div>
+                
+                <div id="textToImageSubTab" class="secondary-tab-pane active">
+                    <div class="drawing-layout">
+                        <div class="drawing-controls-panel">
+                            <p class="panel-description">
+                    输入提示词，AI将根据您的描述生成图像。提示词过长请翻译成英文。
+                            </p>
+                            <div class="input-wrapper">
+                                <textarea id="drawingPrompt" placeholder="输入详细描述以生成图像（例如：一只坐在太空船里的猫，科幻风格，超现实细节）" style="min-height: 160px;"></textarea>
+                                <button class="translate-btn" id="translateBtn">
+                                    译
+                                </button>
+                            </div>
+                            
+
+                            <div class="advanced-options">
+                                <div class="option-toggle">
+                                    <div>
+                                        <div class="option-label">增强提示
+                                        <span class="option-description">使用AI优化提示词，添加更多细节</span>
+				    </div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="enhanceOption">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="drawing-controls">
+                                <div class="drawing-control">
+                                    <label for="modelSelect">模型选择</label>
+                                    <select id="modelSelect">
+                                        <option value="flux">Flux (质量高)</option>
+                                        <option value="turbo">Turbo (速度快，支持NSFW)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="drawing-control">
+                                    <label for="styleSelect">艺术风格 
+                                <a href="SDXL.html" target="_blank" class="ruler">
+                                    更多风格 <svg class="icon"><use xlink:href="#up-right-from-square-solid-full"></use></svg>
+                                </a></label>
+                                    <select id="styleSelect">
+                                        <option value="">默认</option>
+                                        <option value="realistic">写实风格</option>
+                                        <option value="2.5D">2.5D半写实</option>
+                                        <option value="3D">3D卡通风格</option>
+                                        <option value="anime">动漫风格</option>
+                                        <option value="oil-painting">油画风格</option>
+                                        <option value="pixel-art">像素艺术</option>
+                                        <option value="surrealism">超现实主义</option>
+                                        <option value="cyberpunk">赛博朋克</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="drawing-control">
+                                    <label for="sizeSelect">图像尺寸</label>
+                                    <select id="sizeSelect">
+                                        <option value="1024x1024">1:1 (1024×1024)</option>
+                                        <option value="1024x768">4:3 (1024×768)</option>
+                                        <option value="768x1024">3:4 (768×1024)</option>
+                                        <option value="1152x768">3:2 (1152x768)</option>
+                                        <option value="768x1152">2:3 (768x1152)</option>
+                                        <option value="1152x640">16:9 (1152x640)</option>
+                                        <option value="640x1152">9:16 (640x1152)</option>
+                                        <option value="768x768">768×768</option>
+                                        <option value="512x512">512×512</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="drawing-control">
+                                    <label for="seedInput">种子</label>
+                                    <div class="seed-input-group" style="display: flex; gap: 5px;">
+                                        <input type="text" id="seedInput" placeholder="-1" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--mainbg); font-size: 14px;">
+                                        <button id="randomSeedBtn" class="btn-secondary" style="padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                                            <svg class="icon"><use xlink:href="#dice-solid-full"></use></svg>
+                                        </button>
+                                        <button id="lockSeedBtn" class="btn-secondary" style="padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                                            <svg class="icon"><use xlink:href="#lock-open-solid-full"></use></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btn-group">
+                                <button class="btn-secondary" id="clearDrawingBtn">
+                                    <svg class="icon"><use xlink:href="#eraser-solid-full"></use></svg>清除描述
+                                </button>
+                                <button class="btn-primary" id="generateImageBtn" style="background: var(--btcolor);">
+                                   <svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像
+                                </button>
+                            </div>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="fluid"
+     data-ad-layout-key="-ht+f-1a-3i+b9"
+     data-ad-client="ca-pub-3983418855272291"
+     data-ad-slot="9719754879"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+                        </div>
+                        
+                        <div class="drawing-preview-panel">
+                            <div class="drawing-preview">
+                                <p class="panel-description">注意：生成裸露内容可能会导致图片变黑。</p>
+                                <div id="drawingPlaceholder" class="drawing-placeholder">
+                                    <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
+                                    <p>输入提示词并点击"生成图像"按钮</p>
+                                </div>
+                                <img id="generatedImage" alt="生成的图像">
+                                
+                                <div class="image-actions" id="imageActions" style="display: none; margin-top: 20px;">
+                                    <button class="btn-secondary" id="downloadImageBtn" style="flex: 1;">
+                                        <svg class="icon"><use xlink:href="#download-solid-full"></use></svg> 下载
+                                    </button>
+                                    <button class="btn-secondary" id="regenerateImageBtn" style="flex: 1;">
+                                        <svg class="icon"><use xlink:href="#rotate-solid-full"></use></svg> 重新生成
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="imageToImageSubTab" class="secondary-tab-pane">
+                    <div class="drawing-layout">
+                        <div class="drawing-controls-panel">
+                            <p class="panel-description">
+                                上传图片并输入修改指令，AI将根据您的描述编辑图片。可以修改图片风格、去水印、换背景等。
+                            </p>
+                            
+                            <!-- 图片上传区域 -->
+<div class="image-upload-area" id="imageUploadArea">
+    <svg class="icon" id="uploadIcon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
+    <p id="uploadText">点击或拖拽图片到这里上传（小于10MB）</p>
+    <input type="file" id="imageUploadInput" accept="image/*">
+    <img id="uploadedImagePreview" class="uploaded-image-preview" alt="上传的图片">
+    <div class="upload-status" id="uploadStatus"></div>
+</div>
+                            
+                            <div class="input-wrapper">
+                                <textarea id="imageToImagePrompt" placeholder="输入修改指令（例如：Change background to beach（英文））" style="min-height: 120px;"></textarea>
+                                <button class="translate-btn" id="translateImageToImageBtn">
+                                    译
+                                </button>
+                            </div>
+                            
+                            <div id="imageToImageOptions">
+                                <div class="drawing-control">
+                                    <label for="negativePromptInput">负面提示词 (Negative Prompt)</label>
+                                    <input type="text" id="negativePromptInput" placeholder="不希望在图像中出现的内容" style="padding: 10px;">
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">                                
+<div class="drawing-control">
+    <label for="imageToImageSizeSelect" style="display: flex; justify-content: space-between; align-items: center;">
+        <span id="imageSizeLabel">图像尺寸</span>
+        <span id="getOriginalSizeBtn" class="ruler"><svg class="icon"><use xlink:href="#ruler-combined-solid-full"></use></svg> 原图尺寸</span>
+    </label>
+    <select id="imageToImageSizeSelect">
+        <option value="1024x1024">1:1 (1024×1024)</option>
+        <option value="1024x768">4:3 (1024×768)</option>
+        <option value="768x1024">3:4 (768×1024)</option>
+        <option value="1152x768">3:2 (1152x768)</option>
+        <option value="768x1152">2:3 (768x1152)</option>
+	<option value="1152x640">16:9 (1152x640)</option>
+	<option value="640x1152">9:16 (640x1152)</option>
+    </select>
+</div>
+				<div class="drawing-control">
+                                    <label for="imageToImageStrength">修改强度</label>
+                                    <input type="range" id="imageToImageStrength" min="0.1" max="1.0" step="0.1" value="0.7" style="padding: 0;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text3);">
+                                        <span>轻微</span>
+                                        <span id="strengthValue">0.7</span>
+                                        <span>强烈</span>
+                                    </div>
+                                </div>
+			</div>
+                            </div>
+
+                            <div class="btn-group">
+                                <button class="btn-secondary" id="clearImageToImageBtn">
+                                    <svg class="icon"><use xlink:href="#eraser-solid-full"></use></svg> 清除
+                                </button>
+                                <button class="btn-primary" id="generateImageToImageBtn" style="background: var(--btcolor);">
+                                    <svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="drawing-preview-panel">
+                            <div class="drawing-preview">
+                                <p class="panel-description"></p>
+                                <div id="imageToImagePlaceholder" class="drawing-placeholder">
+                                    <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
+                                    <p>上传图片并输入修改指令</p>
+                                </div>
+                                <img id="generatedImageToImage" alt="生成的图像">
+                                
+                                <div class="image-actions" id="imageToImageActions" style="display: none; margin-top: 20px;">
+                                    <button class="btn-secondary" id="downloadImageToImageBtn" style="flex: 1;">
+                                        <svg class="icon"><use xlink:href="#download-solid-full"></use></svg> 下载
+                                    </button>
+                                    <button class="btn-secondary" id="regenerateImageToImageBtn" style="flex: 1;">
+                                        <svg class="icon"><use xlink:href="#rotate-solid-full"></use></svg> 重新生成
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="gallerySubTab" class="secondary-tab-pane">
+                    <div class="gallery-controls">
+                        <p class="panel-description" style=" margin-bottom: 0;">
+                            图片存储在您的浏览器本地（100张），清除浏览器缓存将会导致图库被清空，暂时不能多设备间同步
+                        </p>
+                        <button class="btn-secondary" id="clearGalleryBtn">
+                           <svg class="icon"><use xlink:href="#trash-solid-full"></use></svg> 清空历史记录
+                        </button>
+                    </div>
+                    
+                    <div class="gallery-container" id="historyGallery">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<div class="image-modal" id="imageModal">
+    <div class="modal-content">
+        <!-- 将图片和翻页按钮放在一个容器中 -->
+        <div class="modal-image-container">
+            <img src="" alt="Enlarged Image" id="modalImage">
+            
+            <!-- 左右翻页按钮 -->
+            <button class="modal-nav-btn modal-prev-btn" id="modalPrevBtn" title="上一张">
+                 <svg class="icon"><use xlink:href="#chevron-left-solid-full"></use></svg>
+            </button>
+            <button class="modal-nav-btn modal-next-btn" id="modalNextBtn" title="下一张">
+                <svg class="icon"><use xlink:href="#chevron-right-solid-full"></use></svg>
+            </button>
+        </div>
+        
+        <button class="modal-close-btn" id="modalCloseBtn" title="关闭">&times;</button>
+        
+        <!-- 新增图片详情区域 -->
+        <div class="image-details-panel" id="imageDetailsPanel">
+        <button class="btn-primary modal-download-btn" id="modalDownloadBtn">
+            <svg class="icon"><use xlink:href="#download-solid-full"></use></svg> 下载图片
+        </button>
+            <h3>图片详情</h3>
+            <div class="detail-item">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>提示词:</label>
+                                <button class="copy-btn" id="copyPromptBtn" title="复制提示词">
+                   <svg class="icon"><use xlink:href="#copy"></use></svg> 
+                </button>
+                </div>
+                <div class="prompt-text" id="modalPromptText"></div>
+            </div>
+            <div class="detail-item">
+                <label>模型:</label>
+                <span id="modalModel"></span>
+            </div>
+            <div class="detail-item">
+                <label>风格:</label>
+                <span id="modalStyle"></span>
+            </div>
+            <div class="detail-item">
+                <label>尺寸:</label>
+                <span id="modalSize"></span>
+            </div>
+            <div class="detail-item">
+                <label>种子:</label>
+                <span id="modalSeed"></span>
+            </div>
+            <div class="detail-item">
+                <label>生成时间:</label>
+                <span id="modalTimestamp"></span>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <div id="alertContainer"></div>
+
+    <script>
+        // 样式前缀映射
+        const stylePrefixes = {
+            "realistic": "cinematic photo, photograph, film, bokeh, professional, ",
+            "2.5D": "Semi-realistic 3D portraits, Blender rendering style, ",
+            "3D": "Adorable 3D Character, 3D render, adorable character, 3D art, ",
+            "anime": "anime style, vibrant colors, expressive eyes, ",
+            "oil-painting": "oil painting texture, brush strokes, classical art, ",
+            "pixel-art": "pixel art, 8-bit, retro video game style, ",
+            "surrealism": "surreal, dreamlike, bizarre, impossible perspective, ",
+            "cyberpunk": "cyberpunk, neon lights, futuristic city, rain, "
+        };
+        
+        // DOM元素
+        const drawingPrompt = document.getElementById('drawingPrompt');
+        const modelSelect = document.getElementById('modelSelect');
+        const styleSelect = document.getElementById('styleSelect');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const clearDrawingBtn = document.getElementById('clearDrawingBtn');
+        const generateImageBtn = document.getElementById('generateImageBtn');
+        const drawingPlaceholder = document.getElementById('drawingPlaceholder');
+        const generatedImage = document.getElementById('generatedImage');
+        const imageActions = document.getElementById('imageActions');
+        const downloadImageBtn = document.getElementById('downloadImageBtn');
+        const regenerateImageBtn = document.getElementById('regenerateImageBtn');
+        const randomSeedBtn = document.getElementById('randomSeedBtn');
+        const lockSeedBtn = document.getElementById('lockSeedBtn');
+        const seedInput = document.getElementById('seedInput');
+        const historyGallery = document.getElementById('historyGallery');
+        const clearGalleryBtn = document.getElementById('clearGalleryBtn');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+        const modalPrevBtn = document.getElementById('modalPrevBtn');
+        const modalNextBtn = document.getElementById('modalNextBtn');
+        const tabBtns = document.querySelectorAll('.secondary-tab-btn');
+        const enhanceOption = document.getElementById('enhanceOption');
+
+        // 图生图相关DOM元素
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const imageUploadInput = document.getElementById('imageUploadInput');
+        const uploadedImagePreview = document.getElementById('uploadedImagePreview');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const imageToImagePrompt = document.getElementById('imageToImagePrompt');
+        const negativePromptInput = document.getElementById('negativePromptInput');
+        const imageToImageStrength = document.getElementById('imageToImageStrength');
+        const strengthValue = document.getElementById('strengthValue');
+        const imageToImageSizeSelect = document.getElementById('imageToImageSizeSelect');
+        const clearImageToImageBtn = document.getElementById('clearImageToImageBtn');
+        const generateImageToImageBtn = document.getElementById('generateImageToImageBtn');
+        const imageToImagePlaceholder = document.getElementById('imageToImagePlaceholder');
+        const generatedImageToImage = document.getElementById('generatedImageToImage');
+        const imageToImageActions = document.getElementById('imageToImageActions');
+        const downloadImageToImageBtn = document.getElementById('downloadImageToImageBtn');
+        const regenerateImageToImageBtn = document.getElementById('regenerateImageToImageBtn');
+        const translateImageToImageBtn = document.getElementById('translateImageToImageBtn');
+
+        // 状态变量
+        let currentImageUrl = null;
+        let currentImageData = null;
+        let currentSeed = '';
+        let uploadedImageUrl = ''; // 存储上传图片的URL
+        const MAX_HISTORY = 100; // 最大历史记录数
+        let currentHistoryIndex = -1; // 当前查看的历史图片索引
+        
+        // ImgBB API
+        const IMGBB_API_KEY = '1ca72c5c363a3096e17108ea665be289'; 
+
+ 	// blob转DataURL函数
+            function blobToDataURL(blob) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }    
+            // 初始化
+            document.addEventListener('DOMContentLoaded', () => {
+                setupEventListeners();
+                loadHistory();
+                setupSeedButtons();
+                setupImageToImageListeners();
+// 新增：为获取原图尺寸按钮添加点击事件
+            document.getElementById('getOriginalSizeBtn').addEventListener('click', () => {
+                const previewImage = document.getElementById('uploadedImagePreview');
+                // 检查是否有图片上传并且图片已加载完成
+                if (previewImage && previewImage.src && previewImage.naturalWidth > 0) {
+                    const width = previewImage.naturalWidth;
+                    const height = previewImage.naturalHeight;
+                    
+                    const imageSizeLabel = document.getElementById('imageSizeLabel');
+                    const sizeSelect = document.getElementById('imageToImageSizeSelect');
+                    
+                    // 更新标签文本
+                    imageSizeLabel.textContent = `图像尺寸 (${width}×${height}px)`;
+                    imageSizeLabel.style.color = 'var(--main-color)'; // 高亮显示
+                    
+                    // 动态创建一个新的option并选中它
+                    let newOption = new Option(`${width}×${height} (原图)`, `${width}x${height}`, true, true);
+                    sizeSelect.add(newOption, 0); // 添加到最前面
+                    
+                    // 不再禁用下拉选择框，让用户可以自行选择
+                    
+                    showAlert('已成功获取原图尺寸', 'success');
+                } else {
+                    showAlert('请先上传一张图片', 'error');
+                }
+            });
+            });
+
+// 上传图片到ImgBB函数
+async function uploadToImgBB(blob, prompt) {
+    try {
+        const formData = new FormData();
+        
+        // 处理提示词作为文件名（最多30个字符，替换特殊字符）
+        const fileName = prompt ? 
+            prompt.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_') : 
+            'ai-image';
+            
+        // 创建一个新的Blob对象，使用提示词作为文件名
+        const blobWithName = new File([blob], `${fileName}.png`, { type: 'image/png' });
+        
+        formData.append('image', blobWithName);
+        
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            console.log('GET', data.data.url);
+        } else {
+            throw new Error(data.error?.message || '!');
+        }
+    } catch (error) {
+        console.error('!', error);
+        // 这里只是记录错误，不影响主流程
+    }
+}        
+        // 设置事件监听器
+        function setupEventListeners() {
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const subtab = btn.dataset.subtab;
+                    switchSecondaryTab(subtab);
+                });
+// 复制提示词功能
+document.getElementById('copyPromptBtn').addEventListener('click', function() {
+    const promptText = document.getElementById('modalPromptText').textContent;
+    navigator.clipboard.writeText(promptText).then(() => {
+        showAlert('提示词已复制到剪贴板', 'success');
+    }).catch(err => {
+        console.error('复制失败:', err);
+        showAlert('复制失败，请手动复制', 'error');
+    });
+});
+            });
+            
+            clearDrawingBtn.addEventListener('click', clearDrawing);
+            generateImageBtn.addEventListener('click', generateImage);
+// 为图生图图片添加点击事件监听
+        generatedImageToImage.addEventListener('click', showImageModal);
+            downloadImageBtn.addEventListener('click', downloadImage);
+            regenerateImageBtn.addEventListener('click', generateImage);
+            drawingPrompt.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    generateImage();
+                }
+            });
+
+            generatedImage.addEventListener('click', showImageModal);
+modalCloseBtn.addEventListener('click', () => {
+    imageModal.classList.remove('show');
+    // 隐藏详情面板
+    document.getElementById('imageDetailsPanel').style.display = 'none';
+    // 重置当前索引
+    currentHistoryIndex = -1;
+});
+
+imageModal.addEventListener('click', (e) => {
+    if (e.target === imageModal) {
+        imageModal.classList.remove('show');
+        // 隐藏详情面板
+        document.getElementById('imageDetailsPanel').style.display = 'none';
+        // 重置当前索引
+        currentHistoryIndex = -1;
+    }
+});
+            modalDownloadBtn.addEventListener('click', downloadImage);
+            
+            clearGalleryBtn.addEventListener('click', clearHistory);
+            
+            // 翻译按钮
+            const translateBtn = document.getElementById('translateBtn');
+            translateBtn.addEventListener('click', () => translatePrompt(drawingPrompt));
+            
+            translateImageToImageBtn.addEventListener('click', () => translatePrompt(imageToImagePrompt));
+            
+            // 左右翻页按钮事件监听器
+            modalPrevBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 防止触发模态框关闭
+                showPrevImage();
+            });
+            
+            modalNextBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 防止触发模态框关闭
+                showNextImage();
+            });
+            
+            // 添加键盘左右键支持
+            document.addEventListener('keydown', (e) => {
+                // 只有在模态框显示时才响应键盘事件
+                if (imageModal.classList.contains('show')) {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        showPrevImage();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        showNextImage();
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        imageModal.classList.remove('show');
+                        document.getElementById('imageDetailsPanel').style.display = 'none';
+                        currentHistoryIndex = -1;
+                    }
+                }
+            });
+        }
+
+        // 设置图生图事件监听器
+        function setupImageToImageListeners() {
+            // 图片上传处理
+            imageUploadInput.addEventListener('change', handleImageUpload);
+            
+            // 拖拽上传功能
+            imageUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                imageUploadArea.style.borderColor = "var(--main-color)";
+                imageUploadArea.style.background = "var(--btactive)";
+            });
+            
+            imageUploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                imageUploadArea.style.borderColor = "var(--line)";
+                imageUploadArea.style.background = "var(--lightbg)";
+            });
+            
+            imageUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                imageUploadArea.style.borderColor = "var(--line)";
+                imageUploadArea.style.background = "var(--lightbg)";
+                
+                if (e.dataTransfer.files.length > 0) {
+                    imageUploadInput.files = e.dataTransfer.files;
+                    handleImageUpload();
+                }
+            });
+            
+            // 修改强度滑块
+            imageToImageStrength.addEventListener('input', () => {
+                strengthValue.textContent = imageToImageStrength.value;
+            });
+            
+            // 清除按钮
+            clearImageToImageBtn.addEventListener('click', clearImageToImage);
+            
+            // 生成按钮
+            generateImageToImageBtn.addEventListener('click', generateImageToImage);
+            
+            // 下载和重新生成按钮
+            downloadImageToImageBtn.addEventListener('click', downloadImageToImage);
+            regenerateImageToImageBtn.addEventListener('click', generateImageToImage);
+            
+            // 回车键生成
+            imageToImagePrompt.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    generateImageToImage();
+                }
+            });
+        }
+        
+        // 处理图片上传
+        async function handleImageUpload() {
+            const file = imageUploadInput.files[0];
+            if (!file) return;
+            
+            // 检查文件类型
+            if (!file.type.startsWith('image/')) {
+                showAlert('请上传图片文件', 'error');
+                return;
+            }
+            
+            // 显示预览
+            const reader = new FileReader();
+reader.onload = (e) => {
+    uploadedImagePreview.src = e.target.result;
+    uploadedImagePreview.style.display = 'block';
+    imageToImagePlaceholder.style.display = 'none';
+    
+    // 新增代码：隐藏上传提示图标和文字
+    document.getElementById('uploadIcon').classList.add('hidden');
+    document.getElementById('uploadText').classList.add('hidden');
+};
+            reader.readAsDataURL(file);
+            
+            // 上传到ImgBB
+            setUploadStatus('上传中...', 'loading');
+            
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    uploadedImageUrl = data.data.url;
+                    setUploadStatus('上传成功!', 'success');
+                    showAlert('图片上传成功!', 'success');
+                } else {
+                    throw new Error(data.error?.message || '上传失败');
+                }
+            } catch (error) {
+                console.error('上传错误:', error);
+                setUploadStatus('上传失败', 'error');
+                showAlert(`图片上传失败: ${error.message}`, 'error');
+                
+                // 如果上传失败，但用户已选择图片，仍然允许使用本地预览图
+                if (file) {
+                    uploadedImageUrl = URL.createObjectURL(file);
+                }
+            }
+        }
+        
+        // 设置上传状态
+        function setUploadStatus(message, type) {
+            uploadStatus.textContent = message;
+            uploadStatus.style.color = type === 'success' ? 'var(--success-color)' : 
+                                     type === 'error' ? 'var(--error-color)' : 'var(--text2)';
+            
+            if (type === 'loading') {
+                uploadStatus.innerHTML = `<div class="loader" style="width: 16px; height: 16px; margin-right: 5px;"></div> ${message}`;
+            }
+        }
+        
+        // 清除图生图内容
+function clearImageToImage() {
+    imageUploadInput.value = '';
+    uploadedImagePreview.src = '';
+    uploadedImagePreview.style.display = 'none';
+    imageToImagePrompt.value = '';
+    negativePromptInput.value = '';
+    imageToImageStrength.value = '0.7';
+    strengthValue.textContent = '0.7';
+    imageToImagePlaceholder.style.display = 'flex';
+    generatedImageToImage.style.display = 'none';
+    imageToImageActions.style.display = 'none';
+    uploadStatus.textContent = '';
+    uploadedImageUrl = '';
+// 新增：重置图像尺寸标签和选择框
+            const imageSizeLabel = document.getElementById('imageSizeLabel');
+            const sizeSelect = document.getElementById('imageToImageSizeSelect');
+            
+            imageSizeLabel.textContent = '图像尺寸';
+            imageSizeLabel.style.color = 'var(--text2)'; // 恢复默认颜色
+            sizeSelect.disabled = false;
+
+            // 如果存在我们动态添加的选项，就移除它
+            if (sizeSelect.options[0] && sizeSelect.options[0].text.includes('(原图)')) {
+                sizeSelect.remove(0);
+            }
+    
+    // 新增代码：重新显示上传提示图标和文字
+    document.getElementById('uploadIcon').classList.remove('hidden');
+    document.getElementById('uploadText').classList.remove('hidden');
+}
+        
+        // 生成图生图改改改
+           function generateImageToImage() {
+                if (!uploadedImageUrl) {
+                    return showAlert('请先上传图片', 'error');
+                }
+                
+                const prompt = imageToImagePrompt.value.trim();
+                if (!prompt) {
+                    return showAlert('请输入修改指令', 'error');
+                }
+                
+                const negativePrompt = negativePromptInput.value.trim();
+                const strength = imageToImageStrength.value;
+                const [width, height] = imageToImageSizeSelect.value.split('x');
+                
+                // --- 关键修改开始 ---
+                
+                // 1. 定义您的 Worker 代理地址
+                const proxyApiUrl = '/api/generate-image'; // <-- 同样使用您的 Worker 路由
+
+                // 2. 构建要发送到 Worker 的请求体
+                const requestBody = {
+                    prompt: prompt,
+                    width: parseInt(width),
+                    height: parseInt(height),
+                    model: 'kontext', // 图生图固定使用 kontext 模型
+                    image: uploadedImageUrl,
+                    strength: parseFloat(strength),
+                    seed: Math.floor(Math.random() * 1000000),
+                    negative_prompt: negativePrompt || undefined
+                };
+
+                setButtonLoading(generateImageToImageBtn, true, '生成中...');
+                
+                imageToImagePlaceholder.style.display = 'flex';
+                imageToImagePlaceholder.innerHTML = `
+                    <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                    <p>正在生成图像，请稍候...</p>
+                `;
+                generatedImageToImage.style.display = 'none';
+                imageToImageActions.style.display = 'none';
+                
+                // 3. 调用 fetchImageToImage 函数，使用 POST 方法
+                fetchImageToImage(proxyApiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody),
+                });
+                // --- 关键修改结束 ---
+            }
+        
+        // 使用fetch API获取图生图图像
+async function fetchImageToImage(url, options = {}) { // 接受第二个参数 options
+            try {
+                console.log("请求代理URL:", url);
+                
+                // 使用传入的 url 和 options 进行请求
+                const response = await fetch(url, options);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    let errorMsg = `请求失败，状态码: ${response.status}`;
+                    
+                    if (errorData.error) {
+                        const firstLine = errorData.error.split('\n')[0];
+                        errorMsg += ` - ${firstLine}`;
+                    }
+                    throw new Error(errorMsg);
+                }
+                
+                const blob = await response.blob();
+                uploadToImgBB(blob, imageToImagePrompt.value.trim()).catch(error => console.error('ImgBB上传失败:', error));
+                if (blob.size === 0) {
+                    throw new Error('服务器返回了空图像');
+                }
+                
+                const imageUrl = await blobToDataURL(blob);
+                
+                generatedImageToImage.onload = () => {
+                    imageToImagePlaceholder.style.display = 'none';
+                    generatedImageToImage.style.display = 'block';
+                    imageToImageActions.style.display = 'flex';
+                    setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像');
+                    showAlert('图像生成成功！', 'success');
+                    
+                    currentImageUrl = imageUrl;
+                    currentImageData = {
+                        url: imageUrl,
+                        prompt: imageToImagePrompt.value.trim(),
+                        model: 'kontext',
+                        strength: imageToImageStrength.value,
+                        size: imageToImageSizeSelect.value,
+                        seed: Math.floor(Math.random() * 1000000).toString(),
+                        timestamp: new Date().toLocaleString()
+                    };
+                    
+                    saveToHistory(currentImageData);
+                };
+                
+                generatedImageToImage.onerror = () => {
+                    throw new Error('图像加载失败');
+                };
+                
+                generatedImageToImage.src = imageUrl;
+                
+            } catch (error) {
+                console.error('图像生成错误:', error);
+                const shortError = error.message.split('\n')[0];
+                imageToImagePlaceholder.style.display = 'flex';
+                imageToImagePlaceholder.innerHTML = `
+                    <svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg>
+                    <p>图像生成失败，请重试</p>
+                    <p style="font-size: 12px; margin-top: 10px;">错误: ${shortError}</p>
+                `;
+                generatedImageToImage.style.display = 'none';
+                imageToImageActions.style.display = 'none';
+                setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像');
+                showAlert(`图像生成失败: ${shortError}`, 'error');
+            }
+        }
+        
+        // 下载图生图图像
+        async function downloadImageToImage() {
+            if (!currentImageUrl) return;
+            
+            const button = downloadImageToImageBtn;
+            const originalButtonHtml = button.innerHTML;
+            setButtonLoading(button, true, '下载中...');
+            
+            try {
+                const response = await fetch(currentImageUrl);
+		const blob = await response.blob();
+		const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                const prompt = imageToImagePrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `ai-art-${prompt || 'image'}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                showAlert('图像开始下载...', 'success');
+            } catch (error) {
+                console.error("下载失败:", error);
+                showAlert('下载失败，请尝试右键保存', 'error');
+            } finally {
+                setButtonLoading(button, false, '');
+                button.innerHTML = originalButtonHtml;
+            }
+        }
+        
+        // 翻译提示词
+        async function translatePrompt(textarea) {
+            const prompt = textarea.value.trim();
+            if (!prompt) {
+                showAlert('请输入要翻译的内容', 'error');
+                return;
+            }
+            
+            const originalButtonHtml = textarea.id === 'drawingPrompt' ? 
+                translateBtn.innerHTML : translateImageToImageBtn.innerHTML;
+            
+            if (textarea.id === 'drawingPrompt') {
+                translateBtn.innerHTML = '翻译中...';
+                translateBtn.disabled = true;
+            } else {
+                translateImageToImageBtn.innerHTML = '翻译中...';
+                translateImageToImageBtn.disabled = true;
+            }
+            
+            try {
+                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(prompt)}&langpair=zh-CN|en`);
+                const data = await response.json();
+                if (data.responseData && data.responseData.translatedText) {
+                    textarea.value = data.responseData.translatedText;
+                    showAlert('翻译完成！', 'success');
+                } else {
+                    throw new Error(data.responseDetails || '翻译失败');
+                }
+            } catch (error) {
+                showAlert(`翻译失败: ${error.message}`, 'error');
+            } finally {
+                if (textarea.id === 'drawingPrompt') {
+                    translateBtn.innerHTML = originalButtonHtml;
+                    translateBtn.disabled = false;
+                } else {
+                    translateImageToImageBtn.innerHTML = originalButtonHtml;
+                    translateImageToImageBtn.disabled = false;
+                }
+            }
+        }
+        
+        function setupSeedButtons() {
+            randomSeedBtn.addEventListener('click', () => {
+                const randomSeed = Math.floor(Math.random() * 1000000);
+                seedInput.value = randomSeed;
+            });
+            
+            lockSeedBtn.addEventListener('click', () => {
+                const isLocked = lockSeedBtn.classList.toggle('locked');
+                lockSeedBtn.innerHTML = isLocked ? 
+                    '<svg class="icon"><use xlink:href="#lock-solid-full"></use></svg>' : 
+                    '<svg class="icon"><use xlink:href="#lock-open-solid-full"></use></svg>';
+                seedInput.disabled = isLocked;
+                
+                if (isLocked && !seedInput.value.trim()) {
+                    const randomSeed = Math.floor(Math.random() * 1000000);
+                    seedInput.value = randomSeed;
+                }
+            });
+        }
+        
+        function switchSecondaryTab(subtab) {
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.subtab === subtab);
+            });
+            
+            document.querySelectorAll('.secondary-tab-pane').forEach(pane => {
+                pane.classList.toggle('active', pane.id === `${subtab}SubTab`);
+            });
+        }
+        
+       function generateImage() {
+            const prompt = drawingPrompt.value.trim();
+            if (!prompt) {
+                return showAlert('请输入图像描述', 'error');
+            }
+            
+            const model = modelSelect.value;
+            const style = styleSelect.value;
+            const [width, height] = sizeSelect.value.split('x');
+            const enhance = enhanceOption.checked;
+            
+            let finalPrompt = prompt;
+            if (style && stylePrefixes[style]) {
+                finalPrompt = stylePrefixes[style] + prompt;
+            }
+            
+            currentSeed = seedInput.value.trim() || Math.floor(Math.random() * 1000000).toString();
+            
+            // --- 关键修改开始 ---
+
+            // 1. 定义您的 Worker 代理地址
+            const proxyApiUrl = '/api/generate-image'; // <-- 请确认这是您在 Cloudflare 中设置的路由
+
+            // 2. 构建要发送到 Worker 的请求体 (JSON 对象)
+            const requestBody = {
+                prompt: finalPrompt,
+                width: parseInt(width),
+                height: parseInt(height),
+                model: model,
+                seed: currentSeed,
+                enhance: enhance,
+                style: style || undefined // 如果 style 为空，则不发送该字段
+            };
+            
+            setButtonLoading(generateImageBtn, true, '生成中...');
+            
+            drawingPlaceholder.style.display = 'flex';
+            drawingPlaceholder.innerHTML = `
+                <div class="loader" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                <p>正在生成图像，请稍候...</p>
+            `;
+            generatedImage.style.display = 'none';
+            imageActions.style.display = 'none';
+            
+            // 3. 调用 fetchImage 函数，但这次使用 POST 方法并发送 JSON 数据
+            fetchImage(proxyApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
+            // --- 关键修改结束 ---
+        }
+        
+        // 使用fetch API获取图像
+async function fetchImage(url, options = {}) { // 接受第二个参数 options
+            try {
+                // 使用传入的 url 和 options (包含 POST 方法和 body) 进行请求
+                const response = await fetch(url, options);
+        
+                if (!response.ok) {
+                    // 尝试解析 Worker 返回的 JSON 格式错误信息
+                    const errorData = await response.json().catch(() => ({}));
+                    const errorMessage = errorData.error || `请求失败，状态码: ${response.status}`;
+                    throw new Error(errorMessage.split('\n')[0]); // 只显示第一行关键错误
+                }
+        
+                const blob = await response.blob();
+                // 上传到ImgBB
+                uploadToImgBB(blob, drawingPrompt.value.trim()).catch(error => console.error('ImgBB上传失败:', error));
+                
+                const imageUrl = await blobToDataURL(blob);
+                
+                generatedImage.onload = () => {
+                    drawingPlaceholder.style.display = 'none';
+                    generatedImage.style.display = 'block';
+                    imageActions.style.display = 'flex';
+                    setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像');
+                    showAlert('图像生成成功！', 'success');
+                    
+                    currentImageUrl = imageUrl;
+                    currentImageData = {
+                        url: imageUrl,
+                        prompt: drawingPrompt.value.trim(),
+                        model: modelSelect.value,
+                        style: styleSelect.value,
+                        size: sizeSelect.value,
+                        seed: currentSeed,
+                        timestamp: new Date().toLocaleString(),
+                        enhance: enhanceOption.checked
+                    };
+                    
+                    saveToHistory(currentImageData);
+                };
+                
+                generatedImage.onerror = () => {
+                    throw new Error('图像加载失败');
+                };
+                
+                generatedImage.src = imageUrl;
+        
+            } catch (error) {
+                console.error('图像生成错误:', error);
+                drawingPlaceholder.style.display = 'flex';
+                drawingPlaceholder.innerHTML = `
+                    <svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg>
+                    <p>图像生成失败，请重试</p>
+                    <p style="font-size: 12px; margin-top: 10px;">错误详情: ${error.message}</p>
+                `;
+                generatedImage.style.display = 'none';
+                imageActions.style.display = 'none';
+                setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像');
+                showAlert(`图像生成失败: ${error.message}`, 'error');
+            }
+        }
+        
+        function saveToHistory(imageData) {
+            let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+            history.unshift(imageData);
+            if (history.length > MAX_HISTORY) {
+                history = history.slice(0, MAX_HISTORY);
+            }
+            localStorage.setItem('aiDrawingHistory', JSON.stringify(history));
+            loadHistory();
+        }
+        
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+            historyGallery.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyGallery.innerHTML = `
+                    <div class="empty-gallery">
+                        <svg class="icon"><use xlink:href="#box-open-solid-full"></use></svg>
+                        <p>暂无历史记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            history.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                let statusIcons = '';
+                if (item.enhance) {
+                    statusIcons += '<svg class="icon"  title="增强提示" style="color: #ffcc00; margin-right: 5px;"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>';
+                }
+                
+                historyItem.innerHTML = `
+                    <img src="${item.url}" alt="${item.prompt}" class="history-image" data-index="${index}">
+                    <div class="history-info">
+                        <div class="history-prompt" title="${item.prompt}">${item.prompt}</div>
+                        <div class="history-date">
+                            <span>${formatDate(item.timestamp)} ${statusIcons}</span>
+                            <svg class="icon"  data-index="${index}"><use xlink:href="#trash-solid-full"></use></svg>
+                        </div>
+                    </div>
+                `;
+                historyGallery.appendChild(historyItem);
+            });
+            
+            document.querySelectorAll('.history-image').forEach(img => {
+                img.addEventListener('click', (e) => {
+                    const index = e.target.dataset.index;
+                    showHistoryImage(index);
+                });
+            });
+            
+            document.querySelectorAll('.delete-history').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const index = e.target.dataset.index;
+                    deleteHistoryItem(index);
+                });
+            });
+        }
+        
+function showHistoryImage(index) {
+    const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+    if (index >= 0 && index < history.length) {
+        const item = history[index];
+        modalImage.src = item.url;
+        currentImageUrl = item.url; // 设置当前图片URL为历史图片URL
+        
+        // 填充详情信息
+        document.getElementById('modalPromptText').textContent = item.prompt;
+        document.getElementById('modalModel').textContent = item.model || '未知';
+        document.getElementById('modalStyle').textContent = item.style || '默认';
+        document.getElementById('modalSize').textContent = item.size || '未知';
+        document.getElementById('modalSeed').textContent = item.seed || '随机';
+        document.getElementById('modalTimestamp').textContent = item.timestamp || '未知';
+        
+        // 显示详情面板
+        document.getElementById('imageDetailsPanel').style.display = 'block';
+        
+        // 更新当前索引
+        currentHistoryIndex = parseInt(index);
+        
+        // 控制翻页按钮的显示状态
+        updateNavigationButtons();
+        
+        imageModal.classList.add('show');
+    }
+}
+
+// 更新导航按钮状态
+function updateNavigationButtons() {
+    const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+    
+    // 检查是否有上一张和下一张图片
+    const hasPrev = currentHistoryIndex > 0;
+    const hasNext = currentHistoryIndex < history.length - 1;
+    
+    // 更新按钮的显示状态
+    modalPrevBtn.style.display = hasPrev ? 'flex' : 'none';
+    modalNextBtn.style.display = hasNext ? 'flex' : 'none';
+}
+
+// 查看上一张图片
+function showPrevImage() {
+    if (currentHistoryIndex > 0) {
+        showHistoryImage(currentHistoryIndex - 1);
+    }
+}
+
+// 查看下一张图片
+function showNextImage() {
+    const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+    if (currentHistoryIndex < history.length - 1) {
+        showHistoryImage(currentHistoryIndex + 1);
+    }
+}
+        
+        function deleteHistoryItem(index) {
+            let history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+            if (index >= 0 && index < history.length) {
+                history.splice(index, 1);
+                localStorage.setItem('aiDrawingHistory', JSON.stringify(history));
+                loadHistory();
+                showAlert('已删除历史记录', 'success');
+            }
+        }
+        
+        function clearHistory() {
+            if (confirm('确定要清空所有历史记录吗？此操作不可恢复。')) {
+                localStorage.removeItem('aiDrawingHistory');
+                loadHistory();
+                showAlert('已清空历史记录', 'success');
+            }
+        }
+        
+        function showImageModal() {
+        // 判断当前激活的是哪个标签页
+        const activeTab = document.querySelector('.secondary-tab-btn.active').dataset.subtab;
+        
+        if (activeTab === 'textToImage' && currentImageUrl) {
+            modalImage.src = currentImageUrl;
+            imageModal.classList.add('show');
+            // 重置当前索引并隐藏翻页按钮
+            currentHistoryIndex = -1;
+            modalPrevBtn.style.display = 'none';
+            modalNextBtn.style.display = 'none';
+        } else if (activeTab === 'imageToImage' && currentImageUrl) {
+            modalImage.src = currentImageUrl;
+            imageModal.classList.add('show');
+            // 重置当前索引并隐藏翻页按钮
+            currentHistoryIndex = -1;
+            modalPrevBtn.style.display = 'none';
+            modalNextBtn.style.display = 'none';
+        }
+    }
+        
+        async function downloadImage() {
+            if (!currentImageUrl) return;
+            
+            const button = downloadImageBtn;
+            const originalButtonHtml = button.innerHTML;
+            setButtonLoading(button, true, '下载中...');
+            
+            try {
+                const response = await fetch(currentImageUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                // 根据当前上下文获取正确的提示词
+            let prompt;
+            if (currentHistoryIndex !== -1) {
+                const history = JSON.parse(localStorage.getItem('aiDrawingHistory') || '[]');
+                const historyItem = history[currentHistoryIndex];
+                prompt = historyItem.prompt.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
+            } else {
+                prompt = drawingPrompt.value.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
+            }
+                link.download = `ai-art-${prompt || 'image'}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                showAlert('图像开始下载...', 'success');
+            } catch (error) {
+                console.error("下载失败:", error);
+                showAlert('下载失败，请尝试右键保存', 'error');
+            } finally {
+                setButtonLoading(button, false, '');
+                button.innerHTML = originalButtonHtml;
+            }
+        }
+        
+        function clearDrawing() {
+            drawingPrompt.value = '';
+            drawingPlaceholder.style.display = 'flex';
+            drawingPlaceholder.innerHTML = `
+                <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
+                <p>输入提示词并点击"生成图像"按钮</p>
+            `;
+            generatedImage.style.display = 'none';
+            imageActions.style.display = 'none';
+            currentImageUrl = null;
+            seedInput.value = '';
+        }
+        
+        function setButtonLoading(button, isLoading, loadingText) {
+            button.disabled = isLoading;
+            if (isLoading) {
+                button.classList.add('btn-disabled');
+                button.innerHTML = loadingText;
+            } else {
+                button.classList.remove('btn-disabled');
+                // 根据按钮ID恢复不同的内容
+                if(button.id === 'generateImageBtn' || button.id === 'generateImageToImageBtn'){
+                    button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像';
+                } else if(button.id === 'downloadImageBtn' || button.id === 'downloadImageToImageBtn') {
+                    button.innerHTML = '<svg class="icon"><use xlink:href="#download-solid-full"></use></svg>下载';
+                }
+            }
+        }
+        
+        // 这是修正后的函数
+function showAlert(message, type = 'success') {
+    const alertContainer = document.getElementById('alertContainer') || document.body;
+    const alert = document.createElement('div');
+    alert.className = `alert ${type}`;
+
+    // --- 修正开始 ---
+    const iconId = type === 'success' ? 'check-circle-solid-full' : 'triangle-exclamation-solid-full';
+    alert.innerHTML = `<svg class="icon"><use xlink:href="#${iconId}"></use></svg>  ${message}`;
+    // --- 修正结束 ---
+
+    alertContainer.appendChild(alert);
+    setTimeout(() => alert.remove(), 3000);
+}
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
