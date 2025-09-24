@@ -298,9 +298,10 @@ body {
     
     .menu-toggle {
         display: flex;
-	top: 10px;
+	    top: 10px;
         left: 10px;
         padding: 6px;
+        font-size: 1.5rem;
     }
 }
 `;
@@ -370,6 +371,7 @@ const menuData = [
         title: "轻易AI",
         icon: "microchip-solid-full",
         submenu: [
+            { title: "AI一键扩图", link: "expand.html" },
             { title: "AI高清放大", link: "scale.html" },
             { title: "AI一键抠图", link: "rembg.html" },
 	        { title: "AI绘画", link: "../draw.html" },

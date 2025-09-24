@@ -575,6 +575,7 @@ const menuData = [
         title: "轻易AI",
         icon: "microchip-solid-full",
         submenu: [
+            { title: "AI一键扩图", link: "expand.html" },
             { title: "AI高清放大", link: "scale.html" },
             { title: "AI一键抠图", link: "rembg.html" },
 	        { title: "AI绘画", link: "draw.html" },
