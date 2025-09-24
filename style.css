@@ -1,4 +1,4 @@
-    :root {
+:root {
         --primary: #5963ff;
         --primary-light: #eef0ff;
         --primary-dark: #4a52d4;
@@ -207,7 +207,7 @@
         margin-right: 10px;
         color: #5963ff;
 	border-radius: 50%;
-    background: linear-gradient(181deg, #def9f9, #e4f9f6);
+    background: linear-gradient(180deg, #ebecfe, #ecf2fd);
     padding: 5px;
     }
 
@@ -267,7 +267,35 @@
         box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
         position: relative;
         animation: popup 0.5s ease-out;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 修复更新日志弹窗：标题和按钮固定，内容区域滚动 */
+    #changelogModal .intro-content {
+        max-height: 90vh;
+    }
+
+    #changelogModal .intro-title {
+        position: sticky;
+        top: 0;
+        background-clip: padding-box;
+        z-index: 10;
+        margin-bottom: 15px;
+    }
+
+    #changelogContent {
+        max-height: 60vh;
         overflow-y: auto;
+        margin-bottom: 25px;
+        flex: 1;
+    }
+
+    #changelogModal .intro-btn {
+        position: sticky;
+        bottom: 0;
+        background-clip: padding-box;
+        z-index: 10;
     }
 
     .intro-close {
