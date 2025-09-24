@@ -45,7 +45,24 @@
             justify-content: center;
             align-items: center;
         }
-
+.drawing-control-label {
+        display: flex;
+    align-items: center;
+    font-weight: 800;
+        margin-bottom: 8px;
+}
+.drawing-control-label span {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--main-color);
+    color: #fff;
+    font-weight: 800;
+    margin-right: 6px;
+}
         .icon {
             display: inline-block;
             width: 1.2em;
@@ -539,7 +556,7 @@
                 <div class="drawing-controls-panel">
                     
                     <div>
-                        <label class="drawing-control-label">1. 上传图片</label>
+                        <label class="drawing-control-label"><span>1</span>上传图片</label>
                         <p class="panel-description" style="margin-bottom: 10px;">上传需要扩展的原始图片（小于10MB）。</p>
                         <div class="image-upload-area" id="imageUploadArea">
                             <div id="upload-prompt" style="display: flex; flex-direction: column; align-items: center;">
@@ -553,7 +570,7 @@
                     </div>
 
 <div>
-    <label class="drawing-control-label">2. 选择扩展方向</label>
+    <label class="drawing-control-label"><span>2</span>选择扩展方向</label>
      <p class="panel-description" style="margin-bottom: 10px;">点击箭头选择一个或多个扩展方向。</p>
     <div class="direction-controls-container">
         <div class="direction-grid">
