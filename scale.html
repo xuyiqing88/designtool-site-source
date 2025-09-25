@@ -17,7 +17,7 @@
             --text3: #8d8fa3;
             --bg-light: #f9fafb;
             --bg-lighter: #ffffff;
-            --border: #e5e7eb;
+            --border: #eaeef3;
             --success: #10b981;
             --error: #ef4444;
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -35,7 +35,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f6f7fa;
+            background: #fff;
             color: var(--text2);
             display: flex;
             min-height: 100vh;
@@ -60,7 +60,7 @@
             min-width: 380px;
             background: #fff;
             padding: 20px;
-            box-shadow: var(--shadow);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             height: fit-content;
@@ -81,7 +81,7 @@
 
         header {
             text-align: center;
-            padding: 30px;
+            padding: 30px 10px;
             background: #fff;
         }
 
@@ -177,9 +177,9 @@
 
         .options-group select, .options-group input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 10px 16px;
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 6px;
             background-color: white;
             color: var(--text2);
             font-size: 1rem;
@@ -232,11 +232,9 @@
             position: relative;
             transition: var(--transition);
             overflow: hidden;
-            background: var(--bg-lighter);
-            border: 1px solid var(--border);
+            background: linear-gradient(0deg, #f9fafb, #e3f2fd);
             border-radius: var(--radius);
         }
-
         .image-container h2 {
             color: var(--text2);
             margin-bottom: 20px;
@@ -246,18 +244,17 @@
             align-items: center;
             gap: 8px;
             width: 100%;
-            background: var(--bg-light);
             padding: 10px 20px;
             margin: 0;
         }
 
         .image-container img {
-            max-width: 96%;
+            max-width: 100%;
             max-height: 540px;
-            border-radius: 6px;
+            border-radius: 16px;
             display: block;
-            box-shadow: var(--shadow);
             transition: var(--transition);
+            padding: 10px;
         }
 
         .image-container img:hover {
@@ -265,11 +262,14 @@
         }
 
         #original-container, #upscaled-container {
-            padding: 20px;
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #fff;
+            margin: 0 10px 10px;
+            border-radius: 6px;
+            width: -webkit-fill-available;
         }
 
         .image-size {
@@ -475,7 +475,6 @@
             padding: 12px 32px;
             border-radius: 30px;
             font-size: 1rem;
-            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             min-width: 200px;
@@ -697,7 +696,7 @@
                 </div>
                 
                 <div class="image-wrapper">
-                    <div class="image-container">
+                    <div class="image-container" style="background: linear-gradient(0deg, #f9fafb, #e9e9fa);">
                         <h2><svg class="icon"><use xlink:href="#maximize-solid-full"></use></svg> 放大后的图像</h2>
                         <div id="upscaled-container">
                             <img id="upscaled-image" src="" alt="放大后的图像预览" style="display: none;">
