@@ -91,11 +91,62 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);     
             box-sizing: border-box;
         }
+        
+        /* 自定义滚动条样式 */
+        .controls::-webkit-scrollbar,
+        .preview::-webkit-scrollbar,
+        textarea::-webkit-scrollbar {
+            width: 8px; /* 滚动条宽度 */
+            height: 8px; /* 水平滚动条高度 */
+        }
+        
+        /* 滚动条轨道 */
+        .controls::-webkit-scrollbar-track,
+        .preview::-webkit-scrollbar-track,
+        textarea::-webkit-scrollbar-track {
+            background: var(--background); /* 使用背景色 */
+            border-radius: 4px; /* 轨道圆角 */
+        }
+        
+        /* 滚动条滑块 */
+        .controls::-webkit-scrollbar-thumb,
+        .preview::-webkit-scrollbar-thumb,
+        textarea::-webkit-scrollbar-thumb {
+            background: var(--border); /* 使用边框颜色 */
+            border-radius: 4px; /* 滑块圆角 */
+            transition: background-color 0.2s ease;
+        }
+        
+        /* 滚动条滑块悬停效果 */
+        .controls::-webkit-scrollbar-thumb:hover,
+        .preview::-webkit-scrollbar-thumb:hover,
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: var(--text3); /* 使用次要文本颜色 */
+        }
+        
+        /* 滚动条边角 */
+        .controls::-webkit-scrollbar-corner,
+        .preview::-webkit-scrollbar-corner,
+        textarea::-webkit-scrollbar-corner {
+            background: var(--background); /* 使用背景色 */
+        }
+        
+        /* 为Firefox添加滚动条样式 */
+        .controls,
+        .preview,
+        textarea {
+            scrollbar-width: thin; /* 细滚动条 */
+            scrollbar-color: var(--border) var(--background); /* 滑块颜色 轨道颜色 */
+        }
         .preview { 
             flex-grow: 1;  
             height: -webkit-fill-available;
             max-height: calc(100vh - 110px);
             overflow-y: auto;}
+        .input-box::-webkit-scrollbar {
+    width: 8px; 
+    height: 8px; }
+
         h1 {
             color: var(--text1);  
             padding-bottom: 20px;
