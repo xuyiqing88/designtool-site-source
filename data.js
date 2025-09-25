@@ -94,7 +94,7 @@ const tools = [
         category: "dev",
         link: "rembg.html",
         icon: "img/rembg.webp",
-        badge: "更新"
+        badge: ""
     },
     {
         title: "AI绘画",
