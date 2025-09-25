@@ -472,7 +472,8 @@
         
         updateStatus(`正在转换 ${file.name}...`);
         
-        const apiUrl = `https://vector.express/api/v2/public/convert/${inputFormat}/auto/${outputFormat}`;
+        // 将 apiUrl 修改为以下地址
+        const apiUrl = `https://vector-proxy.designtool.site/api/convert/${inputFormat}/auto/${outputFormat}`;
 
         const response = await fetch(apiUrl, {
             method: 'POST',
