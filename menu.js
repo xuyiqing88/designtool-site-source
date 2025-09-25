@@ -295,24 +295,25 @@ body {
         }
 
 	.downlogo {
-	display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;}
-        .container1 {
+	    display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;}
+    .container1 {
             max-width: 1200px;
             margin: 0 auto;
             overflow: hidden;
-	    line-height: 1.6;
+	        line-height: 1.6;
+            padding: 10px;
         }
 
         .topheader {	
     		width: 1200px;
-            padding: 20px 10px;   
-    	display: flex;
-    	align-items: center;
-    	gap: 20px;
-	 margin: auto;
+            padding: 30px 10px 20px;   
+    	    display: flex;
+    	    align-items: center;
+    	    gap: 20px;
+	        margin: auto;
         }
 
         .titleh1 {
@@ -339,11 +340,13 @@ body {
         .main-content1 {
             flex: 3;
             min-width: 300px;
-            padding: 30px 40px;
+            padding: 30px;
             border-radius: 10px;
     		background: #fff;
         }
-
+        .main-content1 li {
+            margin-left: 16px;
+        }
         .download-section {
             flex: 1;
             min-width: 310px;
