@@ -1485,7 +1485,6 @@
         });
     });
 
-    // 【已修正】将Blob转为DataURL
     function blobToDataURL(blob) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1495,7 +1494,6 @@
         });
     }
 
-    // 【已修正】调用后端，但这次它返回的是原始Blob数据
     async function callDrawApi(params) {
         const response = await fetch('/api/draw', {
             method: 'POST',
@@ -1506,11 +1504,9 @@
             const errorData = await response.json();
             throw new Error(errorData.error || `请求失败: ${response.status}`);
         }
-        // 直接返回Blob，而不是转换后的Data URL
         return await response.blob();
     }
     
-    // 【已修正】ImgBB上传函数（与您旧文件逻辑保持一致）
     async function uploadToImgBB(blob, prompt) {
         try {
             const formData = new FormData();
@@ -1529,7 +1525,7 @@
         }
     }
 
-    // 【已修正】文生图函数，恢复旧文件的正确逻辑
+    // 【已修正】文生图函数
     function generateImage() {
         const prompt = drawingPrompt.value.trim();
         if (!prompt) return showAlert('请输入图像描述', 'error');
@@ -1544,32 +1540,36 @@
         generatedImage.style.display = 'none';
         imageActions.style.display = 'none';
 
-        callDrawApi(params).then(blob => {
-            // 1. 立刻上传Blob
-            uploadToImgBB(blob, drawingPrompt.value.trim());
+        callDrawApi(params)
+            .then(blob => {
+                uploadToImgBB(blob, drawingPrompt.value.trim());
+                return blobToDataURL(blob); // 将转换后的 Data URL 传递给下一个 then
+            })
+            .then(imageUrl => {
+                // 成功获取 imageUrl 后，立即保存历史记录
+                currentImageUrl = imageUrl;
+                currentImageData = { url: imageUrl, prompt: drawingPrompt.value.trim(), model: modelSelect.value, style: styleSelect.value, size: sizeSelect.value, seed: currentSeed, timestamp: new Date().toLocaleString(), enhance: enhanceOption.checked };
+                saveToHistory(currentImageData);
 
-            // 2. 将Blob转换为DataURL用于显示
-            blobToDataURL(blob).then(imageUrl => {
-                 generatedImage.onload = () => {
+                // 然后更新UI
+                generatedImage.onload = () => {
                     drawingPlaceholder.style.display = 'none';
                     generatedImage.style.display = 'block';
                     imageActions.style.display = 'flex';
                     showAlert('图像生成成功！', 'success');
-                    currentImageUrl = imageUrl;
-                    currentImageData = { url: imageUrl, prompt: drawingPrompt.value.trim(), model: modelSelect.value, style: styleSelect.value, size: sizeSelect.value, seed: currentSeed, timestamp: new Date().toLocaleString(), enhance: enhanceOption.checked };
-                    saveToHistory(currentImageData);
                 };
                 generatedImage.src = imageUrl;
+            })
+            .catch(error => {
+                console.error('图像生成错误:', error);
+                drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+            })
+            .finally(() => {
+                setTimeout(() => setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'), 5000);
             });
-        }).catch(error => {
-            console.error('图像生成错误:', error);
-            drawingPlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-        }).finally(() => {
-            setTimeout(() => setButtonLoading(generateImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'), 5000);
-        });
     }
 
-    // 【已修正】图生图函数，恢复旧文件的正确逻辑
+    // 【已修正】图生图函数
     function generateImageToImage() {
         if (!uploadedImageUrl) return showAlert('请先上传图片', 'error');
         const prompt = imageToImagePrompt.value.trim();
@@ -1583,29 +1583,33 @@
         generatedImageToImage.style.display = 'none';
         imageToImageActions.style.display = 'none';
 
-        callDrawApi(params).then(blob => {
-            // 1. 立刻上传Blob
-            uploadToImgBB(blob, imageToImagePrompt.value.trim());
+        callDrawApi(params)
+            .then(blob => {
+                uploadToImgBB(blob, imageToImagePrompt.value.trim());
+                return blobToDataURL(blob); // 将转换后的 Data URL 传递给下一个 then
+            })
+            .then(imageUrl => {
+                // 成功获取 imageUrl 后，立即保存历史记录
+                currentImageUrl = imageUrl;
+                currentImageData = { url: imageUrl, prompt: imageToImagePrompt.value.trim(), model: 'kontext', strength: imageToImageStrength.value, size: imageToImageSizeSelect.value, seed: '随机', timestamp: new Date().toLocaleString() };
+                saveToHistory(currentImageData);
 
-            // 2. 将Blob转换为DataURL用于显示
-            blobToDataURL(blob).then(imageUrl => {
+                // 然后更新UI
                 generatedImageToImage.onload = () => {
                     imageToImagePlaceholder.style.display = 'none';
                     generatedImageToImage.style.display = 'block';
                     imageToImageActions.style.display = 'flex';
                     showAlert('图像生成成功！', 'success');
-                    currentImageUrl = imageUrl;
-                    currentImageData = { url: imageUrl, prompt: imageToImagePrompt.value.trim(), model: 'kontext', strength: imageToImageStrength.value, size: imageToImageSizeSelect.value, seed: '随机', timestamp: new Date().toLocaleString() };
-                    saveToHistory(currentImageData);
                 };
                 generatedImageToImage.src = imageUrl;
+            })
+            .catch(error => {
+                console.error('图生图生成错误:', error);
+                imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
+            })
+            .finally(() => {
+                setTimeout(() => setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像'), 5000);
             });
-        }).catch(error => {
-            console.error('图生图生成错误:', error);
-            imageToImagePlaceholder.innerHTML = `<svg class="icon" style="color: #e74c3c;"><use xlink:href="#triangle-exclamation-solid-full"></use></svg><p>图像生成失败</p><p style="font-size: 12px; margin-top: 10px;">错误: ${error.message}</p>`;
-        }).finally(() => {
-            setTimeout(() => setButtonLoading(generateImageToImageBtn, false, '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像'), 5000);
-        });
     }
 
     // --- 以下是所有其他未修改的辅助函数 ---
@@ -1629,25 +1633,7 @@
     function showImageModal() { const activeTab = document.querySelector('.secondary-tab-btn.active').dataset.subtab; if ((activeTab === 'textToImage' || activeTab === 'imageToImage') && currentImageUrl) { modalImage.src = currentImageUrl; imageModal.classList.add('show'); currentHistoryIndex = -1; modalPrevBtn.style.display = 'none'; modalNextBtn.style.display = 'none'; } }
     async function downloadImage() { if (!currentImageUrl) return; const button = this.id === 'modalDownloadBtn' ? modalDownloadBtn : downloadImageBtn; const originalButtonHtml = button.innerHTML; setButtonLoading(button, true, '下载中...'); try { const response = await fetch(currentImageUrl); const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; let prompt = (currentHistoryIndex !== -1) ? JSON.parse(localStorage.getItem('aiDrawingHistory'))[currentHistoryIndex].prompt : drawingPrompt.value; link.download = `ai-art-${prompt.trim().substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_') || 'image'}.png`; document.body.appendChild(link); link.click(); document.body.removeChild(link); window.URL.revokeObjectURL(url); showAlert('下载开始', 'success'); } catch (error) { console.error("下载失败:", error); showAlert('下载失败', 'error'); } finally { setButtonLoading(button, false, originalButtonHtml); } }
     function clearDrawing() { drawingPrompt.value = ''; drawingPlaceholder.style.display = 'flex'; drawingPlaceholder.innerHTML = `<svg class="icon"><use xlink:href="#image-solid-full"></use></svg><p>输入提示词并点击"生成图像"按钮</p>`; generatedImage.style.display = 'none'; imageActions.style.display = 'none'; currentImageUrl = null; seedInput.value = ''; }
-    function setButtonLoading(button, isLoading, loadingText) {
-    button.disabled = isLoading;
-    if (isLoading) {
-        // 在加载文字前添加一个转圈的动画元素
-        // 这个 .loader 类在您的 CSS 中已经定义好了动画效果
-        const loaderHTML = '<div class="loader" style="width: 16px; height: 16px; border-width: 2px; margin-right: 8px;"></div>';
-        button.innerHTML = loaderHTML + `<span>${loadingText}</span>`;
-    } else {
-        // 恢复按钮的原始图标和文本
-        if (button.id === 'generateImageBtn') {
-            button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像';
-        } else if (button.id === 'generateImageToImageBtn') {
-            // 注意：图生图按钮原始HTML中有两个空格，这里予以保留
-            button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg>  生成图像';
-        } else {
-            button.innerHTML = loadingText;
-        }
-    }
-}
+    function setButtonLoading(button, isLoading, loadingText) { button.disabled = isLoading; if (isLoading) { button.innerHTML = loadingText; } else { if(button.id === 'generateImageBtn' || button.id === 'generateImageToImageBtn'){ button.innerHTML = '<svg class="icon"><use xlink:href="#wand-magic-sparkles-solid-full"></use></svg> 生成图像'; } else { button.innerHTML = loadingText; } } }
     function showAlert(message, type = 'success') { const alertContainer = document.getElementById('alertContainer'); const alert = document.createElement('div'); alert.className = `alert ${type}`; const iconId = type === 'success' ? 'check-circle-solid-full' : 'triangle-exclamation-solid-full'; alert.innerHTML = `<svg class="icon"><use xlink:href="#${iconId}"></use></svg>  ${message}`; alertContainer.appendChild(alert); setTimeout(() => alert.remove(), 3000); }
     function formatDate(dateString) { const date = new Date(dateString); return `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`; }
 </script>
