@@ -3,7 +3,7 @@
     <!-- 首页 - 最高优先级 -->
     <url>
         <loc>https://designtool.site/</loc>
-        <lastmod>2025-09-23</lastmod>
+        <lastmod>2025-09-25</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority> 
     </url>
@@ -188,6 +188,12 @@
     <url>
         <loc>https://designtool.site/video/lotbar.html</loc>
         <lastmod>2025-09-22</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://designtool.site/expand.html</loc>
+        <lastmod>2025-09-24</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
