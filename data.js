@@ -295,6 +295,7 @@ const categoryMap = {
 
 // --- 3. 打赏数据 ---
 const donationData = [
+    { id: "匿名", amount: "10.00", data: "2025-09-25", message: "牛逼！太好用了" },
     { id: "强", amount: "1.00", data: "2025-09-20", message: "6啊" },
     { id: "🐛🐛", amount: "5.00", data: "2025-09-18", message: "" },
     { id: "M", amount: "6.66", data: "2025-09-18", message: "牛逼的设计师🧑‍🎨" },
