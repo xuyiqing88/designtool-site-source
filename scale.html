@@ -107,8 +107,8 @@
             position: relative;
             margin-bottom: 20px;
             background-color: var(--bg-light);
-            border: 2px dashed var(--border);
-            padding: 40px 30px;
+            border: 2px dashed var(--main-color);
+            padding: 30px;
             border-radius: var(--radius);
             transition: var(--transition);
             cursor: pointer;
@@ -119,16 +119,13 @@
         }
 
         .upload-section:hover {
-            border-color: var(--main-color);
-            background-color: rgba(99, 102, 241, 0.03);
+            background-color: #5a64ff26;
             transform: translateY(-2px);
-            box-shadow: var(--shadow);
         }
 
         .upload-section.drag-over {
-            border-color: var(--main-color);
-            background-color: rgba(99, 102, 241, 0.1);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            background-color: #5a64ff26;
+            transform: translateY(-2px);
         }
 
         .upload-icon-text {
@@ -619,8 +616,8 @@
                 <h1>AI高清放大</h1>
                 <p>使用开源 AI 模型，在您的浏览器中直接放大图像，保留更多细节</p>
             </header>
-            <div class="upload-section" id="upload-section">
-                <input type="file" id="image-input" accept="image/*" hidden>
+                <div class="upload-section" id="upload-section">
+                    <input type="file" id="image-input" accept="image/*" hidden>
                 <div class="upload-icon-text">
                     <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
                 </div>
