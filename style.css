@@ -185,13 +185,12 @@
     }
 
     .hero-button {
-        padding: 12px 45px;
+        padding: 10px 35px;
         background: linear-gradient(113deg, #6472ff, #8352ff);
         color: white;
         border: none;
         border-radius: 50px;
-        font-size: 1.1rem;
-        font-weight: 600;
+        font-size: 1rem;
         cursor: pointer;
         transition: all 0.3s ease;
         border: 1px solid #7962ff;
