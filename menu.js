@@ -41,51 +41,6 @@ body {
     height: 1.75em;
     fill: currentColor;
 }
-/* --- 相关文章模块样式 --- */
-.related-articles-section {
-    margin-top: 10px; /* 与上方下载模块的间距 */
-    background: #fff;
-    border-radius: 10px;
-    padding: 14px;
-    background: linear-gradient(180deg, #e3e7ff, #f2f3fd);
-}
-
-.related-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--main-color);
-    margin: 0 0 15px;
-    text-align: center;
-}
-
-.related-list {
-    background: #fff;
-    padding: 16px 30px;
-    border-radius: 8px;
-}
-
-.related-list li {
-    margin-bottom: 10px;
-}
-
-.related-list li:last-child {
-    margin-bottom: 0;
-}
-
-.related-list a {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* 图标和文字的间距 */
-    text-decoration: none;
-    color: var(--text2);
-    font-size: 15px;
-    transition: color 0.3s ease;
-}
-
-.related-list a:hover {
-    text-decoration: underline;
-}
-/* --- 样式结束 --- */
 /* 侧边菜单样式 */
 #global-sidebar {
     position: fixed;
