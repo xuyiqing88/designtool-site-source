@@ -8,7 +8,9 @@ menuStyles.textContent = `
     box-sizing: border-box;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
-
+.hidden {
+    display: none;
+}
 :root {
     --sidebar-width: 60px;
     --sidebar-expanded-width: 240px;
