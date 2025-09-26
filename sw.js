@@ -14,6 +14,8 @@ const urlsToCache = [
   '/rembg.html',
   '/lotbar.html',
   '/footer.html',
+  '/related-articles.html',
+  '/articles.js',
   // 添加其他需要缓存的资源
 ];
 
