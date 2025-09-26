@@ -27,6 +27,7 @@ menuStyles.textContent = `
 body {
     min-height: 100vh;
     transition: margin-left var(--transition-speed);
+    background-color: #f8f9ff;
 }
 .icon {
     display: inline-block;
@@ -40,6 +41,51 @@ body {
     height: 1.75em;
     fill: currentColor;
 }
+/* --- 相关文章模块样式 --- */
+.related-articles-section {
+    margin-top: 10px; /* 与上方下载模块的间距 */
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    background: linear-gradient(180deg, #e3e7ff, #f2f3fd);
+}
+
+.related-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--main-color);
+    margin: 0 0 15px;
+    text-align: center;
+}
+
+.related-list {
+    background: #fff;
+    padding: 16px 30px;
+    border-radius: 8px;
+}
+
+.related-list li {
+    margin-bottom: 10px;
+}
+
+.related-list li:last-child {
+    margin-bottom: 0;
+}
+
+.related-list a {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 图标和文字的间距 */
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 15px;
+    transition: color 0.3s ease;
+}
+
+.related-list a:hover {
+    text-decoration: underline;
+}
+/* --- 样式结束 --- */
 /* 侧边菜单样式 */
 #global-sidebar {
     position: fixed;
@@ -352,7 +398,8 @@ body {
             min-width: 310px;
     border-radius: 10px;
 	background: #fff;
-	padding: 20px;
+	padding: 14px;
+    background: linear-gradient(180deg, #e0efff, #f2f3fd);
         }
 
         h2 {
@@ -363,9 +410,9 @@ body {
 
         .downh3 {
             color: var(--main-color);
-            margin: 0 0 15px;
-            font-size: 1.4rem;
-	font-weight: 600;
+            margin: 0 0 10px;
+            font-size: 1.2rem;
+	    font-weight: 600;
         }
 
         p {
@@ -407,9 +454,8 @@ body {
             background: white;
             border-radius: 6px;
             padding: 20px;
-            margin-top: 20px;
+            margin-top: 16px;
             text-align: center;
-	    border: 1px solid var(--border);
         }
 	.download-card:hover {box-shadow: 0px 5px 10px #0000000f;}
         .download-card h3 {
@@ -421,10 +467,9 @@ body {
             background: var(--btcolor);
             color: white;
             border: none;
-            padding: 10px 25px;
+            padding: 8px 25px;
             border-radius: 30px;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             margin-top: 15px;
             transition: all 0.3s ease;
@@ -448,13 +493,12 @@ body {
 
         .system-req {
             border-radius: 10px;
-            padding: 20px;
             margin-bottom: 10px;
             font-size: 0.9rem;
-	display: flex;
-    flex-direction: column;
-    align-items: center;
-	color: var(--text3);
+	    display: flex;
+        flex-direction: column;
+        align-items: center;
+	    color: #95a4b5;
         }
 
         .system-req h3 {
