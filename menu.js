@@ -454,7 +454,7 @@ body {
             background: white;
             border-radius: 6px;
             padding: 20px;
-            margin-top: 16px;
+            margin-top: 8px;
             text-align: center;
         }
 	.download-card:hover {box-shadow: 0px 5px 10px #0000000f;}
