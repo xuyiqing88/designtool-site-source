@@ -1479,7 +1479,6 @@
         border-radius: 3px;
         transition: all 0.3s ease;
     }
-
     /* 滚动条滑块悬停效果 */
     div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover,
     div[style*="overflow-y: scroll"]::-webkit-scrollbar-thumb:hover,
