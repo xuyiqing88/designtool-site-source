@@ -28,6 +28,7 @@ body {
     min-height: 100vh;
     transition: margin-left var(--transition-speed);
 }
+    
 .icon {
     display: inline-block;
     width: 1.2em;
