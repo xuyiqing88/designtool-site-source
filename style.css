@@ -1420,3 +1420,75 @@
             font-size: 1.1rem;
         }
     }
+
+    /* ===== 自定义滚动条样式 ===== */
+    /* 适用于所有可滚动的div元素 */
+    div[style*="overflow-y: auto"],
+    div[style*="overflow-y: scroll"],
+    div[style*="overflow-x: auto"],
+    div[style*="overflow-x: scroll"],
+    #changelogContent,
+    .table-container,
+    .modal-content,
+    .intro-content,
+    .intro-text {
+        /* Firefox 滚动条样式 */
+        scrollbar-width: thin;
+        scrollbar-color: #c0c4ca transparent;
+    }
+
+    /* WebKit 浏览器滚动条样式 */
+    div[style*="overflow-y: auto"]::-webkit-scrollbar,
+    div[style*="overflow-y: scroll"]::-webkit-scrollbar,
+    div[style*="overflow-x: auto"]::-webkit-scrollbar,
+    div[style*="overflow-x: scroll"]::-webkit-scrollbar,
+    #changelogContent::-webkit-scrollbar,
+    .table-container::-webkit-scrollbar,
+    .modal-content::-webkit-scrollbar,
+    .intro-content::-webkit-scrollbar,
+    .intro-text::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    /* 滚动条轨道 */
+    div[style*="overflow-y: auto"]::-webkit-scrollbar-track,
+    div[style*="overflow-y: scroll"]::-webkit-scrollbar-track,
+    div[style*="overflow-x: auto"]::-webkit-scrollbar-track,
+    div[style*="overflow-x: scroll"]::-webkit-scrollbar-track,
+    #changelogContent::-webkit-scrollbar-track,
+    .table-container::-webkit-scrollbar-track,
+    .modal-content::-webkit-scrollbar-track,
+    .intro-content::-webkit-scrollbar-track,
+    .intro-text::-webkit-scrollbar-track {
+        background: var(--light-gray);
+        border-radius: 3px;
+    }
+
+    /* 滚动条滑块 */
+    div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb,
+    div[style*="overflow-y: scroll"]::-webkit-scrollbar-thumb,
+    div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb,
+    div[style*="overflow-x: scroll"]::-webkit-scrollbar-thumb,
+    #changelogContent::-webkit-scrollbar-thumb,
+    .table-container::-webkit-scrollbar-thumb,
+    .modal-content::-webkit-scrollbar-thumb,
+    .intro-content::-webkit-scrollbar-thumb,
+    .intro-text::-webkit-scrollbar-thumb {
+        background: var(--primary-light);
+        border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+
+    /* 滚动条滑块悬停效果 */
+    div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover,
+    div[style*="overflow-y: scroll"]::-webkit-scrollbar-thumb:hover,
+    div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb:hover,
+    div[style*="overflow-x: scroll"]::-webkit-scrollbar-thumb:hover,
+    #changelogContent::-webkit-scrollbar-thumb:hover,
+    .table-container::-webkit-scrollbar-thumb:hover,
+    .modal-content::-webkit-scrollbar-thumb:hover,
+    .intro-content::-webkit-scrollbar-thumb:hover,
+    .intro-text::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+    }

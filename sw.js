@@ -1,6 +1,6 @@
 // sw.js
 // 1. 更新这里的版本号
-const CACHE_NAME = 'design-tools-v5'; 
+const CACHE_NAME = 'design-tools-v6'; 
 const urlsToCache = [
   '/',
   '/index.html',
