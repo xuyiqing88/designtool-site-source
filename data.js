@@ -311,6 +311,12 @@ const donationData = [
 ];
 const changelogData = [
     {
+        date: "2025-09-27",
+        content: [
+            "文章侧栏新增相关下载推荐。",
+        ]
+    },
+    {
         date: "2025-09-25",
         content: [
             "优化域名DNS解析，支持www和https访问；",
