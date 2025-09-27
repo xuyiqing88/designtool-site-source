@@ -1,11 +1,10 @@
 // sw.js
 // 1. 更新这里的版本号
-const CACHE_NAME = 'design-tools-v8'; 
+const CACHE_NAME = 'design-tools-v9'; 
 const urlsToCache = [
   '/',
   '/index.html',
   '/style.css', 
-  '/menu.js',
   '/video/menu.js',
   '/common.js',
   '/hdr.html',
