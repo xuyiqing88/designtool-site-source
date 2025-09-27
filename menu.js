@@ -277,7 +277,6 @@ body {
             margin: 25px 0;
             border-radius: 8px;
             overflow: hidden;
-            border: 1px solid var(--border);
         }
 
         .video-container iframe {
@@ -289,10 +288,9 @@ body {
 
         .video-title {
             text-align: center;
-            font-size: 1.1rem;
-            color: var(--text1);
+            color: var(--text3);
             margin-bottom: 10px;
-            font-weight: 500;
+            font-weight: 400;
         }
 
 	.downlogo {
