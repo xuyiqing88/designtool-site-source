@@ -410,6 +410,10 @@ body {
             margin-top: 8px;
             text-align: center;
         }
+        .download-card p {
+            color: var(--text2);
+            font-size: 0.9rem;
+        }
 	.download-card:hover {box-shadow: 0px 5px 10px #0000000f;}
         .download-card h3 {
             margin-top: 0;
@@ -420,17 +424,17 @@ body {
             background: var(--btcolor);
             color: white;
             border: none;
-            padding: 8px 25px;
+            padding: 8px 45px;
             border-radius: 30px;
             font-size: 0.9rem;
             cursor: pointer;
-            margin-top: 15px;
             transition: all 0.3s ease;
-            width: 100%;
+            width: fit-content;
 	    display: flex;
-    justify-content: center;
-    align-items: center;
-	text-decoration: auto;
+        justify-content: center;
+        align-items: center;
+	    text-decoration: auto;
+        margin: 14px auto 0;
         }
 
         .download-btn:hover {
@@ -446,7 +450,8 @@ body {
 
         .system-req {
             border-radius: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+            margin-top: 10px;
             font-size: 0.9rem;
 	    display: flex;
         flex-direction: column;
