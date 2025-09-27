@@ -27,7 +27,6 @@ menuStyles.textContent = `
 body {
     min-height: 100vh;
     transition: margin-left var(--transition-speed);
-    background-color: #f8f9ff;
 }
 .icon {
     display: inline-block;
