@@ -1,6 +1,6 @@
 // sw.js
 // 1. 更新这里的版本号
-const CACHE_NAME = 'design-tools-v3'; 
+const CACHE_NAME = 'design-tools-v4'; 
 const urlsToCache = [
   '/',
   '/index.html',
@@ -25,28 +25,14 @@ self.addEventListener('install', event => {
   );
 });
 
-// fetch 事件部分无需修改
+// fetch 事件修改为 “网络优先”
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request).then(
-          networkResponse => {
-            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-              return networkResponse;
-            }
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-            return networkResponse;
-          }
-        );
-      })
+    // 优先尝试网络请求
+    fetch(event.request).catch(() => {
+      // 如果网络请求失败 (例如离线), 则尝试从缓存中寻找匹配的资源
+      return caches.match(event.request);
+    })
   );
 });
 
