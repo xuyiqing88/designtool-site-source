@@ -343,7 +343,9 @@ body {
             border-radius: 10px;
     		background: #fff;
         }
-
+.main-content1 ul {
+            margin-left: 16px;
+        }
         .download-section {
             flex: 1;
             min-width: 310px;
