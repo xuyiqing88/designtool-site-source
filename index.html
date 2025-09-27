@@ -1214,5 +1214,18 @@ backToTopBtn.addEventListener('click', function() {
         document.body.classList.add('effects-enabled');
       };
     </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('主站 ServiceWorker (sw.js) 注册成功，作用域为: ', registration.scope);
+        })
+        .catch(err => {
+          console.log('主站 ServiceWorker (sw.js) 注册失败: ', err);
+        });
+    });
+  }
+</script>
     </body>
 </html>
