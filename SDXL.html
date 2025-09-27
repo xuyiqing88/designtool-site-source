@@ -730,7 +730,7 @@ function renderStylesTable(stylesToRender, searchTerm = '') {
         tableBody.appendChild(row);
 
         // 每隔10行插入广告
-        if ((index + 1) % 1000 === 0) {
+        if ((index + 1) % 10 === 0) {
             const adRow = document.createElement('tr');
             adRow.innerHTML = `
                 <td colspan="5" style="padding: 0; text-align: center;">
