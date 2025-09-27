@@ -1,9 +1,10 @@
 // sw.js
-const CACHE_NAME = 'design-tools-v1';
+// 1. 更新这里的版本号
+const CACHE_NAME = 'design-tools-v2'; 
 const urlsToCache = [
   '/',
   '/index.html',
-  '/style.css',
+  '/style.css', // 即使内容变了，URL没变
   '/menu.js',
   '/video/menu.js',
   '/data.js',
@@ -23,34 +24,27 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
+  );
 });
 
-// 改进后的 fetch 事件
+// fetch 事件部分无需修改
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // 如果缓存中有，直接返回
         if (response) {
           return response;
         }
-
-        // 如果缓存中没有，发起网络请求
         return fetch(event.request).then(
           networkResponse => {
-            // 确保请求成功，并且不是第三方扩展等奇怪的请求
             if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
               return networkResponse;
             }
-
-            // 克隆一份响应，因为 response 只能被消费一次
             const responseToCache = networkResponse.clone();
-
             caches.open(CACHE_NAME)
               .then(cache => {
                 cache.put(event.request, responseToCache);
               });
-
             return networkResponse;
           }
         );
@@ -59,13 +53,14 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME]; // 定义需要保留的缓存白名单
+  // 2. 更新这里的白名单，确保与上面的 CACHE_NAME 一致
+  const cacheWhitelist = [CACHE_NAME]; 
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          // 如果缓存名不在白名单中，就删除它
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            // 如果缓存名不在白名单中 (例如，旧的 'design-tools-v1')，就删除它
             return caches.delete(cacheName);
           }
         })
