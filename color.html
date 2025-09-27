@@ -696,6 +696,11 @@
         </div>
         <div class="info-section">
 
+                <h4 class="title">什么是线性颜色？</h4>
+                <p class="subtitle">线性颜色空间（Linear RGB）中的颜色值与人眼感知的光强度成正比，适用于需要物理准确性的计算（如3D渲染）。</p>
+                
+                <h4 class="title">什么是非线性颜色？</h4>
+                <p class="subtitle">非线性颜色空间（sRGB）应用了伽马校正，使颜色值更符合人眼感知，是大多数显示设备和图像格式使用的标准。</p>
 <ins class="adsbygoogle"
      style="display:block"
      data-ad-format="fluid"
@@ -705,12 +710,6 @@
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h4 class="title">什么是线性颜色？</h4>
-                <p class="subtitle">线性颜色空间（Linear RGB）中的颜色值与人眼感知的光强度成正比，适用于需要物理准确性的计算（如3D渲染）。</p>
-                
-                <h4 class="title">什么是非线性颜色？</h4>
-                <p class="subtitle">非线性颜色空间（sRGB）应用了伽马校正，使颜色值更符合人眼感知，是大多数显示设备和图像格式使用的标准。</p>
-                
                 <h4 class="title">转换公式</h4>
                 <p class="subtitle" style="padding-bottom: 0;">线性转非线性：c<sub>nonlinear</sub> = (c<sub>linear</sub> ≤ 0.0031308) ? 12.92 * c<sub>linear</sub> : 1.055 * c<sub>linear</sub><sup>1/2.4</sup> - 0.055</p>
                 <p class="subtitle">非线性转线性：c<sub>linear</sub> = (c<sub>nonlinear</sub> ≤ 0.04045) ? c<sub>nonlinear</sub> / 12.92 : ((c<sub>nonlinear</sub> + 0.055) / 1.055)<sup>2.4</sup></p>
