@@ -51,6 +51,24 @@
     height: 1.2em;
     fill: currentColor;
 }
+.convert-btn {
+    text-decoration-line: none;
+    color: var(--main-color);
+    margin-left: 30px;
+}
+.convert-btn:hover {
+    text-decoration-line: underline;
+}
+.scrib-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.scrib-point {
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;;
+}
         .container {
             width: 1200px;
             margin: 0 auto;
@@ -111,9 +129,7 @@
 
         .panel-title {
             font-size: 1.2rem;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;   
             color: var(--text1);
             font-weight: 700;
             display: flex;
@@ -138,19 +154,20 @@
 
         label {
             display: flex;
-            margin-bottom: 6px;
             font-weight: 600;
             color: var(--text2);
             font-size: 1.0rem;
-	justify-content: space-between;
+	        justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
         }
 
         input[type="number"] {
             width: 100%;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 1.05rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             color: var(--text1);
             transition: all 0.3s;
             background: var(--bg-light);
@@ -243,8 +260,12 @@
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
 		overflow: hidden;
+        border: 1px solid #fff;
         }
-
+.image-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px #6b6d9726;
+        }
 
         .thumbnail {
             width: 60px;
@@ -522,17 +543,6 @@
             transform: translateX(26px);
         }
 
-        .file-tag {
-                position: absolute;
-    	top: 12px;
-    	right: -25px;
-    	background: var(--warning);
-    	color: white;
-    	font-size: 10px;
-    	padding: 1px 24px;
-    	transform: rotate(45deg);
-        }
-
         .info-tip {
             display: inline-block;
             background: var(--bg-light);
@@ -548,6 +558,7 @@
             align-items: center;
             gap: 8px;
             margin-top: 8px;
+            justify-content: space-between;
         }
 
         .transparency-label .info {
@@ -562,7 +573,6 @@
             font-size: 12px;
             cursor: help;
             position: relative;
-            margin-bottom: 10px;
         }
 
         .transparency-label .info:hover::after {
@@ -652,6 +662,17 @@
 		    color: var(--text2);
     		font-size: 14px;
 		}
+    .panel-scrib {
+        color: var(--text2);
+        font-size: 14px;
+        border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--bg-light);
+    }
+    .panel-scrib p {
+        font-size: 14px;
+    }
         @media (max-width: 768px) {
             .container {
                 min-width: 100%;
@@ -702,18 +723,21 @@
         }
 
         .png-optimization {
-		padding-top: 16px;
-            margin-top: 12px;
+		padding-top: 10px;
             border-top: 1px solid var(--border);
         }
 
         .png-optimization h3 {
             margin-top: 4px;
-            color: var(--main-color);
             display: flex;
             align-items: center;
             gap: 10px;
-	margin-bottom: 14px;
+	        margin-bottom: 14px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        width: fit-content;
         }
 
         .optimization-options {
@@ -736,7 +760,7 @@
 
         .option-group select {
             width: 100%;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--bg-light);
@@ -796,17 +820,16 @@
                 
                 <div class="form-group">
                     <div class="transparency-label">
-                        <label>PNG透明背景优化</label>
-                        <span class="info">?</span>
-                    </div>
-
-                    <div class="transparency-toggle">
-                        <span class="scrib">智能优化PNG压缩</span>
+                        <label>PNG透明背景优化
+                            <span class="info">?</span>
+                        </label>
+                        
                         <label class="toggle-container">
                             <input type="checkbox" id="transparencyToggle" checked>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
+
                 </div>
                 
                 <div class="form-group">
@@ -859,9 +882,13 @@
 
                     <button id="clearAllBtn" class="clear-all-btn" style="display:none;">清空所有</button>
                 </h2>
-                <div class="scrib">
-				<div>透明优化：对含有透明背景的png图片进行针对性压缩</div>
-				<div>优化压缩：对于非透明背景的png图片按照jpg的方式去压缩，导出后修改为png格式</div>
+                <div class="panel-scrib">
+				    <div class="scrib-item">
+                        <div class="scrib-point" style="background: #96beff;"></div>
+                        <p><strong>透明优化</strong>：对含有透明背景的png图片进行针对性压缩</p></div>
+				    <div class="scrib-item">
+                        <div class="scrib-point" style="background: #a8a4f6;"></div>
+                        <p><strong>优化压缩</strong>：对于非透明背景的png图片按照jpg的方式去压缩，导出后修改为png格式</p></div>
 		</div>
                 <div class="preview-container" id="previewContainer">
                     <div class="no-preview" id="noPreviewMessage">
@@ -885,6 +912,7 @@
                         下载所有图片
                         <span class="counter" id="fileCounter">0</span>
                     </button>
+                    <a href="conver.html" class="convert-btn">跳转至图片转换</a>
                 </div>
             </div>
         </div>
@@ -1277,18 +1305,21 @@
                 return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
             };
             
-            // 压缩方法标签
-            let methodTag = '';
+            // --- 新增的代码 ---
+            // 根据压缩方法设置背景颜色
             if (imageData.originalFile.type === 'image/png') {
                 if (hasTransparency) {
-                    methodTag = '<div class="file-tag" style="background:var(--main-color)">透明优化</div>';
+                    // 透明优化
+                    row.style.background = 'linear-gradient(90deg, #ecf6ff 20%, #f9fafb)';
                 } else {
-                    methodTag = '<div class="file-tag" style="background:var(--success)">优化压缩</div>';
+                    // 优化压缩
+                    row.style.background = 'linear-gradient(90deg, #edecff 20%, #f9fafb)';
                 }
             }
+            // --- 新增代码结束 ---
             
+            // --- 修改过的 row.innerHTML (已移除 ${methodTag}) ---
             row.innerHTML = `
-                ${methodTag}
                 <div class="thumbnail">
                     <img src="${originalImg}" alt="原始图片">
                 </div>
