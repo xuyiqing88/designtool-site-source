@@ -3,6 +3,8 @@ const CACHE_NAME = 'designtool-v1-safe';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/style.css',
+  '/menu.js',
   '/video/menu.js',
   '/common.js',
   '/hdr.html',
