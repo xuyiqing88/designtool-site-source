@@ -1,8 +1,7 @@
-// sw.js - 修复模型缓存冲突版本
+// sw.js - 高性能版本 (Stale-While-Revalidate)
 
-// 使用一个新的版本号来触发更新
-const CACHE_NAME = 'designtool-v4-hotfix'; 
-
+// 再次更新版本号，以触发Service Worker的更新
+const CACHE_NAME = 'designtool-v5-performance'; 
 const urlsToCache = [
   '/',
   '/index.html',
@@ -17,22 +16,20 @@ const urlsToCache = [
   '/footer.html',
   '/related-articles.html',
   '/articles.js',
-  // 其他需要缓存的资源
 ];
 
-// 安装时，预缓存核心文件
+// 安装阶段：预缓存核心文件
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened cache and caching app shell');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Opened cache for app shell');
+      return cache.addAll(urlsToCache);
+    })
   );
   self.skipWaiting();
 });
 
-// 激活时，清理旧缓存
+// 激活阶段：清理旧缓存
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -48,35 +45,31 @@ self.addEventListener('activate', event => {
   );
 });
 
-// fetch时，增加豁免规则
+// Fetch阶段：实现 Stale-While-Revalidate 策略
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') {
     return;
   }
-
-  const url = new URL(event.request.url);
-
-  // 【新增规则】如果请求的是 .onnx 模型文件，则不处理，让浏览器自己去请求
-  // 这样 rembg.html 页面里的缓存逻辑就能正常工作了
-  if (url.pathname.endsWith('.onnx')) {
-    console.log('Bypassing service worker for ONNX model request.');
-    return; 
+  
+  // 豁免规则，让模型文件由页面自己管理
+  if (new URL(event.request.url).pathname.endsWith('.onnx')) {
+    return;
   }
 
-  // 对于所有其他请求，继续采用“网络优先，缓存备用”策略
   event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME)
-          .then(cache => {
-            cache.put(event.request, responseToCache);
-          });
-        return networkResponse;
-      })
-      .catch(() => {
-        console.log('Network request failed, trying to serve from cache for:', event.request.url);
-        return caches.match(event.request);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(event.request).then(cachedResponse => {
+        // 1. 发起网络请求去获取最新版本
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          // 如果成功获取，就用新版本更新缓存
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
+        });
+
+        // 2. 立即返回缓存的版本（如果存在），让页面秒开
+        //    同时，上面的 fetchPromise 会在后台继续进行，以便下次访问时使用最新版本
+        return cachedResponse || fetchPromise;
+      });
+    })
   );
 });
