@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'designtool-v2-safe';
+const CACHE_NAME = 'designtool-v3-safe';
 const urlsToCache = [
   '/',
   '/index.html',
