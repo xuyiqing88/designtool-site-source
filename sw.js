@@ -1,5 +1,8 @@
-// sw.js
-const CACHE_NAME = 'designtool-v3-safe';
+// sw.js - 修复模型缓存冲突版本
+
+// 使用一个新的版本号来触发更新
+const CACHE_NAME = 'designtool-v4-hotfix'; 
+
 const urlsToCache = [
   '/',
   '/index.html',
@@ -14,9 +17,10 @@ const urlsToCache = [
   '/footer.html',
   '/related-articles.html',
   '/articles.js',
-  // 添加其他需要缓存的资源
+  // 其他需要缓存的资源
 ];
-// 1. 安装时，预缓存核心文件
+
+// 安装时，预缓存核心文件
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -28,7 +32,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// 2. 激活时，清理旧缓存
+// 激活时，清理旧缓存
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -44,34 +48,33 @@ self.addEventListener('activate', event => {
   );
 });
 
-// 3. fetch时，采用“网络优先，缓存备用”策略
+// fetch时，增加豁免规则
 self.addEventListener('fetch', event => {
-  // 我们只处理GET请求
   if (event.request.method !== 'GET') {
     return;
   }
 
+  const url = new URL(event.request.url);
+
+  // 【新增规则】如果请求的是 .onnx 模型文件，则不处理，让浏览器自己去请求
+  // 这样 rembg.html 页面里的缓存逻辑就能正常工作了
+  if (url.pathname.endsWith('.onnx')) {
+    console.log('Bypassing service worker for ONNX model request.');
+    return; 
+  }
+
+  // 对于所有其他请求，继续采用“网络优先，缓存备用”策略
   event.respondWith(
-    // 优先尝试网络请求
     fetch(event.request)
       .then(networkResponse => {
-        // 如果网络请求成功，我们做两件事：
-        // 1. 将最新的响应放入缓存中，以备将来离线时使用
-        // 2. 将响应返回给页面
-        
-        // 需要克隆响应，因为响应体只能被读取一次
         const responseToCache = networkResponse.clone();
-        
         caches.open(CACHE_NAME)
           .then(cache => {
             cache.put(event.request, responseToCache);
           });
-          
         return networkResponse;
       })
       .catch(() => {
-        // 如果网络请求失败（例如用户离线了）
-        // 我们就去缓存里找有没有匹配的旧版本
         console.log('Network request failed, trying to serve from cache for:', event.request.url);
         return caches.match(event.request);
       })
