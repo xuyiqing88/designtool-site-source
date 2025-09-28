@@ -1,7 +1,7 @@
 // sw.js - 高性能版本 (Stale-While-Revalidate)
 
 // 再次更新版本号，以触发Service Worker的更新
-const CACHE_NAME = 'designtool-v6-performance'; 
+const CACHE_NAME = 'designtool-v5-performance'; 
 const urlsToCache = [
   '/',
   '/index.html',
