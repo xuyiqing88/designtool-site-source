@@ -377,7 +377,7 @@ const menuData = [
             { title: "AI高清放大", link: "scale.html" },
             { title: "AI一键抠图", link: "rembg.html" },
 	        { title: "AI绘画", link: "../draw.html" },
-	        { title: "AI数字人（免费版）", link: "../freeAI.html" },
+	        { title: "免费版ChatGPT", link: "../freeAI.html" },
 	        { title: "AI数字人（API版）", link: "../AI.html" },
             { title: "lora训练数据集编辑", link: "../model.html" },
             { title: "AI画风提示词大全", link: "../SDXL.html" },

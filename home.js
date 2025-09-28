@@ -105,7 +105,7 @@ const tools = [
         badge: ""
     },
     {
-        title: "AI数字人(免费版)",
+        title: "免费版ChatGPT",
         description: "无需API，可进行AI对话（支持图片上传）、提示词扩写、图像识别、文本转语音等功能",
         category: "dev",
         link: "freeAI.html",
