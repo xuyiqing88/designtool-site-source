@@ -3,247 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>页面未找到 - 404错误</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
+    <title>页面未找到 - 青艺设计</title>
+    <link rel="icon" href="img/gongjuxiang.svg" type="image/svg"> 
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
     <style>
+        /* 灵感源于您的 style.css 文件 */
+        :root {
+            --primary: #5963ff;
+            --primary-light: #eef0ff;
+            --dark: #2d3748;
+            --darker: #1a202c;
+            --gray: #718096;
+            --light-gray: #f7fafc; 
+            --border: #e2e8f0;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background-color: #ffffff; /* 纯白色背景 */
+            color: var(--dark);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            overflow-x: hidden;
+            line-height: 1.6;
             padding: 20px;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 1000px; /* 调整最大宽度以适应左右布局 */
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            background: #ffffff;
+            /* 移除阴影和边框，因为参考图是纯白背景 */
+            padding: 40px; /* 调整内边距 */
+            display: flex; /* 使用 Flexbox 进行左右布局 */
+            align-items: center; /* 垂直居中 */
+            gap: 60px; /* 左右元素之间的间距 */
         }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            z-index: -1;
-            animation: rotate 20s linear infinite;
+
+        .illustration-area {
+            flex-shrink: 0; /* 防止图片区域缩小 */
+            width: 50%; /* 左侧插画区域宽度 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+
+        .illustration-area img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .content-area {
+            flex-grow: 1; /* 右侧内容区域占据剩余空间 */
+            text-align: left; /* 内容左对齐 */
         }
         
         .error-code {
-            font-size: 10rem;
-            font-weight: 800;
-            line-height: 1;
-            margin: 20px 0;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            position: relative;
-            display: inline-block;
-        }
-        
-        .error-code::after {
-            content: '404';
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            color: transparent;
-            text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
-            z-index: -1;
+            font-size: 4.5rem; /* 调整字体大小以匹配参考图 */
+            font-weight: 600; /* 参考图中的 404 看起来更粗 */
+            margin-bottom: 10px;
+            color: var(--dark); /* 直接使用深色 */
+            font-family: system-ui;
         }
         
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            font-weight: 700;
+            font-size: 1.35rem; /* 调整标题大小 */
+            margin-bottom: 30px; /* 增加与按钮的间距 */
+            font-weight: 400;   
+            color: var(--gray); /* 描述性文字颜色 */
         }
         
-        .description {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin: 30px 0;
-        }
-        
-        .btn {
-            padding: 15px 35px;
+        /* 采用主站的 .hero-button 样式 */
+        .hero-button {
+            padding: 8px 34px; /* 调整按钮内边距 */
+            background: linear-gradient(113deg, #6472ff, #8352ff);
+            color: white;
+            border: none;
             border-radius: 50px;
-            text-decoration: none;
+            font-size: 1rem;
             font-weight: 600;
-            display: inline-block;
+            cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid white;
-            text-align: center;
-            min-width: 160px;
+            border: 1px solid #7962ff;
+            box-shadow: 0 5px 20px rgba(89, 99, 255, 0.3), inset 0px 2px 3px 0px rgb(255 255 255 / 30%);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 40px; /* 与底部联系方式的间距 */
         }
-        
-        .btn-primary {
-            background: white;
-            color: #6a11cb;
-        }
-        
-        .btn-primary:hover {
-            background: #f0f0f0;
+
+        .hero-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 7px 25px rgba(89, 99, 255, 0.5), inset 0px 2px 3px 0px rgb(255 255 255 / 30%);
         }
-        
-        .animation-container {
-            position: relative;
-            height: 150px;
-            margin: 40px 0;
+
+        .contact-info {
+            font-size: 0.95rem;
+            color: var(--gray);
         }
-        
-        .astronaut {
-            position: absolute;
-            top: 50%;
-            left: 20%;
-            transform: translateY(-50%);
-            font-size: 5rem;
-            animation: float 3s ease-in-out infinite;
+
+        .contact-info a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
         }
-        
-        .planet {
-            position: absolute;
-            top: 50%;
-            right: 20%;
-            transform: translateY(-50%);
-            font-size: 8rem;
-            animation: rotatePlanet 20s linear infinite;
+
+        .contact-info a:hover {
+            color: var(--darker);
         }
-        
-        @keyframes float {
-            0% { transform: translateY(-50%); }
-            50% { transform: translateY(-60%); }
-            100% { transform: translateY(-50%); }
-        }
-        
-        @keyframes rotatePlanet {
-            from { transform: translateY(-50%) rotate(0deg); }
-            to { transform: translateY(-50%) rotate(360deg); }
-        }
-        
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             .container {
+                flex-direction: column; /* 小屏幕上垂直堆叠 */
+                text-align: center;
+                gap: 30px;
                 padding: 30px 20px;
             }
-            
+            .illustration-area {
+                width: 80%; /* 图片宽度增加 */
+            }
+            .content-area {
+                text-align: center; /* 内容居中 */
+            }
             .error-code {
-                font-size: 8rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .description {
-                font-size: 1rem;
-            }
-            
-            .btn {
-                padding: 12px 25px;
-                min-width: 140px;
-            }
-            
-            .animation-container {
-                height: 120px;
-            }
-            
-            .astronaut {
-                font-size: 4rem;
-                left: 15%;
-            }
-            
-            .planet {
-                font-size: 6rem;
-                right: 15%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .error-code {
-                font-size: 6rem;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .actions {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .animation-container {
-                height: 100px;
-                margin: 30px 0;
-            }
-            
-            .astronaut {
                 font-size: 3rem;
-                left: 10%;
             }
-            
-            .planet {
-                font-size: 5rem;
-                right: 10%;
+            h1 {
+                font-size: 1.3rem;
+            }
+            .hero-button {
+                margin-bottom: 30px;
             }
         }
     </style>
 </head>
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0fa9d31287314fffb488e27ef3d5c9d7"}'></script>
 <body>
     <div class="container">
-        <div class="animation-container">
-            <div class="astronaut">👨‍🚀</div>
-            <div class="planet">🪐</div>
-        </div>
-        
-        <div class="error-code">404</div>
-        <h1>哎呀！页面迷失在太空中</h1>
-        
-        <p class="description">
-            您正在寻找的页面可能已被移除、重命名或暂时不可用。
-            但别担心，我们的宇航员正在努力寻找它！
-        </p>
-                
-        <div class="actions">
-            <a href="index.html" class="btn btn-primary"><i class="fas fa-home"></i> 返回首页</a>
+        <div class="illustration-area">
+        <img src="img/404.webp" alt="页面未找到"> 
+    </div>
+        <div class="content-area">
+            <div class="error-code">404 Error</div>
+            <h1>很抱歉，您访问的页面地址有误，<br>或者该页面维护中。</h1>
+            <a href="index.html" class="hero-button">返回首页</a>
         </div>
     </div>
 </body>
