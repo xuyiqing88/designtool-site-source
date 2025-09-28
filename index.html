@@ -903,21 +903,6 @@ window.addEventListener('resize', showAddToHomePrompt);
                         
                         gridContainer.appendChild(toolCard);
                     });
-// 在每个分类的末尾添加一个广告容器
-const adContainer = document.createElement('div');
-adContainer.className = 'ad-container'; // 自定义一个类名用于样式控制
-adContainer.innerHTML = `
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-gf+h-29-9j+r5"
-     data-ad-client="ca-pub-3983418855272291"
-     data-ad-slot="5620432612"></ins>
-`;
-gridContainer.appendChild(adContainer);
-
-// 渲染完所有工具和广告后，推送广告
-(adsbygoogle = window.adsbygoogle || []).push({});
                 }
             });
             
