@@ -28,6 +28,7 @@
         color: var(--dark);
         min-height: 100vh;
         line-height: 1.6;
+        overflow-x: hidden;
     }
 /* 1. 更新日志按钮样式：白底蓝框，与主按钮区分 */
 .hero-button.changelog-button {
@@ -669,6 +670,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
         gap: 16px;
+        transform-origin: top center;
     }
 
     .tool-card {

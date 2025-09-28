@@ -32,8 +32,9 @@
 
         body {
             background-color: #f5f7ff;
-            background-image: url(../img/download.webp);
-    	    background-size: cover;
+            background-image: url(../img/video.webp);
+    	    background-size: contain;
+            background-repeat: no-repeat;
             color: var(--text1);
             min-height: 100vh;
             display: flex;
@@ -187,10 +188,10 @@
 
         select {
             width: 100%;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             color: var(--text1);
             transition: all 0.3s;
             background: var(--bg-light);
@@ -348,10 +349,10 @@
         
         .custom-resolution-input {
             width: 100%;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             color: var(--text1);
             background: var(--bg-light);
             box-sizing: border-box;
@@ -404,20 +405,7 @@
         <div class="tool-container">
             <div class="settings-panel">
                 <h2 class="panel-title">转换设置</h2>
-                
-                <div class="form-group">
-                    <div class="drop-area" id="dropArea">
-                        <div class="drop-icon"><svg class="icon"><use xlink:href="#film-solid-full"></use></svg></div>
-                        <p class="drop-text">拖放文件到此处 或 <u>点击选择文件</u></p>
-                        <p class="drop-hint">支持常见视频和音频格式</p>
-                        <input type="file" id="fileInput" accept="video/*,audio/*" multiple>
-                    </div>
-		<div class="tips">小技巧：上传视频后选择音频格式输出，可以提取音频</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="targetFormat">目标格式</label>
-                    <select id="targetFormat">
+                    <select id="targetFormat" style="margin-top: 10px;">
                         <option value="" selected disabled>请选择输出格式</option>
                         <optgroup label="——视频格式——">
                             <option value="mp4">MP4 (H.264)</option>
@@ -445,6 +433,9 @@
 			  <option value="m4a">M4A（MPEG-4音频）</option>
                         </optgroup>
                     </select>
+                    <div class="drop-hint" style="margin: 0 0 10px; max-width: fit-content;">注：只需选择输出格式即可，无需设置导入格式</div>
+                
+                <div class="form-group">
                     <div id="formatError" class="error-message">请先选择输出格式</div>
                 </div>
                 
@@ -478,7 +469,15 @@
                         <option value="64k">64 kbps</option>
                     </select>
                 </div>
-            <div class="drop-hint" style="margin: 0; max-width: fit-content;">注：只需选择输出格式即可，无需设置导入格式</div>
+                <div class="form-group">
+                    <div class="drop-area" id="dropArea">
+                        <div class="drop-icon"><svg class="icon"><use xlink:href="#film-solid-full"></use></svg></div>
+                        <p class="drop-text">拖放文件到此处 或 <u>点击选择文件</u></p>
+                        <p class="drop-hint">支持常见视频和音频格式</p>
+                        <input type="file" id="fileInput" accept="video/*,audio/*" multiple>
+                    </div>
+		<div class="tips">小技巧：上传视频后选择音频格式输出，可以提取音频</div>
+                </div>
             </div>
             
             <div class="preview-panel">

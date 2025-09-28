@@ -1205,6 +1205,62 @@ backToTopBtn.addEventListener('click', function() {
       window.onload = function() {
         document.body.classList.add('effects-enabled');
       };
+      // ===== 首屏透视效果控制 (V6: 增加放大效果) =====
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstToolsGrid = document.querySelector('.tools-grid');
+        const headerImage = document.getElementById('header-image');
+
+        if (firstToolsGrid && headerImage) {
+            // --- 参数设置 ---
+            const mobileBreakpoint = 768;
+            const animationEndScroll = headerImage.offsetHeight * 0.6;
+            const perspective = 800;
+            const startAngle = 45;
+            const startTranslateY = 10;
+            const startScale = 0.85; // 【新增】初始缩放大小 (0.9 代表 90%，1 代表 100%)
+
+            let ticking = false;
+
+            const animateOnScroll = () => {
+                if (window.innerWidth <= mobileBreakpoint) {
+                    if (firstToolsGrid.style.transform !== '') {
+                        firstToolsGrid.style.transform = '';
+                    }
+                    ticking = false;
+                    return;
+                }
+
+                const currentScroll = window.scrollY;
+                let progress = currentScroll / animationEndScroll;
+                progress = Math.max(0, Math.min(1, progress));
+
+                // 1. 计算旋转角度 (从 45度 -> 0度)
+                const currentAngle = startAngle * (1 - progress);
+                // 2. 计算Y轴位移 (从 -60px -> 0px)
+                const currentTranslateY = startTranslateY * (1 - progress);
+                // 3. 【新增】根据同样的进度计算当前的缩放大小 (从 0.9 -> 1.0)
+                const currentScale = startScale + (1 - startScale) * progress;
+
+                // 4. 【更新】将所有变换效果合并，并实时更新样式
+                firstToolsGrid.style.transform = `perspective(${perspective}px) rotateX(${currentAngle}deg) translateY(${currentTranslateY}px) scale(${currentScale})`;
+
+                ticking = false;
+            };
+
+            const requestTick = () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(animateOnScroll);
+                    ticking = true;
+                }
+            };
+
+            window.addEventListener('scroll', requestTick, { passive: true });
+            window.addEventListener('resize', requestTick, { passive: true });
+
+            animateOnScroll();
+        }
+    });
+    // 【代码替换】 结束
     </script>
     <script>
   if ('serviceWorker' in navigator) {
