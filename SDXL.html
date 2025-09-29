@@ -8,8 +8,6 @@
     <script src="prompts.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
-     crossorigin="anonymous"></script>
     <style>
         :root {
             --primary: #5963ff;
@@ -581,7 +579,6 @@
                     <!-- 表格内容将通过JS动态生成 -->
                 </tbody>
             </table>
-    <div id="ad-container" class="adsbygoogle" style="text-align:center;"></div>
         </div>
         
         <footer>
@@ -728,24 +725,6 @@ function renderStylesTable(stylesToRender, searchTerm = '') {
         `;
         
         tableBody.appendChild(row);
-
-        // 每隔10行插入广告
-        if ((index + 1) % 10 === 0) {
-            const adRow = document.createElement('tr');
-            adRow.innerHTML = `
-                <td colspan="5" style="padding: 0; text-align: center;">
-                    <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-ez+1c-3l-ls+1gn"
-     data-ad-client="ca-pub-3983418855272291"
-     data-ad-slot="9637684776"></ins>
-                </td>
-            `;
-            tableBody.appendChild(adRow);
-            // 推送广告以渲染
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        }
     });
     
     // 添加提示词复制功能

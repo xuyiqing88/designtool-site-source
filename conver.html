@@ -29,8 +29,9 @@
 
         body {
             background-color: #f5f7ff;
-                background-image: url(img/download.webp);
-    		background-size: cover;
+            background-image: url(img/download.webp);
+    		background-size: contain;
+            background-repeat: no-repeat;
             color: var(--text1);
             min-height: 100vh;
             display: flex;
@@ -192,10 +193,10 @@
 
         select, input[type="number"] {
             width: 100%;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 1.05rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             color: var(--text1);
             transition: all 0.3s;
             background: var(--bg-light);
@@ -205,6 +206,7 @@
             background-repeat: no-repeat;
             background-position: right 15px center;
             padding-right: 40px;
+            margin-top: 10px;
         }
 
         select:focus, input[type="number"]:focus {
@@ -372,7 +374,7 @@
 
         .no-preview {
             text-align: center;
-            padding: 80px 20px;
+            padding: 40px 20px;
             color: var(--text3);
             flex: 1;
             display: flex;
@@ -663,22 +665,10 @@
     <div class="tool-container">
         <div class="settings-panel">
             <h2 class="panel-title">转换设置</h2>
-
+            
             <div class="form-group">
-                <div class="drop-area" id="dropArea">
-                    <div class="drop-icon">
-                        <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
-                    </div>
-                    <p class="drop-text">拖放图片到此处 或 <u>点击选择</u></p>
-                        <p class="drop-hint">支持常见图片格式</p>
-                    <input type="file" id="fileInput" accept="image/*,.heic,.heif,.tif,.tiff" multiple>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="outputFormat">选择输出格式</label>
                 <select id="outputFormat">
-                    <option value="" selected disabled>请选择</option>
+                    <option value="" selected disabled>请选择输出格式</option>
                     <option value="jpeg">JPEG (体积小)</option>
                     <option value="jpg">JPG (体积大)</option>
                     <option value="png">PNG</option>
@@ -691,8 +681,9 @@
                 <div id="formatError" style="color: red; display: none; margin-top: 5px; font-size: 0.9rem;">
                     请先选择输出格式
                 </div>
+                 <div class="drop-hint" style="margin: 10px 0 0; max-width: fit-content;">注：只需选择输出格式即可，无需设置导入格式</div>  
             </div>
-            
+
             <div class="form-group" id="qualitySection">
                 <label for="quality">图片质量 (适用于JPG/WebP)</label>
                 <div class="quality-control">
@@ -700,7 +691,18 @@
                     <span id="qualityValue" class="quality-value">90%</span>
                 </div>
             </div>
-            <div class="drop-hint" style="margin: 0; max-width: fit-content;">注：只需选择输出格式即可，无需设置导入格式</div>
+            
+            <div class="form-group">
+                <div class="drop-area" id="dropArea">
+                    <div class="drop-icon">
+                        <svg class="icon"><use xlink:href="#cloud-arrow-up-solid-full"></use></svg>
+                    </div>
+                    <p class="drop-text">拖放图片到此处 或 <u>点击选择</u></p>
+                        <p class="drop-hint">支持常见图片格式</p>
+                    <input type="file" id="fileInput" accept="image/*,.heic,.heif,.tif,.tiff" multiple>
+                </div>
+            </div>
+                   
         </div>
 
         <div class="preview-panel">
@@ -719,13 +721,7 @@
                     <svg class="icon" style="font-size: 5rem; color: #d7d9e5;"><use xlink:href="#image-solid-full"></use></svg>
                     <p>上传图片后将在此处开始转换</p>
                 </div>	
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291" crossorigin="anonymous"></script>
-                <ins class="adsbygoogle" style="display:block" 
-                data-ad-format="fluid" 
-                data-ad-layout-key="-hq-18-1y-3r+o2" 
-                data-ad-client="ca-pub-3983418855272291" 
-                data-ad-slot="1924175279"></ins>
-                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            <!--广告位占位-->
             </div>
 
             <div class="download-all-container" id="downloadAllContainer" style="display:none;">
