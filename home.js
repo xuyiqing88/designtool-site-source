@@ -201,6 +201,14 @@ const tools = [
         badge: ""
     },
     {
+        title: "C4D色偏散景预设",
+        description: "C4D色偏散景预设免费下载,可以模拟显示世界的色偏散景效果",
+        category: "3D",
+        link: "shift.html",
+        icon: "img/se5.webp",
+        badge: ""
+    },
+    {
         title: "音视频格式转换",
         description: "支持常见视频格式、音频格式转换、音频格式提取",
         category: "cover",
