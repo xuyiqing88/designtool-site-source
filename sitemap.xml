@@ -8,6 +8,12 @@
         <priority>1.0</priority> 
     </url>
     <url>
+        <loc>https://designtool.site/index.html</loc>
+        <lastmod>2025-09-28</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority> 
+    </url>
+    <url>
         <loc>https://designtool.site/about.html</loc>
         <lastmod>2025-09-27</lastmod>
         <changefreq>monthly</changefreq>
