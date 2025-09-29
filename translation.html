@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>专业翻译工具 - 30+语言高级互译 | 文本朗读</title>
-<script type="text/javascript" src="http://at.alicdn.com/t/c/font_4814134_3qzqth6qip5.js"></script>
- <script src="menu.js" defer></script>
+    <script type="text/javascript" src="http://at.alicdn.com/t/c/font_4814134_3qzqth6qip5.js"></script>
+    <script src="menu.js" defer></script>
     <link rel="icon" href="img/gongjuxiang.svg" type="image/svg">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
-     crossorigin="anonymous"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c"
+        data-domains="designtool.site"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3983418855272291"
+        crossorigin="anonymous"></script>
     <style>
         * {
             margin: 0;
@@ -17,9 +19,9 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-		font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
+            font-family: 'PingFang SC', 'HarmonyOS_Sans', 'Microsoft YaHei', 'Arial Unicode MS', sans-serif;
             background: #fff;
             min-height: 100vh;
             display: flex;
@@ -28,91 +30,101 @@
             padding: 20px 10px;
             color: #333;
         }
-.ico{
-	width: 1.5em;
-	height: 1.5em;
-	vertical-align: -0.15em;
-	fill: currentColor;
-	overflow: hidden;}
-.topgroup {
-	gap: 10px;
-    display: flex;
-    position: absolute;
-	margin-top: 20px;
-    background: #fff;
-    border-radius: 30px;
-    padding: 4px;
-	z-index: 999;
-	backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-	box-shadow: 0 0 10px #0000000f;}
-.topgroup:hover {
-	background:#f2f2f2;
-}
-.home-icon {
-	font-size: 40px;
-	cursor: pointer;
-    transition: all 0.3s;
-    padding: 8px; 
-	border-radius: 50%;
-	width: 1em; 
-	height: 1em;
-	vertical-align: -0.15em;
-	overflow: hidden;}
-:root {
-	--main-color: #5963ff;}
-.container {
+
+        .ico {
+            width: 1.5em;
+            height: 1.5em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .topgroup {
+            gap: 10px;
+            display: flex;
+            position: absolute;
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 30px;
+            padding: 4px;
+            z-index: 999;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0 10px #0000000f;
+        }
+
+        .topgroup:hover {
+            background: #f2f2f2;
+        }
+
+        .home-icon {
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 50%;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            overflow: hidden;
+        }
+
+        :root {
+            --main-color: #5963ff;
+        }
+
+        .container {
             border-radius: 10px;
             width: 100%;
             max-width: 1100px;
             position: relative;
             overflow: hidden;
             transition: all 0.4s ease;
-	    padding: 20px;
+            padding: 20px;
         }
 
-        
-header {
+
+        header {
             text-align: center;
             margin-bottom: 30px;
             position: relative;
         }
-        
-h1 {
+
+        h1 {
             margin-bottom: 12px;
             position: relative;
             display: flex;
-		justify-content: center;
-    		align-items: center;
-    		gap: 10px;
-	    font-size: 1.8rem;
-	    color: var(--main-color);
-	    margin-top: 20px;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            color: var(--main-color);
+            margin-top: 20px;
         }
-        
-        
-.subtitle {
+
+
+        .subtitle {
             color: #5a6066;
             font-size: 14px;
         }
-        
-.lang-selector {
+
+        .lang-selector {
             display: flex;
             justify-content: space-between;
             padding: 20px 20px 0;
             border-radius: 8px 8px 0 0;
             margin-bottom: 0;
-	gap: 20px;
-	align-items: flex-end;
+            gap: 20px;
+            align-items: flex-end;
         }
-        
-.lang-box {
+
+        .lang-box {
             display: flex;
             flex-direction: column;
             flex: 1;
         }
-        
-.lang-label {
+
+        .lang-label {
             font-size: 1.1rem;
             color: #fff;
             margin-bottom: 10px;
@@ -120,11 +132,11 @@ h1 {
             display: flex;
             align-items: center;
             gap: 8px;
-	    text-shadow: 1px 1px 2px #33333345;
-	width: 130px;
+            text-shadow: 1px 1px 2px #33333345;
+            width: 130px;
         }
-        
-select {
+
+        select {
             width: 100%;
             padding: 8px 18px;
             border: var(--main-color);
@@ -140,15 +152,15 @@ select {
             background-position: right 15px center;
             background-size: 16px;
         }
-        
-select:focus {
+
+        select:focus {
             border-color: var(--main-color);
             box-shadow: 0 0 0 3px rgba(89, 99, 255, 0.2);
         }
-        
-.swap-btn {
-		background: #846eff;
-		color: var(--main-color);
+
+        .swap-btn {
+            background: #846eff;
+            color: var(--main-color);
             border: none;
             border-radius: 50%;
             width: 36px;
@@ -159,143 +171,153 @@ select:focus {
             cursor: pointer;
             transition: all 0.3s;
         }
-        
-.swap-btn:hover {
-            transform: rotate(90deg) scale(1.05);
-	background: #5963ff;
-	color: #fff;
-        }
- .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--sidebar-text);
-    font-size: 16px;
-	min-height: 260px;
-}
 
-.empty-state-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.6;
-}       
-.text-area {
+        .swap-btn:hover {
+            transform: rotate(90deg) scale(1.05);
+            background: #5963ff;
+            color: #fff;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--sidebar-text);
+            font-size: 16px;
+            min-height: 260px;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .text-area {
             border-radius: 0 0 8px 8px;
             overflow: hidden;
             transition: transform 0.3s;
             padding: 20px 0 20px 20px;
-                display: flex;
-    flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
-        
-textarea:focus-within {
-    	border: 1px solid #5963ff;
-	box-shadow: 0 0 0 2px #5963ff33;}
-textarea {
+
+        textarea:focus-within {
+            border: 1px solid #5963ff;
+            box-shadow: 0 0 0 2px #5963ff33;
+        }
+
+        textarea {
             width: 100%;
-    		height: 100%;
+            height: 100%;
             padding: 22px;
-                border-radius: 6px;
-		border: none;
+            border-radius: 6px;
+            border: none;
             outline: none;
             resize: vertical;
             font-size: 16px;
             background: linear-gradient(0deg, #ffffff 80%, #ffffffb0);
             color: #333;
             line-height: 1.6;
-	min-height: 260px;
-	    border: 1px solid #fff;
+            min-height: 260px;
+            border: 1px solid #fff;
         }
-        
-textarea::placeholder {
+
+        textarea::placeholder {
             color: #aaa;
         }
-        
-.char-count {
+
+        .char-count {
             text-align: right;
             padding: 16px 0 0 0;
             color: #696d81;
             font-size: 0.95rem;
-                display: flex;
+            display: flex;
         }
-        
-.result-container {
+
+        .result-container {
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 20px;
             transition: transform 0.3s;
         }
-        
-.result-header {
+
+        .result-header {
             color: #696d81;
             padding: 10px 0 20px;
             font-size: 1.15rem;
             display: flex;
             align-items: center;
             gap: 10px;
-	    justify-content: center;
-        }        
-#result {
-               min-height: 1px;
-    		font-size: 1.15rem;
-    		line-height: 1.6;
-    		padding: 20px;
-		border-radius: 6px;
-		    margin: 20px 20px 20px 0;
-    	margin-bottom: 58px;
-    	background: linear-gradient(0deg, #ffffff 80%, #ffffffb0);
-	max-height: 50vh;
-    	overflow: auto;
-	    border: 1px solid #fff;
-        }       
-.translation {
+            justify-content: center;
+        }
+
+        #result {
+            min-height: 1px;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 20px 20px 0;
+            margin-bottom: 58px;
+            background: linear-gradient(0deg, #ffffff 80%, #ffffffb0);
+            max-height: 50vh;
+            overflow: auto;
+            border: 1px solid #fff;
+        }
+
+        .translation {
             font-size: 16px;
             padding-bottom: 18px;
             border-bottom: 1px solid #f0f0f0;
             color: #222;
-		font-weight: 500;
+            font-weight: 500;
         }
-.alternatives {
+
+        .alternatives {
             padding-top: 18px;
         }
-        
-.alternatives h4 {
+
+        .alternatives h4 {
             color: var(--main-color);
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
-	font-size: 16px;
-        }     
-.alternatives ul {
+            font-size: 16px;
+        }
+
+        .alternatives ul {
             list-style-type: none;
-        }       
-.alternatives li {
+        }
+
+        .alternatives li {
             padding-left: 10px;
             margin-bottom: 16px;
             border-left: 4px solid #d1dfff;
             transition: all 0.3s;
-	font-size: 15px;
-        } 
-.alternatives small {
+            font-size: 15px;
+        }
+
+        .alternatives small {
             color: var(--main-color);
             background: rgba(106, 82, 255, 0.1);
             padding: 2px 8px;
             border-radius: 10px;
-		text-wrap: nowrap;
+            text-wrap: nowrap;
         }
-        
-.btn-group {
+
+        .btn-group {
             display: flex;
-   	gap: 10px;
-   	width: 270px;
-   	flex-direction: row-reverse;
+            gap: 10px;
+            width: 270px;
+            flex-direction: row-reverse;
         }
-        
-.btn {
+
+        .btn {
             flex: 1;
             padding: 10px;
             border: none;
@@ -307,69 +329,73 @@ textarea::placeholder {
             align-items: center;
             gap: 12px;
         }
-        
-.translate-btn {
+
+        .translate-btn {
             background: linear-gradient(113deg, #6472ff, #8352ff);
-            color: white;	
-	font-size: 16px;
-	box-shadow: 0px 6px 20px -4px #5963ffbd;
+            color: white;
+            font-size: 16px;
+            box-shadow: 0px 6px 20px -4px #5963ffbd;
         }
-        
-.translate-btn:hover {
+
+        .translate-btn:hover {
             box-shadow: 0 10px 20px -8px rgba(89, 99, 255, 0.45);
-	background: linear-gradient(113deg, #4c73ffd1, #6a52ffdb);
+            background: linear-gradient(113deg, #4c73ffd1, #6a52ffdb);
         }
-.clear-btn {
+
+        .clear-btn {
             background: #fff;
             color: #f44336;
-	border: 1px solid #e2e2f0;
-	font-size: 16px;
-	    box-shadow: 0 6px 20px -4px #c7c7da90;
+            border: 1px solid #e2e2f0;
+            font-size: 16px;
+            box-shadow: 0 6px 20px -4px #c7c7da90;
         }
-        
-.clear-btn:hover {
+
+        .clear-btn:hover {
             box-shadow: 0 10px 12px -8px rgba(255, 68, 68, 0.4);
-	background: #f44336;
-    	color: white;
-    	border: 1px solid #f44336;
+            background: #f44336;
+            color: white;
+            border: 1px solid #f44336;
         }
-        
-.error {
+
+        .error {
             color: #ff4444;
             background: #fff0f0;
             padding: 18px;
             border-left: 4px solid #ff4444;
             line-height: 1.5;
         }
-        
-.error strong {
+
+        .error strong {
             font-weight: 600;
         }
 
-.placeholder {
+        .placeholder {
             color: var(--sidebar-text);
             text-align: center;
-	    font-size: 14px;
-	    line-height: 220px;
+            font-size: 14px;
+            line-height: 220px;
         }
-        
-.loading {
+
+        .loading {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 15px;
             color: #696d81;
             font-weight: 500;
-		font-size: 15px;
+            font-size: 15px;
         }
-.kuang {
-	display: grid; 
-	grid-template-columns: 1fr 1fr;
-	gap: 20px;}   
-.pulse {
+
+        .kuang {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .pulse {
             animation: pulseAnimation 2s infinite;
         }
-        
+
         /* 添加复制按钮样式 */
         .copy-btn {
             background: #f0f4ff;
@@ -382,21 +408,24 @@ textarea::placeholder {
             font-size: 14px;
             transition: all 0.3s;
         }
+
         .copy-btn:hover {
             background: var(--main-color);
             color: white;
         }
+
         .translation-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
         }
+
         .translation-text {
             font-size: 16px;
             line-height: 1.6;
         }
-        
+
         /* 新增的TTS按钮样式 */
         .tts-btn {
             background: #f0f4ff;
@@ -412,28 +441,33 @@ textarea::placeholder {
             align-items: center;
             gap: 4px;
         }
+
         .tts-btn:hover:not(:disabled) {
             background: #c3d5ff;
             color: white;
         }
+
         .tts-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
         .tts-btn svg {
             width: 16px;
             height: 16px;
         }
+
         .tts-actions {
             display: flex;
             gap: 8px;
         }
+
         .tts-info {
             color: #888;
             font-size: 12px;
             margin-top: 5px;
         }
-        
+
         /* 音频播放器样式 */
         .audio-player {
             margin-top: 15px;
@@ -441,9 +475,11 @@ textarea::placeholder {
             align-items: center;
             gap: 10px;
         }
+
         .audio-player audio {
             flex: 1;
         }
+
         .audio-player button {
             background: #f0f4ff;
             border: 1px solid #d1dfff;
@@ -452,15 +488,17 @@ textarea::placeholder {
             cursor: pointer;
             transition: all 0.3s;
         }
+
         .audio-player button:hover {
             background: var(--main-color);
             color: white;
         }
+
         .audio-player button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
+
         /* 支持语言指示器 */
         .language-support {
             display: flex;
@@ -469,183 +507,201 @@ textarea::placeholder {
             font-size: 14px;
             color: #666;
         }
+
         .support-icon {
             margin-right: 5px;
         }
-        .supported { color: #4CAF50; }
-        .unsupported { color: #F44336; }
-        
+
+        .supported {
+            color: #4CAF50;
+        }
+
+        .unsupported {
+            color: #F44336;
+        }
+
         @media (max-width: 768px) {
-	.container {
+            .container {
                 padding: 0;
-		margin-bottom: 80px;
+                margin-bottom: 80px;
             }
-	.lang-box {
-		flex-direction: row;
-		align-items: center;
-		}          
-	.lang-selector {
+
+            .lang-box {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .lang-selector {
                 gap: 10px;
-		padding: 20px 14px 0;
-            }           
-	.swap-btn {
-		
-            }          
-	.btn-group {
+                padding: 20px 14px 0;
+            }
+
+            .swap-btn {}
+
+            .btn-group {
                 flex-direction: column;
-            }          
-	.feature {
+            }
+
+            .feature {
                 padding: 12px 20px;
                 font-size: 0.9rem;
             }
-	.lang-label {
-		margin-bottom: 0;
-		display: none;
-		}
-	.kuang {
-		display: flex;
-    		flex-direction: column;
-		}
-	.text-area {
-		padding: 16px 14px 0 14px;
-		}
-	#result {
-		margin: 0 14px 16px 14px;
-		padding: 14px;
-		}
-	.result-header{
-		position: fixed;
-    		bottom: 0;
-    		margin: 0 auto;
-        	left: 0;
-        	right: 0;
-		background: #ffffff00;
-        	backdrop-filter: blur(20px);
-        	-webkit-backdrop-filter: blur(20px);
-        z-index: 999;
-		}
-	textarea {
-		min-height: 160px;
-		padding: 14px;
-		}
-	.copy-btn {	
-		display: none;
-		}
-	select {
-		padding: 8px;
-	        background-position: right 5px center;
-		}
-	.empty-state {
-		min-height: 160px;
-		padding: 16px;
-		}
-        }      
-        
 
+            .lang-label {
+                margin-bottom: 0;
+                display: none;
+            }
 
+            .kuang {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .text-area {
+                padding: 16px 14px 0 14px;
+            }
+
+            #result {
+                margin: 0 14px 16px 14px;
+                padding: 14px;
+            }
+
+            .result-header {
+                position: fixed;
+                bottom: 0;
+                margin: 0 auto;
+                left: 0;
+                right: 0;
+                background: #ffffff00;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                z-index: 999;
+            }
+
+            textarea {
+                min-height: 160px;
+                padding: 14px;
+            }
+
+            .copy-btn {
+                display: none;
+            }
+
+            select {
+                padding: 8px;
+                background-position: right 5px center;
+            }
+
+            .empty-state {
+                min-height: 160px;
+                padding: 16px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container pulse">
         <header>
             <h1>高级翻译工具</h1>
             <p class="subtitle">多语言互译 · 精准快速 · 安全可靠 · 语音朗读</p>
         </header>
-        
-    <div style="background: radial-gradient(185% 35% at 100% 0%, #e6008100, #f1f1fb), linear-gradient(90deg, #118aff, #8180ff, #db7dff); border-radius: 12px; margin-bottom: 10px;">
-	<div class="lang-selector">
-            <div class="lang-box">
-		<div class="lang-label">源语言</div>
-                <select id="sourceLang">
-                    <option value="en">🇬🇧 英语 English</option>
-                    <option value="zh-CN">🇨🇳 中文（简体）</option>
-                    <option value="zh-TW">🇨🇳 中文（繁体）</option>
-                    <option value="ja">🇯🇵 日语 日本語</option>
-                    <option value="ko">🇰🇷 韩语 한국어</option>
-                    <option value="fr">🇫🇷 法语 Français</option>
-                    <option value="de">🇩🇪 德语 Deutsch</option>
-		    <option value="es">🇪🇸 西班牙语 Español</option>
-                    <option value="ru">🇷🇺 俄语 Русский язык</option>
-                    <option value="ar">🇸🇦 阿拉伯语 اللغة العربية</option>
-                    <option value="it">🇮🇹 意大利语 Italiano</option>
-                    <option value="pt">🇵🇹 葡萄牙语 Português</option>
-                    <option value="nl">🇳🇱 荷兰语 Dutch</option>
-                    <option value="tr">🇹🇷 土耳其语 Türkçe</option>
-                    <option value="sv">🇸🇪 瑞典语 Svenska</option>
-                    <option value="pl">🇵🇱 波兰语 Polski</option>
-                    <option value="da">🇩🇰 丹麦语 Dansk</option>
-                    <option value="fi">🇫🇮 芬兰语 Suomen kieli</option>
-                    <option value="no">🇳🇴 挪威语 Norsk</option>
-                    <option value="el">🇬🇷 希腊语 ελληνικη</option>
-                    <option value="cs">🇨🇿 捷克语 Čeština</option>
-                    <option value="hu">🇭🇺 匈牙利语 Magyar</option>
-                    <option value="ro">🇷🇴 罗马尼亚语 Limba Română</option>
-                    <option value="sk">🇸🇰 斯洛伐克语 Slovenčina</option>
-                    <option value="th">🇹🇭 泰语 ภาษาไทย</option>
-                    <option value="id">🇮🇩 印尼语 Bahasa</option>
-                    <option value="vi">🇻🇳 越南语 Tiếng Việt</option>
-                    <option value="he">🇮🇱 希伯来语 עברית</option>
-                    <option value="hi">🇮🇳 印地语 हिन्दी</option>
-                    <option value="bg">🇧🇬 保加利亚语 Български</option>
-                    <option value="uk">🇺🇦 乌克兰语 Українська</option>
-                </select>
+
+        <div
+            style="background: radial-gradient(185% 35% at 100% 0%, #e6008100, #f1f1fb), linear-gradient(90deg, #118aff, #8180ff, #db7dff); border-radius: 12px; margin-bottom: 10px;">
+            <div class="lang-selector">
+                <div class="lang-box">
+                    <div class="lang-label">源语言</div>
+                    <select id="sourceLang">
+                        <option value="en">🇬🇧 英语 English</option>
+                        <option value="zh-CN">🇨🇳 中文（简体）</option>
+                        <option value="zh-TW">🇨🇳 中文（繁体）</option>
+                        <option value="ja">🇯🇵 日语 日本語</option>
+                        <option value="ko">🇰🇷 韩语 한국어</option>
+                        <option value="fr">🇫🇷 法语 Français</option>
+                        <option value="de">🇩🇪 德语 Deutsch</option>
+                        <option value="es">🇪🇸 西班牙语 Español</option>
+                        <option value="ru">🇷🇺 俄语 Русский язык</option>
+                        <option value="ar">🇸🇦 阿拉伯语 اللغة العربية</option>
+                        <option value="it">🇮🇹 意大利语 Italiano</option>
+                        <option value="pt">🇵🇹 葡萄牙语 Português</option>
+                        <option value="nl">🇳🇱 荷兰语 Dutch</option>
+                        <option value="tr">🇹🇷 土耳其语 Türkçe</option>
+                        <option value="sv">🇸🇪 瑞典语 Svenska</option>
+                        <option value="pl">🇵🇱 波兰语 Polski</option>
+                        <option value="da">🇩🇰 丹麦语 Dansk</option>
+                        <option value="fi">🇫🇮 芬兰语 Suomen kieli</option>
+                        <option value="no">🇳🇴 挪威语 Norsk</option>
+                        <option value="el">🇬🇷 希腊语 ελληνικη</option>
+                        <option value="cs">🇨🇿 捷克语 Čeština</option>
+                        <option value="hu">🇭🇺 匈牙利语 Magyar</option>
+                        <option value="ro">🇷🇴 罗马尼亚语 Limba Română</option>
+                        <option value="sk">🇸🇰 斯洛伐克语 Slovenčina</option>
+                        <option value="th">🇹🇭 泰语 ภาษาไทย</option>
+                        <option value="id">🇮🇩 印尼语 Bahasa</option>
+                        <option value="vi">🇻🇳 越南语 Tiếng Việt</option>
+                        <option value="he">🇮🇱 希伯来语 עברית</option>
+                        <option value="hi">🇮🇳 印地语 हिन्दी</option>
+                        <option value="bg">🇧🇬 保加利亚语 Български</option>
+                        <option value="uk">🇺🇦 乌克兰语 Українська</option>
+                    </select>
+                </div>
+
+                <button class="swap-btn" id="swapBtn">
+                    <img class="ico" src="img/zhongzhi1.svg"></img>
+                </button>
+
+                <div class="lang-box">
+                    <div class="lang-label">目标语言</div>
+                    <select id="targetLang">
+                        <option value="zh-CN">🇨🇳 中文（简体）</option>
+                        <option value="zh-TW">🇨🇳 中文（繁体）</option>
+                        <option value="en">🇬🇧 英语 English</option>
+                        <option value="ja">🇯🇵 日语 日本語</option>
+                        <option value="ko">🇰🇷 韩语 한국어</option>
+                        <option value="fr">🇫🇷 法语 Français</option>
+                        <option value="de">🇩🇪 德语 Deutsch</option>
+                        <option value="es">🇪🇸 西班牙语 Español</option>
+                        <option value="ru">🇷🇺 俄语 Русский язык</option>
+                        <option value="ar">🇸🇦 阿拉伯语 اللغة العربية</option>
+                        <option value="it">🇮🇹 意大利语 Italiano</option>
+                        <option value="pt">🇵🇹 葡萄牙语 Português</option>
+                        <option value="nl">🇳🇱 荷兰语 Dutch</option>
+                        <option value="tr">🇹🇷 土耳其语 Türkçe</option>
+                        <option value="sv">🇸🇪 瑞典语 Svenska</option>
+                        <option value="pl">🇵🇱 波兰语 Polski</option>
+                        <option value="da">🇩🇰 丹麦语 Dansk</option>
+                        <option value="fi">🇫🇮 芬兰语 Suomen kieli</option>
+                        <option value="no">🇳🇴 挪威语 Norsk</option>
+                        <option value="el">🇬🇷 希腊语 ελληνικη</option>
+                        <option value="cs">🇨🇿 捷克语 Čeština</option>
+                        <option value="hu">🇭🇺 匈牙利语 Magyar</option>
+                        <option value="ro">🇷🇴 罗马尼亚语 Limba Română</option>
+                        <option value="sk">🇸🇰 斯洛伐克语 Slovenčina</option>
+                        <option value="th">🇹🇭 泰语 ภาษาไทย</option>
+                        <option value="id">🇮🇩 印尼语 Bahasa</option>
+                        <option value="vi">🇻🇳 越南语 Tiếng Việt</option>
+                        <option value="he">🇮🇱 希伯来语 עברית</option>
+                        <option value="hi">🇮🇳 印地语 हिन्दी</option>
+                        <option value="bg">🇧🇬 保加利亚语 Български</option>
+                        <option value="uk">🇺🇦 乌克兰语 Українська</option>
+                    </select>
+                </div>
             </div>
-            
-            <button class="swap-btn" id="swapBtn">
-                <img class="ico" src="img/zhongzhi1.svg"></img>
-            </button>
-            
-            <div class="lang-box">
-		<div class="lang-label">目标语言</div>
-                <select id="targetLang">
-                    <option value="zh-CN">🇨🇳 中文（简体）</option>
-                    <option value="zh-TW">🇨🇳 中文（繁体）</option>
-                    <option value="en">🇬🇧 英语 English</option>
-                    <option value="ja">🇯🇵 日语 日本語</option>
-                    <option value="ko">🇰🇷 韩语 한국어</option>
-                    <option value="fr">🇫🇷 法语 Français</option>
-                    <option value="de">🇩🇪 德语 Deutsch</option>
-		    <option value="es">🇪🇸 西班牙语 Español</option>
-                    <option value="ru">🇷🇺 俄语 Русский язык</option>
-                    <option value="ar">🇸🇦 阿拉伯语 اللغة العربية</option>
-                    <option value="it">🇮🇹 意大利语 Italiano</option>
-                    <option value="pt">🇵🇹 葡萄牙语 Português</option>
-                    <option value="nl">🇳🇱 荷兰语 Dutch</option>
-                    <option value="tr">🇹🇷 土耳其语 Türkçe</option>
-                    <option value="sv">🇸🇪 瑞典语 Svenska</option>
-                    <option value="pl">🇵🇱 波兰语 Polski</option>
-                    <option value="da">🇩🇰 丹麦语 Dansk</option>
-                    <option value="fi">🇫🇮 芬兰语 Suomen kieli</option>
-                    <option value="no">🇳🇴 挪威语 Norsk</option>
-                    <option value="el">🇬🇷 希腊语 ελληνικη</option>
-                    <option value="cs">🇨🇿 捷克语 Čeština</option>
-                    <option value="hu">🇭🇺 匈牙利语 Magyar</option>
-                    <option value="ro">🇷🇴 罗马尼亚语 Limba Română</option>
-                    <option value="sk">🇸🇰 斯洛伐克语 Slovenčina</option>
-                    <option value="th">🇹🇭 泰语 ภาษาไทย</option>
-                    <option value="id">🇮🇩 印尼语 Bahasa</option>
-                    <option value="vi">🇻🇳 越南语 Tiếng Việt</option>
-                    <option value="he">🇮🇱 希伯来语 עברית</option>
-                    <option value="hi">🇮🇳 印地语 हिन्दी</option>
-                    <option value="bg">🇧🇬 保加利亚语 Български</option>
-                    <option value="uk">🇺🇦 乌克兰语 Українська</option>
-                </select>
+            <div class="kuang">
+                <div class="text-area">
+                    <textarea id="text" placeholder="输入要翻译的文本..." rows="4" onblur="translateText()"></textarea>
+                    <div class="char-count"><span id="charCount">0</span> 字符 ( 限制500字 )</div>
+                </div>
+                <div id="result">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>翻译结果将在这里显示</p>
+                    </div>
+                </div>
             </div>
         </div>
-	<div class="kuang">        
-        <div class="text-area">
-            <textarea id="text" placeholder="输入要翻译的文本..." rows="4" onblur="translateText()"></textarea>
-            <div class="char-count"><span id="charCount">0</span> 字符 ( 限制500字 )</div>
-        </div>
-        <div id="result">
-		<div class="empty-state">
-        	<div class="empty-state-icon">📝</div>
-        	<p>翻译结果将在这里显示</p>
-    		</div>
-	</div>
-    </div>    
-</div>
-<!-- 广告占位 -->
+        <!-- 广告占位 -->
         <div class="result-container">
             <div class="result-header">
                 <div class="btn-group">
@@ -665,13 +721,13 @@ textarea::placeholder {
             'pt', 'nl', 'tr', 'sv', 'pl', 'da', 'fi', 'no', 'el', 'cs',
             'hu', 'ro', 'sk', 'th', 'id', 'vi', 'he', 'hi', 'bg', 'uk'
         ]);
-        
+
         // 支持语音合成的语言列表 (主要语言代码)
         const supportedSpeechLanguages = new Set([
-            'en', 'zh', 'ja', 'ko', 'fr', 'de', 'es', 'ru', 
+            'en', 'zh', 'ja', 'ko', 'fr', 'de', 'es', 'ru',
             'it', 'pt', 'nl', 'tr', 'pl', 'th', 'id', 'vi', 'hi'
         ]);
-        
+
         // 获取DOM元素
         const textInput = document.getElementById('text');
         const charCount = document.getElementById('charCount');
@@ -679,28 +735,28 @@ textarea::placeholder {
         let voices = [];
         let audioURL = null;
         let currentUtterance = null;
-        
+
         // 字符计数功能
-        textInput.addEventListener('input', function() {
+        textInput.addEventListener('input', function () {
             charCount.textContent = this.value.length;
         });
-        
+
         // 语言交换功能
-        swapBtn.addEventListener('click', function() {
+        swapBtn.addEventListener('click', function () {
             const sourceLang = document.getElementById('sourceLang');
             const targetLang = document.getElementById('targetLang');
-            
+
             const tempValue = sourceLang.value;
             sourceLang.value = targetLang.value;
             targetLang.value = tempValue;
-            
+
             // 添加交换动画效果
             swapBtn.style.transform = 'rotate(270deg)';
             setTimeout(() => {
                 swapBtn.style.transform = 'rotate(90deg)';
             }, 300);
         });
-        
+
         // 清空所有内容
         function clearAll() {
             textInput.value = '';
@@ -714,7 +770,7 @@ textarea::placeholder {
             stopSpeech();
             audioURL = null;
         }
-        
+
         // 复制功能
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
@@ -725,7 +781,7 @@ textarea::placeholder {
                 showNotification('复制失败，请手动复制', true);
             });
         }
-        
+
         // 显示通知
         function showNotification(message, isError = false) {
             const notification = document.createElement('div');
@@ -741,14 +797,14 @@ textarea::placeholder {
             notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
             notification.style.opacity = '0';
             notification.style.transition = 'opacity 0.3s';
-            
+
             document.body.appendChild(notification);
-            
+
             // 显示通知
             setTimeout(() => {
                 notification.style.opacity = '1';
             }, 10);
-            
+
             // 3秒后淡出并移除通知
             setTimeout(() => {
                 notification.style.opacity = '0';
@@ -757,7 +813,7 @@ textarea::placeholder {
                 }, 300);
             }, 3000);
         }
-        
+
         // 停止语音
         function stopSpeech() {
             if (window.speechSynthesis) {
@@ -767,7 +823,7 @@ textarea::placeholder {
                 currentUtterance = null;
             }
         }
-        
+
         // --- 全新优化的语音朗读功能 ---
         function speakText(text, lang) {
             stopSpeech();
@@ -782,7 +838,7 @@ textarea::placeholder {
                 showNotification('该语言暂不支持语音朗读', true);
                 return;
             }
-            
+
             try {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = lang; // 设置语言，这是重要的后备选项
@@ -792,7 +848,7 @@ textarea::placeholder {
                 if (!foundVoice) {
                     foundVoice = voices.find(v => v.lang.startsWith(targetLangCode)); // 2. 查找匹配主要语言 (e.g., zh)
                 }
-                
+
                 if (foundVoice) {
                     utterance.voice = foundVoice;
                 }
@@ -801,13 +857,13 @@ textarea::placeholder {
                 utterance.rate = 1.0;
                 utterance.pitch = 1.0;
                 utterance.volume = 1.0;
-                
+
                 currentUtterance = utterance;
 
-                utterance.onend = function() {
+                utterance.onend = function () {
                     currentUtterance = null;
                 };
-                utterance.onerror = function(event) {
+                utterance.onerror = function (event) {
                     console.error('语音朗读发生错误:', event.error);
                     showNotification('语音朗读失败: ' + event.error, true);
                     currentUtterance = null;
@@ -821,25 +877,25 @@ textarea::placeholder {
                 showNotification('语音朗读失败: ' + error.message, true);
             }
         }
-        
+
         // 加载语音列表
         function loadVoices() {
             return new Promise((resolve) => {
                 const synth = window.speechSynthesis;
                 let anvoices = synth.getVoices();
                 if (anvoices.length) return resolve(anvoices);
-                
+
                 synth.onvoiceschanged = () => resolve(synth.getVoices());
             });
         }
-        
+
         // 初始化语音
         async function initSpeech() {
             if ('speechSynthesis' in window) {
                 voices = await loadVoices();
             }
         }
-        
+
         // 翻译功能
         async function translateText() {
             const text = textInput.value.trim();
@@ -873,13 +929,13 @@ textarea::placeholder {
                 apiUrl.searchParams.append('_', Date.now());
 
                 const response = await fetch(apiUrl);
-                
+
                 if (!response.ok) {
                     throw new Error(`网络错误 ${response.status}`);
                 }
 
                 const data = await response.json();
-                
+
                 if (data.responseStatus !== 200 || !data.responseData) {
                     const details = data.responseDetails || '未知错误';
                     throw new Error(`翻译服务错误: ${details}`);
@@ -888,7 +944,7 @@ textarea::placeholder {
                 const translation = data.responseData.translatedText;
                 const langCode = targetLang;
                 const isSpeechSupported = supportedSpeechLanguages.has(langCode.split('-')[0]);
-                
+
                 resultDiv.innerHTML = `
                     <div class="translation">
                         <div class="translation-header">
@@ -918,7 +974,7 @@ textarea::placeholder {
                         <div class="alternatives">
                             <h4>其他建议：</h4>
                             <ul>
-                                ${data.matches.slice(0,3).map(m => `
+                                ${data.matches.slice(0, 3).map(m => `
                                     <li>${m.translation} <small>${m.match}% 匹配</small></li>
                                 `).join('')}
                             </ul>
@@ -936,19 +992,20 @@ textarea::placeholder {
                 console.error('翻译错误:', error);
             }
         }
-        
+
         // 示例翻译
-        window.onload = function() {
+        window.onload = function () {
             textInput.value = "Hello, welcome to our advanced translation tool!";
             charCount.textContent = textInput.value.length;
-            
+
             setTimeout(() => {
                 document.querySelector('.container').classList.remove('pulse');
             }, 3000);
-            
+
             // 初始化语音，确保在用户操作前加载好声音列表
             initSpeech();
         };
     </script>
 </body>
+
 </html>

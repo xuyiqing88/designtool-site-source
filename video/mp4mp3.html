@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +11,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-    
-  <script src="menu.js" defer></script>
-  <link rel="icon" href="../img/gongjuxiang.svg" type="image/svg">
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c" data-domains="designtool.site"></script>
-    
+
+    <script src="menu.js" defer></script>
+    <link rel="icon" href="../img/gongjuxiang.svg" type="image/svg">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5a2e10cd-bf73-47df-be48-079c9ba7783c"
+        data-domains="designtool.site"></script>
+
     <style>
         :root {
             --main-color: #5a64ff;
@@ -33,26 +35,31 @@
         body {
             background-color: #f5f7ff;
             background-image: url(../img/video.webp);
-    	    background-size: contain;
+            background-size: contain;
             background-repeat: no-repeat;
             color: var(--text1);
             min-height: 100vh;
             display: flex;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	        padding: 10px;
+            padding: 10px;
         }
-	.type {
-		background: #ebeeff;
-    		border-radius: 14px;
-    		padding: 2px 10px;
-    		color: var(--main-color);
-	    font-size: 12px;}
-	.arrow-r {
-		display: flex; 
-		align-items: center; 
-		color: #c4c7e7; 
-		font-size: 32px; 
-		justify-content: center;}
+
+        .type {
+            background: #ebeeff;
+            border-radius: 14px;
+            padding: 2px 10px;
+            color: var(--main-color);
+            font-size: 12px;
+        }
+
+        .arrow-r {
+            display: flex;
+            align-items: center;
+            color: #c4c7e7;
+            font-size: 32px;
+            justify-content: center;
+        }
+
         .type-title {
             font-size: 1rem;
             margin-bottom: 10px;
@@ -62,46 +69,56 @@
             justify-content: space-between;
             margin-top: 20px;
             flex-wrap: wrap;
-	border-top: 1px solid var(--border);
-    padding-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
         }
+
         .type-s {
             display: block;
-    	color: var(--text3);
-    	font-size: 0.8rem;
+            color: var(--text3);
+            font-size: 0.8rem;
         }
+
         .type-panel {
-	    display: flex;
-	    flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
-	.type-group {
-		display: flex; 
-		gap: 10px;}
-	.type-cont {
-	    	background: var(--bg-light);
-    		border-radius: 6px;
-    		padding: 14px;
-	    	display: flex;
-    		flex-direction: column;
-    		flex-wrap: wrap;
-    		width: 50%;
-	}
-	.type-geshi {    
-		gap: 10px;
-    		display: flex;
-    		flex-wrap: wrap;
-	    	margin: 10px 0;}
-	.tips {
-	padding: 10px 0;
-    font-size: 14px;
-    color: var(--success);}
+
+        .type-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .type-cont {
+            background: var(--bg-light);
+            border-radius: 6px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            width: 50%;
+        }
+
+        .type-geshi {
+            gap: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .tips {
+            padding: 10px 0;
+            font-size: 14px;
+            color: var(--success);
+        }
+
         .container {
             width: 1200px;
             margin: 0 auto;
-	display: flex;
-    	flex-direction: column;
-    	justify-content: center;
-	margin-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 80px;
         }
 
         header {
@@ -126,7 +143,7 @@
             margin: 0 auto;
             max-width: 600px;
         }
-        
+
         .subtitle code {
             background-color: var(--border);
             color: var(--main-color);
@@ -146,11 +163,11 @@
             flex: 1;
             min-width: 300px;
             align-self: flex-start;
-	background: #fff;
-    	border-radius: 10px;
-    	padding: 20px;
-	height: -webkit-fill-available;
-	box-shadow: 0 0 10px #b9cbda42;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            height: -webkit-fill-available;
+            box-shadow: 0 0 10px #b9cbda42;
         }
 
         .preview-panel {
@@ -158,10 +175,10 @@
             min-width: 300px;
             display: flex;
             flex-direction: column;
-	background: #fff;
-    	border-radius: 10px;
-    	padding: 20px;
-	box-shadow: 0 0 10px #b9cbda42;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px #b9cbda42;
         }
 
         .panel-title {
@@ -176,7 +193,9 @@
             flex-wrap: wrap;
         }
 
-        .form-group { margin-bottom: 10px; }
+        .form-group {
+            margin-bottom: 10px;
+        }
 
         label {
             display: block;
@@ -201,7 +220,7 @@
             background-position: right 0.7rem center;
             background-repeat: no-repeat;
             background-size: 1.2em;
-	margin-bottom: 10px;
+            margin-bottom: 10px;
         }
 
         select:focus {
@@ -220,18 +239,46 @@
             background-color: rgba(90, 100, 255, 0.03);
         }
 
-        .drop-area:hover, .drop-area.drag-over {
+        .drop-area:hover,
+        .drop-area.drag-over {
             border-color: var(--main-color);
             background-color: rgba(90, 100, 255, 0.08);
         }
 
-        .drop-icon { font-size: 3rem; color: #5a64ff80;  }
-        .drop-text { color: var(--text2); margin-bottom: 10px; font-size: 1.0rem; font-weight: 500; }
-        .drop-text u { color: var(--main-color); text-decoration: none; font-weight: 600; }
-        .drop-hint { color: var(--text3); font-size: 0.9rem; max-width: 300px; margin: 0 auto; }
-        #fileInput { display: none; }
+        .drop-icon {
+            font-size: 3rem;
+            color: #5a64ff80;
+        }
 
-        .preview-container { flex: 1; margin-top: 14px; }
+        .drop-text {
+            color: var(--text2);
+            margin-bottom: 10px;
+            font-size: 1.0rem;
+            font-weight: 500;
+        }
+
+        .drop-text u {
+            color: var(--main-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .drop-hint {
+            color: var(--text3);
+            font-size: 0.9rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .preview-container {
+            flex: 1;
+            margin-top: 14px;
+        }
+
         .media-row {
             display: flex;
             align-items: center;
@@ -245,94 +292,301 @@
         }
 
         .thumbnail {
-            width: 100px; height: 60px; border-radius: 8px;
-            margin-right: 20px; flex-shrink: 0; border: 1px solid var(--border);
-            background: white; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; font-size: 2rem; color: var(--main-color);
+            width: 100px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 20px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-size: 2rem;
+            color: var(--main-color);
         }
-        .thumbnail img { max-width: 100%; max-height: 100%; object-fit: cover; }
-        .media-info { flex: 1; min-width: 0; }
-        .media-name {
-            font-weight: 600; color: var(--text1); font-size: 1rem;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px;
-        }
-        .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .info-item { display: flex; flex-direction: column; }
-        .info-label { color: var(--text3); font-size: 0.8rem; margin-bottom: 2px; }
-        .info-value { font-size: 0.9rem; font-weight: 500; }
-        .conversion-status { color: var(--success); font-weight: 700; }
-        
-        .media-actions { display: flex; align-items: center; }
 
-        .preview-btn, .download-btn-small {
-            display: flex; align-items: center; justify-content: center; color: var(--main-color);
-            border: none; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
-            text-align: center; background: none; margin-left: 10px; padding: 8px 12px;
+        .thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
         }
-        .preview-btn:hover, .download-btn-small:hover { text-decoration-line: underline; }
+
+        .media-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .media-name {
+            font-weight: 600;
+            color: var(--text1);
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            color: var(--text3);
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .conversion-status {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .media-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .preview-btn,
+        .download-btn-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--main-color);
+            border: none;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            background: none;
+            margin-left: 10px;
+            padding: 8px 12px;
+        }
+
+        .preview-btn:hover,
+        .download-btn-small:hover {
+            text-decoration-line: underline;
+        }
 
         .no-preview {
-            text-align: center; padding: 20px; color: var(--text3); flex: 1;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: var(--text3);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        .no-preview svg { font-size: 5rem; color: var(--border); margin-bottom: 25px; }
-        .no-preview p { font-size: 0.9rem; max-width: 400px; margin: 0 auto; line-height: 1.7; }
 
-        .status-area {  color: var(--text2); font-size: 0.9rem; font-weight: 400; /*flex-basis: 100%;*/ margin: 10px 0; }
-        
-        .progress-container { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 5px; }
-        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: width 0.3s ease; }
-        
-        .footer, .download-all-container { text-align: center; }
+        .no-preview svg {
+            font-size: 5rem;
+            color: var(--border);
+            margin-bottom: 25px;
+        }
+
+        .no-preview p {
+            font-size: 0.9rem;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .status-area {
+            color: var(--text2);
+            font-size: 0.9rem;
+            font-weight: 400;
+            /*flex-basis: 100%;*/
+            margin: 10px 0;
+        }
+
+        .progress-container {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .footer,
         .download-all-container {
-            padding: 10px; position: fixed; bottom: 0; background: #ffffffa2;
-            margin: 0 auto; left: 0; right: 0; backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px); box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            text-align: center;
         }
+
+        .download-all-container {
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            background: #ffffffa2;
+            margin: 0 auto;
+            left: 0;
+            right: 0;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        }
+
         .download-all-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            padding: 10px 25px; background: var(--btcolor); color: white; border: none;
-            border-radius: 30px; font-size: 1rem; font-weight: 600; cursor: pointer;
-            transition: all 0.3s; 
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 25px;
+            background: var(--btcolor);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        .download-all-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgb(101 90 255 / 40%); }
-        .download-all-btn svg { margin-right: 12px; font-size: 1.5rem; }
+
+        .download-all-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgb(101 90 255 / 40%);
+        }
+
+        .download-all-btn svg {
+            margin-right: 12px;
+            font-size: 1.5rem;
+        }
+
         .counter {
-            background: white; color: var(--main-color); font-weight: 700;
-            padding: 3px 12px; border-radius: 100px; margin-left: 12px; font-size: 0.9rem;
+            background: white;
+            color: var(--main-color);
+            font-weight: 700;
+            padding: 3px 12px;
+            border-radius: 100px;
+            margin-left: 12px;
+            font-size: 0.9rem;
         }
 
         .clear-all-btn {
-            background: none; border: 1px solid var(--border); color: var(--text3);
-            padding: 8px 15px; border-radius: 30px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text3);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
-        .clear-all-btn:hover { color: var(--main-color); border-color: var(--main-color); background: rgba(90, 100, 255, 0.03); }
 
-        .quality-control { display: flex; align-items: center; gap: 15px; }
-        .quality-slider { flex: 1; -webkit-appearance: none; width: 100%; height: 8px; border-radius: 4px; background: var(--border); outline: none; }
+        .clear-all-btn:hover {
+            color: var(--main-color);
+            border-color: var(--main-color);
+            background: rgba(90, 100, 255, 0.03);
+        }
+
+        .quality-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quality-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border);
+            outline: none;
+        }
+
         .quality-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
-            background: var(--main-color); cursor: pointer; 
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--main-color);
+            cursor: pointer;
         }
-        .quality-slider::-moz-range-thumb {
-            width: 20px; height: 20px; border-radius: 50%;
-            background: var(--main-color); cursor: pointer; box-shadow: 0 2px 5px rgba(255, 100, 90, 0.3);
-        }
-        .quality-value { min-width: 40px; text-align: center; font-weight: 600; color: var(--text3); }
 
-        .scrib { color: var(--text2); font-size: 14px; margin-top: 10px; }
-        .scrib li { margin-bottom: 5px; }
+        .quality-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--main-color);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(255, 100, 90, 0.3);
+        }
+
+        .quality-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text3);
+        }
+
+        .scrib {
+            color: var(--text2);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .scrib li {
+            margin-bottom: 5px;
+        }
 
         .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            overflow: auto; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center;
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
         }
+
         .modal-content {
-            margin: auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 700px;
-            background-color: #fff; border-radius: 10px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            background-color: #fff;
+            border-radius: 10px;
         }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .modal-content video, .modal-content audio { width: 100%; border-radius: 8px; }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-content video,
+        .modal-content audio {
+            width: 100%;
+            border-radius: 8px;
+        }
 
         .error-message {
             color: var(--error);
@@ -340,13 +594,13 @@
             margin-top: 5px;
             display: none;
         }
-        
+
         .custom-resolution-container {
             display: none;
-		align-items: center;
-    		gap: 10px;
+            align-items: center;
+            gap: 10px;
         }
-        
+
         .custom-resolution-input {
             width: 100%;
             padding: 8px 20px;
@@ -359,86 +613,135 @@
         }
 
         @media (max-width: 768px) {
-	.arrow-r {    transform: rotate(90deg);}
-	       .settings-panel {    
+            .arrow-r {
+                transform: rotate(90deg);
+            }
+
+            .settings-panel {
                 flex: 1;
                 width: 100%;
-        border-right: none;}
-		.type-group { flex-direction: column;}
-	.type-cont { width: 100%;}
-            .container { min-width: 100%; }
-            .tool-container { flex-direction: column; }
-            .media-row { flex-direction: column; align-items: stretch; padding: 15px; }
-            .thumbnail { width: 100%; height: 150px; margin-right: 0; margin-bottom: 15px; }
-            .info-grid { grid-template-columns: 1fr 1fr; }
-            .media-actions { justify-content: flex-end; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+                border-right: none;
+            }
+
+            .type-group {
+                flex-direction: column;
+            }
+
+            .type-cont {
+                width: 100%;
+            }
+
+            .container {
+                min-width: 100%;
+            }
+
+            .tool-container {
+                flex-direction: column;
+            }
+
+            .media-row {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 15px;
+            }
+
+            .thumbnail {
+                width: 100%;
+                height: 150px;
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .media-actions {
+                justify-content: flex-end;
+                margin-top: 10px;
+                border-top: 1px solid var(--border);
+                padding-top: 10px;
+            }
         }
     </style>
 </head>
+
 <body>
-<svg width="0" height="0" class="hidden">
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-right-solid-full">
-    <path d="M64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM451.3 331.3L347.3 435.3C342.7 439.9 335.8 441.2 329.9 438.8C324 436.4 320 430.5 320 424L320 368L224 368C206.3 368 192 353.7 192 336L192 304C192 286.3 206.3 272 224 272L320 272L320 216C320 209.5 323.9 203.7 329.9 201.2C335.9 198.7 342.8 200.1 347.3 204.7L451.3 308.7C457.5 314.9 457.5 325.1 451.3 331.3z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="file-zipper-solid-full">
-    <path d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 122.5L336 216C336 229.3 346.7 240 360 240L453.5 240L336 122.5zM192 136C192 149.3 202.7 160 216 160L264 160C277.3 160 288 149.3 288 136C288 122.7 277.3 112 264 112L216 112C202.7 112 192 122.7 192 136zM192 232C192 245.3 202.7 256 216 256L264 256C277.3 256 288 245.3 288 232C288 218.7 277.3 208 264 208L216 208C202.7 208 192 218.7 192 232zM256 304L224 304C206.3 304 192 318.3 192 336L192 384C192 410.5 213.5 432 240 432C266.5 432 288 410.5 288 384L288 336C288 318.3 273.7 304 256 304zM240 368C248.8 368 256 375.2 256 384C256 392.8 248.8 400 240 400C231.2 400 224 392.8 224 384C224 375.2 231.2 368 240 368z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="photo-film-solid-full">
-    <path d="M192 128C192 92.7 220.7 64 256 64L576 64C611.3 64 640 92.7 640 128L640 352C640 387.3 611.3 416 576 416L256 416C220.7 416 192 387.3 192 352L192 128zM320 160C320 142.3 305.7 128 288 128C270.3 128 256 142.3 256 160C256 177.7 270.3 192 288 192C305.7 192 320 177.7 320 160zM476.5 171.5C472.1 164.4 464.4 160 456 160C447.6 160 439.9 164.4 435.5 171.5L381.5 259.8L363.6 234.2C359.1 227.8 351.8 224 343.9 224C336 224 328.7 227.8 324.2 234.2L268.2 314.2C263.1 321.5 262.4 331.1 266.6 339C270.8 346.9 279.1 352 288 352L544 352C552.7 352 560.7 347.3 564.9 339.7C569.1 332.1 569 322.9 564.4 315.4L476.4 171.4zM144 192L144 352C144 413.9 194.1 464 256 464L448 464L448 480C448 515.3 419.3 544 384 544L64 544C28.7 544 0 515.3 0 480L0 256C0 220.7 28.7 192 64 192L144 192zM52 260L52 284C52 292.8 59.2 300 68 300L92 300C100.8 300 108 292.8 108 284L108 260C108 251.2 100.8 244 92 244L68 244C59.2 244 52 251.2 52 260zM68 340C59.2 340 52 347.2 52 356L52 380C52 388.8 59.2 396 68 396L92 396C100.8 396 108 388.8 108 380L108 356C108 347.2 100.8 340 92 340L68 340zM68 436C59.2 436 52 443.2 52 452L52 476C52 484.8 59.2 492 68 492L92 492C100.8 492 108 484.8 108 476L108 452C108 443.2 100.8 436 92 436L68 436z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="film-solid-full">
-    <path d="M96 160C96 124.7 124.7 96 160 96L480 96C515.3 96 544 124.7 544 160L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 160zM144 432L144 464C144 472.8 151.2 480 160 480L192 480C200.8 480 208 472.8 208 464L208 432C208 423.2 200.8 416 192 416L160 416C151.2 416 144 423.2 144 432zM448 416C439.2 416 432 423.2 432 432L432 464C432 472.8 439.2 480 448 480L480 480C488.8 480 496 472.8 496 464L496 432C496 423.2 488.8 416 480 416L448 416zM144 304L144 336C144 344.8 151.2 352 160 352L192 352C200.8 352 208 344.8 208 336L208 304C208 295.2 200.8 288 192 288L160 288C151.2 288 144 295.2 144 304zM448 288C439.2 288 432 295.2 432 304L432 336C432 344.8 439.2 352 448 352L480 352C488.8 352 496 344.8 496 336L496 304C496 295.2 488.8 288 480 288L448 288zM144 176L144 208C144 216.8 151.2 224 160 224L192 224C200.8 224 208 216.8 208 208L208 176C208 167.2 200.8 160 192 160L160 160C151.2 160 144 167.2 144 176zM448 160C439.2 160 432 167.2 432 176L432 208C432 216.8 439.2 224 448 224L480 224C488.8 224 496 216.8 496 208L496 176C496 167.2 488.8 160 480 160L448 160z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="music-solid-full">
-    <path d="M532 71C539.6 77.1 544 86.3 544 96L544 400C544 444.2 501 480 448 480C395 480 352 444.2 352 400C352 355.8 395 320 448 320C459.2 320 470 321.6 480 324.6L480 207.9L256 257.7L256 464C256 508.2 213 544 160 544C107 544 64 508.2 64 464C64 419.8 107 384 160 384C171.2 384 182 385.6 192 388.6L192 160C192 145 202.4 132 217.1 128.8L505.1 64.8C514.6 62.7 524.5 65 532.1 71.1z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="video-solid-full">
-    <path d="M128 128C92.7 128 64 156.7 64 192L64 448C64 483.3 92.7 512 128 512L384 512C419.3 512 448 483.3 448 448L448 192C448 156.7 419.3 128 384 128L128 128zM496 400L569.5 458.8C573.7 462.2 578.9 464 584.3 464C597.4 464 608 453.4 608 440.3L608 199.7C608 186.6 597.4 176 584.3 176C578.9 176 573.7 177.8 569.5 181.2L496 240L496 400z"></path>
-  </symbol>
-</svg>
+    <svg width="0" height="0" class="hidden">
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="circle-right-solid-full">
+            <path
+                d="M64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM451.3 331.3L347.3 435.3C342.7 439.9 335.8 441.2 329.9 438.8C324 436.4 320 430.5 320 424L320 368L224 368C206.3 368 192 353.7 192 336L192 304C192 286.3 206.3 272 224 272L320 272L320 216C320 209.5 323.9 203.7 329.9 201.2C335.9 198.7 342.8 200.1 347.3 204.7L451.3 308.7C457.5 314.9 457.5 325.1 451.3 331.3z">
+            </path>
+        </symbol>
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="file-zipper-solid-full">
+            <path
+                d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 122.5L336 216C336 229.3 346.7 240 360 240L453.5 240L336 122.5zM192 136C192 149.3 202.7 160 216 160L264 160C277.3 160 288 149.3 288 136C288 122.7 277.3 112 264 112L216 112C202.7 112 192 122.7 192 136zM192 232C192 245.3 202.7 256 216 256L264 256C277.3 256 288 245.3 288 232C288 218.7 277.3 208 264 208L216 208C202.7 208 192 218.7 192 232zM256 304L224 304C206.3 304 192 318.3 192 336L192 384C192 410.5 213.5 432 240 432C266.5 432 288 410.5 288 384L288 336C288 318.3 273.7 304 256 304zM240 368C248.8 368 256 375.2 256 384C256 392.8 248.8 400 240 400C231.2 400 224 392.8 224 384C224 375.2 231.2 368 240 368z">
+            </path>
+        </symbol>
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="photo-film-solid-full">
+            <path
+                d="M192 128C192 92.7 220.7 64 256 64L576 64C611.3 64 640 92.7 640 128L640 352C640 387.3 611.3 416 576 416L256 416C220.7 416 192 387.3 192 352L192 128zM320 160C320 142.3 305.7 128 288 128C270.3 128 256 142.3 256 160C256 177.7 270.3 192 288 192C305.7 192 320 177.7 320 160zM476.5 171.5C472.1 164.4 464.4 160 456 160C447.6 160 439.9 164.4 435.5 171.5L381.5 259.8L363.6 234.2C359.1 227.8 351.8 224 343.9 224C336 224 328.7 227.8 324.2 234.2L268.2 314.2C263.1 321.5 262.4 331.1 266.6 339C270.8 346.9 279.1 352 288 352L544 352C552.7 352 560.7 347.3 564.9 339.7C569.1 332.1 569 322.9 564.4 315.4L476.4 171.4zM144 192L144 352C144 413.9 194.1 464 256 464L448 464L448 480C448 515.3 419.3 544 384 544L64 544C28.7 544 0 515.3 0 480L0 256C0 220.7 28.7 192 64 192L144 192zM52 260L52 284C52 292.8 59.2 300 68 300L92 300C100.8 300 108 292.8 108 284L108 260C108 251.2 100.8 244 92 244L68 244C59.2 244 52 251.2 52 260zM68 340C59.2 340 52 347.2 52 356L52 380C52 388.8 59.2 396 68 396L92 396C100.8 396 108 388.8 108 380L108 356C108 347.2 100.8 340 92 340L68 340zM68 436C59.2 436 52 443.2 52 452L52 476C52 484.8 59.2 492 68 492L92 492C100.8 492 108 484.8 108 476L108 452C108 443.2 100.8 436 92 436L68 436z">
+            </path>
+        </symbol>
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="film-solid-full">
+            <path
+                d="M96 160C96 124.7 124.7 96 160 96L480 96C515.3 96 544 124.7 544 160L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 160zM144 432L144 464C144 472.8 151.2 480 160 480L192 480C200.8 480 208 472.8 208 464L208 432C208 423.2 200.8 416 192 416L160 416C151.2 416 144 423.2 144 432zM448 416C439.2 416 432 423.2 432 432L432 464C432 472.8 439.2 480 448 480L480 480C488.8 480 496 472.8 496 464L496 432C496 423.2 488.8 416 480 416L448 416zM144 304L144 336C144 344.8 151.2 352 160 352L192 352C200.8 352 208 344.8 208 336L208 304C208 295.2 200.8 288 192 288L160 288C151.2 288 144 295.2 144 304zM448 288C439.2 288 432 295.2 432 304L432 336C432 344.8 439.2 352 448 352L480 352C488.8 352 496 344.8 496 336L496 304C496 295.2 488.8 288 480 288L448 288zM144 176L144 208C144 216.8 151.2 224 160 224L192 224C200.8 224 208 216.8 208 208L208 176C208 167.2 200.8 160 192 160L160 160C151.2 160 144 167.2 144 176zM448 160C439.2 160 432 167.2 432 176L432 208C432 216.8 439.2 224 448 224L480 224C488.8 224 496 216.8 496 208L496 176C496 167.2 488.8 160 480 160L448 160z">
+            </path>
+        </symbol>
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="music-solid-full">
+            <path
+                d="M532 71C539.6 77.1 544 86.3 544 96L544 400C544 444.2 501 480 448 480C395 480 352 444.2 352 400C352 355.8 395 320 448 320C459.2 320 470 321.6 480 324.6L480 207.9L256 257.7L256 464C256 508.2 213 544 160 544C107 544 64 508.2 64 464C64 419.8 107 384 160 384C171.2 384 182 385.6 192 388.6L192 160C192 145 202.4 132 217.1 128.8L505.1 64.8C514.6 62.7 524.5 65 532.1 71.1z">
+            </path>
+        </symbol>
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" id="video-solid-full">
+            <path
+                d="M128 128C92.7 128 64 156.7 64 192L64 448C64 483.3 92.7 512 128 512L384 512C419.3 512 448 483.3 448 448L448 192C448 156.7 419.3 128 384 128L128 128zM496 400L569.5 458.8C573.7 462.2 578.9 464 584.3 464C597.4 464 608 453.4 608 440.3L608 199.7C608 186.6 597.4 176 584.3 176C578.9 176 573.7 177.8 569.5 181.2L496 240L496 400z">
+            </path>
+        </symbol>
+    </svg>
     <div class="container">
         <header>
             <h1>高效视频/音频格式转换工具</h1>
             <p class="subtitle">所有转换均在您的浏览器本地完成，支持主流格式的音视频格式批量转换。大型文件转换可能需要数分钟，请勿关闭页面。</p>
         </header>
-        
+
         <div class="tool-container">
             <div class="settings-panel">
                 <h2 class="panel-title">转换设置</h2>
-                    <select id="targetFormat" style="margin-top: 10px;">
-                        <option value="" selected disabled>请选择输出格式</option>
-                        <optgroup label="——视频格式——">
-                            <option value="mp4">MP4 (H.264)</option>
-                            <option value="mkv">MKV（非压缩格式）</option>
-                            <option value="mov">MOV (QuickTime)</option>
-                            <option value="webm">WebM（网络视频格式）</option>
-                            <option value="avi">AVI（Audio Video Interleaved）</option>
-                            <option value="flv">FLV（Flash Video）</option>
-                            <option value="f4v">F4V（Adobe高清流媒体）</option>
-                            <option value="wmv">WMV（Windows媒体视频）</option>
-                            <option value="m4v">M4V（苹果设备专用格式）</option>
-			  <option value="3gp">3GP（移动设备格式）</option>
-			  <option value="mpeg">MPEG（MPEG视频）</option>
-			  <option value="ts">TS（传输流格式）</option>
-                        </optgroup>
-                        <optgroup label="——音频格式——">
-                            <option value="mp3">MP3（有损压缩格式）</option>
-                            <option value="ogg">OGG (Opus)</option>
-                            <option value="wav">WAV（无损音频未压缩）</option>
-                            <option value="flac">FLAC（无损音频压缩）</option>
-                            <option value="aac">AAC（苹果设备音频编码）</option>
-                            <option value="wma">WMA （Windows Media Audio）</option>
-                            <option value="ac3">AC3（Dolby Digital音频编码格式）</option>
-			  <option value="amr">AMR（自适应多速率音频）</option>
-			  <option value="m4a">M4A（MPEG-4音频）</option>
-                        </optgroup>
-                    </select>
-                    <div class="drop-hint" style="margin: 0 0 10px; max-width: fit-content;">注：只需选择输出格式即可，无需设置导入格式</div>
-                
+                <select id="targetFormat" style="margin-top: 10px;">
+                    <option value="" selected disabled>请选择输出格式</option>
+                    <optgroup label="——视频格式——">
+                        <option value="mp4">MP4 (H.264)</option>
+                        <option value="mkv">MKV（非压缩格式）</option>
+                        <option value="mov">MOV (QuickTime)</option>
+                        <option value="webm">WebM（网络视频格式）</option>
+                        <option value="avi">AVI（Audio Video Interleaved）</option>
+                        <option value="flv">FLV（Flash Video）</option>
+                        <option value="f4v">F4V（Adobe高清流媒体）</option>
+                        <option value="wmv">WMV（Windows媒体视频）</option>
+                        <option value="m4v">M4V（苹果设备专用格式）</option>
+                        <option value="3gp">3GP（移动设备格式）</option>
+                        <option value="mpeg">MPEG（MPEG视频）</option>
+                        <option value="ts">TS（传输流格式）</option>
+                    </optgroup>
+                    <optgroup label="——音频格式——">
+                        <option value="mp3">MP3（有损压缩格式）</option>
+                        <option value="ogg">OGG (Opus)</option>
+                        <option value="wav">WAV（无损音频未压缩）</option>
+                        <option value="flac">FLAC（无损音频压缩）</option>
+                        <option value="aac">AAC（苹果设备音频编码）</option>
+                        <option value="wma">WMA （Windows Media Audio）</option>
+                        <option value="ac3">AC3（Dolby Digital音频编码格式）</option>
+                        <option value="amr">AMR（自适应多速率音频）</option>
+                        <option value="m4a">M4A（MPEG-4音频）</option>
+                    </optgroup>
+                </select>
+                <div class="drop-hint" style="margin: 0 0 10px; max-width: fit-content;">注：只需选择输出格式即可，无需设置导入格式</div>
+
                 <div class="form-group">
                     <div id="formatError" class="error-message">请先选择输出格式</div>
                 </div>
-                
+
                 <div id="videoSettings" class="form-group" style="display:none;">
                     <label for="videoResolution">视频分辨率</label>
                     <select id="videoResolution">
@@ -449,8 +752,8 @@
                         <option value="custom">自定义 (最短边)</option>
                     </select>
                     <div id="customResolutionContainer" class="custom-resolution-container">
-                        <input type="number" id="customResolution" class="custom-resolution-input" 
-                               placeholder="输入自定义分辨率（最短边像素值）" min="1" max="3840"><span>p</span>
+                        <input type="number" id="customResolution" class="custom-resolution-input"
+                            placeholder="输入自定义分辨率（最短边像素值）" min="1" max="3840"><span>p</span>
                     </div>
                     <br>
                     <label for="quality">视频质量 (CRF, 越小越好)</label>
@@ -471,21 +774,23 @@
                 </div>
                 <div class="form-group">
                     <div class="drop-area" id="dropArea">
-                        <div class="drop-icon"><svg class="icon"><use xlink:href="#film-solid-full"></use></svg></div>
+                        <div class="drop-icon"><svg class="icon">
+                                <use xlink:href="#film-solid-full"></use>
+                            </svg></div>
                         <p class="drop-text">拖放文件到此处 或 <u>点击选择文件</u></p>
                         <p class="drop-hint">支持常见视频和音频格式</p>
                         <input type="file" id="fileInput" accept="video/*,audio/*" multiple>
                     </div>
-		<div class="tips">小技巧：上传视频后选择音频格式输出，可以提取音频</div>
+                    <div class="tips">小技巧：上传视频后选择音频格式输出，可以提取音频</div>
                 </div>
             </div>
-            
+
             <div class="preview-panel">
                 <h2 class="panel-title">
                     <span>转换结果 (<span id="convertedFileCount">0</span>)</span>
                     <button id="clearAllBtn" class="clear-all-btn" style="display:none;">清空所有</button>
                 </h2>
-                
+
                 <div class="status-area" id="statusArea">
                     <div id="statusText">请选择文件开始转换...</div>
                     <div class="progress-container">
@@ -495,88 +800,94 @@
 
                 <div class="preview-container" id="previewContainer">
                     <div class="no-preview" id="noPreviewMessage">
-                        <svg class="icon"><use xlink:href="#photo-film-solid-full"></use></svg>
+                        <svg class="icon">
+                            <use xlink:href="#photo-film-solid-full"></use>
+                        </svg>
                         <p>上传文件后将在此处显示转换结果</p>
                     </div>
                 </div>
-                
+
                 <div class="download-all-container" id="downloadAllContainer" style="display:none;">
                     <button class="download-all-btn" id="downloadAllBtn">
-                        <svg class="icon"><use xlink:href="#file-zipper-solid-full"></use></svg>
+                        <svg class="icon">
+                            <use xlink:href="#file-zipper-solid-full"></use>
+                        </svg>
                         打包下载全部
                         <span class="counter" id="fileCounter">0</span>
                     </button>
                 </div>
 
-<div class="type-panel">
-	<div class="type-title">支持多种音视频格式转换</div>
-<div class="type-group">
-    <div class="type-cont">
-	<div class="type-s">导入的视频文件格式</div>
-	<div class="type-geshi">	
-		<span class="type">MP4</span>
-		<span class="type">MKV</span>
-		<span class="type">MOV</span>
-		<span class="type">WebM</span>
-		<span class="type">AVI</span>
-		<span class="type">3GP</span>
-		<span class="type">Flv</span>
-		<span class="type">F4V</span>
-		<span class="type">WMV</span>
-		<span class="type">RMVB</span>
-		<span class="type">M4V</span>
-    		<span class="type">MPEG</span>
-    		<span class="type">TS</span>
+                <div class="type-panel">
+                    <div class="type-title">支持多种音视频格式转换</div>
+                    <div class="type-group">
+                        <div class="type-cont">
+                            <div class="type-s">导入的视频文件格式</div>
+                            <div class="type-geshi">
+                                <span class="type">MP4</span>
+                                <span class="type">MKV</span>
+                                <span class="type">MOV</span>
+                                <span class="type">WebM</span>
+                                <span class="type">AVI</span>
+                                <span class="type">3GP</span>
+                                <span class="type">Flv</span>
+                                <span class="type">F4V</span>
+                                <span class="type">WMV</span>
+                                <span class="type">RMVB</span>
+                                <span class="type">M4V</span>
+                                <span class="type">MPEG</span>
+                                <span class="type">TS</span>
 
-	</div>
-	<div class="type-s">导入的音频文件格式</div>
-	<div class="type-geshi">
-		<span class="type">MP3</span>
-		<span class="type">OGG</span>
-		<span class="type">WAV</span>
-		<span class="type">FLAC</span>
-		<span class="type">M4R</span>
-		<span class="type">AAC</span>
-		<span class="type">WMA</span>
-		<span class="type">AC3</span>
-    		<span class="type">AMR</span>
-    		<span class="type">M4A</span>
-	</div>
-    </div>
-	<div class="arrow-r">
-		<svg class="icon"><use xlink:href="#circle-right-solid-full"></use></svg>
-	</div>
-    <div class="type-cont">
-	<div class="type-s">输出的视频文件格式</div>
-	<div class="type-geshi">
-		<span class="type">MP4</span>
-		<span class="type">MKV</span>
-		<span class="type">MOV</span>
-		<span class="type">WebM</span>
-		<span class="type">AVI</span>
-		<span class="type">3GP</span>
-		<span class="type">Flv</span>
-		<span class="type">F4V</span>
-		<span class="type">WMV</span>
-		<span class="type">M4V</span>
-    		<span class="type">MPEG</span>
-    		<span class="type">TS</span>
-	</div>
-	<div class="type-s">输出的音频文件格式</div>
-	<div class="type-geshi">
-		<span class="type">MP3</span>
-		<span class="type">OGG</span>
-		<span class="type">WAV</span>
-		<span class="type">FLAC</span>
-		<span class="type">AAC</span>
-		<span class="type">WMA</span>
-		<span class="type">AC3</span>
-    		<span class="type">AMR</span>
-    		<span class="type">M4A</span>
-	</div>
-    </div>
-</div>
-</div>
+                            </div>
+                            <div class="type-s">导入的音频文件格式</div>
+                            <div class="type-geshi">
+                                <span class="type">MP3</span>
+                                <span class="type">OGG</span>
+                                <span class="type">WAV</span>
+                                <span class="type">FLAC</span>
+                                <span class="type">M4R</span>
+                                <span class="type">AAC</span>
+                                <span class="type">WMA</span>
+                                <span class="type">AC3</span>
+                                <span class="type">AMR</span>
+                                <span class="type">M4A</span>
+                            </div>
+                        </div>
+                        <div class="arrow-r">
+                            <svg class="icon">
+                                <use xlink:href="#circle-right-solid-full"></use>
+                            </svg>
+                        </div>
+                        <div class="type-cont">
+                            <div class="type-s">输出的视频文件格式</div>
+                            <div class="type-geshi">
+                                <span class="type">MP4</span>
+                                <span class="type">MKV</span>
+                                <span class="type">MOV</span>
+                                <span class="type">WebM</span>
+                                <span class="type">AVI</span>
+                                <span class="type">3GP</span>
+                                <span class="type">Flv</span>
+                                <span class="type">F4V</span>
+                                <span class="type">WMV</span>
+                                <span class="type">M4V</span>
+                                <span class="type">MPEG</span>
+                                <span class="type">TS</span>
+                            </div>
+                            <div class="type-s">输出的音频文件格式</div>
+                            <div class="type-geshi">
+                                <span class="type">MP3</span>
+                                <span class="type">OGG</span>
+                                <span class="type">WAV</span>
+                                <span class="type">FLAC</span>
+                                <span class="type">AAC</span>
+                                <span class="type">WMA</span>
+                                <span class="type">AC3</span>
+                                <span class="type">AMR</span>
+                                <span class="type">M4A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -592,7 +903,7 @@
         </div>
     </div>
 
-<script>
+    <script>
         const { createFFmpeg, fetchFile } = FFmpeg;
         let ffmpeg;
 
@@ -608,7 +919,7 @@
         const downloadAllContainer = document.getElementById('downloadAllContainer');
         const convertedFileCount = document.getElementById('convertedFileCount');
         const fileCounter = document.getElementById('fileCounter');
-        
+
         // 设置元素
         const targetFormatSelect = document.getElementById('targetFormat');
         const formatError = document.getElementById('formatError');
@@ -629,18 +940,18 @@
         let processedFiles = [];
         let isFFmpegLoaded = false;
         let videoDimensions = {}; // 存储视频尺寸信息
-        
+
         // 页面加载完成后立即开始加载FFmpeg
         window.addEventListener('load', loadFFmpeg);
-// 在页面加载时添加自定义分辨率验证
-customResolutionInput.addEventListener('change', () => {
-    let value = parseInt(customResolutionInput.value);
-    if (isNaN(value) || value < 1) {
-        customResolutionInput.value = "480";
-    } else if (value > 3840) {
-        customResolutionInput.value = "3840";
-    }
-});
+        // 在页面加载时添加自定义分辨率验证
+        customResolutionInput.addEventListener('change', () => {
+            let value = parseInt(customResolutionInput.value);
+            if (isNaN(value) || value < 1) {
+                customResolutionInput.value = "480";
+            } else if (value > 3840) {
+                customResolutionInput.value = "3840";
+            }
+        });
         // 拖放事件
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, e => {
@@ -662,7 +973,7 @@ customResolutionInput.addEventListener('change', () => {
         qualitySlider.addEventListener('input', () => {
             qualityValue.textContent = qualitySlider.value;
         });
-        
+
         targetFormatSelect.addEventListener('change', () => {
             updateSettingsVisibility();
             formatError.style.display = 'none';
@@ -680,27 +991,27 @@ customResolutionInput.addEventListener('change', () => {
         // 处理文件
         async function handleFiles(files) {
             if (files.length === 0) return;
-            
+
             if (!targetFormatSelect.value) {
                 formatError.style.display = 'block';
                 return;
             }
-            
+
             // 确保FFmpeg已加载
             if (!isFFmpegLoaded) {
                 statusText.textContent = '转换引擎尚未加载完成，请稍后再试。';
                 statusText.style.color = 'var(--warning)';
                 // 如果尚未加载，可以再次触发加载（以防万一）
-                await loadFFmpeg(); 
-                if(!isFFmpegLoaded) return; // 如果还是没加载好，就终止
+                await loadFFmpeg();
+                if (!isFFmpegLoaded) return; // 如果还是没加载好，就终止
             }
-            
+
             noPreviewMessage.style.display = 'none';
             statusText.style.color = 'var(--text2)'; // 恢复颜色
 
             for (const file of files) {
                 const fileIndex = processedFiles.length;
-                
+
                 const fileData = {
                     originalFile: file,
                     convertedFile: null,
@@ -711,13 +1022,13 @@ customResolutionInput.addEventListener('change', () => {
                 };
                 processedFiles.push(fileData);
                 createPreviewRow(fileIndex);
-                
+
                 try {
                     // 如果是视频文件，先获取视频尺寸信息
                     if (file.type.startsWith('video')) {
                         await getVideoDimensions(file);
                     }
-                    
+
                     // 异步处理每个文件，这样UI不会卡顿
                     convertFile(file).then(convertedBlob => {
                         const convertedFile = new File([convertedBlob], getOutputFileName(file.name, targetFormatSelect.value), { type: convertedBlob.type });
@@ -734,10 +1045,10 @@ customResolutionInput.addEventListener('change', () => {
                         updateUIState();
                     });
                 } catch (err) {
-                     console.error('Immediate error during conversion setup:', err);
-                     processedFiles[fileIndex].status = 'error';
-                     updatePreviewRow(fileIndex);
-                     updateUIState();
+                    console.error('Immediate error during conversion setup:', err);
+                    processedFiles[fileIndex].status = 'error';
+                    updatePreviewRow(fileIndex);
+                    updateUIState();
                 }
             }
             updateUIState();
@@ -748,8 +1059,8 @@ customResolutionInput.addEventListener('change', () => {
             return new Promise((resolve) => {
                 const video = document.createElement('video');
                 video.preload = 'metadata';
-                
-                video.onloadedmetadata = function() {
+
+                video.onloadedmetadata = function () {
                     window.URL.revokeObjectURL(video.src);
                     videoDimensions[file.name] = {
                         width: video.videoWidth,
@@ -757,8 +1068,8 @@ customResolutionInput.addEventListener('change', () => {
                     };
                     resolve();
                 };
-                
-                video.onerror = function() {
+
+                video.onerror = function () {
                     window.URL.revokeObjectURL(video.src);
                     // 如果无法获取尺寸，使用默认值
                     videoDimensions[file.name] = {
@@ -767,7 +1078,7 @@ customResolutionInput.addEventListener('change', () => {
                     };
                     resolve();
                 };
-                
+
                 video.src = URL.createObjectURL(file);
             });
         }
@@ -782,9 +1093,9 @@ customResolutionInput.addEventListener('change', () => {
             // 禁用拖放区域，防止在加载时操作
             dropArea.style.pointerEvents = 'none';
             dropArea.style.opacity = '0.7';
-            
+
             try {
-                ffmpeg = createFFmpeg({ 
+                ffmpeg = createFFmpeg({
                     log: true,
                     progress: ({ ratio }) => {
                         // 进度条只在 ratio 为 0 到 1 之间时更新
@@ -795,7 +1106,7 @@ customResolutionInput.addEventListener('change', () => {
                         }
                     },
                 });
-                
+
                 await ffmpeg.load();
                 isFFmpegLoaded = true;
                 statusText.textContent = '转换引擎加载完毕，请选择文件。';
@@ -810,150 +1121,150 @@ customResolutionInput.addEventListener('change', () => {
         }
 
         // 核心转换函数
-// 核心转换函数
-async function convertFile(file) {
-    statusText.textContent = `准备转换: ${file.name}`;
-    progressBar.style.width = '0%';
-    
-    const targetFormat = targetFormatSelect.value;
-    const outputFileName = getOutputFileName(file.name, targetFormat);
-    // 扩展视频格式检测
-    const isVideoOutput = [
-        'mp4', 'mkv', 'mov', 'webm', 'avi', 
-        'flv', 'f4v', 'wmv', 'm4v', '3gp', 'mpeg', 'ts'
-    ].includes(targetFormat);
+        // 核心转换函数
+        async function convertFile(file) {
+            statusText.textContent = `准备转换: ${file.name}`;
+            progressBar.style.width = '0%';
 
-    ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+            const targetFormat = targetFormatSelect.value;
+            const outputFileName = getOutputFileName(file.name, targetFormat);
+            // 扩展视频格式检测
+            const isVideoOutput = [
+                'mp4', 'mkv', 'mov', 'webm', 'avi',
+                'flv', 'f4v', 'wmv', 'm4v', '3gp', 'mpeg', 'ts'
+            ].includes(targetFormat);
 
-    const args = ['-i', file.name];
-    
-    // 视频相关参数
-    if(isVideoOutput) {
-        let resolutionValue;
-        if (videoResolutionSelect.value === 'custom') {
-            resolutionValue = customResolutionInput.value;
-        } else {
-            resolutionValue = videoResolutionSelect.value;
-        }
-        
-        if(resolutionValue !== "-1") {
-            args.push('-vf', `scale=-2:${resolutionValue}`);
-        }
-        
-        // 根据不同格式选择合适的视频编码器
-        let videoCodec;
-        switch(targetFormat) {
-            case 'webm':
-                videoCodec = 'libvpx-vp9';
-                args.push('-b:v', '0', '-crf', qualitySlider.value, '-deadline', 'good');
-                break;
-            case 'mpeg':
-                // 使用mpeg2video编码器，这是MPEG-2的标准编码器
-                videoCodec = 'mpeg2video';
-                // 使用比特率计算函数而不是固定值
-                const bitrate = calculateMpegBitrate(qualitySlider.value);
-                args.push('-b:v', `${bitrate}M`);
-                args.push('-maxrate', `${bitrate}M`);
-                args.push('-minrate', `${bitrate}M`);
-                args.push('-bufsize', '1M');
-                args.push('-g', '15'); // 每15帧一个关键帧
-                break;
-            case '3gp':
-                videoCodec = 'h263';
-                args.push('-qscale:v', qualitySlider.value);
-                // 3GP通常需要特定的分辨率
-                if(resolutionValue === "-1") {
-                    args.push('-s', '176x144'); // 默认QCIF分辨率
+            ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+
+            const args = ['-i', file.name];
+
+            // 视频相关参数
+            if (isVideoOutput) {
+                let resolutionValue;
+                if (videoResolutionSelect.value === 'custom') {
+                    resolutionValue = customResolutionInput.value;
+                } else {
+                    resolutionValue = videoResolutionSelect.value;
                 }
-                break;
-            default:
-                videoCodec = 'libx264';
-                args.push('-crf', qualitySlider.value);
-                args.push('-preset', 'medium');
-        }
-        args.push('-c:v', videoCodec);
-    }
 
-    // 音频编码器选择
-    let audioCodec = 'aac'; // 默认AAC
-    switch(targetFormat) {
-        case 'mp3':
-            audioCodec = 'libmp3lame';
-            break;
-        case 'ogg':
-        case 'webm':
-            audioCodec = 'libopus';
-            break;
-        case 'flac':
-            audioCodec = 'flac';
-            break;
-        case 'wav':
-            audioCodec = 'pcm_s16le';
-            break;
-        case 'wma':
-            audioCodec = 'wmav2';
-            break;
-        case 'ac3':
-            audioCodec = 'ac3';
-            break;
-        case 'amr':
-            audioCodec = 'libopencore_amrnb';
-            break;
-        case 'm4a':
-            audioCodec = 'aac';
-            break;
-        case 'mpeg':
-            // MPEG格式通常使用MP2音频编码
-            audioCodec = 'mp2';
-            break;
-    }
-    args.push('-c:a', audioCodec);
-    
-    // FLAC 和 WAV 不需要设置比特率
-    if(targetFormat !== 'flac' && targetFormat !== 'wav') {
-        if (targetFormat === 'mpeg') {
-            args.push('-b:a', '192k');
-        } else {
-            args.push('-b:a', audioBitrateSelect.value);
-        }
-    }
-    
-    // 为特定格式添加额外参数
-    if (targetFormat === 'mpeg') {
-        args.push('-f', 'mpeg'); // 强制输出格式为MPEG
-        args.push('-flags', '+ildct+ilme'); // 添加MPEG特定标志
-    }
-    
-    args.push(outputFileName);
-    
-    try {
-        console.log("Running FFmpeg with args:", args);
-        await ffmpeg.run(...args);
+                if (resolutionValue !== "-1") {
+                    args.push('-vf', `scale=-2:${resolutionValue}`);
+                }
 
-        const data = ffmpeg.FS('readFile', outputFileName);
-        
-        // 清理FFmpeg虚拟文件系统中的文件
-        try {
-            ffmpeg.FS('unlink', file.name);
-            ffmpeg.FS('unlink', outputFileName);
-        } catch (e) {
-            console.warn("Could not unlink files, they may not exist.", e);
-        }
+                // 根据不同格式选择合适的视频编码器
+                let videoCodec;
+                switch (targetFormat) {
+                    case 'webm':
+                        videoCodec = 'libvpx-vp9';
+                        args.push('-b:v', '0', '-crf', qualitySlider.value, '-deadline', 'good');
+                        break;
+                    case 'mpeg':
+                        // 使用mpeg2video编码器，这是MPEG-2的标准编码器
+                        videoCodec = 'mpeg2video';
+                        // 使用比特率计算函数而不是固定值
+                        const bitrate = calculateMpegBitrate(qualitySlider.value);
+                        args.push('-b:v', `${bitrate}M`);
+                        args.push('-maxrate', `${bitrate}M`);
+                        args.push('-minrate', `${bitrate}M`);
+                        args.push('-bufsize', '1M');
+                        args.push('-g', '15'); // 每15帧一个关键帧
+                        break;
+                    case '3gp':
+                        videoCodec = 'h263';
+                        args.push('-qscale:v', qualitySlider.value);
+                        // 3GP通常需要特定的分辨率
+                        if (resolutionValue === "-1") {
+                            args.push('-s', '176x144'); // 默认QCIF分辨率
+                        }
+                        break;
+                    default:
+                        videoCodec = 'libx264';
+                        args.push('-crf', qualitySlider.value);
+                        args.push('-preset', 'medium');
+                }
+                args.push('-c:v', videoCodec);
+            }
 
-        const mimeType = isVideoOutput ? 
-            (targetFormat === 'webm' ? 'video/webm' : 
-             targetFormat === 'mpeg' ? 'video/mpeg' : 
-             targetFormat === '3gp' ? 'video/3gpp' : 
-             `video/${targetFormat}`) : 
-            (targetFormat === 'm4a' ? 'audio/mp4' : 
-             targetFormat === 'amr' ? 'audio/amr' : 
-             `audio/${targetFormat}`);
-        return new Blob([data.buffer], { type: mimeType });
-    } catch (error) {
-        console.error('FFmpeg运行错误:', error);
-        throw new Error(`转换失败: ${error.message}`);
-    }
-}
+            // 音频编码器选择
+            let audioCodec = 'aac'; // 默认AAC
+            switch (targetFormat) {
+                case 'mp3':
+                    audioCodec = 'libmp3lame';
+                    break;
+                case 'ogg':
+                case 'webm':
+                    audioCodec = 'libopus';
+                    break;
+                case 'flac':
+                    audioCodec = 'flac';
+                    break;
+                case 'wav':
+                    audioCodec = 'pcm_s16le';
+                    break;
+                case 'wma':
+                    audioCodec = 'wmav2';
+                    break;
+                case 'ac3':
+                    audioCodec = 'ac3';
+                    break;
+                case 'amr':
+                    audioCodec = 'libopencore_amrnb';
+                    break;
+                case 'm4a':
+                    audioCodec = 'aac';
+                    break;
+                case 'mpeg':
+                    // MPEG格式通常使用MP2音频编码
+                    audioCodec = 'mp2';
+                    break;
+            }
+            args.push('-c:a', audioCodec);
+
+            // FLAC 和 WAV 不需要设置比特率
+            if (targetFormat !== 'flac' && targetFormat !== 'wav') {
+                if (targetFormat === 'mpeg') {
+                    args.push('-b:a', '192k');
+                } else {
+                    args.push('-b:a', audioBitrateSelect.value);
+                }
+            }
+
+            // 为特定格式添加额外参数
+            if (targetFormat === 'mpeg') {
+                args.push('-f', 'mpeg'); // 强制输出格式为MPEG
+                args.push('-flags', '+ildct+ilme'); // 添加MPEG特定标志
+            }
+
+            args.push(outputFileName);
+
+            try {
+                console.log("Running FFmpeg with args:", args);
+                await ffmpeg.run(...args);
+
+                const data = ffmpeg.FS('readFile', outputFileName);
+
+                // 清理FFmpeg虚拟文件系统中的文件
+                try {
+                    ffmpeg.FS('unlink', file.name);
+                    ffmpeg.FS('unlink', outputFileName);
+                } catch (e) {
+                    console.warn("Could not unlink files, they may not exist.", e);
+                }
+
+                const mimeType = isVideoOutput ?
+                    (targetFormat === 'webm' ? 'video/webm' :
+                        targetFormat === 'mpeg' ? 'video/mpeg' :
+                            targetFormat === '3gp' ? 'video/3gpp' :
+                                `video/${targetFormat}`) :
+                    (targetFormat === 'm4a' ? 'audio/mp4' :
+                        targetFormat === 'amr' ? 'audio/amr' :
+                            `audio/${targetFormat}`);
+                return new Blob([data.buffer], { type: mimeType });
+            } catch (error) {
+                console.error('FFmpeg运行错误:', error);
+                throw new Error(`转换失败: ${error.message}`);
+            }
+        }
         function createPreviewRow(index) {
             const fileData = processedFiles[index];
             const row = document.createElement('div');
@@ -999,7 +1310,7 @@ async function convertFile(file) {
             const convertedSizeEl = row.querySelector('.converted-size');
             const previewBtn = row.querySelector('.preview-btn');
             const downloadBtn = row.querySelector('.download-btn-small');
-            
+
             if (fileData.status === 'done') {
                 statusEl.textContent = '转换成功';
                 statusEl.style.color = 'var(--success)';
@@ -1021,7 +1332,7 @@ async function convertFile(file) {
         function showPreview(file) {
             const url = URL.createObjectURL(file);
             let player;
-            if(file.type.startsWith('video')) {
+            if (file.type.startsWith('video')) {
                 player = document.createElement('video');
                 player.controls = true;
                 player.autoplay = true;
@@ -1031,7 +1342,7 @@ async function convertFile(file) {
                 player.autoplay = true;
             }
             player.src = url;
-            
+
             // 释放之前可能创建的URL
             const oldPlayer = modalPlayerContainer.querySelector('video, audio');
             if (oldPlayer && oldPlayer.src.startsWith('blob:')) {
@@ -1065,16 +1376,16 @@ async function convertFile(file) {
         function updateUIState() {
             const doneCount = processedFiles.filter(f => f.status === 'done').length;
             const hasFiles = processedFiles.length > 0;
-            
+
             convertedFileCount.textContent = doneCount;
             fileCounter.textContent = doneCount;
 
             clearAllBtn.style.display = hasFiles ? 'inline-block' : 'none';
             downloadAllContainer.style.display = doneCount > 0 ? 'block' : 'none';
-            
+
             if (!hasFiles) {
                 noPreviewMessage.style.display = 'flex'; // 使用flex使其居中
-                if(isFFmpegLoaded) {
+                if (isFFmpegLoaded) {
                     statusText.textContent = '请选择文件开始转换...';
                 }
                 progressBar.style.width = '0%';
@@ -1082,36 +1393,36 @@ async function convertFile(file) {
                 noPreviewMessage.style.display = 'none';
             }
         }
-        
-function updateSettingsVisibility() {
-    const targetFormat = targetFormatSelect.value;
-    
-    // 扩展视频格式列表（包含所有视频格式）
-    const videoFormats = [
-        'mp4', 'mkv', 'mov', 'webm', 'avi', 
-        'flv', 'f4v', 'wmv', 'm4v', '3gp', 'mpeg', 'ts'
-    ];
-    
-    // 扩展音频格式列表（包含所有音频格式）
-    const audioFormats = [
-        'mp3', 'ogg', 'wav', 'flac', 'aac', 
-        'wma', 'ac3', 'amr', 'm4a'
-    ];
-    
-    const isVideo = videoFormats.includes(targetFormat);
-    const isAudio = audioFormats.includes(targetFormat);
-    
-    videoSettings.style.display = isVideo ? 'block' : 'none';
-    // 显示音频比特率的条件是：目标是音频格式，或者目标是视频格式（视频也包含音轨）
-    audioSettings.style.display = (isAudio || isVideo) ? 'block' : 'none';
-}
+
+        function updateSettingsVisibility() {
+            const targetFormat = targetFormatSelect.value;
+
+            // 扩展视频格式列表（包含所有视频格式）
+            const videoFormats = [
+                'mp4', 'mkv', 'mov', 'webm', 'avi',
+                'flv', 'f4v', 'wmv', 'm4v', '3gp', 'mpeg', 'ts'
+            ];
+
+            // 扩展音频格式列表（包含所有音频格式）
+            const audioFormats = [
+                'mp3', 'ogg', 'wav', 'flac', 'aac',
+                'wma', 'ac3', 'amr', 'm4a'
+            ];
+
+            const isVideo = videoFormats.includes(targetFormat);
+            const isAudio = audioFormats.includes(targetFormat);
+
+            videoSettings.style.display = isVideo ? 'block' : 'none';
+            // 显示音频比特率的条件是：目标是音频格式，或者目标是视频格式（视频也包含音轨）
+            audioSettings.style.display = (isAudio || isVideo) ? 'block' : 'none';
+        }
 
         clearAllBtn.addEventListener('click', () => {
             processedFiles = [];
             previewContainer.innerHTML = '';
             updateUIState();
         });
-        
+
         downloadAllBtn.addEventListener('click', () => {
             const doneFiles = processedFiles.filter(f => f.status === 'done');
             if (doneFiles.length === 0) return;
@@ -1120,13 +1431,13 @@ function updateSettingsVisibility() {
             progressBar.style.width = '0%';
             const zip = new JSZip();
             doneFiles.forEach(item => {
-                zip.file(item.convertedFile.name, item.convertedFile); 
+                zip.file(item.convertedFile.name, item.convertedFile);
             });
-            
-            zip.generateAsync({type:"blob"}).then(function(content) {
+
+            zip.generateAsync({ type: "blob" }).then(function (content) {
                 saveAs(content, "converted_files.zip");
                 statusText.textContent = `打包完成！`;
-            }, function(error) {
+            }, function (error) {
                 statusText.textContent = `打包失败: ${error}`;
             });
         });
@@ -1143,19 +1454,20 @@ function updateSettingsVisibility() {
             const nameWithoutExt = originalName.lastIndexOf('.') > 0 ? originalName.substring(0, originalName.lastIndexOf('.')) : originalName;
             return `${nameWithoutExt}.${targetExt}`;
         };
-// 根据质量滑块值计算MPEG比特率
-function calculateMpegBitrate(qualityValue) {
-    // 将质量值(15-35)映射到比特率(1-5Mbps)
-    // 质量值越小，比特率越高
-    const minBitrate = 1;
-    const maxBitrate = 5;
-    const normalizedQuality = (35 - qualityValue) / 20; // 将15-35映射到0-1
-    return minBitrate + normalizedQuality * (maxBitrate - minBitrate);
-}
+        // 根据质量滑块值计算MPEG比特率
+        function calculateMpegBitrate(qualityValue) {
+            // 将质量值(15-35)映射到比特率(1-5Mbps)
+            // 质量值越小，比特率越高
+            const minBitrate = 1;
+            const maxBitrate = 5;
+            const normalizedQuality = (35 - qualityValue) / 20; // 将15-35映射到0-1
+            return minBitrate + normalizedQuality * (maxBitrate - minBitrate);
+        }
 
         // 初始化
         updateSettingsVisibility();
         updateUIState();
     </script>
 </body>
+
 </html>
