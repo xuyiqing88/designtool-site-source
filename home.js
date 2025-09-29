@@ -205,7 +205,7 @@ const tools = [
         description: "C4D色偏散景预设免费下载,可以模拟显示世界的色偏散景效果",
         category: "3D",
         link: "shift.html",
-        icon: "img/se5.webp",
+        icon: "img/shift.webp",
         badge: ""
     },
     {
