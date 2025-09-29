@@ -365,7 +365,6 @@ const menuData = [
             { title: "在线PS", link: "../PS.html" },
             { title: "矢量花朵生成器", link: "../flower.html" },
             { title: "城市天际线生成器", link: "../city.html" },
-            { title: "Adobe 全家桶下载", link: "../adobe.html" },
         ]
     },
 

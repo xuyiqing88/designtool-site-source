@@ -65,14 +65,6 @@ const tools = [
         badge: ""
     },
     {
-        title: "Adobe 全家桶下载",
-        description: "Adobe 2025 全家桶下载",
-        category: "design",
-        link: "adobe.html",
-        icon: "img/psdown.webp",
-        badge: ""
-    },
-    {
         title: "AI一键扩图",
         description: "无需复杂操作，上传图片即可一键扩展图片",
         category: "dev",
