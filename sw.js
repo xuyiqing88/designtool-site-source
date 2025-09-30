@@ -1,7 +1,7 @@
-// sw.js - 高性能版本 (Stale-While-Revalidate)
+// sw.js - 终极版 (混合策略)
 
-// 再次更新版本号，以触发Service Worker的更新
-const CACHE_NAME = 'designtool-v5-performance'; 
+// 更新版本号以触发更新
+const CACHE_NAME = 'designtool-v6-final'; 
 const urlsToCache = [
   '/',
   '/index.html',
@@ -18,25 +18,21 @@ const urlsToCache = [
   '/articles.js',
 ];
 
-// 安装阶段：预缓存核心文件
+// 安装阶段：预缓存核心文件 (不变)
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('Opened cache for app shell');
-      return cache.addAll(urlsToCache);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
   self.skipWaiting();
 });
 
-// 激活阶段：清理旧缓存
+// 激活阶段：清理旧缓存 (不变)
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -45,29 +41,46 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch阶段：实现 Stale-While-Revalidate 策略
+// Fetch阶段：实现智能的混合策略
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') {
     return;
   }
-  
-  // 豁免规则，让模型文件由页面自己管理
-  if (new URL(event.request.url).pathname.endsWith('.onnx')) {
+
+  const url = new URL(event.request.url);
+
+  // 策略1: 如果是页面导航请求，则使用“网络优先”
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
     return;
   }
 
+  // 策略2: 如果是.onnx模型文件，则使用“缓存优先、后台更新”，实现秒开
+  if (url.pathname.endsWith('.onnx')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache => {
+        return cache.match(event.request).then(cachedResponse => {
+          const fetchPromise = fetch(event.request).then(networkResponse => {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          });
+          return cachedResponse || fetchPromise;
+        });
+      })
+    );
+    return;
+  }
+
+  // 策略3: 对于其他所有资源 (CSS, JS, 图片等)，使用“缓存优先、后台更新”
   event.respondWith(
     caches.open(CACHE_NAME).then(cache => {
       return cache.match(event.request).then(cachedResponse => {
-        // 1. 发起网络请求去获取最新版本
         const fetchPromise = fetch(event.request).then(networkResponse => {
-          // 如果成功获取，就用新版本更新缓存
           cache.put(event.request, networkResponse.clone());
           return networkResponse;
         });
-
-        // 2. 立即返回缓存的版本（如果存在），让页面秒开
-        //    同时，上面的 fetchPromise 会在后台继续进行，以便下次访问时使用最新版本
         return cachedResponse || fetchPromise;
       });
     })

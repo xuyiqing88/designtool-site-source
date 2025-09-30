@@ -504,54 +504,33 @@
     let files = [];
     let processedFiles = [];
 
-    async function loadModelWithProgress() {
-      const modelUrl = 'https://pub-c502804539294926b0c4f69f7b7faf38.r2.dev/u2netp.onnx';
-      const cacheName = 'rembg-model-cache-v1';
-      try {
-        const cache = await caches.open(cacheName);
-        const cachedResponse = await cache.match(modelUrl);
-        let modelBuffer;
-        if (cachedResponse) {
-          loadingStatus.textContent = '从缓存加载模型...';
-          modelBuffer = await cachedResponse.arrayBuffer();
-          loadingProgressBar.style.width = '100%';
-          loadingStatus.textContent = `加载完成 (来自缓存)`;
-        } else {
-          loadingStatus.textContent = '开始下载模型...';
-          const response = await fetch(modelUrl);
-          if (!response.ok) throw new Error(`模型下载失败: ${response.status} ${response.statusText}`);
-          const contentLength = response.headers.get('content-length');
-          if (!contentLength) {
-            modelBuffer = await response.arrayBuffer();
-          } else {
-            const total = parseInt(contentLength, 10);
-            let loaded = 0;
-            const reader = response.body.getReader();
-            const chunks = [];
-            while(true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              chunks.push(value);
-              loaded += value.length;
-              const progress = Math.round((loaded / total) * 100);
-              loadingProgressBar.style.width = `${progress}%`;
-              loadingStatus.textContent = `下载中... ${formatFileSize(loaded)} / ${formatFileSize(total)}`;
-            }
-            const blob = new Blob(chunks);
-            modelBuffer = await blob.arrayBuffer();
-            const responseToCache = new Response(blob, { headers: response.headers });
-            await cache.put(modelUrl, responseToCache);
-          }
-        }
-        loadingStatus.textContent = '正在创建AI会话...';
-        session = await ort.InferenceSession.create(await modelBuffer);
-        setTimeout(() => loadingOverlay.classList.add('hidden'), 500);
-      } catch (error) {
-        console.error('模型加载或初始化失败:', error);
-        loadingError.textContent = `错误: ${error.message}。请检查网络连接或刷新页面重试。`;
-        loadingError.classList.remove('hidden');
-      }
+    // rembg.html 内的脚本
+async function loadModelWithProgress() {
+  const modelUrl = 'https://pub-c502804539294926b0c4f69f7b7faf38.r2.dev/u2netp.onnx';
+  try {
+    loadingStatus.textContent = '开始加载模型...';
+    // 直接用 fetch 请求，让 Service Worker 去处理缓存
+    const response = await fetch(modelUrl);
+    if (!response.ok) {
+      throw new Error(`模型下载失败: ${response.status} ${response.statusText}`);
     }
+    const modelBuffer = await response.arrayBuffer();
+    loadingProgressBar.style.width = '100%';
+
+    loadingStatus.textContent = '正在创建AI会话...';
+    session = await ort.InferenceSession.create(await modelBuffer);
+
+    // 成功加载后，隐藏蒙版
+    setTimeout(() => {
+      loadingOverlay.classList.add('hidden');
+    }, 500);
+
+  } catch (error) {
+    console.error('模型加载或初始化失败:', error);
+    loadingError.textContent = `错误: ${error.message}。请检查网络连接后重试。`;
+    loadingError.classList.remove('hidden');
+  }
+}
     
     function initEventListeners() {
       // 统一文件选择入口
