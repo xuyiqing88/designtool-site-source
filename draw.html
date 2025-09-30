@@ -389,9 +389,8 @@
         
         .secondary-tab-pane.active { 
             display: flex; 
-            overflow-y: auto;
+            overflow-y: hidden;
             overflow-x: hidden;
-            padding-bottom: 60px;
             padding-top: 20px;
         }
         
@@ -574,9 +573,8 @@
             justify-content: center;
             align-items: center;
             gap: 15px;
-            border: 2px dashed var(--line);
             border-radius: 12px;
-            min-height: 300px;
+            min-height: 50vh;
 	max-width: 860px;
     	overflow: hidden;
         }
@@ -1222,10 +1220,11 @@
                         
                         <div class="drawing-preview-panel">
                             <div class="drawing-preview">
-                                <p class="panel-description">注意：生成裸露内容可能会导致图片变黑。</p>
+                                
                                 <div id="drawingPlaceholder" class="drawing-placeholder">
-                                    <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
-                                    <p>输入提示词并点击"生成图像"按钮</p>
+                                    <img src="img/none.webp" alt="暂无图片" style="max-width: 140px; height: auto;">
+                                    <p style="color: var(--text2);">输入提示词并点击"生成图像"按钮</p>
+                                    <p>注意：生成裸露内容可能会导致图片变黑。</p>
                                 </div>
                                 <img id="generatedImage" alt="生成的图像">
                                 
@@ -1313,8 +1312,8 @@
                             <div class="drawing-preview">
                                 <p class="panel-description"></p>
                                 <div id="imageToImagePlaceholder" class="drawing-placeholder">
-                                    <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
-                                    <p>上传图片并输入修改指令</p>
+                                    <img src="img/none.webp" alt="暂无图片" style="max-width: 140px; height: auto;">
+                                    <p style="color: var(--text2);">上传图片并输入修改指令</p>
                                 </div>
                                 <img id="generatedImageToImage" alt="生成的图像">
                                 

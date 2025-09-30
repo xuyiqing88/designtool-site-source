@@ -69,7 +69,12 @@
             height: 1.2em;
             fill: currentColor;
         }
-        
+        .icon1 {
+            display: inline-block;
+            width: 0.9em;
+            height: 0.9em;
+            fill: currentColor;
+        }
         .main-layout {
             display: flex;
             flex-grow: 1;
@@ -124,7 +129,7 @@
         
         .drawing-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 2fr;
             gap: 25px;
             flex-grow: 1;
             overflow: auto;
@@ -142,6 +147,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            background: var(--lightbg);
+            border-radius: 10px;
+            padding: 20px;
         }
         
         .btn-group {
@@ -219,15 +227,13 @@
         .drawing-placeholder {
             color: var(--text3);
             padding: 40px;
-            opacity: 0.7;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 15px;
-            border: 2px dashed var(--line);
             border-radius: 12px;
-            min-height: 300px;
+            min-height: 70vh;
             width: 100%;
         }
         
@@ -343,7 +349,6 @@
             align-items: center;
             gap: 10px;
             padding: 15px;
-            border: 1px solid var(--line);
             border-radius: 8px;
         }
 .direction-guide-text {
@@ -359,23 +364,24 @@
             gap: 10px;
             width: 150px;
             height: 150px;
-            margin: 0 auto;
         }
 
         .direction-btn {
-            border-radius: 8px;
-            background: var(--mainbg);
+            border-radius: 16px;
+            background: #fff;
             color: var(--text2);
-            border: 1px solid var(--line);
+            border: 1px solid #f2f3f9;
             font-size: 24px;
             padding: 0;
             width: 100%;
             height: 100%;
+            box-shadow: 0 0 10px #2c2b5517
         }
 
         .direction-btn:hover {
             background: var(--btactive);
             color: var(--main-color);
+            box-shadow: none;
         }
 
         .direction-btn.active {
@@ -574,19 +580,19 @@
     <div class="direction-controls-container">
         <div class="direction-grid">
             <button class="direction-btn" id="arrow-up" data-direction="upwards" data-guide-text="向上扩展图片">
-                <svg class="icon"><use xlink:href="#arrow-up-solid-full"></use></svg>
+                <svg class="icon1"><use xlink:href="#arrow-up-solid-full"></use></svg>
             </button>
             <button class="direction-btn" id="arrow-left" data-direction="to the left" data-guide-text="向左扩展图片">
-                <svg class="icon"><use xlink:href="#arrow-left-solid-full"></use></svg>
+                <svg class="icon1"><use xlink:href="#arrow-left-solid-full"></use></svg>
             </button>
             <div class="center-placeholder">
-                <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
+                <svg class="icon1" style="width: 2rem; height: 2rem;"><use xlink:href="#image-solid-full"></use></svg>
             </div>
             <button class="direction-btn" id="arrow-right" data-direction="to the right" data-guide-text="向右扩展图片">
-                <svg class="icon"><use xlink:href="#arrow-right-solid-full"></use></svg>
+                <svg class="icon1"><use xlink:href="#arrow-right-solid-full"></use></svg>
             </button>
             <button class="direction-btn" id="arrow-down" data-direction="downwards" data-guide-text="向下扩展图片">
-                <svg class="icon"><use xlink:href="#arrow-down-solid-full"></use></svg>
+                <svg class="icon1"><use xlink:href="#arrow-down-solid-full"></use></svg>
             </button>
         </div>
         <p id="direction-guide-text" class="direction-guide-text">将鼠标悬停在箭头上查看方向</p>
@@ -606,10 +612,11 @@
                 
                 <div class="drawing-preview-panel">
                     <div class="drawing-preview">
-                        <p class="panel-description">AI将根据您选择的方向智能对原图进行扩展和填充。</p>
+                        
                         <div id="drawingPlaceholder" class="drawing-placeholder">
-                            <svg class="icon"><use xlink:href="#image-solid-full"></use></svg>
-                            <p>此处将显示生成的图像</p>
+                            <img src="img/none.webp" alt="暂无图片" style="max-width: 140px; height: auto;">
+                            <p style="color: var(--text2); ">此处将显示生成的图像</p>
+                            <p style="font-size: 14px;">AI将根据您选择的方向智能对原图进行扩展和填充。</p>
                         </div>
                         <img id="generatedImage" alt="生成的图像" class="hidden">
                         
