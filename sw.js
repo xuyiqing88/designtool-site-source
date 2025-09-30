@@ -19,7 +19,9 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
-    )
+      .then(() => self.skipWaiting()) // 安装完成后激活 SW
+      .catch(error => console.error('缓存资源失败:', error))
+  )
 });
 
 // 改进后的 fetch 事件
