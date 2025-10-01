@@ -313,6 +313,12 @@ const donationData = [
 ];
 const changelogData = [
     {
+        date: "2025-09-30",
+        content: [
+            "优化一键扩图UI布局。",
+        ]
+    },
+    {
         date: "2025-09-28",
         content: [
             "一键抠图新增欢迎页和加载过程图标；",
