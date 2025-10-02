@@ -70,7 +70,7 @@ const tools = [
         category: "dev",
         link: "expand.html",
         icon: "img/expand.webp",
-        badge: "NEW"
+        badge: "修复中…"
     },
     {
         title: "AI高清放大",
