@@ -1,18 +1,13 @@
-// sw.js - v12版，为rembg模型增加豁免规则
+// sw.js - v13版，为rembg模型增加豁免规则
 
 // 更新版本号以触发更新
 const CACHE_NAME = 'designtool-v12-rembg-hotfix'; 
 const urlsToCache = [
   '/',
-  '/index.html',
   '/style.css',
   '/menu.js',
   '/video/menu.js',
   '/common.js',
-  '/hdr.html',
-  '/normal.html',
-  '/rembg.html',
-  '/lotbar.html',
   '/footer.html',
   '/related-articles.html',
   '/articles.js',
